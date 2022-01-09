@@ -1,0 +1,31 @@
+env:
+  default:
+    RPC_TOOL_ENDPOINT: "https://k8s.rpc.tool.hatlonely.com"
+
+ctx:
+  rpcTool:
+    type: http
+    args:
+      endpoint: "${RPC_TOOL_ENDPOINT}"
+
+case:
+  - name: testMurmur3_64
+    step:
+      - req:
+          path: "/v1/tool/hash"
+          body:
+            hash: "murmur3-64"
+            text: "hello world"
+        res:
+          hex: "533f6046eb7f610e"
+          num: "5998619086395760910"
+  - name: testFnv64
+    step:
+      - req:
+          path: "/v1/tool/hash"
+          body:
+            hash: "fnv-64"
+            text: "hello world"
+        res:
+          hex: "7dcf62cdb1910e6f"
+          num: "9065573210506989167"
