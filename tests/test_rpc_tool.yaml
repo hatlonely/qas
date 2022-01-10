@@ -16,8 +16,10 @@ case:
             hash: "murmur3-64"
             text: "hello world"
         res:
-          hex: "533f6046eb7f610e"
-          num: "5998619086395760910"
+          status: 200
+          json:
+            hex: "533f6046eb7f610e"
+            num: "5998619086395760910"
   - name: testFnv64
     step:
       - ctx: rpcTool
@@ -29,5 +31,7 @@ case:
             hash: "fnv64"
             text: "hello world"
         res:
-          hex: "7dcf62cdb1910e6f"
-          num: "9065573210506989167"
+          status: 200
+          json:
+            hex: "7dcf62cdb1910e6f"
+            num: "9065573210506989167"
