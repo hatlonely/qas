@@ -1,19 +1,18 @@
-env:
-  default:
-    RPC_TOOL_ENDPOINT: "https://k8s.rpc.tool.hatlonely.com"
-
 ctx:
   rpcTool:
     type: http
     args:
-      endpoint: "${RPC_TOOL_ENDPOINT}"
+      endpoint: "http://k8s.rpc.tool.hatlonely.com"
 
 case:
   - name: testMurmur3_64
     step:
-      - req:
+      - ctx: rpcTool
+        req:
           path: "/v1/tool/hash"
-          body:
+          headers:
+            Origin: "http://k8s.rpc.tool.hatlonely.com/"
+          json:
             hash: "murmur3-64"
             text: "hello world"
         res:
@@ -21,10 +20,13 @@ case:
           num: "5998619086395760910"
   - name: testFnv64
     step:
-      - req:
+      - ctx: rpcTool
+        req:
           path: "/v1/tool/hash"
-          body:
-            hash: "fnv-64"
+          headers:
+            Origin: "http://k8s.rpc.tool.hatlonely.com/"
+          json:
+            hash: "fnv64"
             text: "hello world"
         res:
           hex: "7dcf62cdb1910e6f"
