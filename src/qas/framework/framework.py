@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-import http
 
 import yaml
 import json
@@ -29,5 +28,3 @@ class Framework:
         for case in self.case:
             for step in case["step"]:
                 print(json.dumps(self.ctx[step["ctx"]].do(step["req"])))
-
-
