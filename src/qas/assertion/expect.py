@@ -5,6 +5,50 @@ import unittest
 from dataclasses import dataclass
 
 
+@dataclass
+class ExpectResult:
+    isPass: bool
+    message: str
+    node: str
+    val: any
+    expect: any
+
+
+@dataclass
+class StepResult:
+    step: str
+    expect_results: list[ExpectResult]
+    succ: int
+    fail: int
+
+    def __init__(self, step=""):
+        self.step = step
+        self.expect_results = list[ExpectResult]()
+
+    def sumary(self):
+        pass
+
+
+@dataclass
+class CaseResult:
+    case: str
+    step_results: list[StepResult]
+
+    def __init__(self, case=""):
+        self.case = case
+        self.step_results = list[StepResult]()
+
+
+@dataclass
+class TestResult:
+    name: str
+    case_results: list[CaseResult]
+
+    def __init__(self, name=""):
+        self.name = name
+        self.case_results = list[CaseResult]()
+
+
 def expect_obj(vals, rules):
     expect_results = []
     if isinstance(rules, dict):
@@ -14,15 +58,6 @@ def expect_obj(vals, rules):
     else:
         pass
     return expect_results
-
-
-@dataclass
-class ExpectResult:
-    isPass: bool
-    message: str
-    node: str
-    val: any
-    expect: any
 
 
 def expect_obj_recursive(root: str, vals, rules, is_dict: bool, expect_results: list):
@@ -41,23 +76,14 @@ def expect_obj_recursive(root: str, vals, rules, is_dict: bool, expect_results: 
             if isinstance(key, str) and key.startswith("$"):
                 msg, ok = expect_val(root_dot_key, val, rule)
                 if not ok:
-                    expect_results.append(ExpectResult(
-                        isPass=False,
-                        message=msg,
-                        node=root_dot_key,
-                        val=val,
-                        expect=rule,
-                    ))
-                    return root_dot_key, msg, False
+                    expect_results.append(ExpectResult(isPass=False, message=msg, node=root_dot_key, val=val, expect=rule))
+                else:
+                    expect_results.append(ExpectResult(isPass=True, message="OK", node=root_dot_key, val=val, expect=rule))
             else:
                 if val != rule:
-                    expect_results.append(ExpectResult(
-                        isPass=False,
-                        message="val not equal",
-                        node=root_dot_key,
-                        val=val,
-                        expect=rule,
-                    ))
+                    expect_results.append(ExpectResult(isPass=False, message="val not equal", node=root_dot_key, val=val, expect=rule))
+                else:
+                    expect_results.append(ExpectResult(isPass=True, message="OK", node=root_dot_key, val=val, expect=rule))
 
 
 def expect_val(root, val, rule):
@@ -79,7 +105,11 @@ class TestExpectObj(unittest.TestCase):
                 "num": "5998619086395760910",
             }
         })
-        self.assertFalse(res)
+        self.assertTrue(res)
+        self.assertEqual(len(res), 3)
+        self.assertEqual(res[0], ExpectResult(isPass=True, message="OK", node="status", val=200, expect=200))
+        self.assertEqual(res[1], ExpectResult(isPass=True, message="OK", node="json.hex", val="533f6046eb7f610e", expect="533f6046eb7f610e"))
+        self.assertEqual(res[2], ExpectResult(isPass=True, message="OK", node="json.num", val="5998619086395760910", expect="5998619086395760910"))
 
     def test_expect_obj_dict_not_equal(self):
         res = expect_obj({
@@ -96,21 +126,10 @@ class TestExpectObj(unittest.TestCase):
             }
         })
         self.assertTrue(res)
-        self.assertEqual(len(res), 2)
-        self.assertEqual(res[0], ExpectResult(
-            isPass=False,
-            message="val not equal",
-            node="status",
-            val=200,
-            expect=201,
-        ))
-        self.assertEqual(res[1], ExpectResult(
-            isPass=False,
-            message="val not equal",
-            node="json.num",
-            val="5998619086395760910",
-            expect="xx",
-        ))
+        self.assertEqual(len(res), 3)
+        self.assertEqual(res[0], ExpectResult(isPass=False, message="val not equal", node="status", val=200, expect=201))
+        self.assertEqual(res[1], ExpectResult(isPass=True, message="OK", node="json.hex", val="533f6046eb7f610e", expect="533f6046eb7f610e"))
+        self.assertEqual(res[2], ExpectResult(isPass=False, message="val not equal", node="json.num", val="5998619086395760910", expect="xx"))
 
     def test_expect_obj_list_equal(self):
         res = expect_obj({
@@ -132,25 +151,13 @@ class TestExpectObj(unittest.TestCase):
                 "num": "444",
             }]
         })
-        self.assertFalse(res)
-
-    def test_expect_obj_list_equal_2(self):
-        res = expect_obj([
-            {
-                "hex": "111",
-                "num": "222",
-            }, {
-                "hex": "333",
-                "num": "444",
-            }], [{
-                "hex": "111",
-                "num": "222",
-            }, {
-                "hex": "333",
-                "num": "444",
-            }
-        ])
-        self.assertFalse(res)
+        self.assertTrue(res)
+        self.assertEqual(len(res), 5)
+        self.assertEqual(res[0], ExpectResult(isPass=True, message="OK", node="status", val=200, expect=200))
+        self.assertEqual(res[1], ExpectResult(isPass=True, message="OK", node="json.0.hex", val="111", expect="111"))
+        self.assertEqual(res[2], ExpectResult(isPass=True, message="OK", node="json.0.num", val="222", expect="222"))
+        self.assertEqual(res[3], ExpectResult(isPass=True, message="OK", node="json.1.hex", val="333", expect="333"))
+        self.assertEqual(res[4], ExpectResult(isPass=True, message="OK", node="json.1.num", val="444", expect="444"))
 
     def test_expect_obj_list_not_equal(self):
         res = expect_obj({
@@ -173,28 +180,35 @@ class TestExpectObj(unittest.TestCase):
             }]
         })
         self.assertTrue(res)
-        self.assertEqual(len(res), 3)
-        self.assertEqual(res[0], ExpectResult(
-            isPass=False,
-            message="val not equal",
-            node="status",
-            val=200,
-            expect=201,
-        ))
-        self.assertEqual(res[1], ExpectResult(
-            isPass=False,
-            message="val not equal",
-            node="json.0.hex",
-            val="111",
-            expect="123",
-        ))
-        self.assertEqual(res[2], ExpectResult(
-            isPass=False,
-            message="val not equal",
-            node="json.1.num",
-            val="444",
-            expect="456",
-        ))
+        self.assertEqual(len(res), 5)
+        self.assertEqual(res[0], ExpectResult(isPass=False, message="val not equal", node="status", val=200, expect=201))
+        self.assertEqual(res[1], ExpectResult(isPass=False, message="val not equal", node="json.0.hex", val="111", expect="123"))
+        self.assertEqual(res[2], ExpectResult(isPass=True, message="OK", node="json.0.num", val="222", expect="222"))
+        self.assertEqual(res[3], ExpectResult(isPass=True, message="OK", node="json.1.hex", val="333", expect="333"))
+        self.assertEqual(res[4], ExpectResult(isPass=False, message="val not equal", node="json.1.num", val="444", expect="456"))
+
+    def test_expect_obj_list_equal_2(self):
+        res = expect_obj([
+            {
+                "hex": "111",
+                "num": "222",
+            }, {
+                "hex": "333",
+                "num": "444",
+            }], [{
+                "hex": "111",
+                "num": "222",
+            }, {
+                "hex": "333",
+                "num": "444",
+            }
+        ])
+        self.assertTrue(res)
+        self.assertEqual(len(res), 4)
+        self.assertEqual(res[0], ExpectResult(isPass=True, message="OK", node="0.hex", val="111", expect="111"))
+        self.assertEqual(res[1], ExpectResult(isPass=True, message="OK", node="0.num", val="222", expect="222"))
+        self.assertEqual(res[2], ExpectResult(isPass=True, message="OK", node="1.hex", val="333", expect="333"))
+        self.assertEqual(res[3], ExpectResult(isPass=True, message="OK", node="1.num", val="444", expect="444"))
 
     def test_expect_obj_list_not_equal_2(self):
         res = expect_obj([
@@ -213,21 +227,11 @@ class TestExpectObj(unittest.TestCase):
             }
         ])
         self.assertTrue(res)
-        self.assertEqual(len(res), 2)
-        self.assertEqual(res[0], ExpectResult(
-            isPass=False,
-            message="val not equal",
-            node="0.hex",
-            val="111",
-            expect="123",
-        ))
-        self.assertEqual(res[1], ExpectResult(
-            isPass=False,
-            message="val not equal",
-            node="1.num",
-            val="444",
-            expect="456",
-        ))
+        self.assertEqual(len(res), 4)
+        self.assertEqual(res[0], ExpectResult(isPass=False, message="val not equal", node="0.hex", val="111", expect="123"))
+        self.assertEqual(res[1], ExpectResult(isPass=True, message="OK", node="0.num", val="222", expect="222"))
+        self.assertEqual(res[2], ExpectResult(isPass=True, message="OK", node="1.hex", val="333", expect="333"))
+        self.assertEqual(res[3], ExpectResult(isPass=False, message="val not equal", node="1.num", val="444", expect="456"))
 
 
 if __name__ == '__main__':

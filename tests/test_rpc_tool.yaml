@@ -1,3 +1,5 @@
+name: test-rpc-tool
+
 ctx:
   rpcTool:
     type: http

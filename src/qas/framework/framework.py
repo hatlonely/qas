@@ -4,6 +4,7 @@ import yaml
 import json
 from src.qas.driver.http import HttpDriver
 from src.qas.assertion.expect import expect_obj
+from src.qas.assertion.expect import TestResult, CaseResult, StepResult, ExpectResult
 
 
 drivers = {
@@ -14,6 +15,7 @@ drivers = {
 class Framework:
     data = None
     case = None
+    name = None
     ctx = dict()
 
     def __init__(self, filename):
@@ -21,14 +23,22 @@ class Framework:
         data = yaml.safe_load(fp)
         self.data = data
         self.case = data["case"]
+        self.name = data["name"]
         for key in data["ctx"]:
             val = data["ctx"][key]
             self.ctx[key] = drivers[val["type"]](val["args"])
 
     def run(self):
+        test_result = TestResult(self.name)
         for case in self.case:
-            for step in case["step"]:
-                # print(json.dumps(self.ctx[step["ctx"]].do(step["req"])))
+            case_result = CaseResult(case["name"])
+            for idx, step in enumerate(case["step"]):
+                if "name" not in step:
+                    step["name"] = "step-{}".format(idx)
+                step_result = StepResult(step["name"])
                 res = self.ctx[step["ctx"]].do(step["req"])
                 res = expect_obj(res, step["res"])
-                print(json.dumps([i.__dict__ for i in res]))
+                step_result.expect_results.extend(res)
+                case_result.step_results.append(step_result)
+            test_result.case_results.append(case_result)
+        print(test_result)
