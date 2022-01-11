@@ -3,7 +3,7 @@
 import yaml
 import json
 from src.qas.driver.http import HttpDriver
-from src.qas.assertion.expect import expect_map
+from src.qas.assertion.expect import expect_obj
 
 
 drivers = {
@@ -28,8 +28,7 @@ class Framework:
     def run(self):
         for case in self.case:
             for step in case["step"]:
-                print(json.dumps(self.ctx[step["ctx"]].do(step["req"])))
+                # print(json.dumps(self.ctx[step["ctx"]].do(step["req"])))
                 res = self.ctx[step["ctx"]].do(step["req"])
-                node, msg, ok = expect_map("", res, step["res"])
-                if not ok:
-                    print(node, msg)
+                res = expect_obj(res, step["res"])
+                print(json.dumps([i.__dict__ for i in res]))
