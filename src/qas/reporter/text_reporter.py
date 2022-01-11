@@ -5,5 +5,6 @@ from src.qas.assertion.expect import TestResult, CaseResult, StepResult, ExpectR
 
 
 def report(test_result: TestResult):
+    print(test_result.is_pass)
     print(test_result)
 

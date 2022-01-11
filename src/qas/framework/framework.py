@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
 import yaml
-import json
 from src.qas.driver.http import HttpDriver
 from src.qas.assertion.expect import expect_obj
-from src.qas.assertion.expect import TestResult, CaseResult, StepResult, ExpectResult
+from src.qas.assertion.expect import TestResult, CaseResult, StepResult
+from src.qas.reporter.text_reporter import report
 
 
 drivers = {
@@ -41,4 +41,4 @@ class Framework:
                 step_result.expect_results.extend(res)
                 case_result.step_results.append(step_result)
             test_result.case_results.append(case_result)
-        print(test_result)
+        report(test_result)
