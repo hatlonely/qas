@@ -7,7 +7,12 @@ from dataclasses import dataclass
 
 def expect_obj(vals, rules):
     expect_results = []
-    expect_obj_recursive("", vals, rules, True, expect_results)
+    if isinstance(rules, dict):
+        expect_obj_recursive("", vals, rules, True, expect_results)
+    elif isinstance(rules, list):
+        expect_obj_recursive("", vals, rules, False, expect_results)
+    else:
+        pass
     return expect_results
 
 
@@ -33,7 +38,7 @@ def expect_obj_recursive(root: str, vals, rules, is_dict: bool, expect_results: 
         elif isinstance(rule, list):
             expect_obj_recursive(root_dot_key, val, rule, False, expect_results)
         else:
-            if key is str and key.startswith("$"):
+            if isinstance(key, str) and key.startswith("$"):
                 msg, ok = expect_val(root_dot_key, val, rule)
                 if not ok:
                     expect_results.append(ExpectResult(
@@ -129,6 +134,24 @@ class TestExpectObj(unittest.TestCase):
         })
         self.assertFalse(res)
 
+    def test_expect_obj_list_equal_2(self):
+        res = expect_obj([
+            {
+                "hex": "111",
+                "num": "222",
+            }, {
+                "hex": "333",
+                "num": "444",
+            }], [{
+                "hex": "111",
+                "num": "222",
+            }, {
+                "hex": "333",
+                "num": "444",
+            }
+        ])
+        self.assertFalse(res)
+
     def test_expect_obj_list_not_equal(self):
         res = expect_obj({
             "status": 200,
@@ -169,6 +192,39 @@ class TestExpectObj(unittest.TestCase):
             isPass=False,
             message="val not equal",
             node="json.1.num",
+            val="444",
+            expect="456",
+        ))
+
+    def test_expect_obj_list_not_equal_2(self):
+        res = expect_obj([
+            {
+                "hex": "111",
+                "num": "222",
+            }, {
+                "hex": "333",
+                "num": "444",
+            }], [{
+                "hex": "123",
+                "num": "222",
+            }, {
+                "hex": "333",
+                "num": "456",
+            }
+        ])
+        self.assertTrue(res)
+        self.assertEqual(len(res), 2)
+        self.assertEqual(res[0], ExpectResult(
+            isPass=False,
+            message="val not equal",
+            node="0.hex",
+            val="111",
+            expect="123",
+        ))
+        self.assertEqual(res[1], ExpectResult(
+            isPass=False,
+            message="val not equal",
+            node="1.num",
             val="444",
             expect="456",
         ))
