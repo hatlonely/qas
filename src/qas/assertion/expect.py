@@ -3,7 +3,6 @@
 
 import unittest
 from dataclasses import dataclass
-import json
 
 
 def expect_obj(vals, rules):
