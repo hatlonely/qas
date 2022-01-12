@@ -4,12 +4,12 @@ from colorama import Fore, Back, Style
 from src.qas.assertion.expect import TestResult, CaseResult, StepResult, ExpectResult
 
 
-def report(test_result: TestResult):
+def report(test_result: TestResult) -> str:
     test_result.summary()
-    print('\n'.join(test_summary(test_result)))
+    return '\n'.join(test_summary(test_result))
 
 
-def test_summary(res: TestResult):
+def test_summary(res: TestResult) -> list[str]:
     lines = []
     if res.is_pass:
         lines.append(Fore.GREEN + "测试通过, 成功 {}".format(len(res.case_results)) + Fore.RESET)
