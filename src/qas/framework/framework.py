@@ -41,4 +41,4 @@ class Framework:
                 step_result.expect_results.extend(res)
                 case_result.step_results.append(step_result)
             test_result.case_results.append(case_result)
-        report(test_result)
+        print(report(test_result))
