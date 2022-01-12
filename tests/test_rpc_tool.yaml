@@ -20,7 +20,7 @@ case:
         res:
           status: 200
           json:
-            hex: "533f6046eb7f610e"
+            hex: "533f6046eb7f610e3"
             num: "5998619086395760910"
   - name: testFnv64
     step:
