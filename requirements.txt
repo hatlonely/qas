@@ -1,2 +1,4 @@
 requests~=2.27.1
 PyYAML~=6.0
+
+colorama~=0.4.4
