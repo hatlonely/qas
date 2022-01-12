@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import colorama
 from colorama import Fore, Back, Style
 from src.qas.assertion.expect import TestResult, CaseResult, StepResult, ExpectResult
 
