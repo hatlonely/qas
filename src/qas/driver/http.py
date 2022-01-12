@@ -6,23 +6,34 @@ import requests
 
 class HttpDriver:
     endpoint = None
+    headers = None
+    method = None
 
     def __init__(self, args: dict):
         self.endpoint = args["endpoint"].rstrip("/")
+        if "headers" in args:
+            self.headers = args["headers"]
+        if "method" in args:
+            self.method = args["method"]
+        else:
+            self.method = "POST"
 
     def do(self, req: dict):
         if "method" not in req:
-            req["method"] = "post"
+            req["method"] = self.method
         if "params" not in req:
             req["params"] = None
         if "headers" not in req:
-            req["headers"] = None
+            req["headers"] = {}
         if "data" not in req:
             req["data"] = None
         if "json" not in req:
             req["json"] = None
         if "path" not in req:
             req["path"] = ""
+        if self.headers:
+            for key in self.headers:
+                req["headers"][key] = self.headers[key]
 
         res = requests.request(
             method=req["method"],

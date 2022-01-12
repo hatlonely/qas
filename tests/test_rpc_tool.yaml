@@ -5,6 +5,9 @@ ctx:
     type: http
     args:
       endpoint: "http://k8s.rpc.tool.hatlonely.com"
+      headers:
+        Origin: "http://k8s.rpc.tool.hatlonely.com"
+      method: POST
 
 case:
   - name: testMurmur3_64
@@ -12,8 +15,6 @@ case:
       - ctx: rpcTool
         req:
           path: "/v1/tool/hash"
-          headers:
-            Origin: "http://k8s.rpc.tool.hatlonely.com/"
           json:
             hash: "murmur3-64"
             text: "hello world"
@@ -27,8 +28,6 @@ case:
       - ctx: rpcTool
         req:
           path: "/v1/tool/hash"
-          headers:
-            Origin: "http://k8s.rpc.tool.hatlonely.com/"
           json:
             hash: "fnv64"
             text: "hello world"
