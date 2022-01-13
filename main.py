@@ -4,7 +4,7 @@ from src.qas.framework.framework import Framework
 
 
 def main():
-    fw = Framework("tests/test_rpc_tool.yaml")
+    fw = Framework("tests/test_pop.yaml")
     fw.run()
 
 

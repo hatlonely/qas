@@ -25,6 +25,7 @@ product_info = {
 class POPDriver:
     client: AcsClient
     endpoint: str
+    productId: str
 
     def __init__(self, args: dict):
         if "accessKeyId" not in args:
@@ -37,6 +38,8 @@ class POPDriver:
             args["disableVerify"] = False
         self.endpoint = args["endpoint"].rstrip("/")
         self.client = AcsClient(args["accessKeyId"], args["accessKeySecret"], args["regionId"], verify=args["disableVerify"])
+        if "productId" in args:
+            self.productId = args["productId"]
 
     def do(self, req: dict):
         if "method" not in req:
@@ -45,25 +48,33 @@ class POPDriver:
             req["scheme"] = "https"
         if "action" not in req:
             raise Exception("action is required")
+        if "productId" not in req and self.productId:
+            req["productId"] = self.productId
+        if "endpoint" not in req:
+            req["endpoint"] = self.endpoint
 
-        req = CommonRequest()
-        req.set_accept_format("json")
-        req.set_method(req["method"])
-        req.set_protocol_type(req["scheme"])
+        creq = CommonRequest()
+        creq.set_accept_format("json")
+        creq.set_method(req["method"])
+        creq.set_protocol_type(req["scheme"])
         if "endpoint" in req:
-            req.set_domain(req["endpoint"])
+            creq.set_domain(req["endpoint"])
         elif self.endpoint:
-            req.set_domain(self.endpoint)
+            creq.set_domain(self.endpoint)
 
         if "version" in req:
-            req.set_version(req["version"])
+            creq.set_version(req["version"])
         elif "productId" in req:
-            req.set_version(product_info[req["productId"]])
+            creq.set_version(product_info[req["productId"]])
+        else:
+            raise Exception("unknown version")
 
-        req.set_action_name(req["action"])
+        creq.set_action_name(req["action"])
 
         for key in req:
-            req.add_query_param(key, req[key])
+            if key in ["action", "version", "productId", "scheme", "method"]:
+                continue
+            creq.add_query_param(key, req[key])
 
-        res = self.client.do_action_with_exception(req)
+        res = self.client.do_action_with_exception(creq)
         return json.loads(str(res, encoding='utf-8'))
