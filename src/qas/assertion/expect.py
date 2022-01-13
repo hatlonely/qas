@@ -112,7 +112,8 @@ def expect_obj_recursive(root: str, vals, rules, is_dict: bool, expect_results: 
                     expect_results.append(ExpectResult(is_pass=True, message="OK", node=root_dot_key, val=val, expect=rule))
 
 
-def expect_val(root, val, rule):
+def expect_val(val, rule):
+
     return True
 
 

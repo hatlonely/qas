@@ -24,55 +24,55 @@ product_info = {
 
 class POPDriver:
     client: AcsClient
-    endpoint: str
-    productId: str
+    Endpoint: str
+    ProductId: str
 
     def __init__(self, args: dict):
-        if "accessKeyId" not in args:
-            raise Exception("accessKeyId is required")
-        if "accessKeySecret" not in args:
-            raise Exception("accessKeySecret is required")
-        if "regionId" not in args:
-            args["regionId"] = ""
-        if "disableVerify" not in args:
-            args["disableVerify"] = False
-        self.endpoint = args["endpoint"].rstrip("/")
-        self.client = AcsClient(args["accessKeyId"], args["accessKeySecret"], args["regionId"], verify=args["disableVerify"])
-        if "productId" in args:
-            self.productId = args["productId"]
+        if "AccessKeyId" not in args:
+            raise Exception("AccessKeyId is required")
+        if "AccessKeySecret" not in args:
+            raise Exception("AccessKeySecret is required")
+        if "RegionId" not in args:
+            args["RegionId"] = ""
+        if "DisableVerify" not in args:
+            args["DisableVerify"] = False
+        self.Endpoint = args["Endpoint"].rstrip("/")
+        self.client = AcsClient(args["AccessKeyId"], args["AccessKeySecret"], args["RegionId"], verify=args["DisableVerify"])
+        if "ProductId" in args:
+            self.ProductId = args["ProductId"]
 
     def do(self, req: dict):
-        if "method" not in req:
-            req["method"] = "POST"
-        if "scheme" not in req:
-            req["scheme"] = "https"
-        if "action" not in req:
-            raise Exception("action is required")
-        if "productId" not in req and self.productId:
-            req["productId"] = self.productId
-        if "endpoint" not in req:
-            req["endpoint"] = self.endpoint
+        if "Method" not in req:
+            req["Method"] = "POST"
+        if "Scheme" not in req:
+            req["Scheme"] = "https"
+        if "Action" not in req:
+            raise Exception("Action is required")
+        if "ProductId" not in req and self.ProductId:
+            req["ProductId"] = self.ProductId
+        if "Endpoint" not in req:
+            req["Endpoint"] = self.Endpoint
 
         creq = CommonRequest()
         creq.set_accept_format("json")
-        creq.set_method(req["method"])
-        creq.set_protocol_type(req["scheme"])
-        if "endpoint" in req:
-            creq.set_domain(req["endpoint"])
-        elif self.endpoint:
-            creq.set_domain(self.endpoint)
+        creq.set_method(req["Method"])
+        creq.set_protocol_type(req["Scheme"])
+        if "Endpoint" in req:
+            creq.set_domain(req["Endpoint"])
+        elif self.Endpoint:
+            creq.set_domain(self.Endpoint)
 
-        if "version" in req:
-            creq.set_version(req["version"])
-        elif "productId" in req:
-            creq.set_version(product_info[req["productId"]])
+        if "Version" in req:
+            creq.set_version(req["Version"])
+        elif "ProductId" in req:
+            creq.set_version(product_info[req["ProductId"]])
         else:
-            raise Exception("unknown version")
+            raise Exception("unknown Version")
 
-        creq.set_action_name(req["action"])
+        creq.set_action_name(req["Action"])
 
         for key in req:
-            if key in ["action", "version", "productId", "scheme", "method"]:
+            if key in ["Action", "Version", "ProductId", "Scheme", "Method"]:
                 continue
             creq.add_query_param(key, req[key])
 
