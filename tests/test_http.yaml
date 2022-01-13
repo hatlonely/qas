@@ -1,4 +1,4 @@
-name: test-rpc-tool
+name: test-http
 
 ctx:
   rpcTool:
