@@ -47,6 +47,8 @@ class CaseResult:
         self.is_pass = True
 
     def summary(self):
+        for r in self.step_results:
+            r.summary()
         self.is_pass = all(i.is_pass for i in self.step_results)
 
 
@@ -66,6 +68,8 @@ class TestResult:
         self.fail = 0
 
     def summary(self):
+        for r in self.case_results:
+            r.summary()
         self.succ = sum(1 for i in self.case_results if i.is_pass)
         self.fail = len(self.case_results) - self.succ
         self.is_pass = self.fail == 0
