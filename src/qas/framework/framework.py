@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import yaml
-from src.qas.driver.http import HttpDriver
+from src.qas.driver.http_driver import HttpDriver
 from src.qas.assertion.expect import expect_obj
 from src.qas.assertion.expect import TestResult, CaseResult, StepResult
 from src.qas.reporter.text_reporter import report
