@@ -4,7 +4,7 @@ from src.qas.framework import Framework
 
 
 def main():
-    fw = Framework("tests/test_pop.yaml")
+    fw = Framework("sample")
     fw.run()
 
 
