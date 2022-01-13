@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 
 import yaml
+import traceback
+
 from src.qas.driver.http_driver import HttpDriver
 from src.qas.driver.pop_driver import POPDriver
 from src.qas.assertion.expect import expect_obj
-from src.qas.assertion.expect import TestResult, CaseResult, StepResult
+from src.qas.assertion.expect import TestResult, CaseResult, StepResult, ExpectResult
 from src.qas.reporter.text_reporter import report
 
 
@@ -39,8 +41,13 @@ class Framework:
                     step["name"] = "step-{}".format(idx)
                 step_result = StepResult(step["name"])
                 res = self.ctx[step["ctx"]].do(step["req"])
-                res = expect_obj(res, step["res"])
-                step_result.expect_results.extend(res)
+                try:
+                    res = expect_obj(res, step["res"])
+                    step_result.expect_results.extend(res)
+                except Exception as e:
+                    step_result.expect_results.append(ExpectResult(
+                        is_pass=False, message="Exception {}".format(traceback.format_exc()), node="", val="", expect=""
+                    ))
                 case_result.step_results.append(step_result)
             test_result.case_results.append(case_result)
         print(report(test_result))

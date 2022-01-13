@@ -92,29 +92,38 @@ def expect_obj_recursive(root: str, vals, rules, is_dict: bool, expect_results: 
     else:
         to_enumerate = enumerate(rules)
     for key, rule in to_enumerate:
-        val = vals[key]
         root_dot_key = "{}.{}".format(root, key).lstrip(".")
         if isinstance(rule, dict):
-            expect_obj_recursive(root_dot_key, val, rule, True, expect_results)
+            expect_obj_recursive(root_dot_key, vals[key], rule, True, expect_results)
         elif isinstance(rule, list):
-            expect_obj_recursive(root_dot_key, val, rule, False, expect_results)
+            expect_obj_recursive(root_dot_key, vals[key], rule, False, expect_results)
         else:
-            if isinstance(key, str) and key.startswith("$"):
-                msg, ok = expect_val(root_dot_key, val, rule)
+            if isinstance(key, str) and key.startswith("#"):
+                val = vals[key[1:]]
+                ok = expect_val(val, rule)
                 if not ok:
-                    expect_results.append(ExpectResult(is_pass=False, message=msg, node=root_dot_key, val=val, expect=rule))
+                    expect_results.append(ExpectResult(is_pass=False, message="NotMatch", node=root_dot_key, val=val, expect=rule))
                 else:
                     expect_results.append(ExpectResult(is_pass=True, message="OK", node=root_dot_key, val=val, expect=rule))
             else:
+                val = vals[key]
                 if val != rule:
-                    expect_results.append(ExpectResult(is_pass=False, message="val not equal", node=root_dot_key, val=val, expect=rule))
+                    expect_results.append(ExpectResult(is_pass=False, message="NotEqual", node=root_dot_key, val=val, expect=rule))
                 else:
                     expect_results.append(ExpectResult(is_pass=True, message="OK", node=root_dot_key, val=val, expect=rule))
 
 
 def expect_val(val, rule):
+    res = eval(rule)
+    if not isinstance(res, bool):
+        raise Exception("rule should return result")
+    return res
 
-    return True
+
+class TestExpectVal(unittest.TestCase):
+    def test_expect_val_(self):
+        self.assertTrue(expect_val(1, "val % 2 == 1"))
+        self.assertTrue(expect_val("eeb848f8611a4ff980d2e56a2760b4fcv3", "val.endswith('v3')"))
 
 
 class TestExpectObj(unittest.TestCase):
