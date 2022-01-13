@@ -3,7 +3,8 @@
 
 import unittest
 from dataclasses import dataclass
-
+from datetime import datetime, timezone
+from dateutil import parser
 
 @dataclass
 class ExpectResult:
@@ -118,6 +119,10 @@ def expect_val(val, rule):
     if not isinstance(res, bool):
         raise Exception("rule should return result")
     return res
+
+
+def to_time(val) -> datetime:
+    return parser.parse(val)
 
 
 class TestExpectVal(unittest.TestCase):
