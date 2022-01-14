@@ -4,9 +4,9 @@ from colorama import Fore, Back, Style
 from src.qas.assertion.expect import TestResult, CaseResult, StepResult, ExpectResult
 
 
-def report(test_result: TestResult) -> str:
-    test_result.summary()
-    return '\n'.join(test_summary(test_result))
+def report(res: TestResult) -> str:
+    res.summary()
+    return '\n'.join(test_summary(res))
 
 
 def test_summary(res: TestResult) -> list[str]:

@@ -6,6 +6,7 @@ import os
 
 from src.qas.driver.http_driver import HttpDriver
 from src.qas.driver.pop_driver import POPDriver
+from src.qas.driver.ots_driver import OTSDriver
 from src.qas.assertion.expect import expect_obj
 from src.qas.assertion.expect import TestResult, CaseResult, StepResult, ExpectResult
 from src.qas.reporter.text_reporter import report
@@ -14,6 +15,7 @@ from src.qas.reporter.text_reporter import report
 drivers = {
     "http": HttpDriver,
     "pop": POPDriver,
+    "ots": OTSDriver,
 }
 
 
