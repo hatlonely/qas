@@ -31,6 +31,8 @@ class OTSDriver:
             "ListTable": self.list_table,
             "GetRow": self.get_row,
             "PutRow": self.put_row,
+            "DeleteRow": self.delete_row,
+            "GetRange": self.get_range,
         }
         if req["Action"] not in do_map:
             raise Exception("unsupported action [{}]".format(req["Action"]))
@@ -45,12 +47,10 @@ class OTSDriver:
         req = merge(req, {
             "TableMeta": {
                 "TableName": REQUIRED,
-                "SchemaEntry": [
-                    {
-                        "Name": REQUIRED,
-                        "Type": REQUIRED,  # STRING / INTEGER / BOOLEAN / DOUBLE / BINARY
-                    }
-                ],
+                "SchemaEntry": [{
+                    "Name": REQUIRED,
+                    "Type": REQUIRED,  # STRING / INTEGER / BOOLEAN / DOUBLE / BINARY
+                }],
                 "DefinedColumns": []
             },
             "TableOptions": {
@@ -86,12 +86,10 @@ class OTSDriver:
         req = merge(req, {
             "TableName": REQUIRED,
             "Row": {
-                "PrimaryKey": [
-                    {
-                        "Key": REQUIRED,
-                        "Val": REQUIRED,
-                    }
-                ]
+                "PrimaryKey": [{
+                    "Key": REQUIRED,
+                    "Val": REQUIRED,
+                }]
             },
             "Condition": "IGNORE",  # IGNORE / EXPECT_EXIST / EXPECT_NOT_EXIST
         })
@@ -113,17 +111,64 @@ class OTSDriver:
             "MaxVersion": 1,
         })
 
-        consumed, return_row, next_token = self.client.get_row(
+        _, row, _ = self.client.get_row(
             table_name=req["TableName"],
-            primary_key=[(i["Key"], i["Val"]) for i in req["Row"]["PrimaryKey"]],
+            primary_key=[(i["Key"], i["Val"]) for i in req["PrimaryKey"]],
             max_version=req["MaxVersion"],
         )
 
-        return {
-            "Consumed": consumed,
-            "ReturnRow": return_row,
-            "NextToken": next_token,
-        }
+        return dict([(i[0], i[1]) for i in row.attribute_columns])
+
+    def delete_row(self, req):
+        req = merge(req, {
+            "TableName": REQUIRED,
+            "PrimaryKey": [{
+                "Key": REQUIRED,
+                "Val": REQUIRED,
+            }],
+            "Condition": "IGNORE",  # IGNORE / EXPECT_EXIST / EXPECT_NOT_EXIST
+        })
+
+        self.client.delete_row(
+            table_name=req["TableName"],
+            row=tablestore.Row(
+                primary_key=[(i["Key"], i["Val"]) for i in req["PrimaryKey"]],
+            ),
+            condition=tablestore.Condition(req["Condition"])
+        )
+
+        return {}
+
+    def get_range(self, req):
+        req = merge(req, {
+            "TableName": REQUIRED,
+            "Direction": "FORWARD",
+            "StartPrimaryKey": [{
+                "Key": REQUIRED,
+                "Val": tablestore.INF_MIN
+            }],
+            "EndPrimaryKey": [{
+                "Key": REQUIRED,
+                "Val": tablestore.INF_MAX,
+            }]
+        })
+
+        _, _, rows, _ = self.client.get_range(
+            table_name=req["TableName"],
+            direction=req["Direction"],
+            inclusive_start_primary_key=[(i["Key"], pk_val(i["Val"]) if "Val" in i else tablestore.INF_MIN) for i in req["StartPrimaryKey"]],
+            exclusive_end_primary_key=[(i["Key"], pk_val(i["Val"]) if "Val" in i else tablestore.INF_MAX) for i in req["EndPrimaryKey"]],
+        )
+
+        return [dict([(i[0], i[1]) for i in row.primary_key]) | dict([(i[0], i[1]) for i in row.attribute_columns]) for row in rows]
+
+
+def pk_val(val):
+    if val == "INF_MAX":
+        return tablestore.INF_MAX
+    if val == "INF_MIN":
+        return tablestore.INF_MIN
+    return val
 
 
 class TestExpectVal(unittest.TestCase):
@@ -147,15 +192,13 @@ class TestExpectVal(unittest.TestCase):
             "Action": "CreateTable",
             "TableMeta": {
                 "TableName": self.test_table_name,
-                "SchemaEntry": [
-                    {
-                        "Name": "PK1",
-                        "Type": "STRING",
-                    }, {
-                        "Name": "PK2",
-                        "Type": "STRING",
-                    }
-                ]
+                "SchemaEntry": [{
+                    "Name": "PK1",
+                    "Type": "STRING",
+                }, {
+                    "Name": "PK2",
+                    "Type": "STRING",
+                }]
             },
             "TableOptions": {
                 "TimeToLive": -1,
@@ -177,20 +220,63 @@ class TestExpectVal(unittest.TestCase):
             "Action": "PutRow",
             "TableName": self.test_table_name,
             "Row": {
-                "PrimaryKey": [
-                    {
-                        "Key": "PK1",
-                        "Val": "pkVal1",
-                    }, {
-                        "Key": "PK2",
-                        "Val": "pkVal2"
-                    }
-                ],
+                "PrimaryKey": [{
+                    "Key": "PK1",
+                    "Val": "pkVal1",
+                }, {
+                    "Key": "PK2",
+                    "Val": "pkVal2"
+                }],
                 "AttributeColumns": {
                     "key1": "val1",
                     "key2": "val2",
                 }
             },
+        })
+        print(json.dumps(res))
+
+    def test_get_row(self):
+        res = self.driver.do(req={
+            "Action": "GetRow",
+            "TableName": self.test_table_name,
+            "PrimaryKey": [{
+                "Key": "PK1",
+                "Val": "pkVal1",
+            }, {
+                "Key": "PK2",
+                "Val": "pkVal2"
+            }]
+        })
+        print(json.dumps(res))
+
+    def test_delete_row(self):
+        res = self.driver.do(req={
+            "Action": "DeleteRow",
+            "TableName": self.test_table_name,
+            "PrimaryKey": [{
+                "Key": "PK1",
+                "Val": "pkVal1",
+            }, {
+                "Key": "PK2",
+                "Val": "pkVal2"
+            }]
+        })
+        print(json.dumps(res))
+
+    def test_get_range(self):
+        res = self.driver.do(req={
+            "Action": "GetRange",
+            "TableName": self.test_table_name,
+            "StartPrimaryKey": [{
+                "Key": "PK1",
+            }, {
+                "Key": "PK2",
+            }],
+            "EndPrimaryKey": [{
+                "Key": "PK1",
+            }, {
+                "Key": "PK2",
+            }]
         })
         print(json.dumps(res))
 
