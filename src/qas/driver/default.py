@@ -4,6 +4,9 @@
 import unittest
 
 
+REQUIRED = "__DEFAULT__REQUIRED__"
+
+
 def merge(req, dft):
     return _merge_recursive("", req, dft)
 
@@ -17,7 +20,7 @@ def _merge_recursive(root: str, req, dft):
             elif isinstance(val, list):
                 req[key] = _merge_recursive(root_dot_key, req[key] if key in req else [], val)
             else:
-                if val == "required" and key not in req:
+                if val == REQUIRED and key not in req:
                     raise Exception("missing required key [{}]".format(root_dot_key))
                 elif key not in req:
                     req[key] = val
@@ -33,7 +36,7 @@ def _merge_recursive(root: str, req, dft):
                     req.append([])
                 req[idx] = _merge_recursive(root_dot_key, req[idx], val)
             else:
-                if val == "required" and idx >= len(req):
+                if val == REQUIRED and idx >= len(req):
                     raise Exception("missing required key [{}]".format(root_dot_key))
                 elif idx >= len(req):
                     req.append(val)
@@ -111,9 +114,9 @@ class TestExpectVal(unittest.TestCase):
                     "key3": "val3"
                 }
             }, {
-                "key1": "required",
+                "key1": REQUIRED,
                 "key2": {
-                    "key4": "required",
+                    "key4": REQUIRED,
                 }
             })
         self.assertTrue("missing required key [key2.key4]" in str(cm.exception))
@@ -121,8 +124,8 @@ class TestExpectVal(unittest.TestCase):
     def test_merge_ots_create_table(self):
         dft = {
             "TableMeta": {
-                "TableName": "required",
-                "SchemeEntry": [["required", "required"]]
+                "TableName": REQUIRED,
+                "SchemeEntry": [[REQUIRED, REQUIRED]]
             },
             "TableOptions": {
                 "TimeToLive": -1,

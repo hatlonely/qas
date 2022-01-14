@@ -2,6 +2,7 @@
 
 
 import requests
+from src.qas.driver.default import merge, REQUIRED
 
 
 class HttpDriver:
@@ -10,6 +11,10 @@ class HttpDriver:
     method = None
 
     def __init__(self, args: dict):
+        args = merge(args, {
+            "endpoint": REQUIRED
+        })
+
         self.endpoint = args["endpoint"].rstrip("/")
         if "headers" in args:
             self.headers = args["headers"]

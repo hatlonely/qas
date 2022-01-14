@@ -3,7 +3,7 @@
 
 import tablestore
 import json
-from default import merge
+from src.qas.driver.default import merge, REQUIRED
 
 
 class OTSDriver:
@@ -11,17 +11,17 @@ class OTSDriver:
 
     def __init__(self, args: dict):
         args = merge(args, {
-            "Endpoint": "required",
-            "AccessKeyId": "required",
-            "AccessKeySecret": "required",
-            "Instance": "required",
+            "Endpoint": REQUIRED,
+            "AccessKeyId": REQUIRED,
+            "AccessKeySecret": REQUIRED,
+            "Instance": REQUIRED,
         })
 
         self.client = tablestore.OTSClient(args["Endpoint"], args["AccessKeyId"], args["AccessKeySecret"], args["Instance"])
 
     def do(self, req: dict):
         req = merge(req, {
-            "Action": "required"
+            "Action": REQUIRED
         })
 
         if req["Action"] == "CreateTable":
@@ -38,8 +38,8 @@ class OTSDriver:
     def create_table(self, req):
         req = merge(req, {
             "TableMeta": {
-                "TableName": "required",
-                "SchemeEntry": [["required", "required"]]
+                "TableName": REQUIRED,
+                "SchemeEntry": [[REQUIRED, REQUIRED]]
             },
             "TableOptions": {
                 "TimeToLive": -1,
