@@ -4,6 +4,7 @@
 import json
 from aliyunsdkcore.client import AcsClient
 from aliyunsdkcore.request import CommonRequest
+from src.qas.driver.default import merge, REQUIRED
 
 
 product_info = {
@@ -24,47 +25,48 @@ product_info = {
 
 class POPDriver:
     client: AcsClient
-    Endpoint: str
-    ProductId: str
+    endpoint: str
+    product_id: str
+    method: str
+    scheme: str
 
     def __init__(self, args: dict):
-        if "AccessKeyId" not in args:
-            raise Exception("AccessKeyId is required")
-        if "AccessKeySecret" not in args:
-            raise Exception("AccessKeySecret is required")
-        if "RegionId" not in args:
-            args["RegionId"] = ""
-        if "DisableVerify" not in args:
-            args["DisableVerify"] = False
-        self.Endpoint = args["Endpoint"].rstrip("/")
+        args = merge(args, {
+            "AccessKeyId": REQUIRED,
+            "AccessKeySecret": REQUIRED,
+            "RegionId": "",
+            "DisableVerify": False,
+            "Method": "POST",
+            "Scheme": "https",
+            "Endpoint": "",
+            "ProductId": "",
+        })
+
+        self.endpoint = args["Endpoint"].rstrip("/")
         self.client = AcsClient(args["AccessKeyId"], args["AccessKeySecret"], args["RegionId"], verify=args["DisableVerify"])
-        if "ProductId" in args:
-            self.ProductId = args["ProductId"]
+        self.product_id = args["ProductId"]
+        self.method = args["Method"]
+        self.scheme = args["Scheme"]
 
     def do(self, req: dict):
-        if "Method" not in req:
-            req["Method"] = "POST"
-        if "Scheme" not in req:
-            req["Scheme"] = "https"
-        if "Action" not in req:
-            raise Exception("Action is required")
-        if "ProductId" not in req and self.ProductId:
-            req["ProductId"] = self.ProductId
-        if "Endpoint" not in req:
-            req["Endpoint"] = self.Endpoint
+        req = merge(req, {
+            "Method": self.method,
+            "Scheme": self.scheme,
+            "Action": REQUIRED,
+            "ProductId": self.product_id,
+            "Endpoint": self.endpoint,
+        })
 
         creq = CommonRequest()
         creq.set_accept_format("json")
         creq.set_method(req["Method"])
         creq.set_protocol_type(req["Scheme"])
-        if "Endpoint" in req:
+        if req["Endpoint"]:
             creq.set_domain(req["Endpoint"])
-        elif self.Endpoint:
-            creq.set_domain(self.Endpoint)
 
         if "Version" in req:
             creq.set_version(req["Version"])
-        elif "ProductId" in req:
+        elif req["ProductId"]:
             creq.set_version(product_info[req["ProductId"]])
         else:
             raise Exception("unknown Version")
@@ -72,7 +74,7 @@ class POPDriver:
         creq.set_action_name(req["Action"])
 
         for key in req:
-            if key in ["Action", "Version", "ProductId", "Scheme", "Method"]:
+            if key in ["Action", "Version", "ProductId", "Scheme", "Method", "Endpoint"]:
                 continue
             creq.add_query_param(key, req[key])
 
