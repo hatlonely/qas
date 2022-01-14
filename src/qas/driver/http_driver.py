@@ -19,7 +19,7 @@ class HttpDriver:
 
         self.endpoint = args["endpoint"].rstrip("/")
         self.headers = args["headers"]
-        self.method = "POST"
+        self.method = args["method"]
 
     def do(self, req: dict):
         req = merge(req, {
