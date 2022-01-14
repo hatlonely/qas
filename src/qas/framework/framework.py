@@ -9,13 +9,17 @@ from src.qas.driver.pop_driver import POPDriver
 from src.qas.driver.ots_driver import OTSDriver
 from src.qas.assertion.expect import expect_obj
 from src.qas.assertion.expect import TestResult, CaseResult, StepResult, ExpectResult
-from src.qas.reporter.text_reporter import report
+from src.qas.reporter.text_reporter import TextReporter
 
 
 drivers = {
     "http": HttpDriver,
     "pop": POPDriver,
     "ots": OTSDriver,
+}
+
+reporters = {
+    "text": TextReporter,
 }
 
 
@@ -79,4 +83,4 @@ class Framework:
                     ))
                 case_result.step_results.append(step_result)
             test_result.case_results.append(case_result)
-        print(report(test_result))
+        print(reporters["text"].report(test_result))
