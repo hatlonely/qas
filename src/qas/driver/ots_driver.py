@@ -40,10 +40,10 @@ class OTSDriver:
             "TableMeta": {
                 "TableName": REQUIRED,
                 "SchemeEntry": [
-                    [
-                        REQUIRED,
-                        REQUIRED,  # STRING / INTEGER / BOOLEAN / DOUBLE / BINARY
-                    ],
+                    {
+                        "Name": REQUIRED,
+                        "Type": REQUIRED,  # STRING / INTEGER / BOOLEAN / DOUBLE / BINARY
+                    }
                 ]
             },
             "TableOptions": {
@@ -56,8 +56,8 @@ class OTSDriver:
         res = self.client.create_table(
             table_meta=tablestore.TableMeta(
                 table_name=req["TableMeta"]["TableName"],
-                schema_of_primary_key=[(i[0], i[1]) for i in req["TableMeta"]["SchemaEntry"]],
-                defined_columns=[(i[0], i[1]) for i in req["TableMeta"]["DefinedColumns"]],
+                schema_of_primary_key=[(i["Name"], i["Type"]) for i in req["TableMeta"]["SchemaEntry"]],
+                defined_columns=[(i["Name"], i["Type"]) for i in req["TableMeta"]["DefinedColumns"]],
             ),
             table_options=tablestore.TableOptions(
                 time_to_live=req["TableOptions"]["TimeToLive"],
@@ -72,7 +72,12 @@ class OTSDriver:
         req = merge(req, {
             "TableName": REQUIRED,
             "Row": {
-                "PrimaryKey": [[REQUIRED, REQUIRED]]
+                "PrimaryKey": [
+                    {
+                        "Key": REQUIRED,
+                        "Val": REQUIRED,
+                    }
+                ]
             },
             "Condition": "IGNORE",  # IGNORE / EXPECT_EXIST / EXPECT_NOT_EXIST
         })
@@ -80,7 +85,7 @@ class OTSDriver:
         consumed, return_row = self.client.put_row(
             table_name=req["TableName"],
             row=tablestore.Row(
-                primary_key=[(i[0], i[1]) for i in req["Row"]["PrimaryKey"]],
+                primary_key=[(i["Key"], i["Val"]) for i in req["Row"]["PrimaryKey"]],
                 attribute_columns=req["AttributeColumns"],
             ),
             condition=tablestore.Condition(req["Condition"])
@@ -89,4 +94,22 @@ class OTSDriver:
         return {
             "Consumed": consumed,
             "ReturnRow": return_row,
+        }
+
+    def get_row(self, req):
+        req = merge(req, {
+            "TableName": REQUIRED,
+            "MaxVersion": 1,
+        })
+
+        consumed, return_row, next_token = self.client.get_row(
+            table_name=req["TableName"],
+            primary_key=[(i["Key"], i["Val"]) for i in req["Row"]["PrimaryKey"]],
+            max_version=req["MaxVersion"],
+        )
+
+        return {
+            "Consumed": consumed,
+            "ReturnRow": return_row,
+            "NextToken": next_token,
         }
