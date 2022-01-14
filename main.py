@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from src.qas.framework import Framework
+from qas.framework import Framework
 
 
 def main():
