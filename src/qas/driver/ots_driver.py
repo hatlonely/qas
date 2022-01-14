@@ -24,12 +24,16 @@ class OTSDriver:
             "Action": REQUIRED
         })
 
-        if req["Action"] == "CreateTable":
-            return self.create_table(req)
-        elif req["Action"] == "ListTable":
-            return self.list_table(req)
-        else:
+        do_map = {
+            "CreateTable": self.create_table,
+            "ListTable": self.list_table,
+            "GetRow": self.get_row,
+            "PutRow": self.put_row,
+        }
+        if req["Action"] not in do_map:
             raise Exception("unsupported action [{}]".format(req["Action"]))
+
+        return do_map[req["Action"]](req)
 
     def list_table(self, req):
         res = self.client.list_table()
