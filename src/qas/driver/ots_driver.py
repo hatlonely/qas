@@ -3,6 +3,7 @@
 
 import tablestore
 import json
+from default import merge
 
 
 class OTSDriver:
@@ -37,6 +38,18 @@ class OTSDriver:
             req["TableOptions"]["MaxVersion"] = 1
         if "MaxTimeDeviation" not in req["TableOptions"]:
             req["TableOptions"]["MaxTimeDeviation"] = 86400
+
+        req = merge(req, {
+            "TableMeta": {
+                "TableName": "required",
+                "SchemeEntry": [["required", "required"]]
+            },
+            "TableOptions": {
+                "TimeToLive": -1,
+                "MaxVersion": 1,
+                "MaxTimeDeviation": 86400,
+            }
+        })
 
         res = self.client.create_table(
             table_meta=tablestore.TableMeta(
