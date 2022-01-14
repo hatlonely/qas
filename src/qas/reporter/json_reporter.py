@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import json
 
-from src.qas.assertion.expect import TestResult, CaseResult, StepResult, ExpectResult
+from src.qas.assertion import TestResult, CaseResult, StepResult, ExpectResult
 
 
 class JsonReporter:
