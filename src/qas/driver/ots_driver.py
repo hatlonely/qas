@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 
+import unittest
 import tablestore
 import json
 from src.qas.driver.default import merge, REQUIRED
@@ -26,6 +27,7 @@ class OTSDriver:
 
         do_map = {
             "CreateTable": self.create_table,
+            "DeleteTable": self.delete_table,
             "ListTable": self.list_table,
             "GetRow": self.get_row,
             "PutRow": self.put_row,
@@ -43,12 +45,13 @@ class OTSDriver:
         req = merge(req, {
             "TableMeta": {
                 "TableName": REQUIRED,
-                "SchemeEntry": [
+                "SchemaEntry": [
                     {
                         "Name": REQUIRED,
                         "Type": REQUIRED,  # STRING / INTEGER / BOOLEAN / DOUBLE / BINARY
                     }
-                ]
+                ],
+                "DefinedColumns": []
             },
             "TableOptions": {
                 "TimeToLive": -1,
@@ -57,7 +60,7 @@ class OTSDriver:
             }
         })
 
-        res = self.client.create_table(
+        self.client.create_table(
             table_meta=tablestore.TableMeta(
                 table_name=req["TableMeta"]["TableName"],
                 schema_of_primary_key=[(i["Name"], i["Type"]) for i in req["TableMeta"]["SchemaEntry"]],
@@ -70,7 +73,14 @@ class OTSDriver:
             ),
             reserved_throughput=tablestore.ReservedThroughput(tablestore.CapacityUnit(0, 0))
         )
-        return json.loads(json.dumps(res))
+        return {}
+
+    def delete_table(self, req):
+        req = merge(req, {
+            "TableName": REQUIRED,
+        })
+        self.client.delete_table(req["TableName"])
+        return {}
 
     def put_row(self, req):
         req = merge(req, {
@@ -86,19 +96,16 @@ class OTSDriver:
             "Condition": "IGNORE",  # IGNORE / EXPECT_EXIST / EXPECT_NOT_EXIST
         })
 
-        consumed, return_row = self.client.put_row(
+        _, _ = self.client.put_row(
             table_name=req["TableName"],
             row=tablestore.Row(
                 primary_key=[(i["Key"], i["Val"]) for i in req["Row"]["PrimaryKey"]],
-                attribute_columns=req["AttributeColumns"],
+                attribute_columns=req["Row"]["AttributeColumns"].items(),
             ),
             condition=tablestore.Condition(req["Condition"])
         )
 
-        return {
-            "Consumed": consumed,
-            "ReturnRow": return_row,
-        }
+        return {}
 
     def get_row(self, req):
         req = merge(req, {
@@ -117,3 +124,76 @@ class OTSDriver:
             "ReturnRow": return_row,
             "NextToken": next_token,
         }
+
+
+class TestExpectVal(unittest.TestCase):
+    def setUp(self) -> None:
+        self.driver = OTSDriver(args={
+            "Endpoint": "https://xx.cn-shanghai.ots.aliyuncs.com",
+            "AccessKeyId": "xx",
+            "AccessKeySecret": "xx",
+            "Instance": "xx",
+        })
+        self.test_table_name="testQAS"
+
+    def test_list_table(self):
+        res = self.driver.do(req={
+            "Action": "ListTable"
+        })
+        print(json.dumps(res))
+
+    def test_crate_table(self):
+        res = self.driver.do(req={
+            "Action": "CreateTable",
+            "TableMeta": {
+                "TableName": self.test_table_name,
+                "SchemaEntry": [
+                    {
+                        "Name": "PK1",
+                        "Type": "STRING",
+                    }, {
+                        "Name": "PK2",
+                        "Type": "STRING",
+                    }
+                ]
+            },
+            "TableOptions": {
+                "TimeToLive": -1,
+                "MaxVersion": 1,
+                "MaxTimeDeviation": 86400,
+            }
+        })
+        print(json.dumps(res))
+
+    def test_delete_table(self):
+        res = self.driver.do(req={
+            "Action": "DeleteTable",
+            "TableName": self.test_table_name,
+        })
+        print(json.dumps(res))
+
+    def test_put_row(self):
+        res = self.driver.do(req={
+            "Action": "PutRow",
+            "TableName": self.test_table_name,
+            "Row": {
+                "PrimaryKey": [
+                    {
+                        "Key": "PK1",
+                        "Val": "pkVal1",
+                    }, {
+                        "Key": "PK2",
+                        "Val": "pkVal2"
+                    }
+                ],
+                "AttributeColumns": {
+                    "key1": "val1",
+                    "key2": "val2",
+                }
+            },
+        })
+        print(json.dumps(res))
+
+
+if __name__ == '__main__':
+    unittest.main()

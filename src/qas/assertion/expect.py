@@ -126,7 +126,7 @@ def to_time(val) -> datetime:
 
 
 class TestExpectVal(unittest.TestCase):
-    def test_expect_val_(self):
+    def test_expect_val(self):
         self.assertTrue(expect_val(1, "val % 2 == 1"))
         self.assertTrue(expect_val("eeb848f8611a4ff980d2e56a2760b4fcv3", "val.endswith('v3')"))
 
