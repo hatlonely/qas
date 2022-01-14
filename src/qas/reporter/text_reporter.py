@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from colorama import Fore
-from src.qas.assertion import TestResult, CaseResult, StepResult, ExpectResult
+from ..assertion import TestResult, CaseResult, StepResult, ExpectResult
 
 
 class TextReporter:

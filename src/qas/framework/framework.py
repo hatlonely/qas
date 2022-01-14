@@ -4,10 +4,9 @@ import yaml
 import traceback
 import os
 
-from src.qas.driver import HttpDriver, POPDriver, OTSDriver
-from src.qas.assertion.expect import expect_obj
-from src.qas.assertion.expect import TestResult, CaseResult, StepResult, ExpectResult
-from src.qas.reporter import TextReporter, JsonReporter
+from ..driver import HttpDriver, POPDriver, OTSDriver
+from ..assertion import expect_obj, TestResult, CaseResult, StepResult, ExpectResult
+from ..reporter import TextReporter, JsonReporter
 
 
 drivers = {
