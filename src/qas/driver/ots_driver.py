@@ -4,7 +4,7 @@
 import unittest
 import tablestore
 import json
-from src.qas.driver.default import merge, REQUIRED
+from .default import merge, REQUIRED
 
 
 class OTSDriver:

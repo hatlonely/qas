@@ -4,7 +4,7 @@
 import json
 from aliyunsdkcore.client import AcsClient
 from aliyunsdkcore.request import CommonRequest
-from src.qas.driver.default import merge, REQUIRED
+from .default import merge, REQUIRED
 
 
 product_to_version = {
