@@ -4,7 +4,7 @@ from qas.framework import Framework
 
 
 def main():
-    fw = Framework("sample")
+    fw = Framework("tmp/env/ali/sample")
     fw.run()
 
 

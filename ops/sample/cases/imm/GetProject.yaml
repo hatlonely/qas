@@ -1,0 +1,28 @@
+name: GetProject
+step:
+  - ctx: imm
+    req:
+      Action: GetProject
+      ProjectName: hl-shanghai-doc-project
+    res: {
+      "Project": {
+        "Description": "",
+        "FileCount": 0,
+        "ProjectName": "hl-shanghai-doc-project",
+        "CreateTime": "2021-08-16T15:35:42.04320692+08:00",
+        "ProjectMaxDatasetCount": 1000000000,
+        "DatasetMaxTotalFileSize": 90000000000000000,
+        "DatasetMaxRelationCount": 100000000000,
+        "DatasetMaxFileCount": 100000000,
+        "EngineConcurrency": 10,
+        "ServiceRole": "AliyunIMMDefaultRole",
+        "DatasetMaxBindCount": 10,
+        "DatasetCount": 0,
+        "UpdateTime": "2021-08-16T15:35:42.04320702+08:00",
+        "DatasetMaxEntityCount": 10000000000,
+        "TotalFileSize": 0,
+        "TemplateId": "Official:DefaultEmptyId",
+        "ProjectQueriesPerSecond": 20
+      },
+      "#RequestId": "len(val) == 36"
+    }

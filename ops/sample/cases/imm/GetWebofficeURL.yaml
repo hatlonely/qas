@@ -1,0 +1,39 @@
+name: GetWebofficeURL
+step:
+  - ctx: imm
+    req:
+      Action: GetWebofficeURL
+      ProjectName: hl-shanghai-doc-project
+      User: |
+        {
+          "Id": "user1",
+          "Name": "wps-user1",
+          "Avatar": "http://xxx.cn/?id=user1"
+        }
+      Permission: |
+        {
+          "Rename": true,
+          "Readonly": false,
+          "History": true
+        }
+      SourceURI: oss://imm-test-hl-shanghai/checklist.pptx
+      ExternalUploaded: true
+      Watermark: |
+        {
+          "Rotate": -0.7853982,
+          "Vertical": 100,
+          "Value": "hatlonely",
+          "FillStyle": "rgba(192, 192, 192, 0.6)",
+          "Horizontal": 50,
+          "Font": "bold 20px Serif",
+          "Type": 1
+        }
+      Hidecmb: false
+    res: {
+      "WebofficeURL": "https://office-hl.imm.aliyuncs.com/office/p/9665e6baa34f632d7dccfe3dd1468f8a695ffad5?_w_tokentype=1",
+      "#RefreshToken": "len(val) == 34 and val.endswith('v3')",
+      "#AccessToken": "len(val) == 34 and val.endswith('v3')",
+      "#RefreshTokenExpiredTime": "86350 < (to_time(val) - datetime.now(timezone.utc)).total_seconds() < 86450",
+      "#AccessTokenExpiredTime": "1750 < (to_time(val) - datetime.now(timezone.utc)).total_seconds() < 1850",
+      "#RequestId": "len(val) == 36",
+    }

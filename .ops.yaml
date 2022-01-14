@@ -1,0 +1,31 @@
+name: qas
+
+dep:
+  ops:
+    type: git
+    url: "https://github.com/hatlonely/ops.git"
+    version: master
+
+env:
+  default:
+  dev:
+    POP_AK: {{.credential.pop.accessKeyId}}
+    POP_SK: {{.credential.pop.accessKeySecret}}
+    OTS_AK: {{.credential.ots.accessKeyId}}
+    OTS_SK: {{.credential.ots.accessKeySecret}}
+    OTS_INSTANCE: hatlonely-ots-sh
+    OTS_ENDPOINT: https://hatlonely-ots-sh.cn-shanghai.ots.aliyuncs.com
+  ali:
+    POP_AK: {{.credential.pop.accessKeyId}}
+    POP_SK: {{.credential.pop.accessKeySecret}}
+    OTS_AK: {{.credential.ots.accessKeyId}}
+    OTS_SK: {{.credential.ots.accessKeySecret}}
+    POP_ENDPOINT: http://imm.hl.aliyuncs.com
+    OTS_INSTANCE: imm-dev-hl
+    OTS_ENDPOINT: https://imm-dev-hl.cn-shanghai.ots.aliyuncs.com
+
+task:
+  sample:
+    step:
+      - sh ${DEP}/ops/tool/render.sh ops/sample ${TMP}/sample
+      - python3 main.py
