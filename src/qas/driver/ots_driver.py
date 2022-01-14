@@ -39,7 +39,12 @@ class OTSDriver:
         req = merge(req, {
             "TableMeta": {
                 "TableName": REQUIRED,
-                "SchemeEntry": [[REQUIRED, REQUIRED]]
+                "SchemeEntry": [
+                    [
+                        REQUIRED,
+                        REQUIRED,  # STRING / INTEGER / BOOLEAN / DOUBLE / BINARY
+                    ],
+                ]
             },
             "TableOptions": {
                 "TimeToLive": -1,
@@ -62,3 +67,26 @@ class OTSDriver:
             reserved_throughput=tablestore.ReservedThroughput(tablestore.CapacityUnit(0, 0))
         )
         return json.loads(json.dumps(res))
+
+    def put_row(self, req):
+        req = merge(req, {
+            "TableName": REQUIRED,
+            "Row": {
+                "PrimaryKey": [[REQUIRED, REQUIRED]]
+            },
+            "Condition": "IGNORE",  # IGNORE / EXPECT_EXIST / EXPECT_NOT_EXIST
+        })
+
+        consumed, return_row = self.client.put_row(
+            table_name=req["TableName"],
+            row=tablestore.Row(
+                primary_key=[(i[0], i[1]) for i in req["Row"]["PrimaryKey"]],
+                attribute_columns=req["AttributeColumns"],
+            ),
+            condition=tablestore.Condition(req["Condition"])
+        )
+
+        return {
+            "Consumed": consumed,
+            "ReturnRow": return_row,
+        }
