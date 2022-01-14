@@ -7,7 +7,7 @@ from aliyunsdkcore.request import CommonRequest
 from src.qas.driver.default import merge, REQUIRED
 
 
-product_info = {
+product_to_version = {
     "ots": "2016-06-20",
     "imm": "2017-09-06",
     "ram": "2015-05-01",
@@ -67,7 +67,7 @@ class POPDriver:
         if "Version" in req:
             creq.set_version(req["Version"])
         elif req["ProductId"]:
-            creq.set_version(product_info[req["ProductId"]])
+            creq.set_version(product_to_version[req["ProductId"]])
         else:
             raise Exception("unknown Version")
 
