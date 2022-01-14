@@ -10,35 +10,32 @@ class OTSDriver:
     client: tablestore.OTSClient = None
 
     def __init__(self, args: dict):
+        args = merge(args, {
+            "Endpoint": "required",
+            "AccessKeyId": "required",
+            "AccessKeySecret": "required",
+            "Instance": "required",
+        })
+
         self.client = tablestore.OTSClient(args["Endpoint"], args["AccessKeyId"], args["AccessKeySecret"], args["Instance"])
 
     def do(self, req: dict):
-        if "Action" not in req:
-            raise Exception("Action is required")
+        req = merge(req, {
+            "Action": "required"
+        })
 
         if req["Action"] == "CreateTable":
             return self.create_table(req)
+        elif req["Action"] == "ListTable":
+            return self.list_table(req)
+        else:
+            raise Exception("unsupported action [{}]".format(req["Action"]))
 
-    def list_table(self):
+    def list_table(self, req):
         res = self.client.list_table()
         return json.loads(json.dumps(res))
 
     def create_table(self, req):
-        if "TableMeta" not in req:
-            raise Exception("TableMeta is required")
-        if "TableName" not in req["TableMeta"]:
-            raise Exception("TableMeta.TableName is required")
-        if "SchemeEntry" not in req["TableMeta"]:
-            raise Exception("TableMeta.SchemeEntry is required")
-        if "TableOptions" not in req:
-            req["TableOptions"] = {}
-        if "TimeToLive" not in req["TableOptions"]:
-            req["TableOptions"]["TimeToLive"] = -1
-        if "MaxVersion" not in req["TableOptions"]:
-            req["TableOptions"]["MaxVersion"] = 1
-        if "MaxTimeDeviation" not in req["TableOptions"]:
-            req["TableOptions"]["MaxTimeDeviation"] = 86400
-
         req = merge(req, {
             "TableMeta": {
                 "TableName": "required",
