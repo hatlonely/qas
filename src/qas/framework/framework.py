@@ -4,12 +4,10 @@ import yaml
 import traceback
 import os
 
-from src.qas.driver.http_driver import HttpDriver
-from src.qas.driver.pop_driver import POPDriver
-from src.qas.driver.ots_driver import OTSDriver
+from src.qas.driver import HttpDriver, POPDriver, OTSDriver
 from src.qas.assertion.expect import expect_obj
 from src.qas.assertion.expect import TestResult, CaseResult, StepResult, ExpectResult
-from src.qas.reporter.text_reporter import TextReporter
+from src.qas.reporter import TextReporter, JsonReporter
 
 
 drivers = {
@@ -20,6 +18,7 @@ drivers = {
 
 reporters = {
     "text": TextReporter,
+    "json": JsonReporter,
 }
 
 
