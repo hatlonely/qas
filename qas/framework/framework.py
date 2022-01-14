@@ -4,7 +4,7 @@ import yaml
 import traceback
 import os
 
-from ..driver import HttpDriver, POPDriver, OTSDriver
+from ..driver import HttpDriver, POPDriver, OTSDriver, merge
 from ..assertion import expect_obj, TestResult, CaseResult, StepResult, ExpectResult
 from ..reporter import TextReporter, JsonReporter
 
@@ -26,6 +26,7 @@ class Framework:
     case = None
     name = None
     ctx = dict()
+    req = dict()
 
     def __init__(self, case_directory):
         if os.path.isfile(case_directory):
@@ -37,6 +38,10 @@ class Framework:
             for key in data["ctx"]:
                 val = data["ctx"][key]
                 self.ctx[key] = drivers[val["type"]](val["args"])
+                if "req" in val:
+                    self.req[key] = val["req"]
+                else:
+                    self.req[key] = {}
             self.case = data["case"]
         else:
             # load ctx.yaml
@@ -50,6 +55,10 @@ class Framework:
             for key in data["ctx"]:
                 val = data["ctx"][key]
                 self.ctx[key] = drivers[val["type"]](val["args"])
+                if "req" in val:
+                    self.req[key] = val["req"]
+                else:
+                    self.req[key] = {}
             if "case" in data:
                 self.case = data["case"]
             else:
@@ -71,8 +80,9 @@ class Framework:
                 if "name" not in step:
                     step["name"] = "step-{}".format(idx)
                 step_result = StepResult(step["name"])
-                res = self.ctx[step["ctx"]].do(step["req"])
                 try:
+                    req = merge(step["req"], self.req[step["ctx"]])
+                    res = self.ctx[step["ctx"]].do(req)
                     res = expect_obj(res, step["res"])
                     step_result.expect_results.extend(res)
                 except Exception as e:
