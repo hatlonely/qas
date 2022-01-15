@@ -16,10 +16,19 @@ class TestRedis(unittest.TestCase):
         )
 
     def test_set(self):
-        self.client.set("name", "hatlonely123")
+        ok = self.client.set("name", "hatlonely123")
+        print(ok)
 
     def test_get(self):
         res = self.client.get("name")
+        print(res)
+
+    def test_hset(self):
+        num = self.client.hset("key", "f1", "v1")
+        print(num)
+
+    def test_hget(self):
+        res = self.client.hget("key", "f1")
         print(res)
 
 
