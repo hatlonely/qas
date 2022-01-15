@@ -29,6 +29,8 @@ class StepResult:
         self.is_pass = True
         self.succ = 0
         self.fail = 0
+        self.req = {}
+        self.res = {}
 
     def summary(self):
         self.succ = sum(1 for i in self.expect_results if i.is_pass)

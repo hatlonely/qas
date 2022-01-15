@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+
+import json
 from colorama import Fore
 from ..result import TestResult, CaseResult, StepResult, ExpectResult
 
@@ -42,6 +44,10 @@ class TextReporter:
             lines.append(Fore.GREEN + "step {} 通过".format(res.step) + Fore.RESET)
         else:
             lines.append(Fore.RED + "step {} 失败".format(res.step) + Fore.RESET)
+
+        lines.extend(("req: " + json.dumps(res.req, indent=True)).split("\n"))
+        lines.extend(("res: " + json.dumps(res.res, indent=True)).split("\n"))
+
         for expect_result in res.expect_results:
             lines.append("  {}".format(TextReporter.expect_summary(expect_result)))
         return lines
