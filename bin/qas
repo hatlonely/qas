@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
+import sys
 from qas.framework import Framework
 
 
@@ -18,7 +19,8 @@ def main():
         case_directory=args.case,
         case_name=args.case_name,
     )
-    fw.run()
+    if not fw.run():
+        sys.exit(1)
 
 
 if __name__ == '__main__':

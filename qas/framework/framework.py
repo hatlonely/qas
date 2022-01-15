@@ -112,3 +112,4 @@ class Framework:
                 case_result.step_results.append(step_result)
             test_result.case_results.append(case_result)
         print(reporters["text"].report(test_result))
+        return test_result.is_pass
