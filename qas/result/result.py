@@ -16,6 +16,8 @@ class ExpectResult:
 @dataclass
 class StepResult:
     step: str
+    req: dict
+    res: dict
     expect_results: list[ExpectResult]
     is_pass: bool
     succ: int

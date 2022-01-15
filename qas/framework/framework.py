@@ -96,7 +96,9 @@ class Framework:
                 step_result = StepResult(step["name"])
                 try:
                     req = merge(step["req"], self.req[step["ctx"]])
+                    step_result.req = req
                     res = self.ctx[step["ctx"]].do(req)
+                    step_result.res = res
                     res = expect_obj(res, step["res"])
                     step_result.expect_results.extend(res)
                 except Exception as e:
