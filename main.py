@@ -10,7 +10,8 @@ def main():
 """)
     parser.add_argument("-t", "--test", help="test directory")
     parser.add_argument("--context", default="ctx.yaml", help="context file name")
-    parser.add_argument("-c", "--case", help="case name")
+    parser.add_argument("-c", "--case", help="case directory")
+    parser.add_argument("-n", "--case-name", help="case name")
     args = parser.parse_args()
 
     fw = Framework(args.test)

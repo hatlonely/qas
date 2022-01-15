@@ -28,9 +28,9 @@ class Framework:
     ctx = dict()
     req = dict()
 
-    def __init__(self, case_directory):
-        if os.path.isfile(case_directory):
-            fp = open(case_directory, "r", encoding="utf-8")
+    def __init__(self, test_directory):
+        if os.path.isfile(test_directory):
+            fp = open(test_directory, "r", encoding="utf-8")
             data = yaml.safe_load(fp)
             fp.close()
             self.data = data
@@ -45,10 +45,10 @@ class Framework:
             self.case = data["case"]
         else:
             # load ctx.yaml
-            ctx_filename = "{}/ctx.yaml".format(case_directory)
+            ctx_filename = "{}/ctx.yaml".format(test_directory)
             if not os.path.exists(ctx_filename) or not os.path.isfile(ctx_filename):
                 raise Exception("ctx.yaml is missing")
-            fp = open("{}/ctx.yaml".format(case_directory), "r", encoding="utf-8")
+            fp = open("{}/ctx.yaml".format(test_directory), "r", encoding="utf-8")
             data = yaml.safe_load(fp)
             self.data = data
             self.name = data["name"]
@@ -64,7 +64,7 @@ class Framework:
             else:
                 self.case = []
             # load cases
-            for prefix, _, filenames in os.walk("{}/cases".format(case_directory)):
+            for prefix, _, filenames in os.walk("{}/cases".format(test_directory)):
                 for filename in filenames:
                     fp = open("{}/{}".format(prefix, filename), "r", encoding="utf-8")
                     data = yaml.safe_load(fp)
