@@ -30,3 +30,7 @@ task:
     step:
       - sh ${DEP}/ops/tool/render.sh ops/sample ${TMP}/sample
       - bin/qas --test "${TMP}/sample"
+  install:
+    step:
+      - python3 setup.py install
+
