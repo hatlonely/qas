@@ -28,4 +28,4 @@ task:
   sample:
     step:
       - sh ${DEP}/ops/tool/render.sh ops/sample ${TMP}/sample
-      - python3 main.py
+      - python3 main.py --test "tmp/env/ali/sample"
