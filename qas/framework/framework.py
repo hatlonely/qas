@@ -67,19 +67,23 @@ class Framework:
             if not case_directory:
                 for prefix, _, filenames in os.walk("{}/cases".format(test_directory)):
                     for filename in filenames:
-                        fp = open("{}/{}".format(prefix, filename), "r", encoding="utf-8")
-                        data = yaml.safe_load(fp)
-                        fp.close()
-                        data["name"] = "{}/{}/{}".format(prefix, filename, data["name"])
-                        self.case.append(data)
+                        self.load_case_from_file("{}/{}".format(prefix, filename))
             else:
                 for cd in case_directory.split(","):
                     for filename in os.listdir("{}/cases/{}".format(test_directory, cd)):
-                        fp = open("{}/cases/{}/{}".format(test_directory, cd, filename), "r", encoding="utf-8")
-                        data = yaml.safe_load(fp)
-                        fp.close()
-                        data["name"] = "{}/cases/{}/{}/{}".format(test_directory, cd, filename, data["name"])
-                        self.case.append(data)
+                        self.load_case_from_file("{}/cases/{}/{}".format(test_directory, cd, filename))
+
+    def load_case_from_file(self, filename):
+        fp = open(filename, "r", encoding="utf-8")
+        data = yaml.safe_load(fp)
+        fp.close()
+        if isinstance(data, dict):
+            data["name"] = "{}/{}".format(filename, data["name"])
+            self.case.append(data)
+        if isinstance(data, list):
+            for item in data:
+                item["name"] = "{}/{}".format(filename, item["name"])
+                self.case.append(item)
 
     def run(self):
         test_result = TestResult(self.name)
