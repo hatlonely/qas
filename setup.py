@@ -21,5 +21,5 @@ setup(
     author_email="hatlonely@foxmail.com",
     url="https://github.com/hatlonely/qas",
     license=license_,
-    packages=find_packages(exclude=("tests", "docs", "tmp"))
+    packages=find_packages(exclude=("tests", "docs", "tmp", "ops"))
 )
