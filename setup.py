@@ -9,7 +9,7 @@ with open("README.md") as fp:
 
 
 with open("LICENSE") as fp:
-    license = fp.read()
+    license_ = fp.read()
 
 
 setup(
@@ -20,6 +20,6 @@ setup(
     author="hatlonely",
     author_email="hatlonely@foxmail.com",
     url="https://github.com/hatlonely/qas",
-    license=license,
+    license=license_,
     packages=find_packages(exclude=("tests", "docs", "tmp"))
 )
