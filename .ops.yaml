@@ -29,4 +29,4 @@ task:
   sample:
     step:
       - sh ${DEP}/ops/tool/render.sh ops/sample ${TMP}/sample
-      - python3 main.py --test "${TMP}/sample"
+      - bin/qas --test "${TMP}/sample"

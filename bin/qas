@@ -6,7 +6,7 @@ from qas.framework import Framework
 
 def main():
     parser = argparse.ArgumentParser(formatter_class=lambda prog: argparse.RawTextHelpFormatter(prog, width=200), description="""example:
-    python3 main.py --test "tmp/env/dev/sample"
+    qas --test "tmp/env/dev/sample"
 """)
     parser.add_argument("-t", "--test", help="test directory")
     parser.add_argument("-c", "--case", help="case directory")
