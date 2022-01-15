@@ -7,7 +7,7 @@ from .default import merge, REQUIRED
 
 
 class MysqlDriver:
-    client: pymysql.Connection
+    connection: pymysql.Connection
 
     def __init__(self, args):
         args = merge(args, {
@@ -18,7 +18,7 @@ class MysqlDriver:
             "database": REQUIRED,
         })
 
-        self.client = pymysql.connect(
+        self.connection = pymysql.connect(
             host=args["host"],
             port=args["port"],
             user=args["username"],
@@ -28,4 +28,38 @@ class MysqlDriver:
         )
 
     def do(self, req):
-        pass
+        req = merge(req, {
+            "action": "sql",
+            "sql": REQUIRED,
+            "args": [],
+        })
+
+        do_map = {
+            "sql": self.sql,
+            "fetchone": self.fetchone,
+            "fetchall": self.fetchall,
+        }
+        if req["action"] not in do_map:
+            raise Exception("unsupported action [{}]".format(req["action"]))
+
+        return do_map[req["action"]](req)
+
+    def sql(self, req):
+        with self.connection.cursor() as cursor:
+            cursor.execute(req["sql"], req["args"])
+        self.connection.commit()
+        return {}
+
+    def fetchone(self, req):
+        with self.connection.cursor() as cursor:
+            cursor.execute(req["sql"], req["args"])
+            result = cursor.fetchone()
+        self.connection.commit()
+        return result
+
+    def fetchall(self, req):
+        with self.connection.cursor() as cursor:
+            cursor.execute(req["sql"], req["args"])
+            result = cursor.fetchall()
+        self.connection.commit()
+        return result

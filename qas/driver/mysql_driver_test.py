@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 
-import json
 import unittest
 from .mysql_driver import *
 
@@ -43,6 +42,48 @@ AUTO_INCREMENT=1;
             result = cursor.fetchall()
             print(result)
         self.connection.commit()
+
+
+class TestMysqlDriver(unittest.TestCase):
+    def setUp(self) -> None:
+        self.driver = MysqlDriver(args={
+            "host": "localhost",
+            "port": 3306,
+            "username": "root",
+            "password": "keaiduo1",
+            "database": "hatlonely",
+        })
+
+    def test_sql(self):
+        res = self.driver.do(req={
+            "action": "sql",
+            "sql": "INSERT INTO `users` (`email`, `password`) VALUES (%s, %s)",
+            "args": [
+                "hatlonely@foxmail.com",
+                "very-secret"
+            ],
+        })
+        print(res)
+
+    def test_fetchone(self):
+        res = self.driver.do(req={
+            "action": "fetchone",
+            "sql": "SELECT `id`, `password` FROM `users` WHERE `email`=%s",
+            "args": [
+                "hatlonely@foxmail.com"
+            ]
+        })
+        print(res)
+
+    def test_fetchall(self):
+        res = self.driver.do(req={
+            "action": "fetchall",
+            "sql": "SELECT `id`, `password` FROM `users` WHERE `email`=%s",
+            "args": [
+                "hatlonely@foxmail.com"
+            ]
+        })
+        print(res)
 
 
 if __name__ == '__main__':
