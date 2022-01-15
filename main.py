@@ -6,7 +6,7 @@ from qas.framework import Framework
 
 def main():
     parser = argparse.ArgumentParser(formatter_class=lambda prog: argparse.RawTextHelpFormatter(prog, width=200), description="""example:
-    qas --test "tmp/env/ali/sample"
+    python3 main.py --test "tmp/env/ali/sample"
 """)
     parser.add_argument("-t", "--test", help="test directory")
     parser.add_argument("--context", default="ctx.yaml", help="context file name")
