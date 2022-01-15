@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-import json
 
-from ..assertion import TestResult, CaseResult, StepResult, ExpectResult
+
+import json
+from ..result import TestResult, CaseResult, StepResult, ExpectResult
 
 
 class JsonReporter:
