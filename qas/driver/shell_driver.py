@@ -4,9 +4,10 @@
 from .default import merge, REQUIRED
 
 
-class MysqlDriver:
+class ShellDriver:
     def __init__(self, args):
         pass
 
     def do(self, req):
         pass
+
