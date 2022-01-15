@@ -28,8 +28,10 @@ class Framework:
     name = None
     ctx = dict()
     req = dict()
+    case_name = None
 
     def __init__(self, test_directory, case_directory=None, case_name=None):
+        self.case_name = case_name
         if os.path.isfile(test_directory):
             fp = open(test_directory, "r", encoding="utf-8")
             data = yaml.safe_load(fp)
@@ -89,6 +91,8 @@ class Framework:
     def run(self):
         test_result = TestResult(self.name)
         for case in self.case:
+            if self.case_name and self.case_name != case["name"]:
+                continue
             case_result = CaseResult(case["name"])
             for idx, step in enumerate(case["step"]):
                 if "name" not in step:
