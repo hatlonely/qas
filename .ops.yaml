@@ -13,6 +13,7 @@ env:
     POP_SK: {{.credential.pop.accessKeySecret}}
     OTS_AK: {{.credential.ots.accessKeyId}}
     OTS_SK: {{.credential.ots.accessKeySecret}}
+    POP_ENDPOINT: https://imm.cn-shanghai.aliyuncs.com
     OTS_INSTANCE: hatlonely-ots-sh
     OTS_ENDPOINT: https://hatlonely-ots-sh.cn-shanghai.ots.aliyuncs.com
   ali:
@@ -28,4 +29,4 @@ task:
   sample:
     step:
       - sh ${DEP}/ops/tool/render.sh ops/sample ${TMP}/sample
-      - python3 main.py --test "tmp/env/ali/sample"
+      - python3 main.py --test "${TMP}/sample"

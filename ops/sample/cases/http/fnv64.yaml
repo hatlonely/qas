@@ -1,0 +1,13 @@
+name: testFnv64
+step:
+  - ctx: rpcTool
+    req:
+      path: "/v1/tool/hash"
+      json:
+        hash: "fnv64"
+        text: "hello world"
+    res:
+      status: 200
+      json:
+        hex: "7dcf62cdb1910e6f"
+        num: "9065573210506989167"

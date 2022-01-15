@@ -28,7 +28,7 @@ class Framework:
     ctx = dict()
     req = dict()
 
-    def __init__(self, test_directory):
+    def __init__(self, test_directory, case_directory=None, case_name=None):
         if os.path.isfile(test_directory):
             fp = open(test_directory, "r", encoding="utf-8")
             data = yaml.safe_load(fp)
@@ -64,13 +64,22 @@ class Framework:
             else:
                 self.case = []
             # load cases
-            for prefix, _, filenames in os.walk("{}/cases".format(test_directory)):
-                for filename in filenames:
-                    fp = open("{}/{}".format(prefix, filename), "r", encoding="utf-8")
-                    data = yaml.safe_load(fp)
-                    fp.close()
-                    data["name"] = "{}/{}/{}".format(prefix, filename, data["name"])
-                    self.case.append(data)
+            if not case_directory:
+                for prefix, _, filenames in os.walk("{}/cases".format(test_directory)):
+                    for filename in filenames:
+                        fp = open("{}/{}".format(prefix, filename), "r", encoding="utf-8")
+                        data = yaml.safe_load(fp)
+                        fp.close()
+                        data["name"] = "{}/{}/{}".format(prefix, filename, data["name"])
+                        self.case.append(data)
+            else:
+                for cd in case_directory.split(","):
+                    for filename in os.listdir("{}/cases/{}".format(test_directory, cd)):
+                        fp = open("{}/cases/{}/{}".format(test_directory, cd, filename), "r", encoding="utf-8")
+                        data = yaml.safe_load(fp)
+                        fp.close()
+                        data["name"] = "{}/cases/{}/{}/{}".format(test_directory, cd, filename, data["name"])
+                        self.case.append(data)
 
     def run(self):
         test_result = TestResult(self.name)
