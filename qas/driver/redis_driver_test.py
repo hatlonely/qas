@@ -2,6 +2,7 @@
 
 import unittest
 import redis
+from .redis_driver import *
 
 
 # https://github.com/redis/redis-py
@@ -29,6 +30,46 @@ class TestRedis(unittest.TestCase):
 
     def test_hget(self):
         res = self.client.hget("key", "f1")
+        print(res)
+
+
+class TestRedisDriver(unittest.TestCase):
+    def setUp(self) -> None:
+        self.driver = RedisDriver(args={})
+
+    def test_set(self):
+        res = self.driver.do(req={
+            "cmd": "set",
+            "key": "key1",
+            "val": "val1",
+            "expiration": 60,
+        })
+        print(res)
+
+    def test_get(self):
+        res = self.driver.do(req={
+            "cmd": "get",
+            "key": "key1"
+        })
+        print(res)
+
+    def test_set_json(self):
+        res = self.driver.do(req={
+            "cmd": "setJson",
+            "key": "key1",
+            "val": {
+                "key1": "val1",
+                "key2": "val2",
+                "key3": 3,
+            }
+        })
+        print(res)
+
+    def test_get_json(self):
+        res = self.driver.do(req={
+            "cmd": "getJson",
+            "key": "key1",
+        })
         print(res)
 
 

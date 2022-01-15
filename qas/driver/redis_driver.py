@@ -26,20 +26,20 @@ class RedisDriver:
 
     def do(self, req):
         req = merge(req, {
-            "action": REQUIRED,
+            "cmd": REQUIRED,
         })
 
         do_map = {
             "set": self.set,
             "get": self.get,
-            "set_json": self.set_json,
-            "get_json": self.get_json,
+            "setJson": self.set_json,
+            "getJson": self.get_json,
         }
 
-        if req["Action"] not in do_map:
-            raise Exception("unsupported action [{}]".format(req["Action"]))
+        if req["cmd"] not in do_map:
+            raise Exception("unsupported cmd [{}]".format(req["cmd"]))
 
-        return do_map[req["Action"]](req)
+        return do_map[req["cmd"]](req)
 
     def set(self, req):
         req = merge(req, {
