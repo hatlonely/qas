@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from dateutil import parser
 
+
 @dataclass
 class ExpectResult:
     is_pass: bool
