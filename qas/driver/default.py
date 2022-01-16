@@ -38,20 +38,3 @@ def _merge_recursive(root: str, req, dft):
                 elif idx >= len(req):
                     req.append(val)
     return req
-
-
-def render(req, ctx):
-    if isinstance(req, dict):
-        res = {}
-        for key, val in req.items():
-            if key.startswith("#"):
-                res[key.lstrip("#")] = eval(val)
-            else:
-                res[key] = render(req[key], ctx)
-        return res
-    if isinstance(req, list):
-        res = []
-        for val in req:
-            res.append(render(val, ctx))
-        return res
-    return req

@@ -147,20 +147,3 @@ class Framework:
                 step_result.is_pass = False
             case_result.steps.append(step_result)
         return case_result
-
-
-def render(req, case=None):
-    if isinstance(req, dict):
-        res = {}
-        for key, val in req.items():
-            if key.startswith("#"):
-                res[key.lstrip("#")] = eval(val)
-            else:
-                res[key] = render(req[key], case=case)
-        return res
-    if isinstance(req, list):
-        res = []
-        for val in req:
-            res.append(render(val, case=case))
-        return res
-    return req
