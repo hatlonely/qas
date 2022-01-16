@@ -2,6 +2,7 @@
 
 
 import json
+import re
 from colorama import Fore
 from ..result import TestResult, CaseResult, StepResult, ExpectResult
 
@@ -46,10 +47,29 @@ class TextReporter:
             lines.append(Fore.RED + "step {} 失败".format(res.step) + Fore.RESET)
 
         lines.extend(("req: " + json.dumps(res.req, indent=True)).split("\n"))
-        lines.extend(("res: " + json.dumps(res.res, indent=True)).split("\n"))
 
+        # 修改 res 返回值，
         for expect_result in res.expect_results:
-            lines.append("  {}".format(TextReporter.expect_summary(expect_result)))
+            if expect_result.is_pass:
+                TextReporter.set_key_val(res.res, expect_result.node, "{}<GREEN>{}<END>".format(json.dumps(expect_result.val), expect_result.expect))
+            else:
+                TextReporter.set_key_val(res.res, expect_result.node, "{}<RED>{}<END>".format(json.dumps(expect_result.val), expect_result.expect))
+
+        res_lines = ("res: " + json.dumps(res.res, indent=True)).split("\n")
+        format_lines = []
+        for line in res_lines:
+            mr = re.match(r'(\s+".*?": )"(.*)<GREEN>(.*)<END>"(.*)', line)
+            if mr:
+                format_lines.append("{}{}{} # {}{}{}".format(mr.groups()[0], json.loads('"{}"'.format(mr.groups()[1])), mr.groups()[3], Fore.GREEN, mr.groups()[2], Fore.RESET))
+                continue
+            mr = re.match(r'(\s+".*?": )"(.*)<RED>(.*)<END>"(.*)', line)
+            if mr:
+                format_lines.append("{}{}{} # {}{}{}".format(mr.groups()[0], json.loads('"{}"'.format(mr.groups()[1])), mr.groups()[3], Fore.RED, mr.groups()[2], Fore.RESET))
+                continue
+            format_lines.append(line)
+
+        lines.extend(format_lines)
+
         return lines
 
     @staticmethod
@@ -58,3 +78,13 @@ class TextReporter:
             return "node [{}] {}".format(res.node, res.message)
         else:
             return Fore.RED + "node [{}] {}. val: {}, expect: {}".format(res.node, res.message, res.val, res.expect) + Fore.RESET
+
+    @staticmethod
+    def set_key_val(vals: dict, key, val):
+        keys = key.split(".")
+        for k in keys[:-1]:
+            if isinstance(vals, dict):
+                vals = vals[k]
+            else:
+                vals = vals[int(k)]
+        vals[keys[-1]] = val
