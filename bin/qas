@@ -5,6 +5,17 @@ import sys
 from qas.framework import Framework
 
 
+def str2bool(v):
+    if isinstance(v, bool):
+        return v
+    if v.lower() in ('yes', 'true', 't', 'y', '1'):
+        return True
+    elif v.lower() in ('no', 'false', 'f', 'n', '0'):
+        return False
+    else:
+        raise argparse.ArgumentTypeError('Boolean value expected.')
+
+
 def main():
     parser = argparse.ArgumentParser(formatter_class=lambda prog: argparse.RawTextHelpFormatter(prog, width=200), description="""example:
     qas --test "tmp/env/dev/sample"
@@ -12,8 +23,8 @@ def main():
     parser.add_argument("-t", "--test", help="test directory")
     parser.add_argument("-c", "--case", help="case directory")
     parser.add_argument("-n", "--case-name", help="case name")
-    parser.add_argument("--skip-setup", default=False, help="skip setup")
-    parser.add_argument("--skip-teardown", default=False, help="skip teardown")
+    parser.add_argument("--skip-setup", nargs="?", const=True, default=False, type=str2bool, help="skip setup")
+    parser.add_argument("--skip-teardown", nargs="?", const=True, default=False, type=str2bool, help="skip teardown")
     args = parser.parse_args()
 
     fw = Framework(
