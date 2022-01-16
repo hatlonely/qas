@@ -50,6 +50,10 @@ class TextReporter:
 
         lines.extend(("req: " + json.dumps(res.req, indent=True)).split("\n"))
 
+        if res.is_err:
+            lines.extend(["  " + i for i in res.err.split("\n")])
+            return lines
+
         # 修改 res 返回值，将预期值标记后拼接在 value 后面
         for expect_result in res.expect_results:
             if expect_result.is_pass:

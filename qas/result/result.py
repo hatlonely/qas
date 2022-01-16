@@ -20,6 +20,8 @@ class StepResult:
     res: dict
     expect_results: list[ExpectResult]
     is_pass: bool
+    is_err: bool
+    err: str
     succ: int
     fail: int
 
@@ -27,12 +29,17 @@ class StepResult:
         self.step = step
         self.expect_results = list[ExpectResult]()
         self.is_pass = True
+        self.is_err = False
+        self.err = ""
         self.succ = 0
         self.fail = 0
         self.req = {}
         self.res = {}
 
     def summary(self):
+        if self.is_err:
+            self.is_pass = False
+            return
         self.succ = sum(1 for i in self.expect_results if i.is_pass)
         self.fail = len(self.expect_results) - self.succ
         self.is_pass = self.fail == 0

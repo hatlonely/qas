@@ -6,3 +6,10 @@
           echo "setup"
       res:
         exitCode: 0
+- name: create-test-project
+  step:
+    - ctx: imm
+      req: {
+        "Action": "CreateProject",
+        "ProjectName": "hl-shanghai-doc-project",
+      }

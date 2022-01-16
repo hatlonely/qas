@@ -141,8 +141,8 @@ class Framework:
                 res = expect_obj(res, step["res"])
                 step_result.expect_results.extend(res)
             except Exception as e:
-                step_result.expect_results.append(ExpectResult(
-                    is_pass=False, message="Exception {}".format(traceback.format_exc()), node="", val="", expect=""
-                ))
+                step_result.is_err = True
+                step_result.err = "Exception {}".format(traceback.format_exc())
+                step_result.is_pass = False
             case_result.step_results.append(step_result)
         return case_result
