@@ -8,6 +8,8 @@ step:
         text: "hello world"
     res:
       status: 200
+      headers:
+        "#X-Request-Id": "len(val) == 32"
       json:
         hex: "7dcf62cdb1910e6f"
         num: "9065573210506989167"

@@ -23,7 +23,7 @@ def expect_obj_recursive(root: str, vals, rules, is_dict: bool, expect_results: 
     else:
         to_enumerate = enumerate(rules)
     for key, rule in to_enumerate:
-        root_dot_key = "{}.{}".format(root, key).lstrip(".")
+        root_dot_key = "{}.{}".format(root, key.lstrip("#")).lstrip(".")
         if isinstance(rule, dict):
             expect_obj_recursive(root_dot_key, vals[key], rule, True, expect_results)
         elif isinstance(rule, list):
