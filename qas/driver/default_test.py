@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 
 
+import json
 import unittest
 from .default import *
 
 
-class TestExpectVal(unittest.TestCase):
+class TestMerge(unittest.TestCase):
     def test_merge_dict(self):
         req = merge({
             "key1": "val1",
@@ -118,6 +119,30 @@ class TestExpectVal(unittest.TestCase):
                 },
             }, dft)
         self.assertTrue("missing required key [TableMeta.SchemeEntry.0.1]" in str(cm.exception))
+
+
+class TestRender(unittest.TestCase):
+    def test_render(self):
+        res = render({
+            "key1": "val1",
+            "#key2": "ctx['key2']",
+            "key3": [{
+                "key4": "val4",
+                "#key5": "ctx['key5']"
+            }],
+        }, {
+            "key2": 2,
+            "key5": "val5"
+        })
+        print(json.dumps(res, indent=True))
+        self.assertDictEqual(res, {
+          "key1": "val1",
+          "key2": 2,
+          "key3": [{
+             "key4": "val4",
+             "key5": "val5"
+           }]
+        })
 
 
 if __name__ == '__main__':
