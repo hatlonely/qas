@@ -33,9 +33,13 @@ class Framework:
     ctx = dict()
     req = dict()
     case_name = None
+    skip_setup = False
+    skip_teardown = False
 
-    def __init__(self, test_directory, case_directory=None, case_name=None):
+    def __init__(self, test_directory, case_directory=None, case_name=None, skip_setup=False, skip_teardown=False):
         self.case_name = case_name
+        self.skip_setup = skip_setup
+        self.skip_teardown = skip_teardown
         if os.path.isfile(test_directory):
             self.load_ctx(test_directory)
             return
@@ -108,14 +112,16 @@ class Framework:
 
     def run(self):
         test_result = TestResult(self.name)
-        for case in self.set_up:
-            test_result.set_up_results.append(self.run_case(case))
+        if not self.skip_setup:
+            for case in self.set_up:
+                test_result.set_up_results.append(self.run_case(case))
         for case in self.case:
             if self.case_name and self.case_name != case["name"]:
                 continue
             test_result.case_results.append(self.run_case(case))
-        for case in self.tear_down:
-            test_result.tear_down_results.append(self.run_case(case))
+        if not self.skip_teardown:
+            for case in self.tear_down:
+                test_result.tear_down_results.append(self.run_case(case))
         print(reporters["text"].report(test_result))
         return test_result.is_pass
 

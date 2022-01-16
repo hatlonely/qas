@@ -12,12 +12,16 @@ def main():
     parser.add_argument("-t", "--test", help="test directory")
     parser.add_argument("-c", "--case", help="case directory")
     parser.add_argument("-n", "--case-name", help="case name")
+    parser.add_argument("--skip-setup", default=False, help="skip setup")
+    parser.add_argument("--skip-teardown", default=False, help="skip teardown")
     args = parser.parse_args()
 
     fw = Framework(
         args.test,
         case_directory=args.case,
         case_name=args.case_name,
+        skip_setup=args.skip_setup,
+        skip_teardown=args.skip_teardown,
     )
     if not fw.run():
         sys.exit(1)
