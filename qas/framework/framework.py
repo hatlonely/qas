@@ -5,8 +5,8 @@ import traceback
 import os
 
 from ..driver import HttpDriver, POPDriver, OTSDriver, ShellDriver, MysqlDriver, merge, REQUIRED
-from ..assertion import expect_obj
-from ..result import TestResult, CaseResult, StepResult, ExpectResult
+from ..assertion import expect_obj, render
+from ..result import TestResult, CaseResult, StepResult
 from ..reporter import TextReporter, JsonReporter
 
 
