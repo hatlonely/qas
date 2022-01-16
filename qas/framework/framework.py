@@ -35,24 +35,24 @@ class Framework:
     def __init__(self, test_directory, case_directory=None, case_name=None):
         self.case_name = case_name
         if os.path.isfile(test_directory):
-            self.init_ctx(test_directory)
+            self.load_ctx(test_directory)
             return
 
         # load ctx.yaml
-        self.init_ctx("{}/ctx.yaml".format(test_directory))
+        self.load_ctx("{}/ctx.yaml".format(test_directory))
         # load cases
         if not case_directory:
             for prefix, _, filenames in os.walk("{}/cases".format(test_directory)):
                 for filename in filenames:
-                    for c in self.load_case_from_file("{}/{}".format(prefix, filename)):
+                    for c in self.load_case("{}/{}".format(prefix, filename)):
                         self.case.append(c)
         else:
             for cd in case_directory.split(","):
                 for filename in os.listdir("{}/cases/{}".format(test_directory, cd)):
-                    for c in self.load_case_from_file("{}/cases/{}/{}".format(test_directory, cd, filename)):
+                    for c in self.load_case("{}/cases/{}/{}".format(test_directory, cd, filename)):
                         self.case.append(c)
 
-    def init_ctx(self, ctx_filename):
+    def load_ctx(self, ctx_filename):
         if not os.path.exists(ctx_filename) or not os.path.isfile(ctx_filename):
             raise Exception("ctx.yaml is missing")
         fp = open(ctx_filename, "r", encoding="utf-8")
@@ -74,7 +74,7 @@ class Framework:
             self.req[key] = val["req"]
         self.case = data["case"]
 
-    def load_case_from_file(self, filename):
+    def load_case(self, filename):
         fp = open(filename, "r", encoding="utf-8")
         data = yaml.safe_load(fp)
         fp.close()
