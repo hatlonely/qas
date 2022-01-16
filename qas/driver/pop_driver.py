@@ -2,6 +2,8 @@
 
 
 import json
+import traceback
+import aliyunsdkcore.acs_exception.exceptions
 from aliyunsdkcore.client import AcsClient
 from aliyunsdkcore.request import CommonRequest
 from .default import merge, REQUIRED
@@ -78,5 +80,22 @@ class POPDriver:
                 continue
             creq.add_query_param(key, req[key])
 
-        res = self.client.do_action_with_exception(creq)
-        return json.loads(str(res, encoding='utf-8'))
+        try:
+            res = self.client.do_action_with_exception(creq)
+            return json.loads(str(res, encoding='utf-8'))
+        except aliyunsdkcore.acs_exception.exceptions.ClientException as e:
+            return {
+                "Code": e.error_code,
+                "Message": e.message,
+            }
+        except aliyunsdkcore.acs_exception.exceptions.ServerException as e:
+            return {
+                "Status": e.http_status,
+                "Code": e.error_code,
+                "Message": e.message,
+                "RequestId": e.request_id,
+            }
+        except Exception as e:
+            return {
+                "Exception": traceback.format_exc(),
+            }
