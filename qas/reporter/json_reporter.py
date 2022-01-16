@@ -18,7 +18,7 @@ class JsonReporter:
             "succ": res.succ,
             "fail": res.fail,
             "name": res.name,
-            "caseResults": [JsonReporter.case_summary(i) for i in res.cases]
+            "cases": [JsonReporter.case_summary(i) for i in res.cases]
         }
 
     @staticmethod
@@ -26,7 +26,7 @@ class JsonReporter:
         return {
             "isPass": res.is_pass,
             "case": res.case,
-            "stepResults": [JsonReporter.step_summary(i) for i in res.steps]
+            "steps": [JsonReporter.step_summary(i) for i in res.steps]
         }
 
     @staticmethod
@@ -38,7 +38,9 @@ class JsonReporter:
             "fail": res.fail,
             "req": res.req,
             "res": res.res,
-            "expectResults": [JsonReporter.expect_summary(i) for i in res.expects]
+            "expects": [JsonReporter.expect_summary(i) for i in res.expects]
+            "isErr": res.is_err,
+            "err": res.err,
         }
 
     @staticmethod
