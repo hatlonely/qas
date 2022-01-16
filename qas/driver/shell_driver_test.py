@@ -26,7 +26,7 @@ class TestShellDriver(unittest.TestCase):
         })
         print(json.dumps(res))
         self.assertDictEqual(res, {
-            "exit_code": 0,
+            "exitCode": 0,
             "stdout": "hello world\n",
             "stderr": "",
         })
@@ -49,7 +49,7 @@ print("{} {}".format(a, b))
         })
         print(json.dumps(res))
         self.assertDictEqual(res, {
-            "exit_code": 0,
+            "exitCode": 0,
             "stdout": "hello world\n",
             "stderr": "",
         })
