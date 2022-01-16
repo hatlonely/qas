@@ -1,0 +1,6 @@
+- name: upload-test-file-to-oss
+  step:
+    ctx: shell
+    req:
+      command: |
+        echo "setup"

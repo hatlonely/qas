@@ -1,6 +1,8 @@
 name: sample
 
 ctx:
+  shell:
+    type: shell
   imm:
     type: pop
     args:
