@@ -18,7 +18,7 @@ class StepResult:
     step: str
     req: dict
     res: dict
-    expect_results: list[ExpectResult]
+    expects: list[ExpectResult]
     is_pass: bool
     is_err: bool
     err: str
@@ -27,7 +27,7 @@ class StepResult:
 
     def __init__(self, step=""):
         self.step = step
-        self.expect_results = list[ExpectResult]()
+        self.expects = list[ExpectResult]()
         self.is_pass = True
         self.is_err = False
         self.err = ""
@@ -40,55 +40,55 @@ class StepResult:
         if self.is_err:
             self.is_pass = False
             return
-        self.succ = sum(1 for i in self.expect_results if i.is_pass)
-        self.fail = len(self.expect_results) - self.succ
+        self.succ = sum(1 for i in self.expects if i.is_pass)
+        self.fail = len(self.expects) - self.succ
         self.is_pass = self.fail == 0
 
 
 @dataclass
 class CaseResult:
     case: str
-    step_results: list[StepResult]
+    steps: list[StepResult]
     is_pass: bool
 
     def __init__(self, case=""):
         self.case = case
-        self.step_results = list[StepResult]()
+        self.steps = list[StepResult]()
         self.is_pass = True
 
     def summary(self):
-        for r in self.step_results:
+        for r in self.steps:
             r.summary()
-        self.is_pass = all(i.is_pass for i in self.step_results)
+        self.is_pass = all(i.is_pass for i in self.steps)
 
 
 @dataclass
 class TestResult:
     name: str
-    set_up_results: list[CaseResult]
-    case_results: list[CaseResult]
-    tear_down_results: list[CaseResult]
+    setups: list[CaseResult]
+    cases: list[CaseResult]
+    teardowns: list[CaseResult]
     is_pass: bool
     succ: int
     fail: int
 
     def __init__(self, name=""):
         self.name = name
-        self.set_up_results = list[CaseResult]()
-        self.case_results = list[CaseResult]()
-        self.tear_down_results = list[CaseResult]()
+        self.setups = list[CaseResult]()
+        self.cases = list[CaseResult]()
+        self.teardowns = list[CaseResult]()
         self.is_pass = True
         self.succ = 0
         self.fail = 0
 
     def summary(self):
-        for r in self.set_up_results:
+        for r in self.setups:
             r.summary()
-        for r in self.case_results:
+        for r in self.cases:
             r.summary()
-        for r in self.tear_down_results:
+        for r in self.teardowns:
             r.summary()
-        self.succ = sum(1 for i in self.case_results if i.is_pass) + sum(1 for i in self.set_up_results if i.is_pass) + sum(1 for i in self.tear_down_results if i.is_pass)
-        self.fail = len(self.case_results) + len(self.set_up_results) + len(self.tear_down_results) - self.succ
+        self.succ = sum(1 for i in self.cases if i.is_pass) + sum(1 for i in self.setups if i.is_pass) + sum(1 for i in self.teardowns if i.is_pass)
+        self.fail = len(self.cases) + len(self.setups) + len(self.teardowns) - self.succ
         self.is_pass = self.fail == 0
 

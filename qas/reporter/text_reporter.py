@@ -21,11 +21,11 @@ class TextReporter:
         else:
             lines.append(Fore.RED + "测试失败，成功 {}，失败 {}".format(res.succ, res.fail) + Fore.RESET)
 
-        for cs in res.set_up_results:
+        for cs in res.setups:
             lines.extend(["  " + i for i in TextReporter.case_summary(cs)])
-        for cs in res.case_results:
+        for cs in res.cases:
             lines.extend(["  " + i for i in TextReporter.case_summary(cs)])
-        for cs in res.tear_down_results:
+        for cs in res.teardowns:
             lines.extend(["  " + i for i in TextReporter.case_summary(cs)])
         return lines
 
@@ -36,7 +36,7 @@ class TextReporter:
             lines.append(Fore.GREEN + "case {} 通过".format(res.case) + Fore.RESET)
         else:
             lines.append(Fore.RED + "case {} 失败".format(res.case) + Fore.RESET)
-        for step_result in res.step_results:
+        for step_result in res.steps:
             lines.extend(["  " + i for i in TextReporter.step_summary(step_result)])
         return lines
 
@@ -55,7 +55,7 @@ class TextReporter:
             return lines
 
         # 修改 res 返回值，将预期值标记后拼接在 value 后面
-        for expect_result in res.expect_results:
+        for expect_result in res.expects:
             if expect_result.is_pass:
                 TextReporter.append_val_to_key(res.res, expect_result.node, "<GREEN>{}<END>".format(expect_result.expect))
             else:

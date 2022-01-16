@@ -114,14 +114,14 @@ class Framework:
         test_result = TestResult(self.name)
         if not self.skip_setup:
             for case in self.set_up:
-                test_result.set_up_results.append(self.run_case(case))
+                test_result.setups.append(self.run_case(case))
         for case in self.case:
             if self.case_name and self.case_name != case["name"]:
                 continue
-            test_result.case_results.append(self.run_case(case))
+            test_result.cases.append(self.run_case(case))
         if not self.skip_teardown:
             for case in self.tear_down:
-                test_result.tear_down_results.append(self.run_case(case))
+                test_result.teardowns.append(self.run_case(case))
         print(reporters["text"].report(test_result))
         return test_result.is_pass
 
@@ -139,10 +139,10 @@ class Framework:
                 res = self.ctx[step["ctx"]].do(req)
                 step_result.res = res
                 res = expect_obj(res, step["res"])
-                step_result.expect_results.extend(res)
+                step_result.expects.extend(res)
             except Exception as e:
                 step_result.is_err = True
                 step_result.err = "Exception {}".format(traceback.format_exc())
                 step_result.is_pass = False
-            case_result.step_results.append(step_result)
+            case_result.steps.append(step_result)
         return case_result
