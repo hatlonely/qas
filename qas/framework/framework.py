@@ -28,6 +28,8 @@ class Framework:
     data = None
     case = None
     name = None
+    set_up = None
+    tear_down = None
     ctx = dict()
     req = dict()
     case_name = None
@@ -52,6 +54,14 @@ class Framework:
                     for c in self.load_case("{}/cases/{}/{}".format(test_directory, cd, filename)):
                         self.case.append(c)
 
+        if os.path.isfile("{}/setup.yaml".format(test_directory)):
+            for c in self.load_case("{}/setup.yaml".format(test_directory)):
+                self.set_up.append(c)
+
+        if os.path.isfile("{}/teardown.yaml".format(test_directory)):
+            for c in self.load_case("{}/teardown.yaml".format(test_directory)):
+                self.tear_down.append(c)
+
     def load_ctx(self, ctx_filename):
         if not os.path.exists(ctx_filename) or not os.path.isfile(ctx_filename):
             raise Exception("ctx.yaml is missing")
@@ -60,7 +70,9 @@ class Framework:
         fp.close()
         data = merge(data, {
             "name": REQUIRED,
-            "case": []
+            "case": [],
+            "setUp": [],
+            "tearDown": [],
         })
         self.data = data
         self.name = data["name"]
@@ -73,6 +85,8 @@ class Framework:
             self.ctx[key] = drivers[val["type"]](val["args"])
             self.req[key] = val["req"]
         self.case = data["case"]
+        self.set_up = data["setUp"]
+        self.tear_down = data["tearDown"]
 
     def load_case(self, filename):
         fp = open(filename, "r", encoding="utf-8")
