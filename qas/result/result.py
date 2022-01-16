@@ -58,22 +58,30 @@ class CaseResult:
 @dataclass
 class TestResult:
     name: str
+    set_up_results: list[CaseResult]
     case_results: list[CaseResult]
+    tear_down_results: list[CaseResult]
     is_pass: bool
     succ: int
     fail: int
 
     def __init__(self, name=""):
         self.name = name
+        self.set_up_results = list[CaseResult]()
         self.case_results = list[CaseResult]()
+        self.tear_down_results = list[CaseResult]()
         self.is_pass = True
         self.succ = 0
         self.fail = 0
 
     def summary(self):
+        for r in self.set_up_results:
+            r.summary()
         for r in self.case_results:
             r.summary()
-        self.succ = sum(1 for i in self.case_results if i.is_pass)
-        self.fail = len(self.case_results) - self.succ
+        for r in self.tear_down_results:
+            r.summary()
+        self.succ = sum(1 for i in self.case_results if i.is_pass) + sum(1 for i in self.set_up_results if i.is_pass) + sum(1 for i in self.tear_down_results if i.is_pass)
+        self.fail = len(self.case_results) + len(self.set_up_results) + len(self.tear_down_results) - self.succ
         self.is_pass = self.fail == 0
 

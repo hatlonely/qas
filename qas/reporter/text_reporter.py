@@ -17,14 +17,16 @@ class TextReporter:
     def test_summary(res: TestResult) -> list[str]:
         lines = []
         if res.is_pass:
-            lines.append(Fore.GREEN + "测试通过, 成功 {}".format(len(res.case_results)) + Fore.RESET)
+            lines.append(Fore.GREEN + "测试通过, 成功 {}".format(res.succ) + Fore.RESET)
         else:
-            lines.append(Fore.RED + "测试失败，成功 {}，失败 {}".format(
-                sum(1 for i in res.case_results if i.is_pass),
-                sum(1 for i in res.case_results if not i.is_pass),
-            ) + Fore.RESET)
-        for case_result in res.case_results:
-            lines.extend(["  " + i for i in TextReporter.case_summary(case_result)])
+            lines.append(Fore.RED + "测试失败，成功 {}，失败 {}".format(res.succ, res.fail) + Fore.RESET)
+
+        for cs in res.set_up_results:
+            lines.extend(["  " + i for i in TextReporter.case_summary(cs)])
+        for cs in res.case_results:
+            lines.extend(["  " + i for i in TextReporter.case_summary(cs)])
+        for cs in res.tear_down_results:
+            lines.extend(["  " + i for i in TextReporter.case_summary(cs)])
         return lines
 
     @staticmethod
@@ -48,7 +50,7 @@ class TextReporter:
 
         lines.extend(("req: " + json.dumps(res.req, indent=True)).split("\n"))
 
-        # 修改 res 返回值，
+        # 修改 res 返回值，将预期值标记后拼接在 value 后面
         for expect_result in res.expect_results:
             if expect_result.is_pass:
                 TextReporter.append_val_to_key(res.res, expect_result.node, "<GREEN>{}<END>".format(expect_result.expect))
@@ -57,6 +59,7 @@ class TextReporter:
 
         res_lines = ("res: " + json.dumps(res.res, indent=True)).split("\n")
         format_lines = []
+        # 解析 res 中 value 的值，重新拼接成带颜色的结果值
         for line in res_lines:
             mr = re.match(r'(\s+".*?": )"(.*)<GREEN>(.*)<END>"(.*)', line)
             if mr:

@@ -102,26 +102,33 @@ class Framework:
 
     def run(self):
         test_result = TestResult(self.name)
+        for case in self.set_up:
+            test_result.set_up_results.append(self.run_case(case))
         for case in self.case:
             if self.case_name and self.case_name != case["name"]:
                 continue
-            case_result = CaseResult(case["name"])
-            for idx, step in enumerate(case["step"]):
-                if "name" not in step:
-                    step["name"] = "step-{}".format(idx)
-                step_result = StepResult(step["name"])
-                try:
-                    req = merge(step["req"], self.req[step["ctx"]])
-                    step_result.req = req
-                    res = self.ctx[step["ctx"]].do(req)
-                    step_result.res = res
-                    res = expect_obj(res, step["res"])
-                    step_result.expect_results.extend(res)
-                except Exception as e:
-                    step_result.expect_results.append(ExpectResult(
-                        is_pass=False, message="Exception {}".format(traceback.format_exc()), node="", val="", expect=""
-                    ))
-                case_result.step_results.append(step_result)
-            test_result.case_results.append(case_result)
+            test_result.case_results.append(self.run_case(case))
+        for case in self.tear_down:
+            test_result.tear_down_results.append(self.run_case(case))
         print(reporters["text"].report(test_result))
         return test_result.is_pass
+
+    def run_case(self, case):
+        case_result = CaseResult(case["name"])
+        for idx, step in enumerate(case["step"]):
+            if "name" not in step:
+                step["name"] = "step-{}".format(idx)
+            step_result = StepResult(step["name"])
+            try:
+                req = merge(step["req"], self.req[step["ctx"]])
+                step_result.req = req
+                res = self.ctx[step["ctx"]].do(req)
+                step_result.res = res
+                res = expect_obj(res, step["res"])
+                step_result.expect_results.extend(res)
+            except Exception as e:
+                step_result.expect_results.append(ExpectResult(
+                    is_pass=False, message="Exception {}".format(traceback.format_exc()), node="", val="", expect=""
+                ))
+            case_result.step_results.append(step_result)
+        return case_result
