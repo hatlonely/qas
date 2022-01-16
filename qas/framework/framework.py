@@ -135,11 +135,11 @@ class Framework:
             step_result = StepResult(step["name"])
             try:
                 req = merge(step["req"], self.req[step["ctx"]])
-                req = render(req, case_result)
+                req = render(req, case=case_result)
                 step_result.req = req
                 res = self.ctx[step["ctx"]].do(req)
                 step_result.res = res
-                res = expect_obj(res, step["res"])
+                res = expect_obj(res, step["res"], case=case_result)
                 step_result.expects.extend(res)
             except Exception as e:
                 step_result.is_err = True
@@ -149,18 +149,18 @@ class Framework:
         return case_result
 
 
-def render(req, case):
+def render(req, case=None):
     if isinstance(req, dict):
         res = {}
         for key, val in req.items():
             if key.startswith("#"):
                 res[key.lstrip("#")] = eval(val)
             else:
-                res[key] = render(req[key], case)
+                res[key] = render(req[key], case=case)
         return res
     if isinstance(req, list):
         res = []
         for val in req:
-            res.append(render(val, case))
+            res.append(render(val, case=case))
         return res
     return req

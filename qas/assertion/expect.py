@@ -6,18 +6,18 @@ from dateutil import parser
 from ..result import *
 
 
-def expect_obj(vals, rules):
+def expect_obj(vals, rules, case=None):
     expect_results = []
     if isinstance(rules, dict):
-        expect_obj_recursive("", vals, rules, True, expect_results)
+        expect_obj_recursive("", vals, rules, True, expect_results, case=case)
     elif isinstance(rules, list):
-        expect_obj_recursive("", vals, rules, False, expect_results)
+        expect_obj_recursive("", vals, rules, False, expect_results, case=case)
     else:
         pass
     return expect_results
 
 
-def expect_obj_recursive(root: str, vals, rules, is_dict: bool, expect_results: list):
+def expect_obj_recursive(root: str, vals, rules, is_dict: bool, expect_results: list, case=None):
     if is_dict:
         to_enumerate = rules.items()
     else:
@@ -25,13 +25,13 @@ def expect_obj_recursive(root: str, vals, rules, is_dict: bool, expect_results: 
     for key, rule in to_enumerate:
         root_dot_key = "{}.{}".format(root, key.lstrip("#")).lstrip(".")
         if isinstance(rule, dict):
-            expect_obj_recursive(root_dot_key, vals[key], rule, True, expect_results)
+            expect_obj_recursive(root_dot_key, vals[key], rule, True, expect_results, case=case)
         elif isinstance(rule, list):
-            expect_obj_recursive(root_dot_key, vals[key], rule, False, expect_results)
+            expect_obj_recursive(root_dot_key, vals[key], rule, False, expect_results, case=case)
         else:
             if isinstance(key, str) and key.startswith("#"):
                 val = vals[key[1:]]
-                ok = expect_val(val, rule)
+                ok = expect_val(val, rule, case=case)
                 if not ok:
                     expect_results.append(ExpectResult(is_pass=False, message="NotMatch", node=root_dot_key, val=val, expect=rule))
                 else:
@@ -44,7 +44,7 @@ def expect_obj_recursive(root: str, vals, rules, is_dict: bool, expect_results: 
                     expect_results.append(ExpectResult(is_pass=True, message="OK", node=root_dot_key, val=val, expect=rule))
 
 
-def expect_val(val, rule):
+def expect_val(val, rule, case=None):
     res = eval(rule)
     if not isinstance(res, bool):
         raise Exception("rule should return result")
