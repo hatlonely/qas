@@ -51,9 +51,9 @@ class TextReporter:
         # 修改 res 返回值，
         for expect_result in res.expect_results:
             if expect_result.is_pass:
-                TextReporter.set_key_val(res.res, expect_result.node, "{}<GREEN>{}<END>".format(json.dumps(expect_result.val), expect_result.expect))
+                TextReporter.append_val_to_key(res.res, expect_result.node, "<GREEN>{}<END>".format(expect_result.expect))
             else:
-                TextReporter.set_key_val(res.res, expect_result.node, "{}<RED>{}<END>".format(json.dumps(expect_result.val), expect_result.expect))
+                TextReporter.append_val_to_key(res.res, expect_result.node, "<RED>{}<END>".format(expect_result.expect))
 
         res_lines = ("res: " + json.dumps(res.res, indent=True)).split("\n")
         format_lines = []
@@ -80,11 +80,11 @@ class TextReporter:
             return Fore.RED + "node [{}] {}. val: {}, expect: {}".format(res.node, res.message, res.val, res.expect) + Fore.RESET
 
     @staticmethod
-    def set_key_val(vals: dict, key, val):
+    def append_val_to_key(vals: dict, key, val):
         keys = key.split(".")
         for k in keys[:-1]:
             if isinstance(vals, dict):
                 vals = vals[k]
             else:
                 vals = vals[int(k)]
-        vals[keys[-1]] = val
+        vals[keys[-1]] = "{}{}".format(json.dumps(vals[keys[-1]]), val)

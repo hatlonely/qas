@@ -17,7 +17,7 @@ class TestTextReporter(unittest.TestCase):
                 "key2": "val1-2",
             }]
         }
-        self.reporter.set_key_val(d, "key1.1.key2", "set_vals")
+        self.reporter.append_val_to_key(d, "key1.1.key2", "set_vals")
         print(d)
 
 
