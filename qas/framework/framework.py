@@ -93,10 +93,16 @@ class Framework:
         data = yaml.safe_load(fp)
         fp.close()
         if isinstance(data, dict):
+            data = merge(data, {
+                "name": REQUIRED,
+            })
             data["name"] = "{}/{}".format(filename, data["name"])
             yield data
         if isinstance(data, list):
             for item in data:
+                item = merge(item, {
+                    "name": REQUIRED,
+                })
                 item["name"] = "{}/{}".format(filename, item["name"])
                 yield item
 
@@ -116,8 +122,10 @@ class Framework:
     def run_case(self, case):
         case_result = CaseResult(case["name"])
         for idx, step in enumerate(case["step"]):
-            if "name" not in step:
-                step["name"] = "step-{}".format(idx)
+            step = merge(step, {
+                "name": "step-{}".format(idx),
+                "res": {},
+            })
             step_result = StepResult(step["name"])
             try:
                 req = merge(step["req"], self.req[step["ctx"]])

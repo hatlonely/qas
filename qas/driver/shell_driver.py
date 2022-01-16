@@ -23,7 +23,7 @@ class ShellDriver:
         })
         process = subprocess.run([self.shebang, *self.args, req["command"]], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         return {
-            "exit_code": process.returncode,
+            "exitCode": process.returncode,
             "stdout": process.stdout.decode("utf-8"),
             "stderr": process.stderr.decode("utf-8"),
         }

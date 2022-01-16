@@ -5,4 +5,4 @@
         command: |
           echo "setup"
       res:
-        exit_code: 0
+        exitCode: 0
