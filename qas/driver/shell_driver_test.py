@@ -16,6 +16,12 @@ class TestSubprocess(unittest.TestCase):
         process = subprocess.run(["python3", "-c", "print('hello world')"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         print(process.returncode, process.stdout, process.stderr)
 
+    def test_env(self):
+        process = subprocess.run(["/bin/bash", "-c", "echo ${KEY1}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, env={
+            "KEY1": "val1"
+        })
+        print(process.returncode, process.stdout, process.stderr)
+
 
 class TestShellDriver(unittest.TestCase):
     def setUp(self) -> None:
