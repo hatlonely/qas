@@ -14,10 +14,47 @@ python3 setup.py install
 
 ## 快速入门
 
-1. 创建一个测试文件 sample.yaml
+1. 创建一个测试文件 [sample.yaml](ops/sample-simple/sample.yaml)
 
 ```yaml
+name: sample
 
+ctx:
+  shell:
+    type: shell
+  jsontest:
+    type: http
+    args:
+      endpoint: http://echo.jsontest.com/
+    req:
+      method: GET
+
+setUp:
+  - name: EchoHelloWorld
+    step:
+      - ctx: shell
+        req:
+          command: "echo hello world"
+
+tearDown:
+  - name: GoodBye
+    step:
+      - ctx: shell
+        req:
+          command: "echo good bye"
+
+case:
+  - name: TestHttpJson
+    step:
+      - ctx: jsontest
+        req:
+          path: /key/value/one/two
+        res:
+          status: 200
+          json: {
+            "one": "two",
+            "key": "value"
+          }
 ```
 
 2. 执行测试
