@@ -1,4 +1,4 @@
-- name: EchoExample
+- name: HelloWorld
   step:
     - ctx: sh
       req:
