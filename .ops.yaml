@@ -9,19 +9,19 @@ dep:
 env:
   default:
   dev:
-    POP_AK: {{.credential.pop.accessKeyId}}
-    POP_SK: {{.credential.pop.accessKeySecret}}
+    IMM_AK: {{.credential.imm.accessKeyId}}
+    IMM_SK: {{.credential.imm.accessKeySecret}}
+    IMM_ENDPOINT: https://imm.cn-shanghai.aliyuncs.com
     OTS_AK: {{.credential.ots.accessKeyId}}
     OTS_SK: {{.credential.ots.accessKeySecret}}
-    POP_ENDPOINT: https://imm.cn-shanghai.aliyuncs.com
-    OTS_INSTANCE: hatlonely-ots-sh
-    OTS_ENDPOINT: https://hatlonely-ots-sh.cn-shanghai.ots.aliyuncs.com
+    OTS_INSTANCE: imm-dev-hl
+    OTS_ENDPOINT: https://imm-dev-hl.cn-shanghai.ots.aliyuncs.com
 
 task:
   sample-recommend:
     step:
       - sh ${DEP}/ops/tool/render.sh ops/sample-recommend ${TMP}/sample-recommend
-      - qas --test "${TMP}/sample-recommend"
+      - python3 main.py --test "${TMP}/sample-recommend" --case pop
   sample-simple:
     step:
       - qas --test ops/sample-simple/sample.yaml

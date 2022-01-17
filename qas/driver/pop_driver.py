@@ -45,7 +45,7 @@ class POPDriver:
         })
 
         self.endpoint = args["Endpoint"].rstrip("/")
-        self.client = AcsClient(args["AccessKeyId"], args["AccessKeySecret"], args["RegionId"], verify=args["DisableVerify"])
+        self.client = AcsClient(args["AccessKeyId"], args["AccessKeySecret"], args["RegionId"], verify=not args["DisableVerify"])
         self.product_id = args["ProductId"]
         self.method = args["Method"]
         self.scheme = args["Scheme"]

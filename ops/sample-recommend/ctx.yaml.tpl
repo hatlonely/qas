@@ -20,11 +20,11 @@ ctx:
       endpoint: http://echo.jsontest.com/
     req:
       method: GET
-#  imm:
-#    type: pop
-#    args:
-#      AccessKeyId: ${POP_AK}
-#      AccessKeySecret: ${POP_SK}
-#      Endpoint: ${POP_ENDPOINT}
-#      Method: POST
-#      ProductId: immv2
+  imm:
+    type: pop
+    args:
+      AccessKeyId: ${IMM_AK}
+      AccessKeySecret: ${IMM_SK}
+      Endpoint: ${IMM_ENDPOINT}
+      Method: POST
+      ProductId: imm
