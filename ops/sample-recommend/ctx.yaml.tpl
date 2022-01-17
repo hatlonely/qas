@@ -28,3 +28,10 @@ ctx:
       Endpoint: ${IMM_ENDPOINT}
       Method: POST
       ProductId: imm
+  ots:
+    type: ots
+    args:
+      AccessKeyId: ${OTS_AK}
+      AccessKeySecret: ${OTS_SK}
+      Endpoint: ${OTS_ENDPOINT}
+      Instance: ${OTS_INSTANCE}
