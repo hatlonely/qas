@@ -1,15 +1,8 @@
-- name: upload-test-file-to-oss
+- name: EchoSetUp
   step:
-    - ctx: shell
+    - ctx: sh
       req:
-        command: |
-          echo "setup"
+        command: echo set up
       res:
         exitCode: 0
-- name: create-test-project
-  step:
-    - ctx: imm
-      req: {
-        "Action": "CreateProject",
-        "ProjectName": "hl-shanghai-doc-project",
-      }
+        stdout: "set up\n"

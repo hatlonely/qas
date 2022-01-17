@@ -1,0 +1,7 @@
+- name: EchoExample
+  step:
+    - ctx: sh
+      req:
+        command: echo hello world
+
+
