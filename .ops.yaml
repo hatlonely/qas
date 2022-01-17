@@ -26,10 +26,13 @@ env:
     OTS_ENDPOINT: https://imm-dev-hl.cn-shanghai.ots.aliyuncs.com
 
 task:
-  sample:
+  sample-recommend:
     step:
-      - sh ${DEP}/ops/tool/render.sh ops/sample ${TMP}/sample
-      - bin/qas --test "${TMP}/sample"
+      - sh ${DEP}/ops/tool/render.sh ops/sample-recommend ${TMP}/sample-recommend
+      - qas --test "${TMP}/sample-recommend"
+  sample-simple:
+    step:
+      - qas --test ops/sample-simple/sample.yaml
   install:
     step:
       - python3 setup.py install
