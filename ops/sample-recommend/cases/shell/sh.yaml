@@ -12,9 +12,13 @@
     - ctx: sh
       req:
         command: |
-          echo MY_QAS_ENV_KEY=${MY_QAS_ENV_KEY}
+          echo CTX_ENV_KEY=${CTX_ENV_KEY}
+          echo CASE_ENV_KYE=${CASE_ENV_KYE}
         envs:
-          MY_QAS_ENV_KEY: val
+          CASE_ENV_KYE: case-env-val
       res:
         exitCode: 0
-        stdout: "MY_QAS_ENV_KEY=val\n"
+        stdout: |
+          CTX_ENV_KEY=ctx-env-val
+          CASE_ENV_KYE=case-env-val
+

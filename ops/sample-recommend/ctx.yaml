@@ -3,6 +3,9 @@ name: sample
 ctx:
   sh:
     type: shell
+    args:
+      envs:
+        CTX_ENV_KEY: ctx-env-val
   jsontest:
     type: http
     args:
