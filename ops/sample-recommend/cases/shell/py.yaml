@@ -1,0 +1,12 @@
+- name: HelloWorld
+  step:
+    - ctx: py
+      req:
+        command: print("hello world")
+      res:
+        exitCode: 0
+        stdout: |
+          hello world
+        stderr: ""
+
+

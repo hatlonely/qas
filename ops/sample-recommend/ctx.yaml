@@ -5,7 +5,15 @@ ctx:
     type: shell
     args:
       envs:
-        CTX_ENV_KEY: ctx-env-val
+        SH_CTX_ENV_KEY: sh-ctx-env-val
+  py:
+    type: shell
+    args:
+      shebang: python3
+      args:
+        - -c
+      envs:
+        PY_CTX_ENV_KEY: py-ctx-env-val
   jsontest:
     type: http
     args:
