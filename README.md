@@ -70,5 +70,5 @@ qas --test sample.yaml
 ## ops 命令
 
 ```shell
-ops --variable .cfg/ali.yaml --env ali -a run --task sample
+ops --variable .cfg/dev.yaml --env dev -a run --task sample-simple
 ```
