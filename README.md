@@ -2,6 +2,30 @@
 
 一个适合 devops 使用的功能测试框架
 
+## 安装
+
+### 源码安装
+
+```shell
+git fetch --depth 1 --branch master https://github.com/hatlonely/qas.git && \
+cd qas && \
+python3 setup.py install
+```
+
+## 快速入门
+
+1. 创建一个测试文件 sample.yaml
+
+```yaml
+
+```
+
+2. 执行测试
+
+```shell
+qas --test sample.yaml
+```
+
 ## 背景
 
 在微服务架构的大背景下，一个服务可能会依赖大量的其他服务，而这些服务其实是作为一个整体对外提供服务，大部分业务的请求都会带来后端服务状态的变化，
