@@ -14,7 +14,7 @@ python3 setup.py install
 
 ## 快速入门
 
-1. 创建一个测试文件 [sample.yaml](ops/sample-simple/sample.yaml)
+1. 创建测试文件 [sample.yaml](ops/sample-simple/sample.yaml)
 
 ```yaml
 name: sample
@@ -51,6 +51,11 @@ case:
           path: /key/value/one/two
         res:
           status: 200
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Content-Type": "application/json",
+            "#X-Cloud-Trace-Context": "len(val) == 32"
+          }
           json: {
             "one": "two",
             "key": "value"
