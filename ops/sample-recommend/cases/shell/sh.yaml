@@ -22,3 +22,39 @@
           CTX_ENV_KEY=ctx-env-val
           CASE_ENV_KYE=case-env-val
 
+- name: JsonExample
+  step:
+    - ctx: sh
+      req:
+        command: |
+          echo '{"key1": "val1", "key2": 2}'
+        decoder: json
+      res:
+        exitCode: 0
+        json: {
+          "key1": "val1",
+          "key2": 2
+        }
+
+- name: YamlExample
+  step:
+    - ctx: sh
+      req:
+        command: |
+          cat << EOF
+          key1: val1
+          key2: 2
+          key3:
+            key4: val4
+          EOF
+        decoder: yaml
+      res:
+        exitCode: 0
+        json: {
+          "key1": "val1",
+          "key2": 2,
+          "key3": {
+            "key4": "val4"
+          }
+        }
+
