@@ -17,3 +17,17 @@
         exitCode: 1
         stdout: ""
         "#stderr": "'invalid syntax' in val"
+
+- name: InvalidJson
+  step:
+    - ctx: sh
+      req:
+        command: |
+          echo "invalid json format"
+        decoder: json
+      res:
+        exitCode: 0
+        stdout: |
+          invalid json format
+        stderr: ""
+        "#err": "'json.decoder.JSONDecodeError' in val"

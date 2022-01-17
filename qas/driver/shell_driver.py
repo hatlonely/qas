@@ -4,6 +4,7 @@
 import json
 import yaml
 import subprocess
+import traceback
 
 from .default import merge, REQUIRED
 
@@ -43,10 +44,13 @@ class ShellDriver:
             "stderr": process.stderr.decode("utf-8"),
         }
 
-        if req["decoder"] == "json":
-            res["json"] = json.loads(res["stdout"])
-        if req["decoder"] == "yaml":
-            res["json"] = yaml.safe_load(res["stdout"])
+        try:
+            if req["decoder"] == "json":
+                res["json"] = json.loads(res["stdout"])
+            if req["decoder"] == "yaml":
+                res["json"] = yaml.safe_load(res["stdout"])
+        except Exception as e:
+            res["err"] = traceback.format_exc()
 
         return res
 
