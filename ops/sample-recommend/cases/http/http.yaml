@@ -1,4 +1,4 @@
-- name: HelloWorld
+- name: JsonExample
   step:
     - ctx: jsontest
       req:
