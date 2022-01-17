@@ -1,0 +1,19 @@
+- name: ShellExecuteFailed
+  step:
+    - ctx: sh
+      req:
+        command: unknown command
+      res:
+        exitCode: 127
+        stdout: ""
+        "#stderr": "'command not found' in val"
+
+- name: PythonExecuteFailed
+  step:
+    - ctx: py
+      req:
+        command: invalid code
+      res:
+        exitCode: 1
+        stdout: ""
+        "#stderr": "'invalid syntax' in val"
