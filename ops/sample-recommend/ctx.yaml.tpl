@@ -3,6 +3,12 @@ name: sample
 ctx:
   shell:
     type: shell
+  jsontest:
+    type: http
+    args:
+      endpoint: http://echo.jsontest.com/
+    req:
+      method: GET
   imm:
     type: pop
     args:
@@ -11,10 +17,3 @@ ctx:
       Endpoint: ${POP_ENDPOINT}
       Method: POST
       ProductId: immv2
-  rpcTool:
-    type: http
-    args:
-      endpoint: "http://k8s.rpc.tool.hatlonely.com"
-      headers:
-        Origin: "http://k8s.rpc.tool.hatlonely.com"
-      method: POST
