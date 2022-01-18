@@ -8,7 +8,7 @@ import json
 from types import SimpleNamespace
 
 from ..driver import HttpDriver, POPDriver, OTSDriver, ShellDriver, MysqlDriver, merge, REQUIRED
-from ..assertion import expect, render
+from ..assertion import expect, render, expect_val
 from ..result import TestResult, CaseResult, StepResult
 from ..reporter import TextReporter, JsonReporter
 
@@ -144,6 +144,9 @@ class Framework:
                 test_result.skip += 1
                 continue
             if self.case_regex and not re.search(self.case_regex, case["name"]):
+                test_result.skip += 1
+                continue
+            if case["cond"] and not expect_val(None, case["cond"], case, self.var):
                 test_result.skip += 1
                 continue
             test_result.cases.append(self.run_case(case))

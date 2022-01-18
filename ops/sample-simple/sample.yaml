@@ -32,6 +32,9 @@ tearDown:
 
 case:
   - name: TestHttpJson
+    label:
+      key: val
+    cond: "var.jsonValue == 'value'"
     step:
       - ctx: jsontest
         req:
