@@ -20,6 +20,8 @@ setUp:
       - ctx: shell
         req:
           command: "echo hello world"
+        res:
+          exitCode: 0
 
 tearDown:
   - name: GoodBye

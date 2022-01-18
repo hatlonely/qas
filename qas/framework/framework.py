@@ -125,10 +125,20 @@ class Framework:
                 yield item
 
     def run(self):
+        result = self.run_all_cases()
+        result.summary()
+        print(reporters["text"].report(result))
+        return result.is_pass
+
+    def run_all_cases(self):
         test_result = TestResult(self.name)
         if not self.skip_setup:
             for case in self.set_up:
-                test_result.setups.append(self.run_case(case))
+                result = self.run_case(case)
+                test_result.setups.append(result)
+                if not result.is_pass:
+                    test_result.is_pass = False
+                    return test_result
         for case in self.case:
             if self.case_name and self.case_name != case["name"]:
                 test_result.skip += 1
@@ -140,8 +150,7 @@ class Framework:
         if not self.skip_teardown:
             for case in self.tear_down:
                 test_result.teardowns.append(self.run_case(case))
-        print(reporters["text"].report(test_result))
-        return test_result.is_pass
+        return test_result
 
     def run_case(self, case):
         case_result = CaseResult(case["name"])
@@ -167,4 +176,5 @@ class Framework:
             step_result.summary()
             if not step_result.is_pass:
                 break
+        case_result.summary()
         return case_result
