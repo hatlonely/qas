@@ -28,7 +28,7 @@ drivers = {
 
 reporters = {
     "text": TextReporter,
-    "json": JsonReporter,
+    # "json": JsonReporter,
 }
 
 
@@ -56,10 +56,19 @@ class Framework:
         self.case_name = case_name
         self.skip_setup = skip_setup
         self.skip_teardown = skip_teardown
-        self.reporter = reporters[reporter]
+        self.reporter = reporters[reporter]()
 
     def run(self):
         self.exec_directory(self.test_directory, {}, {}, {})
+
+    def need_skip(self, case, var):
+        if self.case_name and self.case_name != case["name"]:
+            return True
+        if self.case_regex and not re.search(self.case_regex, case["name"]):
+            return True
+        if case["cond"] and not expect_val(None, case["cond"], case, var):
+            return True
+        return False
 
     def exec_directory(self, test_directory, parent_var, parent_ctx, parent_req):
         info = Framework.load_ctx(os.path.basename(test_directory), "{}/ctx.yaml".format(test_directory))
@@ -79,38 +88,47 @@ class Framework:
             req[key] = val["req"]
 
         test_result = TestResult(info["name"])
+        self.reporter.report_test_start(info)
 
+        # 执行 setup
         if not self.skip_setup:
             for case in info["setUp"]:
-                test_result.setups.append(self.run_case(case))
+                self.reporter.report_setup_start(case)
+                result = self.run_case(case, var_namespace, ctx, req)
+                test_result.setups.append(result)
+                self.reporter.report_setup_end(result)
             if os.path.isfile("{}/setup.yaml".format(test_directory)):
                 for case in self.load_case("{}/setup.yaml".format(test_directory)):
-                    test_result.setups.append(self.run_case(case, var, ctx, req))
+                    self.reporter.report_setup_start(case)
+                    result = self.run_case(case, var_namespace, ctx, req)
+                    test_result.setups.append(result)
+                    self.reporter.report_setup_end(result)
 
-        if not self.skip_teardown:
-            for case in info["tearDown"]:
-                test_result.teardowns.append(self.run_case(case))
-            if os.path.isfile("{}/teardown.yaml".format(test_directory)):
-                for case in self.load_case("{}/teardown.yaml".format(test_directory)):
-                    test_result.teardowns.append(self.run_case(case, var, ctx, req))
+        for case in info["case"]:
+            if self.need_skip(case, var_namespace):
+                test_result.skip += 1
+                continue
+            self.reporter.report_case_start(case)
+            result = self.run_case(case, var_namespace, ctx, req)
+            test_result.cases.append(result)
+            self.reporter.report_case_end(result)
 
+        # 执行文件中的 case
         for filename in [
             os.path.join(test_directory, i)
             for i in os.listdir(test_directory)
             if i not in ["ctx.yaml", "setup.yaml", "teardown.yaml"] and os.path.isfile(os.path.join(test_directory, i))
         ]:
             for case in self.load_case(filename):
-                if self.case_name and self.case_name != case["name"]:
+                if self.need_skip(case, var_namespace):
                     test_result.skip += 1
                     continue
-                if self.case_regex and not re.search(self.case_regex, case["name"]):
-                    test_result.skip += 1
-                    continue
-                if case["cond"] and not expect_val(None, case["cond"], case, var):
-                    test_result.skip += 1
-                    continue
-                test_result.cases.append(self.run_case(case, var, ctx, req))
+                self.reporter.report_case_start(case)
+                result = self.run_case(case, var_namespace, ctx, req)
+                test_result.cases.append(result)
+                self.reporter.report_case_end(result)
 
+        # 执行子目录
         for directory in [
             os.path.join(test_directory, i)
             for i in os.listdir(test_directory)
@@ -118,7 +136,22 @@ class Framework:
         ]:
             test_result.sub_tests.append(self.exec_directory(directory, var, ctx, req))
 
-        print(self.reporter.report(test_result))
+        if not self.skip_teardown:
+            for case in info["tearDown"]:
+                self.reporter.report_teardown_start(case)
+                result = self.run_case(case, var_namespace, ctx, req)
+                test_result.teardowns.append(result)
+                self.reporter.report_teardown_end(result)
+            if os.path.isfile("{}/teardown.yaml".format(test_directory)):
+                for case in self.load_case("{}/teardown.yaml".format(test_directory)):
+                    self.reporter.report_teardown_start(case)
+                    result = self.run_case(case, var_namespace, ctx, req)
+                    test_result.teardowns.append(result)
+                    self.reporter.report_teardown_end(result)
+
+        # 执行 teardown
+        test_result.summary()
+        self.reporter.report_test_end(test_result)
         return test_result
 
     @staticmethod
@@ -167,6 +200,7 @@ class Framework:
                 "res": {},
             })
             step_result = StepResult(step["name"])
+            self.reporter.report_step_start(step)
             try:
                 req = merge(step["req"], req[step["ctx"]])
                 req = render(req, case=case_result, var=var)
@@ -183,6 +217,7 @@ class Framework:
             step_result.summary()
             if not step_result.is_pass:
                 break
+            self.reporter.report_step_end(step_result)
         case_result.summary()
         return case_result
 
