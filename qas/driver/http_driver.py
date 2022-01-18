@@ -8,35 +8,31 @@ from .default import merge, REQUIRED
 class HttpDriver:
     endpoint = None
     headers = None
-    method = None
 
     def __init__(self, args: dict):
         args = merge(args, {
             "endpoint": REQUIRED,
             "headers": {},
-            "method": "POST"
         })
 
         self.endpoint = args["endpoint"].rstrip("/")
         self.headers = args["headers"]
-        self.method = args["method"]
 
     def do(self, req: dict):
         req = merge(req, {
-            "method": self.method,
+            "endpoint": self.endpoint,
+            "method": "POST",
             "headers": {},
             "params": {},
             "data": None,
             "json": None,
             "path": "",
         })
-
-        for key in self.headers:
-            req["headers"][key] = self.headers[key]
+        req["headers"] = self.headers | req["headers"]
 
         res = requests.request(
             method=req["method"],
-            url="{}{}".format(self.endpoint, req["path"]),
+            url="{}{}".format(req["endpoint"], req["path"]),
             params=req["params"],
             data=req["data"],
             json=req["json"],
