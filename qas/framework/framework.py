@@ -56,17 +56,15 @@ class Framework:
 
         # load ctx.yaml
         self.load_ctx("{}/ctx.yaml".format(test_directory))
-        # load cases
-        if not case_directory:
-            for prefix, _, filenames in os.walk("{}/cases".format(test_directory)):
-                for filename in filenames:
-                    for c in self.load_case("{}/{}".format(prefix, filename)):
-                        self.case.append(c)
+        case_parent_directory = "{}/cases".format(test_directory)
+        if case_directory:
+            dirs = case_directory.split("")
         else:
-            for cd in case_directory.split(","):
-                for filename in os.listdir("{}/cases/{}".format(test_directory, cd)):
-                    for c in self.load_case("{}/cases/{}/{}".format(test_directory, cd, filename)):
-                        self.case.append(c)
+            dirs = [i for i in os.listdir(case_parent_directory) if os.path.isdir(os.path.join(case_parent_directory, i))]
+        for cd in dirs:
+            for filename in os.listdir("{}/{}".format(case_parent_directory, cd)):
+                for c in self.load_case("{}/cases/{}/{}".format(test_directory, cd, filename)):
+                    self.case.append(c)
 
         if os.path.isfile("{}/setup.yaml".format(test_directory)):
             for c in self.load_case("{}/setup.yaml".format(test_directory)):
