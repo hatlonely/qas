@@ -62,7 +62,8 @@ class Framework:
         self.reporter = reporters[reporter]()
 
     def run(self):
-        self.exec_directory(self.test_directory, {}, {}, {})
+        res = self.exec_directory(self.test_directory, {}, {}, {})
+        return res.is_pass
 
     def need_skip(self, case, var):
         if self.case_name and self.case_name != case["name"]:
@@ -74,10 +75,12 @@ class Framework:
         return False
 
     def exec_directory(self, test_directory, parent_var, parent_ctx, parent_req):
+        self._debug("enter {}".format(test_directory))
+
         info = Framework.load_ctx(os.path.basename(test_directory), "{}/ctx.yaml".format(test_directory))
         var = copy.deepcopy(parent_var) | info["var"]
         ctx = copy.copy(parent_ctx)
-        req = copy.copy(parent_req)
+        req = copy.deepcopy(parent_req)
 
         var_namespace = json.loads(json.dumps(var), object_hook=dict_to_sns)
         for key in info["ctx"]:
@@ -89,6 +92,10 @@ class Framework:
             val = render(val, var=var_namespace)
             ctx[key] = drivers[val["type"]](val["args"])
             req[key] = val["req"]
+
+        self._debug("var: {}".format(var))
+        self._debug("ctx: {}".format(ctx))
+        self._debug("req: {}".format(req))
 
         test_result = TestResult(info["name"])
         self.reporter.report_test_start(info)
@@ -223,17 +230,18 @@ class Framework:
         info["name"] = "{}/{}".format(filename, info["name"])
         return info
 
-    def run_case(self, case, var, ctx, req):
+    def run_case(self, case, var, ctx, dft_req):
         case_result = CaseResult(case["name"])
         for idx, step in enumerate(case["step"]):
             step = merge(step, {
                 "name": "step-{}".format(idx),
                 "res": {},
             })
+            self._debug("step {}".format(json.dumps(step, indent=True)))
             step_result = StepResult(step["name"])
             self.reporter.report_step_start(step)
             try:
-                req = merge(step["req"], req[step["ctx"]])
+                req = merge(step["req"], dft_req[step["ctx"]])
                 req = render(req, case=case_result, var=var)
                 step_result.req = req
                 res = ctx[step["ctx"]].do(req)
@@ -252,6 +260,9 @@ class Framework:
         case_result.summary()
         return case_result
 
+    def _debug(self, message):
+        if self.debug:
+            print("### ", message)
 
 
 # class Framework2:
