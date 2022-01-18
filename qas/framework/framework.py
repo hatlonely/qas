@@ -29,7 +29,7 @@ drivers = {
 
 reporters = {
     "text": TextReporter,
-    # "json": JsonReporter,
+    "json": JsonReporter,
 }
 
 

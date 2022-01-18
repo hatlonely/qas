@@ -4,10 +4,11 @@
 import json
 import re
 from colorama import Fore
+from .reporter import Reporter
 from ..result import TestResult, CaseResult, StepResult, ExpectResult
 
 
-class TextReporter:
+class TextReporter(Reporter):
     def __init__(self):
         self.padding = ""
 
@@ -22,29 +23,15 @@ class TextReporter:
         else:
             print("{}{}测试 {} 未通过，成功 {}，失败 {}，跳过 {}{}".format(self.padding, Fore.RED, res.name, res.succ, res.fail, res.skip, Fore.RESET))
 
-    def report_case_start(self, case):
-        pass
-
     def report_case_end(self, res: CaseResult):
         print("\n".join([self.padding + i for i in TextReporter.format_case(res, "case")]))
-
-    def report_setup_start(self, case):
-        pass
 
     def report_setup_end(self, res: CaseResult):
         print("\n".join([self.padding + i for i in TextReporter.format_case(res, "setUp")]))
 
-    def report_teardown_start(self, result):
-        pass
-
     def report_teardown_end(self, res: CaseResult):
         print("\n".join([self.padding + i for i in TextReporter.format_case(res, "tearDown")]))
 
-    def report_step_start(self, result):
-        pass
-
-    def report_step_end(self, result):
-        pass
 
     @staticmethod
     def format_case(res: CaseResult, case_type: str) -> list[str]:

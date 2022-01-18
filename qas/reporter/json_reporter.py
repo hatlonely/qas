@@ -2,14 +2,13 @@
 
 
 import json
+from .reporter import Reporter
 from ..result import TestResult, CaseResult, StepResult, ExpectResult
 
 
-class JsonReporter:
-    @staticmethod
-    def report(res: TestResult) -> str:
-        res.summary()
-        return json.dumps(JsonReporter.test_summary(res))
+class JsonReporter(Reporter):
+    def report_test_end(self, res: TestResult):
+        print(json.dumps(JsonReporter.test_summary(res), indent=True))
 
     @staticmethod
     def test_summary(res: TestResult) -> dict:
@@ -18,7 +17,9 @@ class JsonReporter:
             "succ": res.succ,
             "fail": res.fail,
             "name": res.name,
-            "cases": [JsonReporter.case_summary(i) for i in res.cases]
+            "cases": [JsonReporter.case_summary(i) for i in res.cases],
+            "setups": [JsonReporter.case_summary(i) for i in res.setups],
+            "teardowns": [JsonReporter.case_summary(i) for i in res.teardowns],
         }
 
     @staticmethod
