@@ -157,4 +157,7 @@ class Framework:
                 step_result.err = "Exception {}".format(traceback.format_exc())
                 step_result.is_pass = False
             case_result.steps.append(step_result)
+            step_result.summary()
+            if not step_result.is_pass:
+                break
         return case_result
