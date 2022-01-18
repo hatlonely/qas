@@ -6,7 +6,7 @@ from dateutil import parser
 from ..result import *
 
 
-def expect_obj(vals, rules, case=None, var=None):
+def expect(vals, rules, case=None, var=None):
     expect_results = []
     if isinstance(rules, dict):
         _expect_recursive("", vals, rules, True, expect_results, case=case, var=var)

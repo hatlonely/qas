@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from .expect import expect_obj
+from .expect import expect
 from .render import render
 
-__all__ = ["expect_obj", "render"]
+__all__ = ["expect", "render"]

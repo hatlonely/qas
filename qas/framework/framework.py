@@ -7,7 +7,7 @@ import json
 from types import SimpleNamespace
 
 from ..driver import HttpDriver, POPDriver, OTSDriver, ShellDriver, MysqlDriver, merge, REQUIRED
-from ..assertion import expect_obj, render
+from ..assertion import expect, render
 from ..result import TestResult, CaseResult, StepResult
 from ..reporter import TextReporter, JsonReporter
 
@@ -150,7 +150,7 @@ class Framework:
                 step_result.req = req
                 res = self.ctx[step["ctx"]].do(req)
                 step_result.res = res
-                result = expect_obj(res, step["res"], case=case_result, var=self.var)
+                result = expect(res, step["res"], case=case_result, var=self.var)
                 step_result.expects.extend(result)
             except Exception as e:
                 step_result.is_err = True
