@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import re
 
 import yaml
 import traceback
@@ -40,11 +41,13 @@ class Framework:
     var = dict()
     req = dict()
     case_name = None
+    case_regex = None
     skip_setup = False
     skip_teardown = False
 
-    def __init__(self, test_directory, case_directory=None, case_name=None, skip_setup=False, skip_teardown=False):
+    def __init__(self, test_directory, case_directory=None, case_name=None, case_regex=None, skip_setup=False, skip_teardown=False):
         self.case_name = case_name
+        self.case_regex = case_regex
         self.skip_setup = skip_setup
         self.skip_teardown = skip_teardown
         if os.path.isfile(test_directory):
@@ -128,6 +131,8 @@ class Framework:
                 test_result.setups.append(self.run_case(case))
         for case in self.case:
             if self.case_name and self.case_name != case["name"]:
+                continue
+            if self.case_regex and not re.search(self.case_regex, case["name"]):
                 continue
             test_result.cases.append(self.run_case(case))
         if not self.skip_teardown:
