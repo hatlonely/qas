@@ -3,11 +3,17 @@
 import yaml
 import traceback
 import os
+import json
+from types import SimpleNamespace
 
 from ..driver import HttpDriver, POPDriver, OTSDriver, ShellDriver, MysqlDriver, merge, REQUIRED
 from ..assertion import expect_obj, render
 from ..result import TestResult, CaseResult, StepResult
 from ..reporter import TextReporter, JsonReporter
+
+
+def dict_to_sns(d):
+    return SimpleNamespace(**d)
 
 
 drivers = {
@@ -82,7 +88,7 @@ class Framework:
             "tearDown": [],
         })
         self.data = data
-        self.var = data["var"]
+        self.var = json.loads(json.dumps(data["var"]), object_hook=dict_to_sns)
         self.name = data["name"]
         for key in data["ctx"]:
             val = merge(data["ctx"][key], {

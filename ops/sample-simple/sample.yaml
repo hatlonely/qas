@@ -10,7 +10,7 @@ ctx:
   jsontest:
     type: http
     args:
-      "#endpoint": "var['jsontestEndpoint']"
+      "#endpoint": "var.jsontestEndpoint"
     req:
       method: GET
 
@@ -33,7 +33,7 @@ case:
     step:
       - ctx: jsontest
         req:
-          "#path": "'/key/{}/one/two'.format(var['jsonValue'])"
+          "#path": "'/key/{}/one/two'.format(var.jsonValue)"
         res:
           status: 200
           headers: {
@@ -43,5 +43,5 @@ case:
           }
           json: {
             "one": "two",
-            "#key": "var['jsonValue']"
+            "#key": "var.jsonValue"
           }
