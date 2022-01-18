@@ -6,18 +6,18 @@ from dateutil import parser
 from ..result import *
 
 
-def expect_obj(vals, rules, case=None):
+def expect_obj(vals, rules, case=None, var=None):
     expect_results = []
     if isinstance(rules, dict):
-        expect_obj_recursive("", vals, rules, True, expect_results, case=case)
+        expect_obj_recursive("", vals, rules, True, expect_results, case=case, var=var)
     elif isinstance(rules, list):
-        expect_obj_recursive("", vals, rules, False, expect_results, case=case)
+        expect_obj_recursive("", vals, rules, False, expect_results, case=case, var=var)
     else:
         pass
     return expect_results
 
 
-def expect_obj_recursive(root: str, vals, rules, is_dict: bool, expect_results: list, case=None):
+def expect_obj_recursive(root: str, vals, rules, is_dict: bool, expect_results: list, case=None, var=None):
     if is_dict:
         to_enumerate = rules.items()
     else:
@@ -25,13 +25,13 @@ def expect_obj_recursive(root: str, vals, rules, is_dict: bool, expect_results: 
     for key, rule in to_enumerate:
         root_dot_key = "{}.{}".format(root, key.lstrip("#")).lstrip(".")
         if isinstance(rule, dict):
-            expect_obj_recursive(root_dot_key, vals[key], rule, True, expect_results, case=case)
+            expect_obj_recursive(root_dot_key, vals[key], rule, True, expect_results, case=case, var=var)
         elif isinstance(rule, list):
-            expect_obj_recursive(root_dot_key, vals[key], rule, False, expect_results, case=case)
+            expect_obj_recursive(root_dot_key, vals[key], rule, False, expect_results, case=case, var=var)
         else:
             if isinstance(key, str) and key.startswith("#"):
                 val = vals[key[1:]]
-                ok = expect_val(val, rule, case=case)
+                ok = expect_val(val, rule, case=case, var=var)
                 if not ok:
                     expect_results.append(ExpectResult(is_pass=False, message="NotMatch", node=root_dot_key, val=val, expect=rule))
                 else:
@@ -44,10 +44,10 @@ def expect_obj_recursive(root: str, vals, rules, is_dict: bool, expect_results: 
                     expect_results.append(ExpectResult(is_pass=True, message="OK", node=root_dot_key, val=val, expect=rule))
 
 
-def expect_val(val, rule, case=None):
+def expect_val(val, rule, case=None, var=None):
     res = eval(rule)
     if not isinstance(res, bool):
-        raise Exception("rule should return result")
+        return res == val
     return res
 
 

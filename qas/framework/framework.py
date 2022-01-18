@@ -31,6 +31,7 @@ class Framework:
     set_up = None
     tear_down = None
     ctx = dict()
+    var = dict()
     req = dict()
     case_name = None
     skip_setup = False
@@ -68,17 +69,20 @@ class Framework:
 
     def load_ctx(self, ctx_filename):
         if not os.path.exists(ctx_filename) or not os.path.isfile(ctx_filename):
-            raise Exception("ctx.yaml is missing")
+            raise Exception("ctx file [{}] is missing".format(ctx_filename))
         fp = open(ctx_filename, "r", encoding="utf-8")
         data = yaml.safe_load(fp)
         fp.close()
         data = merge(data, {
             "name": REQUIRED,
+            "ctx": REQUIRED,
+            "var": {},
             "case": [],
             "setUp": [],
             "tearDown": [],
         })
         self.data = data
+        self.var = data["var"]
         self.name = data["name"]
         for key in data["ctx"]:
             val = merge(data["ctx"][key], {
@@ -86,6 +90,7 @@ class Framework:
                 "args": {},
                 "req": {},
             })
+            val = render(val, var=self.var)
             self.ctx[key] = drivers[val["type"]](val["args"])
             self.req[key] = val["req"]
         self.case = data["case"]
@@ -135,11 +140,11 @@ class Framework:
             step_result = StepResult(step["name"])
             try:
                 req = merge(step["req"], self.req[step["ctx"]])
-                req = render(req, case=case_result)
+                req = render(req, case=case_result, var=self.var)
                 step_result.req = req
                 res = self.ctx[step["ctx"]].do(req)
                 step_result.res = res
-                res = expect_obj(res, step["res"], case=case_result)
+                res = expect_obj(res, step["res"], case=case_result, var=self.var)
                 step_result.expects.extend(res)
             except Exception as e:
                 step_result.is_err = True

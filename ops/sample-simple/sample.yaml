@@ -1,12 +1,16 @@
 name: sample
 
+var:
+  jsontestEndpoint: "http://echo.jsontest.com/"
+  jsonValue: "value"
+
 ctx:
   shell:
     type: shell
   jsontest:
     type: http
     args:
-      endpoint: http://echo.jsontest.com/
+      "#endpoint": "var['jsontestEndpoint']"
     req:
       method: GET
 
@@ -29,7 +33,7 @@ case:
     step:
       - ctx: jsontest
         req:
-          path: /key/value/one/two
+          "#path": "'/key/{}/one/two'.format(var['jsonValue'])"
         res:
           status: 200
           headers: {
@@ -39,5 +43,5 @@ case:
           }
           json: {
             "one": "two",
-            "key": "value"
+            "#key": "var['jsonValue']"
           }
