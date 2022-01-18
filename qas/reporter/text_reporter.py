@@ -17,9 +17,9 @@ class TextReporter:
     def test_summary(res: TestResult) -> list[str]:
         lines = []
         if res.is_pass:
-            lines.append(Fore.GREEN + "测试通过, 成功 {}".format(res.succ) + Fore.RESET)
+            lines.append(Fore.GREEN + "测试通过, 成功 {}，失败 {}，跳过 {}".format(res.succ, res.fail, res.skip) + Fore.RESET)
         else:
-            lines.append(Fore.RED + "测试失败，成功 {}，失败 {}".format(res.succ, res.fail) + Fore.RESET)
+            lines.append(Fore.RED + "测试失败，成功 {}，失败 {}".format(res.succ, res.fail, res.skip) + Fore.RESET)
 
         for cs in res.setups:
             lines.extend(["  " + i for i in TextReporter.case_summary(cs, "setup")])

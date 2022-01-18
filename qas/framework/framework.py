@@ -131,8 +131,10 @@ class Framework:
                 test_result.setups.append(self.run_case(case))
         for case in self.case:
             if self.case_name and self.case_name != case["name"]:
+                test_result.skip += 1
                 continue
             if self.case_regex and not re.search(self.case_regex, case["name"]):
+                test_result.skip += 1
                 continue
             test_result.cases.append(self.run_case(case))
         if not self.skip_teardown:

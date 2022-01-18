@@ -71,6 +71,7 @@ class TestResult:
     is_pass: bool
     succ: int
     fail: int
+    skip: int
 
     def __init__(self, name=""):
         self.name = name
@@ -80,6 +81,7 @@ class TestResult:
         self.is_pass = True
         self.succ = 0
         self.fail = 0
+        self.skip = 0
 
     def summary(self):
         for r in self.setups:
