@@ -40,13 +40,23 @@ class Framework:
     skip_setup: bool
     skip_teardown: bool
 
-    def __init__(self, test_directory, case_directory=None, case_name=None, case_regex=None, skip_setup=False, skip_teardown=False):
+    def __init__(
+        self,
+        test_directory,
+        case_directory=None,
+        case_name=None,
+        case_regex=None,
+        skip_setup=False,
+        skip_teardown=False,
+        reporter="text",
+    ):
         self.test_directory = test_directory
         self.case_directory = case_directory
         self.case_regex = case_regex
         self.case_name = case_name
         self.skip_setup = skip_setup
         self.skip_teardown = skip_teardown
+        self.reporter = reporters[reporter]
 
     def run(self):
         self.exec_directory(self.test_directory, {}, {}, {})
@@ -108,7 +118,7 @@ class Framework:
         ]:
             test_result.sub_tests.append(self.exec_directory(directory, var, ctx, req))
 
-        print(reporters["text"].report(test_result))
+        print(self.reporter.report(test_result))
         return test_result
 
     @staticmethod
