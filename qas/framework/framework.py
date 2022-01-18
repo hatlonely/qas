@@ -111,18 +111,19 @@ class Framework:
         data = yaml.safe_load(fp)
         fp.close()
         if isinstance(data, dict):
-            data = merge(data, {
-                "name": REQUIRED,
-            })
-            data["name"] = "{}/{}".format(filename, data["name"])
-            yield data
+            yield self.format_case(filename, data)
         if isinstance(data, list):
             for item in data:
-                item = merge(item, {
-                    "name": REQUIRED,
-                })
-                item["name"] = "{}/{}".format(filename, item["name"])
-                yield item
+                yield self.format_case(filename, item)
+
+    def format_case(self, filename, data):
+        data = merge(data, {
+            "name": REQUIRED,
+            "cond": "",
+            "label": {},
+        })
+        data["name"] = "{}/{}".format(filename, data["name"])
+        return data
 
     def run(self):
         result = self.run_all_cases()
