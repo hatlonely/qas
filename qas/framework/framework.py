@@ -39,6 +39,7 @@ class Framework:
     case_name: str
     skip_setup: bool
     skip_teardown: bool
+    debug: bool
 
     def __init__(
         self,
@@ -48,6 +49,7 @@ class Framework:
         case_regex=None,
         skip_setup=False,
         skip_teardown=False,
+        debug=False,
         reporter="text",
     ):
         self.test_directory = test_directory
@@ -56,6 +58,7 @@ class Framework:
         self.case_name = case_name
         self.skip_setup = skip_setup
         self.skip_teardown = skip_teardown
+        self.debug = debug
         self.reporter = reporters[reporter]()
 
     def run(self):

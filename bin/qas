@@ -20,6 +20,8 @@ def main():
     parser = argparse.ArgumentParser(formatter_class=lambda prog: argparse.RawTextHelpFormatter(prog, width=200), description="""example:
     qas --test "tmp/env/dev/sample"
 """)
+    parser.add_argument("--debug", nargs="?", const=True, default=False, help="debug mod")
+    parser.add_argument("-r", "--reporter", default="text", help="test directory")
     parser.add_argument("-t", "--test", required=True, help="test directory")
     parser.add_argument("-c", "--case", help="case directory")
     parser.add_argument("--case-name", help="case name")
@@ -35,6 +37,8 @@ def main():
         case_regex=args.case_regex,
         skip_setup=args.skip_setup,
         skip_teardown=args.skip_teardown,
+        debug=args.debug,
+        reporter=args.reporter,
     )
     if not fw.run():
         sys.exit(1)
