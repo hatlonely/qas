@@ -84,15 +84,3 @@ class TestResult:
         self.succ = 0
         self.fail = 0
         self.skip = 0
-
-    def summary(self):
-        for r in self.setups:
-            r.summary()
-        for r in self.cases:
-            r.summary()
-        for r in self.teardowns:
-            r.summary()
-        self.succ = sum(1 for i in self.cases if i.is_pass) + sum(1 for i in self.setups if i.is_pass) + sum(1 for i in self.teardowns if i.is_pass)
-        self.fail = len(self.cases) + len(self.setups) + len(self.teardowns) - self.succ
-        self.is_pass = self.fail == 0
-

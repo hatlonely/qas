@@ -18,9 +18,9 @@ class TextReporter:
     def report_test_end(self, res: TestResult):
         self.padding = self.padding[:-2]
         if res.is_pass:
-            print("{}{}测试 {} 通过, 成功 {}，失败 {}，跳过 {}{}".format(self.padding, Fore.GREEN, res.name, res.succ, res.fail, res.skip, Fore.RESET))
+            print("{}{}测试 {} 通过，成功 {}，失败 {}，跳过 {}{}".format(self.padding, Fore.GREEN, res.name, res.succ, res.fail, res.skip, Fore.RESET))
         else:
-            print("{}{}测试 {} 通过, 失败 {}，失败 {}，跳过 {}{}".format(self.padding, Fore.RED, res.name, res.succ, res.fail, res.skip, Fore.RESET))
+            print("{}{}测试 {} 未通过，成功 {}，失败 {}，跳过 {}{}".format(self.padding, Fore.RED, res.name, res.succ, res.fail, res.skip, Fore.RESET))
 
     def report_case_start(self, case):
         pass
