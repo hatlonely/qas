@@ -150,8 +150,8 @@ class Framework:
                 step_result.req = req
                 res = self.ctx[step["ctx"]].do(req)
                 step_result.res = res
-                res = expect_obj(res, step["res"], case=case_result, var=self.var)
-                step_result.expects.extend(res)
+                result = expect_obj(res, step["res"], case=case_result, var=self.var)
+                step_result.expects.extend(result)
             except Exception as e:
                 step_result.is_err = True
                 step_result.err = "Exception {}".format(traceback.format_exc())

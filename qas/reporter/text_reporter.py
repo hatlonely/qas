@@ -51,6 +51,7 @@ class TextReporter:
         lines.extend(("req: " + json.dumps(res.req, indent=True)).split("\n"))
 
         if res.is_err:
+            lines.extend(("res: " + json.dumps(res.res, indent=True)).split("\n"))
             lines.extend(["  " + i for i in res.err.split("\n")])
             return lines
 
