@@ -72,12 +72,14 @@ class TestResult:
     succ: int
     fail: int
     skip: int
+    sub_tests: list
 
     def __init__(self, name=""):
         self.name = name
         self.setups = list[CaseResult]()
         self.cases = list[CaseResult]()
         self.teardowns = list[CaseResult]()
+        self.sub_tests = list[TestResult]()
         self.is_pass = True
         self.succ = 0
         self.fail = 0
