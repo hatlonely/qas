@@ -9,15 +9,15 @@ from ..result import *
 def expect_obj(vals, rules, case=None, var=None):
     expect_results = []
     if isinstance(rules, dict):
-        expect_obj_recursive("", vals, rules, True, expect_results, case=case, var=var)
+        _expect_recursive("", vals, rules, True, expect_results, case=case, var=var)
     elif isinstance(rules, list):
-        expect_obj_recursive("", vals, rules, False, expect_results, case=case, var=var)
+        _expect_recursive("", vals, rules, False, expect_results, case=case, var=var)
     else:
         pass
     return expect_results
 
 
-def expect_obj_recursive(root: str, vals, rules, is_dict: bool, expect_results: list, case=None, var=None):
+def _expect_recursive(root: str, vals, rules, is_dict: bool, expect_results: list, case=None, var=None):
     if is_dict:
         to_enumerate = rules.items()
     else:
@@ -25,9 +25,9 @@ def expect_obj_recursive(root: str, vals, rules, is_dict: bool, expect_results: 
     for key, rule in to_enumerate:
         root_dot_key = "{}.{}".format(root, key.lstrip("#")).lstrip(".")
         if isinstance(rule, dict):
-            expect_obj_recursive(root_dot_key, vals[key], rule, True, expect_results, case=case, var=var)
+            _expect_recursive(root_dot_key, vals[key], rule, True, expect_results, case=case, var=var)
         elif isinstance(rule, list):
-            expect_obj_recursive(root_dot_key, vals[key], rule, False, expect_results, case=case, var=var)
+            _expect_recursive(root_dot_key, vals[key], rule, False, expect_results, case=case, var=var)
         else:
             if isinstance(key, str) and key.startswith("#"):
                 val = vals[key[1:]]
