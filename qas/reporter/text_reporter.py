@@ -22,20 +22,20 @@ class TextReporter:
             lines.append(Fore.RED + "测试失败，成功 {}，失败 {}".format(res.succ, res.fail) + Fore.RESET)
 
         for cs in res.setups:
-            lines.extend(["  " + i for i in TextReporter.case_summary(cs)])
+            lines.extend(["  " + i for i in TextReporter.case_summary(cs, "setup")])
         for cs in res.cases:
-            lines.extend(["  " + i for i in TextReporter.case_summary(cs)])
+            lines.extend(["  " + i for i in TextReporter.case_summary(cs, "case")])
         for cs in res.teardowns:
-            lines.extend(["  " + i for i in TextReporter.case_summary(cs)])
+            lines.extend(["  " + i for i in TextReporter.case_summary(cs, "teardown")])
         return lines
 
     @staticmethod
-    def case_summary(res: CaseResult) -> list[str]:
+    def case_summary(res: CaseResult, case_type: str) -> list[str]:
         lines = []
         if res.is_pass:
-            lines.append(Fore.GREEN + "case {} 通过".format(res.case) + Fore.RESET)
+            lines.append(Fore.GREEN + "{} {} 通过".format(case_type, res.case) + Fore.RESET)
         else:
-            lines.append(Fore.RED + "case {} 失败".format(res.case) + Fore.RESET)
+            lines.append(Fore.RED + "{} {} 失败".format(case_type, res.case) + Fore.RESET)
         for step_result in res.steps:
             lines.extend(["  " + i for i in TextReporter.step_summary(step_result)])
         return lines
