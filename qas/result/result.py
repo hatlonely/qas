@@ -70,11 +70,6 @@ class CaseResult:
         self.is_pass = True
         self.elapse = 0
 
-    def summary(self):
-        for r in self.steps:
-            r.summary()
-        self.is_pass = all(i.is_pass for i in self.steps)
-
 
 @dataclass
 class TestResult:
