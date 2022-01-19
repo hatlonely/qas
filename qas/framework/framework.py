@@ -111,7 +111,7 @@ class Framework:
         if not self.skip_setup:
             for case_info in self.teardowns(info, test_directory):
                 self.reporter.report_setup_start(case_info)
-                result = self.run_case(before_case_info, case_info, after_case_info, var, ctx, dft_info)
+                result = self.run_case(before_case_info, case_info, after_case_info, dft_info, var=var, ctx=ctx)
                 test_result.setups.append(result)
                 self.reporter.report_setup_end(result)
                 if not result.is_pass:
@@ -125,7 +125,7 @@ class Framework:
                 test_result.skip += 1
                 continue
             self.reporter.report_case_start(case_info)
-            result = self.run_case(before_case_info, case_info, after_case_info, var, ctx, dft_info)
+            result = self.run_case(before_case_info, case_info, after_case_info, dft_info, var=var, ctx=ctx)
             test_result.cases.append(result)
             self.reporter.report_case_end(result)
             if result.is_pass:
@@ -151,7 +151,7 @@ class Framework:
         if not self.skip_teardown:
             for case_info in self.teardowns(info, test_directory):
                 self.reporter.report_teardown_start(case_info)
-                result = self.run_case(before_case_info, case_info, after_case_info, var, ctx, dft_info)
+                result = self.run_case(before_case_info, case_info, after_case_info, dft_info, var=var, ctx=ctx)
                 test_result.teardowns.append(result)
                 self.reporter.report_teardown_end(result)
                 if not result.is_pass:
@@ -246,25 +246,25 @@ class Framework:
             for step in info:
                 yield step
 
-    def run_case(self, before_case_info, case_info, after_case_info, var, ctx, dft):
+    def run_case(self, before_case_info, case_info, after_case_info, dft, var=None, ctx=None):
         case = CaseResult(case_info["name"])
 
         for idx, step_info in enumerate(before_case_info):
-            step = self.run_step("step-{}".format(idx), step_info, case, ctx, var, dft)
+            step = self.run_step("step-{}".format(idx), step_info, case, dft, var=var, ctx=ctx)
             case.before_steps.append(step)
             if not step.is_pass:
                 break
             self.reporter.report_step_end(step)
 
         for idx, step_info in enumerate(case_info["step"]):
-            step = self.run_step("step-{}".format(idx), step_info, case, ctx, var, dft)
+            step = self.run_step("step-{}".format(idx), step_info, case, dft, var=var, ctx=ctx)
             case.steps.append(step)
             if not step.is_pass:
                 break
             self.reporter.report_step_end(step)
 
         for idx, step_info in enumerate(after_case_info):
-            step = self.run_step("step-{}".format(idx), step_info, case, ctx, var, dft)
+            step = self.run_step("step-{}".format(idx), step_info, case, dft, var=var, ctx=ctx)
             case.after_steps.append(step)
             if not step.is_pass:
                 break
@@ -273,7 +273,7 @@ class Framework:
         case.summary()
         return case
 
-    def run_step(self, dft_step_name, step_info, case, ctx, var, dft):
+    def run_step(self, dft_step_name, step_info, case, dft, var=None, ctx=None):
         step_info = merge(step_info, {
             "name": dft_step_name,
             "res": {},
