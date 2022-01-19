@@ -21,14 +21,16 @@ class StepResult:
     res: dict
     assertions: list[ExpectResult]
     is_pass: bool
+    is_skip: bool
     is_err: bool
     err: str
     assertion_succ: int
     assertion_fail: int
     elapse: timedelta
 
-    def __init__(self, name):
+    def __init__(self, name, is_skip=False):
         self.name = name
+        self.is_skip = is_skip
         self.assertions = list[ExpectResult]()
         self.is_pass = True
         self.is_err = False
@@ -61,6 +63,7 @@ class CaseResult:
     is_skip: bool
     step_succ: int
     step_fail: int
+    step_skip: int
     assertion_succ: int
     assertion_fail: int
     elapse: timedelta
@@ -77,6 +80,7 @@ class CaseResult:
         self.assertion_fail = 0
         self.step_succ = 0
         self.step_fail = 0
+        self.step_skip = 0
 
     def add_case_step_result(self, step: StepResult):
         self.steps.append(step)
@@ -92,21 +96,21 @@ class CaseResult:
         self.before_case_steps.append(step)
         if not step.is_pass:
             self.is_pass = False
-            self.step_fail += 1
-        else:
-            self.step_succ += 1
-        self.assertion_succ += step.assertion_succ
-        self.assertion_fail += step.assertion_fail
 
     def add_after_case_step_result(self, step: StepResult):
         self.after_case_steps.append(step)
         if not step.is_pass:
             self.is_pass = False
-            self.step_fail += 1
-        else:
-            self.step_succ += 1
-        self.assertion_succ += step.assertion_succ
-        self.assertion_fail += step.assertion_fail
+
+    def skip_case_step(self, name):
+        self.steps.append(StepResult(name, is_skip=True))
+        self.step_skip += 1
+
+    def skip_before_case_step(self, name):
+        self.before_case_steps.append(StepResult(name, is_skip=True))
+
+    def skip_after_case_step(self, name):
+        self.after_case_steps.append(StepResult(name, is_skip=True))
 
 
 @dataclass
@@ -138,6 +142,7 @@ class TestResult:
         self.assertion_fail = 0
         self.step_succ = 0
         self.step_fail = 0
+        self.step_skip = 0
 
     def add_setup_result(self, case: CaseResult):
         self.setups.append(case)
@@ -152,6 +157,7 @@ class TestResult:
             self.case_fail += 1
         self.step_succ += case.step_succ
         self.step_fail += case.step_fail
+        self.step_skip += case.step_skip
         self.assertion_succ += case.assertion_succ
         self.assertion_fail += case.assertion_fail
 
@@ -171,6 +177,7 @@ class TestResult:
         self.case_skip += sub_test.case_skip
         self.step_succ += sub_test.step_succ
         self.step_fail += sub_test.step_fail
+        self.step_skip += sub_test.step_skip
         self.assertion_succ += sub_test.assertion_succ
         self.assertion_fail += sub_test.assertion_fail
         if not sub_test.is_pass:

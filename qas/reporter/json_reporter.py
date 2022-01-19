@@ -50,8 +50,9 @@ class JsonReporter(Reporter):
     @staticmethod
     def step_summary(res: StepResult) -> dict:
         return {
-            "isPass": res.is_pass,
             "name": res.name,
+            "isPass": res.is_pass,
+            "isSkip": res.is_skip,
             "elapse": durationpy.to_str(res.elapse),
             "assertion_succ": res.assertion_succ,
             "assertion_fail": res.assertion_fail,

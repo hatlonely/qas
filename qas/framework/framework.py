@@ -243,26 +243,32 @@ class Framework:
         case = CaseResult(case_info["name"])
 
         now = datetime.now()
-        for idx, step_info, case_add_step_func in itertools.chain(
-            [list(i) + [case.add_before_case_step_result] for i in enumerate(before_case_info)],
-            [list(i) + [case.add_case_step_result] for i in enumerate(case_info["step"])],
-            [list(i) + [case.add_after_case_step_result] for i in enumerate(after_case_info)],
+        for idx, step_info, case_add_step_func, case_skip_step_func in itertools.chain(
+            [list(i) + [case.add_before_case_step_result, case.skip_before_case_step] for i in enumerate(before_case_info)],
+            [list(i) + [case.add_case_step_result, case.skip_case_step] for i in enumerate(case_info["step"])],
+            [list(i) + [case.add_after_case_step_result, case.skip_after_case_step] for i in enumerate(after_case_info)],
         ):
-            step = self.run_step("step-{}".format(idx), step_info, case, dft, var=var, ctx=ctx)
+            step_info = merge(step_info, {
+                "name": "step-{}".format(idx),
+                "res": {},
+                "retry": {},
+                "until": {},
+                "cond": "",
+            })
+
+            # 条件步骤
+            if step_info["cond"] and not expect_val(None, step_info["cond"], case=case, var=var):
+                case_skip_step_func(step_info["name"])
+                self.reporter.report_skip_step(step_info["name"])
+                continue
+            step = self.run_step(step_info, case, dft, var=var, ctx=ctx)
             case_add_step_func(step)
             self.reporter.report_step_end(step)
 
         case.elapse = datetime.now() - now
         return case
 
-    def run_step(self, dft_step_name, step_info, case, dft, var=None, ctx=None):
-        step_info = merge(step_info, {
-            "name": dft_step_name,
-            "res": {},
-            "retry": {},
-            "until": {},
-        })
-
+    def run_step(self, step_info, case, dft, var=None, ctx=None):
         self._debug("step {}".format(json.dumps(step_info, indent=True)))
 
         step = StepResult(step_info["name"])

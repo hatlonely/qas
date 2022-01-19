@@ -56,6 +56,7 @@ case:
       - ctx: jsontest
         req:
           "#path": "'/key/{}/one/two'.format(var.jsonValue)"
+        cond: "var.jsonValue == 'value'"
         retry:
           cond: "step.res['status'] == 500"
           attempts: 2

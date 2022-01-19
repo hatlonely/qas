@@ -36,3 +36,6 @@ class Reporter:
 
     def report_step_end(self, res: StepResult):
         pass
+
+    def report_skip_step(self, name):
+        pass

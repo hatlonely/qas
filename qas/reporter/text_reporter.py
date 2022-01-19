@@ -20,9 +20,9 @@ class TextReporter(Reporter):
     def report_test_end(self, res: TestResult):
         self.padding = self.padding[:-2]
         if res.is_pass:
-            print("{}{}测试 {} 通过，成功 {}，跳过 {}，步骤成功 {}，断言成功 {}，耗时 {}{}".format(
+            print("{}{}测试 {} 通过，成功 {}，跳过 {}，步骤成功 {}，跳过 {}，断言成功 {}，耗时 {}{}".format(
                 self.padding, Fore.GREEN, res.name, res.case_succ, res.case_skip,
-                res.step_succ, res.assertion_succ,
+                res.step_succ, res.step_skip, res.assertion_succ,
                 durationpy.to_str(res.elapse), Fore.RESET,
             ))
         else:
@@ -68,6 +68,9 @@ class TextReporter(Reporter):
 
     @staticmethod
     def format_step(res, step_type: str) -> list[str]:
+        if res.is_skip:
+            return ["{}{} {} 跳过{}".format(Fore.YELLOW, step_type, res.name, Fore.RESET)]
+
         lines = []
         if res.is_pass:
             lines.append("{}{} {} 通过，断言成功 {}，耗时 {}{}".format(
