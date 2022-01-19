@@ -249,14 +249,7 @@ class Framework:
     def run_case(self, before_case_info, case_info, after_case_info, var, ctx, dft):
         case = CaseResult(case_info["name"])
         for idx, step_info in enumerate(case_info["step"]):
-            step_info = merge(step_info, {
-                "name": "step-{}".format(idx),
-                "res": {},
-                "retry": {},
-                "until": {},
-            })
-
-            step = self.run_step(step_info, case, ctx, var, dft)
+            step = self.run_step("step-{}".format(idx), step_info, case, ctx, var, dft)
             case.steps.append(step)
             if not step.is_pass:
                 break
@@ -264,7 +257,14 @@ class Framework:
         case.summary()
         return case
 
-    def run_step(self, step_info, case, ctx, var, dft):
+    def run_step(self, dft_step_name, step_info, case, ctx, var, dft):
+        step_info = merge(step_info, {
+            "name": dft_step_name,
+            "res": {},
+            "retry": {},
+            "until": {},
+        })
+
         self._debug("step {}".format(json.dumps(step_info, indent=True)))
         step = StepResult(step_info["name"])
         self.reporter.report_step_start(step_info)
