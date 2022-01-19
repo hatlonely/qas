@@ -27,8 +27,8 @@ class StepResult:
     assertion_fail: int
     elapse: timedelta
 
-    def __init__(self, step):
-        self.name = step
+    def __init__(self, name):
+        self.name = name
         self.expects = list[ExpectResult]()
         self.is_pass = True
         self.is_err = False
@@ -65,8 +65,8 @@ class CaseResult:
     assertion_fail: int
     elapse: timedelta
 
-    def __init__(self, case, is_skip=False):
-        self.name = case
+    def __init__(self, name, is_skip=False):
+        self.name = name
         self.is_skip = is_skip
         self.before_case_steps = list[StepResult]()
         self.steps = list[StepResult]()
