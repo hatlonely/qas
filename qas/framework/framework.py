@@ -15,7 +15,7 @@ from ..driver import HttpDriver, POPDriver, OTSDriver, ShellDriver, MysqlDriver,
 from ..assertion import expect, render, expect_val
 from ..result import TestResult, CaseResult, StepResult
 from ..reporter import TextReporter, JsonReporter
-from .retry import Retry, Until, RetryError, UntilError
+from .retry_until import Retry, Until, RetryError, UntilError
 
 
 def dict_to_sns(d):
