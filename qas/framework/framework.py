@@ -66,27 +66,19 @@ class Framework:
         self.reporter = reporters[reporter]()
 
     def run(self):
-        res = self.exec_directory(self.test_directory, {}, {}, {})
+        res = self.exec_directory(self.test_directory, {}, {}, {}, [], [])
         return res.is_pass
 
-    def need_skip(self, case, var):
-        if self.case_name and self.case_name != case["name"]:
-            return True
-        if self.case_regex and not re.search(self.case_regex, case["name"]):
-            return True
-        if case["cond"] and not expect_val(None, case["cond"], var=var):
-            return True
-        return False
-
-    def exec_directory(self, test_directory, parent_var, parent_ctx, parent_dft):
+    def exec_directory(self, test_directory, parent_var, parent_ctx, parent_dft, parent_before_case, parent_after_case):
         self._debug("enter {}".format(test_directory))
 
         info = Framework.load_ctx(os.path.basename(test_directory), "{}/ctx.yaml".format(test_directory))
         var = copy.deepcopy(parent_var) | info["var"]
+        var_namespace = json.loads(json.dumps(var), object_hook=dict_to_sns)
+        before_case = copy.deepcopy(parent_before_case) + info["beforeCase"] + list(Framework.load_step("{}/before_case.yaml".format(test_directory)))
+        after_case = copy.deepcopy(parent_after_case) + info["afterCase"] + list(Framework.load_step("{}/after_case.yaml".format(test_directory)))
         ctx = copy.copy(parent_ctx)
         dft = copy.deepcopy(parent_dft)
-
-        var_namespace = json.loads(json.dumps(var), object_hook=dict_to_sns)
         for key in info["ctx"]:
             val = merge(info["ctx"][key], {
                 "type": REQUIRED,
@@ -119,7 +111,7 @@ class Framework:
         if not self.skip_setup:
             for case in self.teardowns(info, test_directory):
                 self.reporter.report_setup_start(case)
-                result = self.run_case(case, var_namespace, ctx, dft)
+                result = self.run_case(before_case, case, after_case, var_namespace, ctx, dft)
                 test_result.setups.append(result)
                 self.reporter.report_setup_end(result)
                 if not result.is_pass:
@@ -133,7 +125,7 @@ class Framework:
                 test_result.skip += 1
                 continue
             self.reporter.report_case_start(case)
-            result = self.run_case(case, var_namespace, ctx, dft)
+            result = self.run_case(before_case, case, after_case, var_namespace, ctx, dft)
             test_result.cases.append(result)
             self.reporter.report_case_end(result)
             if result.is_pass:
@@ -147,7 +139,7 @@ class Framework:
             for i in os.listdir(test_directory)
             if os.path.isdir(os.path.join(test_directory, i))
         ]:
-            sub_test_result = self.exec_directory(directory, var, ctx, dft)
+            sub_test_result = self.exec_directory(directory, var, ctx, dft, before_case, after_case)
             test_result.sub_tests.append(sub_test_result)
             test_result.succ += sub_test_result.succ
             test_result.fail += sub_test_result.fail
@@ -159,7 +151,7 @@ class Framework:
         if not self.skip_teardown:
             for case in self.teardowns(info, test_directory):
                 self.reporter.report_teardown_start(case)
-                result = self.run_case(case, var_namespace, ctx, dft)
+                result = self.run_case(before_case, case, after_case, var_namespace, ctx, dft)
                 test_result.teardowns.append(result)
                 self.reporter.report_teardown_end(result)
                 if not result.is_pass:
@@ -169,6 +161,15 @@ class Framework:
 
         self.reporter.report_test_end(test_result)
         return test_result
+
+    def need_skip(self, case, var):
+        if self.case_name and self.case_name != case["name"]:
+            return True
+        if self.case_regex and not re.search(self.case_regex, case["name"]):
+            return True
+        if case["cond"] and not expect_val(None, case["cond"], var=var):
+            return True
+        return False
 
     def setups(self, info, test_directory):
         for case in info["setUp"]:
@@ -192,7 +193,8 @@ class Framework:
         for filename in [
             os.path.join(test_directory, i)
             for i in os.listdir(test_directory)
-            if i not in ["ctx.yaml", "setup.yaml", "teardown.yaml"] and os.path.isfile(os.path.join(test_directory, i))
+            if i not in ["ctx.yaml", "setup.yaml", "teardown.yaml", "before_case.yaml, after_case.yaml"]
+            and os.path.isfile(os.path.join(test_directory, i))
         ]:
             for case in self.load_case(filename):
                 yield case
@@ -206,24 +208,24 @@ class Framework:
             "case": [],
             "setUp": [],
             "tearDown": [],
+            "beforeCase": [],
+            "afterCase": []
         }
         if not os.path.exists(filename) or not os.path.isfile(filename):
             return dft
-        fp = open(filename, "r", encoding="utf-8")
-        info = yaml.safe_load(fp)
-        fp.close()
+        with open(filename, "r", encoding="utf-8") as fp:
+            info = yaml.safe_load(fp)
         return merge(info, dft)
 
     @staticmethod
     def load_case(filename):
-        fp = open(filename, "r", encoding="utf-8")
-        info = yaml.safe_load(fp)
-        fp.close()
-        if isinstance(info, dict):
-            yield Framework.format_case(filename, info)
-        if isinstance(info, list):
-            for item in info:
-                yield Framework.format_case(filename, item)
+        with open(filename, "r", encoding="utf-8") as fp:
+            info = yaml.safe_load(fp)
+            if isinstance(info, dict):
+                yield Framework.format_case(filename, info)
+            if isinstance(info, list):
+                for item in info:
+                    yield Framework.format_case(filename, item)
 
     @staticmethod
     def format_case(filename, info):
@@ -235,7 +237,16 @@ class Framework:
         info["name"] = "{}/{}".format(filename, info["name"])
         return info
 
-    def run_case(self, case, var, ctx, dft):
+    @staticmethod
+    def load_step(filename):
+        if not os.path.exists(filename) or not os.path.isfile(filename):
+            return []
+        with open(filename, "r", encoding="utf-8") as fp:
+            info = yaml.safe_load(fp)
+            for step in info:
+                yield step
+
+    def run_case(self, before_case, case, after_case, var, ctx, dft):
         case_result = CaseResult(case["name"])
         for idx, step in enumerate(case["step"]):
             step = merge(step, {
@@ -278,13 +289,17 @@ class Framework:
                 step_result.set_error("UntilError [{}], ".format(until))
             except Exception as e:
                 step_result.set_error("Exception {}".format(traceback.format_exc()))
-            case_result.steps.append(step_result)
             step_result.summary()
+
+            case_result.steps.append(step_result)
             if not step_result.is_pass:
                 break
             self.reporter.report_step_end(step_result)
         case_result.summary()
         return case_result
+
+    def run_step(self, info, case, step, var):
+        pass
 
     def _debug(self, message):
         if self.debug:

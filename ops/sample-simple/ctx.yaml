@@ -37,6 +37,16 @@ tearDown:
         req:
           command: "echo good bye"
 
+beforeCase:
+  - ctx: shell
+    req:
+      command: "echo before case"
+
+afterCase:
+  - ctx: shell
+    req:
+      command: "echo after case"
+
 case:
   - name: TestHttpJson
     label:
