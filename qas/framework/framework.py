@@ -69,12 +69,12 @@ class Framework:
         res = self.exec_directory(self.test_directory, {}, {}, {}, [], [])
         return res.is_pass
 
-    def exec_directory(self, test_directory, parent_var, parent_ctx, parent_dft, parent_before_case, parent_after_case):
+    def exec_directory(self, test_directory, parent_var_info, parent_ctx, parent_dft, parent_before_case, parent_after_case):
         self._debug("enter {}".format(test_directory))
 
         info = Framework.load_ctx(os.path.basename(test_directory), "{}/ctx.yaml".format(test_directory))
-        var = copy.deepcopy(parent_var) | info["var"]
-        var_namespace = json.loads(json.dumps(var), object_hook=dict_to_sns)
+        var_info = copy.deepcopy(parent_var_info) | info["var"]
+        var_namespace = json.loads(json.dumps(var_info), object_hook=dict_to_sns)
         before_case = copy.deepcopy(parent_before_case) + info["beforeCase"] + list(Framework.load_step("{}/before_case.yaml".format(test_directory)))
         after_case = copy.deepcopy(parent_after_case) + info["afterCase"] + list(Framework.load_step("{}/after_case.yaml".format(test_directory)))
         ctx = copy.copy(parent_ctx)
@@ -100,7 +100,7 @@ class Framework:
             ctx[key] = drivers[val["type"]](val["args"])
             dft[key] = val["dft"]
 
-        self._debug("var: {}".format(var))
+        self._debug("var: {}".format(var_info))
         self._debug("ctx: {}".format(ctx))
         self._debug("req: {}".format(dft))
 
@@ -109,9 +109,9 @@ class Framework:
 
         # 执行 setup
         if not self.skip_setup:
-            for case in self.teardowns(info, test_directory):
-                self.reporter.report_setup_start(case)
-                result = self.run_case(before_case, case, after_case, var_namespace, ctx, dft)
+            for case_info in self.teardowns(info, test_directory):
+                self.reporter.report_setup_start(case_info)
+                result = self.run_case(before_case, case_info, after_case, var_namespace, ctx, dft)
                 test_result.setups.append(result)
                 self.reporter.report_setup_end(result)
                 if not result.is_pass:
@@ -120,12 +120,12 @@ class Framework:
                     return test_result
 
         # 执行 case
-        for case in self.cases(info, test_directory):
-            if self.need_skip(case, var_namespace):
+        for case_info in self.cases(info, test_directory):
+            if self.need_skip(case_info, var_namespace):
                 test_result.skip += 1
                 continue
-            self.reporter.report_case_start(case)
-            result = self.run_case(before_case, case, after_case, var_namespace, ctx, dft)
+            self.reporter.report_case_start(case_info)
+            result = self.run_case(before_case, case_info, after_case, var_namespace, ctx, dft)
             test_result.cases.append(result)
             self.reporter.report_case_end(result)
             if result.is_pass:
@@ -139,7 +139,7 @@ class Framework:
             for i in os.listdir(test_directory)
             if os.path.isdir(os.path.join(test_directory, i))
         ]:
-            sub_test_result = self.exec_directory(directory, var, ctx, dft, before_case, after_case)
+            sub_test_result = self.exec_directory(directory, var_info, ctx, dft, before_case, after_case)
             test_result.sub_tests.append(sub_test_result)
             test_result.succ += sub_test_result.succ
             test_result.fail += sub_test_result.fail
@@ -149,9 +149,9 @@ class Framework:
 
         # 执行 teardown
         if not self.skip_teardown:
-            for case in self.teardowns(info, test_directory):
-                self.reporter.report_teardown_start(case)
-                result = self.run_case(before_case, case, after_case, var_namespace, ctx, dft)
+            for case_info in self.teardowns(info, test_directory):
+                self.reporter.report_teardown_start(case_info)
+                result = self.run_case(before_case, case_info, after_case, var_namespace, ctx, dft)
                 test_result.teardowns.append(result)
                 self.reporter.report_teardown_end(result)
                 if not result.is_pass:
@@ -246,29 +246,29 @@ class Framework:
             for step in info:
                 yield step
 
-    def run_case(self, before_case, case, after_case, var, ctx, dft):
-        case_result = CaseResult(case["name"])
-        for idx, step in enumerate(case["step"]):
-            step = merge(step, {
+    def run_case(self, before_case_info, case_info, after_case_info, var, ctx, dft):
+        case_result = CaseResult(case_info["name"])
+        for idx, step_info in enumerate(case_info["step"]):
+            step_info = merge(step_info, {
                 "name": "step-{}".format(idx),
                 "res": {},
                 "retry": {},
                 "until": {},
             })
-            self._debug("step {}".format(json.dumps(step, indent=True)))
-            step_result = StepResult(step["name"])
-            self.reporter.report_step_start(step)
+            self._debug("step {}".format(json.dumps(step_info, indent=True)))
+            step_result = StepResult(step_info["name"])
+            self.reporter.report_step_start(step_info)
             try:
-                req = merge(step["req"], dft[step["ctx"]]["req"])
+                req = merge(step_info["req"], dft[step_info["ctx"]]["req"])
                 req = render(req, case=case_result, var=var)
                 step_result.req = req
 
-                retry = Retry(merge(step["retry"], dft[step["ctx"]]["retry"]))
-                until = Until(merge(step["until"], dft[step["ctx"]]["until"]))
+                retry = Retry(merge(step_info["retry"], dft[step_info["ctx"]]["retry"]))
+                until = Until(merge(step_info["until"], dft[step_info["ctx"]]["until"]))
 
                 for i in range(until.attempts):
                     for j in range(retry.attempts):
-                        res = ctx[step["ctx"]].do(req)
+                        res = ctx[step_info["ctx"]].do(req)
                         step_result.res = res
                         if retry.condition == "" or not expect_val(None, retry.condition, case=case_result, step=step_result, var=var):
                             break
@@ -281,7 +281,7 @@ class Framework:
                 else:
                     raise UntilError()
 
-                result = expect(res, step["res"], case=case_result, step=step_result, var=var)
+                result = expect(res, step_info["res"], case=case_result, step=step_result, var=var)
                 step_result.expects.extend(result)
             except RetryError as e:
                 step_result.set_error("RetryError [{}]".format(retry))
