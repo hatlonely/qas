@@ -44,6 +44,11 @@ class StepResult:
         self.fail = len(self.expects) - self.succ
         self.is_pass = self.fail == 0
 
+    def set_error(self, message):
+        self.is_err = True
+        self.fail = True
+        self.err = message
+
 
 @dataclass
 class CaseResult:

@@ -6,18 +6,18 @@ from dateutil import parser
 from ..result import *
 
 
-def expect(vals, rules, case=None, var=None):
+def expect(vals, rules, case=None, step=None, var=None):
     expect_results = []
     if isinstance(rules, dict):
-        _expect_recursive("", vals, rules, True, expect_results, case=case, var=var)
+        _expect_recursive("", vals, rules, True, expect_results, case=case, step=step, var=var)
     elif isinstance(rules, list):
-        _expect_recursive("", vals, rules, False, expect_results, case=case, var=var)
+        _expect_recursive("", vals, rules, False, expect_results, case=case, step=step, var=var)
     else:
         pass
     return expect_results
 
 
-def _expect_recursive(root: str, vals, rules, is_dict: bool, expect_results: list, case=None, var=None):
+def _expect_recursive(root: str, vals, rules, is_dict: bool, expect_results: list, case=None, step=None, var=None):
     if is_dict:
         to_enumerate = rules.items()
     else:
@@ -25,13 +25,13 @@ def _expect_recursive(root: str, vals, rules, is_dict: bool, expect_results: lis
     for key, rule in to_enumerate:
         root_dot_key = "{}.{}".format(root, key.lstrip("#")).lstrip(".")
         if isinstance(rule, dict):
-            _expect_recursive(root_dot_key, vals[key], rule, True, expect_results, case=case, var=var)
+            _expect_recursive(root_dot_key, vals[key], rule, True, expect_results, case=case, step=step, var=var)
         elif isinstance(rule, list):
-            _expect_recursive(root_dot_key, vals[key], rule, False, expect_results, case=case, var=var)
+            _expect_recursive(root_dot_key, vals[key], rule, False, expect_results, case=case, step=step, var=var)
         else:
             if isinstance(key, str) and key.startswith("#"):
                 val = vals[key[1:]]
-                ok = expect_val(val, rule, case=case, var=var)
+                ok = expect_val(val, rule, case=case, step=step, var=var)
                 if not ok:
                     expect_results.append(ExpectResult(is_pass=False, message="NotMatch", node=root_dot_key, val=val, expect=rule))
                 else:
@@ -44,7 +44,7 @@ def _expect_recursive(root: str, vals, rules, is_dict: bool, expect_results: lis
                     expect_results.append(ExpectResult(is_pass=True, message="OK", node=root_dot_key, val=val, expect=rule))
 
 
-def expect_val(val, rule, case=None, var=None):
+def expect_val(val, rule, case=None, step=None, var=None):
     res = eval(rule)
     if not isinstance(res, bool):
         return res == val

@@ -3,6 +3,8 @@
 
 import copy
 import re
+import time
+
 import yaml
 import traceback
 import os
@@ -13,6 +15,7 @@ from ..driver import HttpDriver, POPDriver, OTSDriver, ShellDriver, MysqlDriver,
 from ..assertion import expect, render, expect_val
 from ..result import TestResult, CaseResult, StepResult
 from ..reporter import TextReporter, JsonReporter
+from .retry import Retry, Until, RetryError, UntilError
 
 
 def dict_to_sns(d):
@@ -71,7 +74,7 @@ class Framework:
             return True
         if self.case_regex and not re.search(self.case_regex, case["name"]):
             return True
-        if case["cond"] and not expect_val(None, case["cond"], case, var):
+        if case["cond"] and not expect_val(None, case["cond"], var=var):
             return True
         return False
 
@@ -238,6 +241,8 @@ class Framework:
             step = merge(step, {
                 "name": "step-{}".format(idx),
                 "res": {},
+                "retry": {},
+                "until": {},
             })
             self._debug("step {}".format(json.dumps(step, indent=True)))
             step_result = StepResult(step["name"])
@@ -246,14 +251,33 @@ class Framework:
                 req = merge(step["req"], dft[step["ctx"]]["req"])
                 req = render(req, case=case_result, var=var)
                 step_result.req = req
-                res = ctx[step["ctx"]].do(req)
-                step_result.res = res
-                result = expect(res, step["res"], case=case_result, var=var)
+
+                retry = Retry(merge(step["retry"], dft[step["ctx"]]["retry"]))
+                until = Until(merge(step["until"], dft[step["ctx"]]["until"]))
+
+                for i in range(until.attempts):
+                    for j in range(retry.attempts):
+                        res = ctx[step["ctx"]].do(req)
+                        step_result.res = res
+                        if retry.condition == "" or not expect_val(None, retry.condition, case=case_result, step=step_result, var=var):
+                            break
+                        time.sleep(retry.delay.total_seconds())
+                    else:
+                        raise RetryError()
+                    if until.condition == "" or expect_val(None, until.condition, case=case_result, step=step_result, var=var):
+                        break
+                    time.sleep(until.delay.total_seconds())
+                else:
+                    raise UntilError()
+
+                result = expect(res, step["res"], case=case_result, step=step_result, var=var)
                 step_result.expects.extend(result)
+            except RetryError as e:
+                step_result.set_error("RetryError [{}]".format(retry))
+            except UntilError as e:
+                step_result.set_error("UntilError [{}], ".format(until))
             except Exception as e:
-                step_result.is_err = True
-                step_result.err = "Exception {}".format(traceback.format_exc())
-                step_result.is_pass = False
+                step_result.set_error("Exception {}".format(traceback.format_exc()))
             case_result.steps.append(step_result)
             step_result.summary()
             if not step_result.is_pass:
