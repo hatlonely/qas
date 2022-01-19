@@ -110,6 +110,18 @@ qas --test sample.yaml
 5. 测试报告，支持多种报告格式
 6. 可拓展性，报告形式拓展，支持服务拓展，报告拓展
 
+## 特性
+
+1. 全局变量引用，运行结果引用
+2. 断言，比较断言，python 断言
+3. case/step 条件执行
+4. 执行 hook，setup/teardown/before_case/after_case
+5. 信息统计，case/step/assertion/elapse
+6. retry/until 重试和等待
+7. 可拓展的 drivers，目前支持 http/shell/redis/mysql/pop/ots
+8. 可拓展的 reporters，目前支持 text/json
+
+
 ## ops 命令
 
 ```shell
