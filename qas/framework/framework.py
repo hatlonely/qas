@@ -65,10 +65,10 @@ class Framework:
         self.reporter = reporters[reporter]()
 
     def run(self):
-        res = self.exec_directory(self.test_directory, {}, {}, {}, [], [])
+        res = self.run_test(self.test_directory, {}, {}, {}, [], [])
         return res.is_pass
 
-    def exec_directory(self, test_directory, parent_var_info, parent_ctx, parent_dft_info, parent_before_case_info, parent_after_case_info):
+    def run_test(self, test_directory, parent_var_info, parent_ctx, parent_dft_info, parent_before_case_info, parent_after_case_info):
         now = datetime.now()
         self._debug("enter {}".format(test_directory))
 
@@ -135,7 +135,7 @@ class Framework:
             for i in os.listdir(test_directory)
             if os.path.isdir(os.path.join(test_directory, i))
         ]:
-            sub_test_result = self.exec_directory(directory, var_info, ctx, dft_info, before_case_info, after_case_info)
+            sub_test_result = self.run_test(directory, var_info, ctx, dft_info, before_case_info, after_case_info)
             test_result.add_sub_test_result(sub_test_result)
 
         # 执行 teardown
