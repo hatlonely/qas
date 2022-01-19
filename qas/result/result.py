@@ -19,7 +19,7 @@ class StepResult:
     name: str
     req: dict
     res: dict
-    expects: list[ExpectResult]
+    assertions: list[ExpectResult]
     is_pass: bool
     is_err: bool
     err: str
@@ -29,7 +29,7 @@ class StepResult:
 
     def __init__(self, name):
         self.name = name
-        self.expects = list[ExpectResult]()
+        self.assertions = list[ExpectResult]()
         self.is_pass = True
         self.is_err = False
         self.err = ""
@@ -40,9 +40,9 @@ class StepResult:
         self.elapse = timedelta(seconds=0)
 
     def add_expect_result(self, result):
-        self.expects = result
-        self.assertion_succ = sum(1 for i in self.expects if i.is_pass)
-        self.assertion_fail = len(self.expects) - self.assertion_succ
+        self.assertions = result
+        self.assertion_succ = sum(1 for i in self.assertions if i.is_pass)
+        self.assertion_fail = len(self.assertions) - self.assertion_succ
         self.is_pass = self.assertion_fail == 0
 
     def set_error(self, message):

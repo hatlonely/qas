@@ -86,7 +86,7 @@ class TextReporter(Reporter):
             return lines
 
         # 修改 res 返回值，将预期值标记后拼接在 value 后面
-        for expect_result in res.expects:
+        for expect_result in res.assertions:
             if expect_result.is_pass:
                 TextReporter.append_val_to_key(res.res, expect_result.node, "<GREEN>{}<END>".format(expect_result.expect))
             else:
