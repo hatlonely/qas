@@ -247,8 +247,6 @@ class Framework:
                 yield step
 
     def run_case(self, before_case_info, case_info, after_case_info, var, ctx, dft):
-        print(before_case_info, "$$$$$$")
-
         case = CaseResult(case_info["name"])
 
         for idx, step_info in enumerate(before_case_info):
