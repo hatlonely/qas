@@ -53,10 +53,10 @@ class StepResult:
 
 @dataclass
 class CaseResult:
-    case: str
-    before_steps: list[StepResult]
+    name: str
+    before_case_steps: list[StepResult]
     steps: list[StepResult]
-    after_steps: list[StepResult]
+    after_case_steps: list[StepResult]
     is_pass: bool
     is_skip: bool
     step_succ: int
@@ -66,10 +66,11 @@ class CaseResult:
     elapse: timedelta
 
     def __init__(self, case, is_skip=False):
-        self.case = case
-        self.before_steps = list[StepResult]()
+        self.name = case
+        self.is_skip = is_skip
+        self.before_case_steps = list[StepResult]()
         self.steps = list[StepResult]()
-        self.after_steps = list[StepResult]()
+        self.after_case_steps = list[StepResult]()
         self.is_pass = True
         self.elapse = 0
         self.assertion_succ = 0
@@ -88,7 +89,7 @@ class CaseResult:
         self.assertion_fail += step.assertion_fail
 
     def add_before_case_step_result(self, step: StepResult):
-        self.before_steps.append(step)
+        self.before_case_steps.append(step)
         if not step.is_pass:
             self.is_pass = False
             self.step_fail += 1
@@ -98,7 +99,7 @@ class CaseResult:
         self.assertion_fail += step.assertion_fail
 
     def add_after_case_step_result(self, step: StepResult):
-        self.after_steps.append(step)
+        self.after_case_steps.append(step)
         if not step.is_pass:
             self.is_pass = False
             self.step_fail += 1

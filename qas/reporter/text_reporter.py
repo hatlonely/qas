@@ -48,20 +48,20 @@ class TextReporter(Reporter):
         lines = []
         if res.is_pass:
             lines.append("{}{} {} 通过，步骤成功 {}，断言成功 {}，耗时 {}{}".format(
-                Fore.GREEN, case_type, res.case, res.step_succ, res.assertion_succ,
+                Fore.GREEN, case_type, res.name, res.step_succ, res.assertion_succ,
                 durationpy.to_str(res.elapse), Fore.RESET,
             ))
         else:
             lines.append("{}{} {} 失败，步骤成功 {}，失败 {}，断言成功 {}，失败 {}，耗时 {}{}".format(
-                Fore.RED, case_type, res.case, res.step_succ, res.step_fail, res.assertion_succ, res.assertion_fail,
+                Fore.RED, case_type, res.name, res.step_succ, res.step_fail, res.assertion_succ, res.assertion_fail,
                 durationpy.to_str(res.elapse), Fore.RESET,
             ))
 
-        for step in res.before_steps:
+        for step in res.before_case_steps:
             lines.extend(["  " + i for i in TextReporter.format_step(step, "beforeCase step")])
         for step in res.steps:
             lines.extend(["  " + i for i in TextReporter.format_step(step, "case step")])
-        for step in res.after_steps:
+        for step in res.after_case_steps:
             lines.extend(["  " + i for i in TextReporter.format_step(step, "afterCase step")])
 
         return lines
