@@ -37,7 +37,7 @@ class StepResult:
         self.assertion_fail = 0
         self.req = {}
         self.res = {}
-        self.elapse = 0
+        self.elapse = timedelta(seconds=0)
 
     def add_expect_result(self, result):
         self.expects = result
@@ -72,7 +72,7 @@ class CaseResult:
         self.steps = list[StepResult]()
         self.after_case_steps = list[StepResult]()
         self.is_pass = True
-        self.elapse = 0
+        self.elapse = timedelta(seconds=0)
         self.assertion_succ = 0
         self.assertion_fail = 0
         self.step_succ = 0
@@ -130,7 +130,7 @@ class TestResult:
         self.teardowns = list[CaseResult]()
         self.sub_tests = list[TestResult]()
         self.is_pass = True
-        self.elapse = 0
+        self.elapse = timedelta(seconds=0)
         self.case_succ = 0
         self.case_fail = 0
         self.case_skip = 0

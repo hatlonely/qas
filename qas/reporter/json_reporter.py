@@ -35,6 +35,7 @@ class JsonReporter(Reporter):
     def case_summary(res: CaseResult) -> dict:
         return {
             "name": res.name,
+            "elapse": durationpy.to_str(res.elapse),
             "isPass": res.is_pass,
             "isSkip": res.is_skip,
             "steps": [JsonReporter.step_summary(i) for i in res.steps],
@@ -51,8 +52,9 @@ class JsonReporter(Reporter):
         return {
             "isPass": res.is_pass,
             "step": res.step,
-            "succ": res.assertion_succ,
-            "fail": res.assertion_fail,
+            "elapse": durationpy.to_str(res.elapse),
+            "assertion_succ": res.assertion_succ,
+            "assertion_fail": res.assertion_fail,
             "req": res.req,
             "res": res.res,
             "expects": [JsonReporter.expect_summary(i) for i in res.expects],
