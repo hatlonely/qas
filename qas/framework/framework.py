@@ -44,7 +44,7 @@ class Framework:
     case_name: str
     skip_setup: bool
     skip_teardown: bool
-    debug: bool
+    debug_mode: bool
 
     def __init__(
         self,
@@ -61,7 +61,7 @@ class Framework:
         self.case_name = case_name
         self.skip_setup = skip_setup
         self.skip_teardown = skip_teardown
-        self.debug = debug
+        self.debug_mode = debug
         self.reporter = reporters[reporter]()
 
     def run(self):
@@ -70,7 +70,7 @@ class Framework:
 
     def run_test(self, test_directory, parent_var_info, parent_ctx, parent_dft_info, parent_before_case_info, parent_after_case_info):
         now = datetime.now()
-        self._debug("enter {}".format(test_directory))
+        self.debug("enter {}".format(test_directory))
 
         info = Framework.load_ctx(os.path.basename(test_directory), "{}/ctx.yaml".format(test_directory))
         var_info = copy.deepcopy(parent_var_info) | info["var"]
@@ -100,9 +100,9 @@ class Framework:
             ctx[key] = drivers[val["type"]](val["args"])
             dft_info[key] = val["dft"]
 
-        self._debug("var: {}".format(var_info))
-        self._debug("ctx: {}".format(ctx))
-        self._debug("req: {}".format(dft_info))
+        self.debug("var: {}".format(var_info))
+        self.debug("ctx: {}".format(ctx))
+        self.debug("req: {}".format(dft_info))
 
         test_result = TestResult(info["name"])
         self.reporter.report_test_start(info)
@@ -267,7 +267,7 @@ class Framework:
         return case
 
     def run_step(self, step_info, case, dft, var=None, ctx=None):
-        self._debug("step {}".format(json.dumps(step_info, indent=True)))
+        self.debug("step {}".format(json.dumps(step_info, indent=True)))
 
         step = StepResult(step_info["name"])
         now = datetime.now()
@@ -307,6 +307,6 @@ class Framework:
         step.elapse = datetime.now() - now
         return step
 
-    def _debug(self, message):
-        if self.debug:
+    def debug(self, message):
+        if self.debug_mode:
             print("### ", message)
