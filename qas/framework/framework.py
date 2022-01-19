@@ -253,16 +253,13 @@ class Framework:
         case = CaseResult(case_info["name"])
 
         now = datetime.now()
-        for idx, step_info, steps in itertools.chain(
-            [list(i) + [case.before_steps] for i in enumerate(before_case_info)],
-            [list(i) + [case.steps] for i in enumerate(case_info["step"])],
-            [list(i) + [case.after_steps] for i in enumerate(after_case_info)],
+        for idx, step_info, case_add_step_func in itertools.chain(
+            [list(i) + [case.add_before_case_step_result] for i in enumerate(before_case_info)],
+            [list(i) + [case.add_case_step_result] for i in enumerate(case_info["step"])],
+            [list(i) + [case.add_after_case_step_result] for i in enumerate(after_case_info)],
         ):
             step = self.run_step("step-{}".format(idx), step_info, case, dft, var=var, ctx=ctx)
-            steps.append(step)
-            if not step.is_pass:
-                case.is_pass = False
-                break
+            case_add_step_func(step)
             self.reporter.report_step_end(step)
 
         case.elapse = datetime.now() - now
@@ -305,7 +302,7 @@ class Framework:
                 raise UntilError()
 
             result = expect(res, step_info["res"], case=case, step=step, var=var)
-            step.expects.extend(result)
+            step.add_expect_result(result)
         except RetryError as e:
             step.set_error("RetryError [{}]".format(retry))
         except UntilError as e:
@@ -314,7 +311,6 @@ class Framework:
             step.set_error("Exception {}".format(traceback.format_exc()))
 
         step.elapse = datetime.now() - now
-        step.summary()
         return step
 
     def _debug(self, message):

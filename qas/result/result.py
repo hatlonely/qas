@@ -39,10 +39,8 @@ class StepResult:
         self.res = {}
         self.elapse = 0
 
-    def summary(self):
-        if self.is_err:
-            self.is_pass = False
-            return
+    def add_expect_result(self, result):
+        self.expects = result
         self.assertion_succ = sum(1 for i in self.expects if i.is_pass)
         self.assertion_fail = len(self.expects) - self.assertion_succ
         self.is_pass = self.assertion_fail == 0
@@ -77,6 +75,36 @@ class CaseResult:
         self.assertion_fail = 0
         self.step_succ = 0
         self.step_fail = 0
+
+    def add_case_step_result(self, step: StepResult):
+        self.steps.append(step)
+        if not step.is_pass:
+            self.is_pass = False
+            self.step_fail += 1
+        else:
+            self.step_succ += 1
+        self.assertion_succ += step.assertion_succ
+        self.assertion_fail += step.assertion_fail
+
+    def add_before_case_step_result(self, step: StepResult):
+        self.before_steps.append(step)
+        if not step.is_pass:
+            self.is_pass = False
+            self.step_fail += 1
+        else:
+            self.step_succ += 1
+        self.assertion_succ += step.assertion_succ
+        self.assertion_fail += step.assertion_fail
+
+    def add_after_case_step_result(self, step: StepResult):
+        self.after_steps.append(step)
+        if not step.is_pass:
+            self.is_pass = False
+            self.step_fail += 1
+        else:
+            self.step_succ += 1
+        self.assertion_succ += step.assertion_succ
+        self.assertion_fail += step.assertion_fail
 
 
 @dataclass
