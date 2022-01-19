@@ -90,8 +90,15 @@ class Framework:
                 "args": {},
                 "dft": {
                     "req": {},
-                    "retry": {},
-                    "until": {},
+                    "retry": {
+                        "attempts": 1,
+                        "delay": "1s",
+                    },
+                    "until": {
+                        "cond": "",
+                        "attempts": 5,
+                        "delay": "1s",
+                    },
                 },
             })
             val = render(val, var=var_namespace)
@@ -107,7 +114,7 @@ class Framework:
 
         # 执行 setup
         if not self.skip_setup:
-            for case in info["setUp"]:
+            for case in self.teardowns(info, test_directory):
                 self.reporter.report_setup_start(case)
                 result = self.run_case(case, var_namespace, ctx, dft)
                 test_result.setups.append(result)
@@ -116,18 +123,9 @@ class Framework:
                     test_result.is_pass = False
                     self.reporter.report_test_end(test_result)
                     return test_result
-            if os.path.isfile("{}/setup.yaml".format(test_directory)):
-                for case in self.load_case("{}/setup.yaml".format(test_directory)):
-                    self.reporter.report_setup_start(case)
-                    result = self.run_case(case, var_namespace, ctx, dft)
-                    test_result.setups.append(result)
-                    self.reporter.report_setup_end(result)
-                    if not result.is_pass:
-                        test_result.is_pass = False
-                        self.reporter.report_test_end(test_result)
-                        return test_result
 
-        for case in info["case"]:
+        # 执行 case
+        for case in self.cases(info, test_directory):
             if self.need_skip(case, var_namespace):
                 test_result.skip += 1
                 continue
@@ -139,25 +137,6 @@ class Framework:
                 test_result.succ += 1
             else:
                 test_result.fail += 1
-
-        # 执行文件中的 case
-        for filename in [
-            os.path.join(test_directory, i)
-            for i in os.listdir(test_directory)
-            if i not in ["ctx.yaml", "setup.yaml", "teardown.yaml"] and os.path.isfile(os.path.join(test_directory, i))
-        ]:
-            for case in self.load_case(filename):
-                if self.need_skip(case, var_namespace):
-                    test_result.skip += 1
-                    continue
-                self.reporter.report_case_start(case)
-                result = self.run_case(case, var_namespace, ctx, dft)
-                test_result.cases.append(result)
-                self.reporter.report_case_end(result)
-                if result.is_pass:
-                    test_result.succ += 1
-                else:
-                    test_result.fail += 1
 
         # 执行子目录
         for directory in [
@@ -171,8 +150,11 @@ class Framework:
             test_result.fail += sub_test_result.fail
             test_result.skip += sub_test_result.skip
 
+        test_result.is_pass = test_result.fail == 0
+
+        # 执行 teardown
         if not self.skip_teardown:
-            for case in info["tearDown"]:
+            for case in self.teardowns(info, test_directory):
                 self.reporter.report_teardown_start(case)
                 result = self.run_case(case, var_namespace, ctx, dft)
                 test_result.teardowns.append(result)
@@ -181,21 +163,36 @@ class Framework:
                     test_result.is_pass = False
                     self.reporter.report_test_end(test_result)
                     return test_result
-            if os.path.isfile("{}/teardown.yaml".format(test_directory)):
-                for case in self.load_case("{}/teardown.yaml".format(test_directory)):
-                    self.reporter.report_teardown_start(case)
-                    result = self.run_case(case, var_namespace, ctx, dft)
-                    test_result.teardowns.append(result)
-                    self.reporter.report_teardown_end(result)
-                    if not result.is_pass:
-                        test_result.is_pass = False
-                        self.reporter.report_test_end(test_result)
-                        return test_result
 
-        test_result.is_pass = test_result.fail == 0
-        # 执行 teardown
         self.reporter.report_test_end(test_result)
         return test_result
+
+    def setups(self, info, test_directory):
+        for case in info["setUp"]:
+            yield case
+        if os.path.isfile("{}/setup.yaml".format(test_directory)):
+            for case in self.load_case("{}/setup.yaml".format(test_directory)):
+                yield case
+
+    def teardowns(self, info, test_directory):
+        for case in info["tearDown"]:
+            yield case
+        if os.path.isfile("{}/teardown.yaml".format(test_directory)):
+            for case in self.load_case("{}/teardown.yaml".format(test_directory)):
+                yield case
+
+    def cases(self, info, test_directory):
+        for case in info["case"]:
+            yield case
+
+        # 执行文件中的 case
+        for filename in [
+            os.path.join(test_directory, i)
+            for i in os.listdir(test_directory)
+            if i not in ["ctx.yaml", "setup.yaml", "teardown.yaml"] and os.path.isfile(os.path.join(test_directory, i))
+        ]:
+            for case in self.load_case(filename):
+                yield case
 
     @staticmethod
     def load_ctx(name, filename):
