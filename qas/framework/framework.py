@@ -247,7 +247,7 @@ class Framework:
                 yield step
 
     def run_case(self, before_case_info, case_info, after_case_info, var, ctx, dft):
-        case_result = CaseResult(case_info["name"])
+        case = CaseResult(case_info["name"])
         for idx, step_info in enumerate(case_info["step"]):
             step_info = merge(step_info, {
                 "name": "step-{}".format(idx),
@@ -256,12 +256,12 @@ class Framework:
                 "until": {},
             })
             self._debug("step {}".format(json.dumps(step_info, indent=True)))
-            step_result = StepResult(step_info["name"])
+            step = StepResult(step_info["name"])
             self.reporter.report_step_start(step_info)
             try:
                 req = merge(step_info["req"], dft[step_info["ctx"]]["req"])
-                req = render(req, case=case_result, var=var)
-                step_result.req = req
+                req = render(req, case=case, var=var)
+                step.req = req
 
                 retry = Retry(merge(step_info["retry"], dft[step_info["ctx"]]["retry"]))
                 until = Until(merge(step_info["until"], dft[step_info["ctx"]]["until"]))
@@ -269,34 +269,34 @@ class Framework:
                 for i in range(until.attempts):
                     for j in range(retry.attempts):
                         res = ctx[step_info["ctx"]].do(req)
-                        step_result.res = res
-                        if retry.condition == "" or not expect_val(None, retry.condition, case=case_result, step=step_result, var=var):
+                        step.res = res
+                        if retry.condition == "" or not expect_val(None, retry.condition, case=case, step=step, var=var):
                             break
                         time.sleep(retry.delay.total_seconds())
                     else:
                         raise RetryError()
-                    if until.condition == "" or expect_val(None, until.condition, case=case_result, step=step_result, var=var):
+                    if until.condition == "" or expect_val(None, until.condition, case=case, step=step, var=var):
                         break
                     time.sleep(until.delay.total_seconds())
                 else:
                     raise UntilError()
 
-                result = expect(res, step_info["res"], case=case_result, step=step_result, var=var)
-                step_result.expects.extend(result)
+                result = expect(res, step_info["res"], case=case, step=step, var=var)
+                step.expects.extend(result)
             except RetryError as e:
-                step_result.set_error("RetryError [{}]".format(retry))
+                step.set_error("RetryError [{}]".format(retry))
             except UntilError as e:
-                step_result.set_error("UntilError [{}], ".format(until))
+                step.set_error("UntilError [{}], ".format(until))
             except Exception as e:
-                step_result.set_error("Exception {}".format(traceback.format_exc()))
-            step_result.summary()
+                step.set_error("Exception {}".format(traceback.format_exc()))
+            step.summary()
 
-            case_result.steps.append(step_result)
-            if not step_result.is_pass:
+            case.steps.append(step)
+            if not step.is_pass:
                 break
-            self.reporter.report_step_end(step_result)
-        case_result.summary()
-        return case_result
+            self.reporter.report_step_end(step)
+        case.summary()
+        return case
 
     def run_step(self, info, case, step, var):
         pass
