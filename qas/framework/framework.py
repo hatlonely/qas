@@ -40,7 +40,6 @@ reporters = {
 
 class Framework:
     test_directory: str
-    case_directory: str
     case_regex: str
     case_name: str
     skip_setup: bool
@@ -50,7 +49,6 @@ class Framework:
     def __init__(
         self,
         test_directory,
-        case_directory=None,
         case_name=None,
         case_regex=None,
         skip_setup=False,
@@ -59,7 +57,6 @@ class Framework:
         reporter="text",
     ):
         self.test_directory = test_directory
-        self.case_directory = case_directory
         self.case_regex = case_regex
         self.case_name = case_name
         self.skip_setup = skip_setup
