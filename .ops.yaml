@@ -21,11 +21,11 @@ task:
   sample-recommend:
     step:
       - sh ${DEP}/ops/tool/render.sh ops/sample-recommend ${TMP}/sample-recommend
-      - python3 main.py --test "${TMP}/sample-recommend"
+      - qas --test "${TMP}/sample-recommend"
   sample-simple:
     step:
       - sh ${DEP}/ops/tool/render.sh ops/sample-simple ${TMP}/sample-simple
-      - python3 main.py --test "${TMP}/sample-simple"
+      - qas --test "${TMP}/sample-simple"
   install:
     step:
       - python3 setup.py install
