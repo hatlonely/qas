@@ -165,7 +165,6 @@ class TestResult:
         self.case_skip += sub_test.case_skip
         self.step_succ += sub_test.step_succ
         self.step_fail += sub_test.step_fail
-        self.step_succ += sub_test.step_succ
         self.assertion_succ += sub_test.assertion_succ
         self.assertion_fail += sub_test.assertion_fail
         if not sub_test.is_pass:
