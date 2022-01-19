@@ -4,12 +4,12 @@
 import copy
 import re
 import time
-
 import yaml
 import traceback
 import os
 import json
 from types import SimpleNamespace
+from datetime import datetime, timedelta
 
 from ..driver import HttpDriver, POPDriver, OTSDriver, ShellDriver, MysqlDriver, merge, REQUIRED
 from ..assertion import expect, render, expect_val
@@ -70,6 +70,7 @@ class Framework:
         return res.is_pass
 
     def exec_directory(self, test_directory, parent_var_info, parent_ctx, parent_dft_info, parent_before_case_info, parent_after_case_info):
+        now = datetime.now()
         self._debug("enter {}".format(test_directory))
 
         info = Framework.load_ctx(os.path.basename(test_directory), "{}/ctx.yaml".format(test_directory))
@@ -159,6 +160,7 @@ class Framework:
                     self.reporter.report_test_end(test_result)
                     return test_result
 
+        test_result.elapse = datetime.now() - now
         self.reporter.report_test_end(test_result)
         return test_result
 
@@ -249,6 +251,7 @@ class Framework:
     def run_case(self, before_case_info, case_info, after_case_info, dft, var=None, ctx=None, skip_hook=False):
         case = CaseResult(case_info["name"])
 
+        now = datetime.now()
         if not skip_hook:
             for idx, step_info in enumerate(before_case_info):
                 step = self.run_step("step-{}".format(idx), step_info, case, dft, var=var, ctx=ctx)
@@ -272,6 +275,7 @@ class Framework:
                     break
                 self.reporter.report_step_end(step)
 
+        case.elapse = datetime.now() - now
         case.summary()
         return case
 
@@ -284,7 +288,9 @@ class Framework:
         })
 
         self._debug("step {}".format(json.dumps(step_info, indent=True)))
+
         step = StepResult(step_info["name"])
+        now = datetime.now()
         self.reporter.report_step_start(step_info)
         try:
             req = merge(step_info["req"], dft[step_info["ctx"]]["req"])
@@ -317,6 +323,8 @@ class Framework:
             step.set_error("UntilError [{}], ".format(until))
         except Exception as e:
             step.set_error("Exception {}".format(traceback.format_exc()))
+
+        step.elapse = datetime.now() - now
         step.summary()
         return step
 

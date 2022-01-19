@@ -2,6 +2,7 @@
 
 
 from dataclasses import dataclass
+from datetime import timedelta
 
 
 @dataclass
@@ -24,6 +25,7 @@ class StepResult:
     err: str
     succ: int
     fail: int
+    elapse: timedelta
 
     def __init__(self, step=""):
         self.step = step
@@ -35,6 +37,7 @@ class StepResult:
         self.fail = 0
         self.req = {}
         self.res = {}
+        self.elapse = 0
 
     def summary(self):
         if self.is_err:
@@ -57,6 +60,7 @@ class CaseResult:
     steps: list[StepResult]
     after_steps: list[StepResult]
     is_pass: bool
+    elapse: timedelta
 
     def __init__(self, case=""):
         self.case = case
@@ -64,6 +68,7 @@ class CaseResult:
         self.steps = list[StepResult]()
         self.after_steps = list[StepResult]()
         self.is_pass = True
+        self.elapse = 0
 
     def summary(self):
         for r in self.steps:
@@ -82,6 +87,7 @@ class TestResult:
     fail: int
     skip: int
     sub_tests: list
+    elapse: timedelta
 
     def __init__(self, name=""):
         self.name = name
@@ -93,3 +99,4 @@ class TestResult:
         self.succ = 0
         self.fail = 0
         self.skip = 0
+        self.elapse = 0

@@ -2,6 +2,8 @@
 import itertools
 import json
 import re
+
+import durationpy
 from colorama import Fore
 from .reporter import Reporter
 from ..result import TestResult, CaseResult, StepResult, ExpectResult
@@ -18,9 +20,11 @@ class TextReporter(Reporter):
     def report_test_end(self, res: TestResult):
         self.padding = self.padding[:-2]
         if res.is_pass:
-            print("{}{}测试 {} 通过，成功 {}，失败 {}，跳过 {}{}".format(self.padding, Fore.GREEN, res.name, res.succ, res.fail, res.skip, Fore.RESET))
+            print("{}{}测试 {} 通过，成功 {}，失败 {}，跳过 {}，耗时 {}{}".format(
+                self.padding, Fore.GREEN, res.name, res.succ, res.fail, res.skip, durationpy.to_str(res.elapse), Fore.RESET))
         else:
-            print("{}{}测试 {} 未通过，成功 {}，失败 {}，跳过 {}{}".format(self.padding, Fore.RED, res.name, res.succ, res.fail, res.skip, Fore.RESET))
+            print("{}{}测试 {} 未通过，成功 {}，失败 {}，跳过 {}，耗时 {}{}".format(
+                self.padding, Fore.RED, res.name, res.succ, res.fail, res.skip, durationpy.to_str(res.elapse), Fore.RESET))
 
     def report_case_end(self, res: CaseResult):
         print("\n".join([self.padding + i for i in TextReporter.format_case(res, "case")]))
@@ -31,14 +35,13 @@ class TextReporter(Reporter):
     def report_teardown_end(self, res: CaseResult):
         print("\n".join([self.padding + i for i in TextReporter.format_case(res, "tearDown")]))
 
-
     @staticmethod
     def format_case(res: CaseResult, case_type: str) -> list[str]:
         lines = []
         if res.is_pass:
-            lines.append(Fore.GREEN + "{} {} 通过".format(case_type, res.case) + Fore.RESET)
+            lines.append(Fore.GREEN + "{} {} 通过，耗时 {}".format(case_type, res.case, durationpy.to_str(res.elapse)) + Fore.RESET)
         else:
-            lines.append(Fore.RED + "{} {} 失败".format(case_type, res.case) + Fore.RESET)
+            lines.append(Fore.RED + "{} {} 失败，耗时 {}".format(case_type, res.case, durationpy.to_str(res.elapse)) + Fore.RESET)
 
         for step in res.before_steps:
             lines.extend(["  " + i for i in TextReporter.format_step(step, "beforeCase step")])
@@ -53,9 +56,9 @@ class TextReporter(Reporter):
     def format_step(res, step_type: str) -> list[str]:
         lines = []
         if res.is_pass:
-            lines.append(Fore.GREEN + "{} {} 通过".format(step_type, res.step) + Fore.RESET)
+            lines.append(Fore.GREEN + "{} {} 通过，耗时 {}".format(step_type, res.step, durationpy.to_str(res.elapse)) + Fore.RESET)
         else:
-            lines.append(Fore.RED + "{} {} 失败".format(step_type, res.step) + Fore.RESET)
+            lines.append(Fore.RED + "{} {} 失败，耗时 {}".format(step_type, res.step, durationpy.to_str(res.elapse)) + Fore.RESET)
 
         lines.extend(("req: " + json.dumps(res.req, indent=True)).split("\n"))
 
