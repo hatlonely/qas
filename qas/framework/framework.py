@@ -114,10 +114,9 @@ class Framework:
             for case_info in self.teardowns(info, test_directory):
                 self.reporter.report_setup_start(case_info)
                 result = self.run_case([], case_info, [], dft_info, var=var, ctx=ctx)
-                test_result.setups.append(result)
+                test_result.add_setup_result(result)
                 self.reporter.report_setup_end(result)
                 if not result.is_pass:
-                    test_result.is_pass = False
                     self.reporter.report_test_end(test_result)
                     return test_result
 
@@ -128,12 +127,8 @@ class Framework:
                 continue
             self.reporter.report_case_start(case_info)
             result = self.run_case(before_case_info, case_info, after_case_info, dft_info, var=var, ctx=ctx)
-            test_result.cases.append(result)
+            test_result.add_case_result(result)
             self.reporter.report_case_end(result)
-            if result.is_pass:
-                test_result.case_succ += 1
-            else:
-                test_result.case_fail += 1
 
         # 执行子目录
         for directory in [
@@ -142,12 +137,7 @@ class Framework:
             if os.path.isdir(os.path.join(test_directory, i))
         ]:
             sub_test_result = self.exec_directory(directory, var_info, ctx, dft_info, before_case_info, after_case_info)
-            test_result.sub_tests.append(sub_test_result)
-            test_result.case_succ += sub_test_result.case_succ
-            test_result.case_fail += sub_test_result.case_fail
-            test_result.case_skip += sub_test_result.case_skip
-
-        test_result.is_pass = test_result.case_fail == 0
+            test_result.add_sub_test_result(sub_test_result)
 
         # 执行 teardown
         if not self.skip_teardown:
@@ -157,7 +147,6 @@ class Framework:
                 test_result.teardowns.append(result)
                 self.reporter.report_teardown_end(result)
                 if not result.is_pass:
-                    test_result.is_pass = False
                     self.reporter.report_test_end(test_result)
                     return test_result
 

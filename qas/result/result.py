@@ -113,6 +113,7 @@ class TestResult:
     setups: list[CaseResult]
     cases: list[CaseResult]
     teardowns: list[CaseResult]
+    sub_tests: list
     is_pass: bool
     case_succ: int
     case_fail: int
@@ -135,3 +136,37 @@ class TestResult:
         self.assertion_fail = 0
         self.step_succ = 0
         self.step_fail = 0
+
+    def add_setup_result(self, case: CaseResult):
+        self.setups.append(case)
+        if not case.is_pass:
+            self.is_pass = False
+
+    def add_case_result(self, case):
+        self.cases.append(case)
+        if case.is_pass:
+            self.case_succ += 1
+        else:
+            self.case_fail += 1
+        self.step_succ += case.step_succ
+        self.step_fail += case.step_fail
+        self.assertion_succ += case.assertion_succ
+        self.assertion_fail += case.assertion_fail
+
+    def add_teardown_result(self, case):
+        self.teardowns.append(case)
+        if not case.is_pass:
+            self.is_pass = False
+
+    def add_sub_test_result(self, sub_test):
+        self.sub_tests.append(sub_test)
+        self.case_succ += sub_test.case_succ
+        self.case_fail += sub_test.case_fail
+        self.case_skip += sub_test.case_skip
+        self.step_succ += sub_test.step_succ
+        self.step_fail += sub_test.step_fail
+        self.step_succ += sub_test.step_succ
+        self.assertion_succ += sub_test.assertion_succ
+        self.assertion_fail += sub_test.assertion_fail
+        if not sub_test.is_pass:
+            self.is_pass = False
