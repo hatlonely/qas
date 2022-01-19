@@ -69,16 +69,16 @@ class Framework:
         res = self.exec_directory(self.test_directory, {}, {}, {}, [], [])
         return res.is_pass
 
-    def exec_directory(self, test_directory, parent_var_info, parent_ctx, parent_dft, parent_before_case, parent_after_case):
+    def exec_directory(self, test_directory, parent_var_info, parent_ctx, parent_dft_info, parent_before_case_info, parent_after_case_info):
         self._debug("enter {}".format(test_directory))
 
         info = Framework.load_ctx(os.path.basename(test_directory), "{}/ctx.yaml".format(test_directory))
         var_info = copy.deepcopy(parent_var_info) | info["var"]
-        var_namespace = json.loads(json.dumps(var_info), object_hook=dict_to_sns)
-        before_case = copy.deepcopy(parent_before_case) + info["beforeCase"] + list(Framework.load_step("{}/before_case.yaml".format(test_directory)))
-        after_case = copy.deepcopy(parent_after_case) + info["afterCase"] + list(Framework.load_step("{}/after_case.yaml".format(test_directory)))
+        var = json.loads(json.dumps(var_info), object_hook=dict_to_sns)
+        before_case_info = copy.deepcopy(parent_before_case_info) + info["beforeCase"] + list(Framework.load_step("{}/before_case.yaml".format(test_directory)))
+        after_case_info = copy.deepcopy(parent_after_case_info) + info["afterCase"] + list(Framework.load_step("{}/after_case.yaml".format(test_directory)))
         ctx = copy.copy(parent_ctx)
-        dft = copy.deepcopy(parent_dft)
+        dft_info = copy.deepcopy(parent_dft_info)
         for key in info["ctx"]:
             val = merge(info["ctx"][key], {
                 "type": REQUIRED,
@@ -96,13 +96,13 @@ class Framework:
                     },
                 },
             })
-            val = render(val, var=var_namespace)
+            val = render(val, var=var)
             ctx[key] = drivers[val["type"]](val["args"])
-            dft[key] = val["dft"]
+            dft_info[key] = val["dft"]
 
         self._debug("var: {}".format(var_info))
         self._debug("ctx: {}".format(ctx))
-        self._debug("req: {}".format(dft))
+        self._debug("req: {}".format(dft_info))
 
         test_result = TestResult(info["name"])
         self.reporter.report_test_start(info)
@@ -111,7 +111,7 @@ class Framework:
         if not self.skip_setup:
             for case_info in self.teardowns(info, test_directory):
                 self.reporter.report_setup_start(case_info)
-                result = self.run_case(before_case, case_info, after_case, var_namespace, ctx, dft)
+                result = self.run_case(before_case_info, case_info, after_case_info, var, ctx, dft_info)
                 test_result.setups.append(result)
                 self.reporter.report_setup_end(result)
                 if not result.is_pass:
@@ -121,11 +121,11 @@ class Framework:
 
         # 执行 case
         for case_info in self.cases(info, test_directory):
-            if self.need_skip(case_info, var_namespace):
+            if self.need_skip(case_info, var):
                 test_result.skip += 1
                 continue
             self.reporter.report_case_start(case_info)
-            result = self.run_case(before_case, case_info, after_case, var_namespace, ctx, dft)
+            result = self.run_case(before_case_info, case_info, after_case_info, var, ctx, dft_info)
             test_result.cases.append(result)
             self.reporter.report_case_end(result)
             if result.is_pass:
@@ -139,7 +139,7 @@ class Framework:
             for i in os.listdir(test_directory)
             if os.path.isdir(os.path.join(test_directory, i))
         ]:
-            sub_test_result = self.exec_directory(directory, var_info, ctx, dft, before_case, after_case)
+            sub_test_result = self.exec_directory(directory, var_info, ctx, dft_info, before_case_info, after_case_info)
             test_result.sub_tests.append(sub_test_result)
             test_result.succ += sub_test_result.succ
             test_result.fail += sub_test_result.fail
@@ -151,7 +151,7 @@ class Framework:
         if not self.skip_teardown:
             for case_info in self.teardowns(info, test_directory):
                 self.reporter.report_teardown_start(case_info)
-                result = self.run_case(before_case, case_info, after_case, var_namespace, ctx, dft)
+                result = self.run_case(before_case_info, case_info, after_case_info, var, ctx, dft_info)
                 test_result.teardowns.append(result)
                 self.reporter.report_teardown_end(result)
                 if not result.is_pass:
