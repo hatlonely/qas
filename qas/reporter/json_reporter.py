@@ -51,7 +51,7 @@ class JsonReporter(Reporter):
     def step_summary(res: StepResult) -> dict:
         return {
             "isPass": res.is_pass,
-            "step": res.step,
+            "name": res.name,
             "elapse": durationpy.to_str(res.elapse),
             "assertion_succ": res.assertion_succ,
             "assertion_fail": res.assertion_fail,

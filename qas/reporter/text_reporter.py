@@ -71,11 +71,11 @@ class TextReporter(Reporter):
         lines = []
         if res.is_pass:
             lines.append("{}{} {} 通过，断言成功 {}，耗时 {}{}".format(
-                Fore.GREEN, step_type, res.step, res.assertion_succ, durationpy.to_str(res.elapse), Fore.RESET,
+                Fore.GREEN, step_type, res.name, res.assertion_succ, durationpy.to_str(res.elapse), Fore.RESET,
             ))
         else:
             lines.append("{}{} {} 失败，断言成功 {}，失败 {}，耗时 {}{}".format(
-                Fore.GREEN, step_type, res.step, res.assertion_succ, res.assertion_fail, durationpy.to_str(res.elapse), Fore.RESET,
+                Fore.GREEN, step_type, res.name, res.assertion_succ, res.assertion_fail, durationpy.to_str(res.elapse), Fore.RESET,
             ))
 
         lines.extend(("req: " + json.dumps(res.req, indent=True)).split("\n"))

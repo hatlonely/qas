@@ -16,7 +16,7 @@ class ExpectResult:
 
 @dataclass
 class StepResult:
-    step: str
+    name: str
     req: dict
     res: dict
     expects: list[ExpectResult]
@@ -28,7 +28,7 @@ class StepResult:
     elapse: timedelta
 
     def __init__(self, step):
-        self.step = step
+        self.name = step
         self.expects = list[ExpectResult]()
         self.is_pass = True
         self.is_err = False
