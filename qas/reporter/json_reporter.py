@@ -14,8 +14,8 @@ class JsonReporter(Reporter):
     def test_summary(res: TestResult) -> dict:
         return {
             "isPass": res.is_pass,
-            "succ": res.succ,
-            "fail": res.fail,
+            "succ": res.case_succ,
+            "fail": res.case_fail,
             "name": res.name,
             "cases": [JsonReporter.case_summary(i) for i in res.cases],
             "setups": [JsonReporter.case_summary(i) for i in res.setups],

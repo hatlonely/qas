@@ -21,10 +21,10 @@ class TextReporter(Reporter):
         self.padding = self.padding[:-2]
         if res.is_pass:
             print("{}{}测试 {} 通过，成功 {}，失败 {}，跳过 {}，耗时 {}{}".format(
-                self.padding, Fore.GREEN, res.name, res.succ, res.fail, res.skip, durationpy.to_str(res.elapse), Fore.RESET))
+                self.padding, Fore.GREEN, res.name, res.case_succ, res.case_fail, res.case_skip, durationpy.to_str(res.elapse), Fore.RESET))
         else:
             print("{}{}测试 {} 未通过，成功 {}，失败 {}，跳过 {}，耗时 {}{}".format(
-                self.padding, Fore.RED, res.name, res.succ, res.fail, res.skip, durationpy.to_str(res.elapse), Fore.RESET))
+                self.padding, Fore.RED, res.name, res.case_succ, res.case_fail, res.case_skip, durationpy.to_str(res.elapse), Fore.RESET))
 
     def report_case_end(self, res: CaseResult):
         print("\n".join([self.padding + i for i in TextReporter.format_case(res, "case")]))

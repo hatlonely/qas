@@ -78,9 +78,9 @@ class TestResult:
     cases: list[CaseResult]
     teardowns: list[CaseResult]
     is_pass: bool
-    succ: int
-    fail: int
-    skip: int
+    case_succ: int
+    case_fail: int
+    case_skip: int
     sub_tests: list
     elapse: timedelta
 
@@ -91,7 +91,7 @@ class TestResult:
         self.teardowns = list[CaseResult]()
         self.sub_tests = list[TestResult]()
         self.is_pass = True
-        self.succ = 0
-        self.fail = 0
-        self.skip = 0
+        self.case_succ = 0
+        self.case_fail = 0
+        self.case_skip = 0
         self.elapse = 0

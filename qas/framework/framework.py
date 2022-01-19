@@ -124,16 +124,16 @@ class Framework:
         # 执行 case
         for case_info in self.cases(info, test_directory):
             if self.need_skip(case_info, var):
-                test_result.skip += 1
+                test_result.case_skip += 1
                 continue
             self.reporter.report_case_start(case_info)
             result = self.run_case(before_case_info, case_info, after_case_info, dft_info, var=var, ctx=ctx)
             test_result.cases.append(result)
             self.reporter.report_case_end(result)
             if result.is_pass:
-                test_result.succ += 1
+                test_result.case_succ += 1
             else:
-                test_result.fail += 1
+                test_result.case_fail += 1
 
         # 执行子目录
         for directory in [
@@ -143,11 +143,11 @@ class Framework:
         ]:
             sub_test_result = self.exec_directory(directory, var_info, ctx, dft_info, before_case_info, after_case_info)
             test_result.sub_tests.append(sub_test_result)
-            test_result.succ += sub_test_result.succ
-            test_result.fail += sub_test_result.fail
-            test_result.skip += sub_test_result.skip
+            test_result.case_succ += sub_test_result.case_succ
+            test_result.case_fail += sub_test_result.case_fail
+            test_result.case_skip += sub_test_result.case_skip
 
-        test_result.is_pass = test_result.fail == 0
+        test_result.is_pass = test_result.case_fail == 0
 
         # 执行 teardown
         if not self.skip_teardown:
