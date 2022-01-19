@@ -53,12 +53,16 @@ class StepResult:
 @dataclass
 class CaseResult:
     case: str
+    before_steps: list[StepResult]
     steps: list[StepResult]
+    after_steps: list[StepResult]
     is_pass: bool
 
     def __init__(self, case=""):
         self.case = case
+        self.before_steps = list[StepResult]()
         self.steps = list[StepResult]()
+        self.after_steps = list[StepResult]()
         self.is_pass = True
 
     def summary(self):

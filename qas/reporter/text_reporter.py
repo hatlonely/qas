@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-
-
+import itertools
 import json
 import re
 from colorama import Fore
@@ -40,8 +39,10 @@ class TextReporter(Reporter):
             lines.append(Fore.GREEN + "{} {} 通过".format(case_type, res.case) + Fore.RESET)
         else:
             lines.append(Fore.RED + "{} {} 失败".format(case_type, res.case) + Fore.RESET)
-        for step_result in res.steps:
-            lines.extend(["  " + i for i in TextReporter.format_step(step_result)])
+
+        for step in itertools.chain(res.before_steps, res.steps, res.after_steps):
+            lines.extend(["  " + i for i in TextReporter.format_step(step)])
+
         return lines
 
     @staticmethod
