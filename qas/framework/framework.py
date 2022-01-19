@@ -252,7 +252,7 @@ class Framework:
         case = CaseResult(case_info["name"])
 
         for idx, step_info in enumerate(before_case_info):
-            step = self.run_step("beforeStep-{}".format(idx), step_info, case, ctx, var, dft)
+            step = self.run_step("step-{}".format(idx), step_info, case, ctx, var, dft)
             case.before_steps.append(step)
             if not step.is_pass:
                 break
@@ -266,7 +266,7 @@ class Framework:
             self.reporter.report_step_end(step)
 
         for idx, step_info in enumerate(after_case_info):
-            step = self.run_step("afterStep-{}".format(idx), step_info, case, ctx, var, dft)
+            step = self.run_step("step-{}".format(idx), step_info, case, ctx, var, dft)
             case.after_steps.append(step)
             if not step.is_pass:
                 break

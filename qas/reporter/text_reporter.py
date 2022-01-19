@@ -40,18 +40,22 @@ class TextReporter(Reporter):
         else:
             lines.append(Fore.RED + "{} {} 失败".format(case_type, res.case) + Fore.RESET)
 
-        for step in itertools.chain(res.before_steps, res.steps, res.after_steps):
-            lines.extend(["  " + i for i in TextReporter.format_step(step)])
+        for step in res.before_steps:
+            lines.extend(["  " + i for i in TextReporter.format_step(step, "beforeCase step")])
+        for step in res.steps:
+            lines.extend(["  " + i for i in TextReporter.format_step(step, "case step")])
+        for step in res.after_steps:
+            lines.extend(["  " + i for i in TextReporter.format_step(step, "afterCase step")])
 
         return lines
 
     @staticmethod
-    def format_step(res) -> list[str]:
+    def format_step(res, step_type: str) -> list[str]:
         lines = []
         if res.is_pass:
-            lines.append(Fore.GREEN + "step {} 通过".format(res.step) + Fore.RESET)
+            lines.append(Fore.GREEN + "{} {} 通过".format(step_type, res.step) + Fore.RESET)
         else:
-            lines.append(Fore.RED + "step {} 失败".format(res.step) + Fore.RESET)
+            lines.append(Fore.RED + "{} {} 失败".format(step_type, res.step) + Fore.RESET)
 
         lines.extend(("req: " + json.dumps(res.req, indent=True)).split("\n"))
 
