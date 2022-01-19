@@ -57,7 +57,7 @@ class JsonReporter(Reporter):
             "assertion_fail": res.assertion_fail,
             "req": res.req,
             "res": res.res,
-            "expects": [JsonReporter.expect_summary(i) for i in res.assertions],
+            "assertions": [JsonReporter.expect_summary(i) for i in res.assertions],
             "isErr": res.is_err,
             "err": res.err,
         }
