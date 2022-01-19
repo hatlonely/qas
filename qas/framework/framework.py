@@ -255,42 +255,8 @@ class Framework:
                 "retry": {},
                 "until": {},
             })
-            self._debug("step {}".format(json.dumps(step_info, indent=True)))
-            step = StepResult(step_info["name"])
-            self.reporter.report_step_start(step_info)
-            try:
-                req = merge(step_info["req"], dft[step_info["ctx"]]["req"])
-                req = render(req, case=case, var=var)
-                step.req = req
 
-                retry = Retry(merge(step_info["retry"], dft[step_info["ctx"]]["retry"]))
-                until = Until(merge(step_info["until"], dft[step_info["ctx"]]["until"]))
-
-                for i in range(until.attempts):
-                    for j in range(retry.attempts):
-                        res = ctx[step_info["ctx"]].do(req)
-                        step.res = res
-                        if retry.condition == "" or not expect_val(None, retry.condition, case=case, step=step, var=var):
-                            break
-                        time.sleep(retry.delay.total_seconds())
-                    else:
-                        raise RetryError()
-                    if until.condition == "" or expect_val(None, until.condition, case=case, step=step, var=var):
-                        break
-                    time.sleep(until.delay.total_seconds())
-                else:
-                    raise UntilError()
-
-                result = expect(res, step_info["res"], case=case, step=step, var=var)
-                step.expects.extend(result)
-            except RetryError as e:
-                step.set_error("RetryError [{}]".format(retry))
-            except UntilError as e:
-                step.set_error("UntilError [{}], ".format(until))
-            except Exception as e:
-                step.set_error("Exception {}".format(traceback.format_exc()))
-            step.summary()
-
+            step = self.run_step(step_info, case, ctx, var, dft)
             case.steps.append(step)
             if not step.is_pass:
                 break
@@ -298,8 +264,43 @@ class Framework:
         case.summary()
         return case
 
-    def run_step(self, info, case, step, var):
-        pass
+    def run_step(self, step_info, case, ctx, var, dft):
+        self._debug("step {}".format(json.dumps(step_info, indent=True)))
+        step = StepResult(step_info["name"])
+        self.reporter.report_step_start(step_info)
+        try:
+            req = merge(step_info["req"], dft[step_info["ctx"]]["req"])
+            req = render(req, case=case, var=var)
+            step.req = req
+
+            retry = Retry(merge(step_info["retry"], dft[step_info["ctx"]]["retry"]))
+            until = Until(merge(step_info["until"], dft[step_info["ctx"]]["until"]))
+
+            for i in range(until.attempts):
+                for j in range(retry.attempts):
+                    res = ctx[step_info["ctx"]].do(req)
+                    step.res = res
+                    if retry.condition == "" or not expect_val(None, retry.condition, case=case, step=step, var=var):
+                        break
+                    time.sleep(retry.delay.total_seconds())
+                else:
+                    raise RetryError()
+                if until.condition == "" or expect_val(None, until.condition, case=case, step=step, var=var):
+                    break
+                time.sleep(until.delay.total_seconds())
+            else:
+                raise UntilError()
+
+            result = expect(res, step_info["res"], case=case, step=step, var=var)
+            step.expects.extend(result)
+        except RetryError as e:
+            step.set_error("RetryError [{}]".format(retry))
+        except UntilError as e:
+            step.set_error("UntilError [{}], ".format(until))
+        except Exception as e:
+            step.set_error("Exception {}".format(traceback.format_exc()))
+        step.summary()
+        return step
 
     def _debug(self, message):
         if self.debug:
