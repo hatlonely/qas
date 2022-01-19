@@ -16,10 +16,12 @@ class JsonReporter(Reporter):
             "isPass": res.is_pass,
             "succ": res.case_succ,
             "fail": res.case_fail,
+            "skip": res.case_skip,
             "name": res.name,
             "cases": [JsonReporter.case_summary(i) for i in res.cases],
             "setups": [JsonReporter.case_summary(i) for i in res.setups],
             "teardowns": [JsonReporter.case_summary(i) for i in res.teardowns],
+            "subTests": [JsonReporter.test_summary(i) for i in res.sub_tests],
         }
 
     @staticmethod
