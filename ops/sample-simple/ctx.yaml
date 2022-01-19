@@ -11,8 +11,15 @@ ctx:
     type: http
     args:
       "#endpoint": "var.jsontestEndpoint"
-    req:
-      method: GET
+    dft:
+      req:
+        method: GET
+      retry:
+        attempts: 3
+        delay: 5s
+      until:
+        attempts: 3
+        delay: 5s
 
 setUp:
   - name: EchoHelloWorld
