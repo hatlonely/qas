@@ -37,8 +37,8 @@ class JsonReporter(Reporter):
         return {
             "isPass": res.is_pass,
             "step": res.step,
-            "succ": res.succ,
-            "fail": res.fail,
+            "succ": res.assertion_succ,
+            "fail": res.assertion_fail,
             "req": res.req,
             "res": res.res,
             "expects": [JsonReporter.expect_summary(i) for i in res.expects],

@@ -23,8 +23,8 @@ class StepResult:
     is_pass: bool
     is_err: bool
     err: str
-    succ: int
-    fail: int
+    assertion_succ: int
+    assertion_fail: int
     elapse: timedelta
 
     def __init__(self, step=""):
@@ -33,8 +33,8 @@ class StepResult:
         self.is_pass = True
         self.is_err = False
         self.err = ""
-        self.succ = 0
-        self.fail = 0
+        self.assertion_succ = 0
+        self.assertion_fail = 0
         self.req = {}
         self.res = {}
         self.elapse = 0
@@ -43,13 +43,13 @@ class StepResult:
         if self.is_err:
             self.is_pass = False
             return
-        self.succ = sum(1 for i in self.expects if i.is_pass)
-        self.fail = len(self.expects) - self.succ
-        self.is_pass = self.fail == 0
+        self.assertion_succ = sum(1 for i in self.expects if i.is_pass)
+        self.assertion_fail = len(self.expects) - self.assertion_succ
+        self.is_pass = self.assertion_fail == 0
 
     def set_error(self, message):
         self.is_err = True
-        self.fail = True
+        self.assertion_fail = True
         self.err = message
 
 
@@ -60,6 +60,8 @@ class CaseResult:
     steps: list[StepResult]
     after_steps: list[StepResult]
     is_pass: bool
+    step_succ: int
+    step_fail: int
     elapse: timedelta
 
     def __init__(self, case=""):
