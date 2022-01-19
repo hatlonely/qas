@@ -34,6 +34,9 @@ class TextReporter(Reporter):
     def report_case_end(self, res: CaseResult):
         print("\n".join([self.padding + i for i in TextReporter.format_case(res, "case")]))
 
+    def report_skip_case(self, name):
+        print("{}{}case {} 跳过{}".format(self.padding, Fore.YELLOW, name, Fore.RESET))
+
     def report_setup_end(self, res: CaseResult):
         print("\n".join([self.padding + i for i in TextReporter.format_case(res, "setUp")]))
 

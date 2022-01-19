@@ -123,7 +123,8 @@ class Framework:
         # 执行 case
         for case_info in self.cases(info, test_directory):
             if self.need_skip(case_info, var):
-                test_result.case_skip += 1
+                test_result.skip_case(case_info["name"])
+                self.reporter.report_skip_case(case_info["name"])
                 continue
             self.reporter.report_case_start(case_info)
             result = self.run_case(before_case_info, case_info, after_case_info, dft_info, var=var, ctx=ctx)

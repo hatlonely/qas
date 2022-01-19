@@ -27,7 +27,7 @@ class StepResult:
     assertion_fail: int
     elapse: timedelta
 
-    def __init__(self, step=""):
+    def __init__(self, step):
         self.step = step
         self.expects = list[ExpectResult]()
         self.is_pass = True
@@ -58,13 +58,14 @@ class CaseResult:
     steps: list[StepResult]
     after_steps: list[StepResult]
     is_pass: bool
+    is_skip: bool
     step_succ: int
     step_fail: int
     assertion_succ: int
     assertion_fail: int
     elapse: timedelta
 
-    def __init__(self, case=""):
+    def __init__(self, case, is_skip=False):
         self.case = case
         self.before_steps = list[StepResult]()
         self.steps = list[StepResult]()
@@ -121,7 +122,7 @@ class TestResult:
     sub_tests: list
     elapse: timedelta
 
-    def __init__(self, name=""):
+    def __init__(self, name):
         self.name = name
         self.setups = list[CaseResult]()
         self.cases = list[CaseResult]()
@@ -152,6 +153,10 @@ class TestResult:
         self.step_fail += case.step_fail
         self.assertion_succ += case.assertion_succ
         self.assertion_fail += case.assertion_fail
+
+    def skip_case(self, name):
+        self.case_skip += 1
+        self.cases.append(CaseResult(name, is_skip=True))
 
     def add_teardown_result(self, case):
         self.teardowns.append(case)

@@ -16,6 +16,9 @@ class Reporter:
     def report_case_end(self, res: CaseResult):
         pass
 
+    def report_skip_case(self, name):
+        pass
+
     def report_setup_start(self, case):
         pass
 
