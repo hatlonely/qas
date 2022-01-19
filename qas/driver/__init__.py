@@ -5,9 +5,10 @@ from .pop_driver import POPDriver
 from .ots_driver import OTSDriver
 from .shell_driver import ShellDriver
 from .mysql_driver import MysqlDriver
+from .redis_driver import RedisDriver
 from .default import merge, REQUIRED
 
-__all__ = ["HttpDriver", "POPDriver", "OTSDriver", "ShellDriver", "MysqlDriver", "merge", "REQUIRED"]
+__all__ = ["HttpDriver", "POPDriver", "OTSDriver", "ShellDriver", "MysqlDriver", "RedisDriver", "merge", "REQUIRED"]
 
 
 
