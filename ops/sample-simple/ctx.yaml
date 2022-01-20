@@ -49,13 +49,13 @@ afterCase:
 
 commonStep:
   step1:
-    ctx: sehll
+    ctx: shell
     req:
       command: "echo pre step1"
   step2:
     ctx: shell
     req:
-      command: "echo pre step2"
+      command: "echo post step2"
 
 case:
   - name: TestHttpJson
@@ -64,6 +64,7 @@ case:
     cond: "var.jsonValue == 'value'"
     preStep:
       - step1
+    postStep:
       - step2
     step:
       - ctx: jsontest

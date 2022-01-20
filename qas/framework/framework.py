@@ -77,7 +77,7 @@ class Framework:
         info = Framework.load_ctx(os.path.basename(test_directory), "{}/ctx.yaml".format(test_directory))
         var_info = copy.deepcopy(parent_var_info) | info["var"]
         var = json.loads(json.dumps(var_info), object_hook=dict_to_sns)
-        common_step_info = copy.deepcopy(parent_common_step_info) | Framework.load_common_step("{}/common_step.yaml".format(test_directory))
+        common_step_info = copy.deepcopy(parent_common_step_info) | info["commonStep"] | Framework.load_common_step("{}/common_step.yaml".format(test_directory))
         before_case_info = copy.deepcopy(parent_before_case_info) + info["beforeCase"] + list(Framework.load_step("{}/before_case.yaml".format(test_directory)))
         after_case_info = copy.deepcopy(parent_after_case_info) + info["afterCase"] + list(Framework.load_step("{}/after_case.yaml".format(test_directory)))
         ctx = copy.copy(parent_ctx)
@@ -226,8 +226,6 @@ class Framework:
     def format_case(filename, info):
         info = merge(info, {
             "name": REQUIRED,
-            "cond": "",
-            "label": {},
         })
         info["name"] = "{}/{}".format(filename, info["name"])
         return info
@@ -249,12 +247,22 @@ class Framework:
             return yaml.safe_load(fp)
 
     def run_case(self, before_case_info, case_info, after_case_info, common_step_info, dft, var=None, ctx=None):
+        case_info = merge(case_info, {
+            "name": REQUIRED,
+            "cond": "",
+            "label": {},
+            "preStep": [],
+            "postStep": [],
+        })
+
         case = CaseResult(case_info["name"])
 
         now = datetime.now()
         for idx, step_info, case_add_step_func, case_skip_step_func in itertools.chain(
             [list(i) + [case.add_before_case_step_result, case.skip_before_case_step] for i in enumerate(before_case_info)],
+            [list(i) + [case.add_case_pre_step_result, case.skip_case_step] for i in enumerate([common_step_info[i] for i in case_info["preStep"]])],
             [list(i) + [case.add_case_step_result, case.skip_case_step] for i in enumerate(case_info["step"])],
+            [list(i) + [case.add_case_post_step_result, case.skip_case_step] for i in enumerate([common_step_info[i] for i in case_info["postStep"]])],
             [list(i) + [case.add_after_case_step_result, case.skip_after_case_step] for i in enumerate(after_case_info)],
         ):
             step_info = merge(step_info, {

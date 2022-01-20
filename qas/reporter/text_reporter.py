@@ -59,8 +59,12 @@ class TextReporter(Reporter):
 
         for step in res.before_case_steps:
             lines.extend(["  " + i for i in TextReporter.format_step(step, "beforeCase step")])
+        for step in res.preSteps:
+            lines.extend(["  " + i for i in TextReporter.format_step(step, "case preStep")])
         for step in res.steps:
             lines.extend(["  " + i for i in TextReporter.format_step(step, "case step")])
+        for step in res.postSteps:
+            lines.extend(["  " + i for i in TextReporter.format_step(step, "case postStep")])
         for step in res.after_case_steps:
             lines.extend(["  " + i for i in TextReporter.format_step(step, "afterCase step")])
 
