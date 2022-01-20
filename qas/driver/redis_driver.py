@@ -17,10 +17,10 @@ class RedisDriver:
             "password": None,
         })
         self.client = redis.Redis(
-            host='localhost',
-            port=6379,
-            db=0,
-            password=None,
+            host=args["host"],
+            port=args["port"],
+            db=args["db"],
+            password=args["password"],
             decode_responses=True,
         )
 
