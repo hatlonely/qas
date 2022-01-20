@@ -10,9 +10,9 @@ import traceback
 import os
 import json
 from types import SimpleNamespace
-from datetime import datetime, timedelta
+from datetime import datetime
 
-from ..driver import HttpDriver, POPDriver, OTSDriver, ShellDriver, MysqlDriver, RedisDriver, MNSDriver, merge, REQUIRED
+from ..driver import HttpDriver, POPDriver, OTSDriver, ShellDriver, MysqlDriver, RedisDriver, MNSDriver, OSSDriver, merge, REQUIRED
 from ..assertion import expect, render, expect_val
 from ..result import TestResult, CaseResult, StepResult
 from ..reporter import TextReporter, JsonReporter
@@ -25,12 +25,13 @@ def dict_to_sns(d):
 
 drivers = {
     "http": HttpDriver,
-    "pop": POPDriver,
-    "ots": OTSDriver,
     "redis": RedisDriver,
     "shell": ShellDriver,
     "mysql": MysqlDriver,
+    "pop": POPDriver,
+    "ots": OTSDriver,
     "mns": MNSDriver,
+    "oss": OSSDriver,
 }
 
 reporters = {
