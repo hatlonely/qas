@@ -226,6 +226,7 @@ class Framework:
     def format_case(filename, info):
         info = merge(info, {
             "name": REQUIRED,
+            "cond": "",
         })
         info["name"] = "{}/{}".format(filename, info["name"])
         return info
