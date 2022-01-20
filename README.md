@@ -118,7 +118,7 @@ qas --test sample.yaml
 4. 执行 hook，setup/teardown/before_case/after_case
 5. 信息统计，case/step/assertion/elapse
 6. retry/until 重试和等待
-7. 可拓展的 drivers，目前支持 http/shell/redis/mysql/pop/ots
+7. 可拓展的 drivers，目前支持 http/shell/redis/mysql/pop/ots/mns
 8. 可拓展的 reporters，目前支持 text/json
 
 
@@ -126,4 +126,5 @@ qas --test sample.yaml
 
 ```shell
 ops --variable .cfg/dev.yaml --env dev -a run --task sample-simple
+ops --variable .cfg/dev.yaml --env dev -a run --task sample-recommend
 ```
