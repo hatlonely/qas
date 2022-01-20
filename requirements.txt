@@ -9,3 +9,4 @@ PyMySQL~=1.0.2
 redis~=4.1.0
 setuptools~=57.4.0
 durationpy~=0.5
+aliyun-mns-sdk~=1.1.6
