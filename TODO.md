@@ -1,7 +1,11 @@
 ## TODO
 
-1. html reporter 的实现
-2. label 机制
-6. 支持 readonly
-10. 支持 sls
-11. 支持 oss
+1. label 机制
+2. 支持 readonly
+3. reporter 支持 html
+4. driver 支持 sls
+5. driver 支持 oss
+6. driver 支持 grpc
+7. driver 支持 thrift
+8. driver 支持 mongo
+9. driver 支持 elasticsearch
