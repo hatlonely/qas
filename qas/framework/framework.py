@@ -187,7 +187,7 @@ class Framework:
         for filename in [
             os.path.join(test_directory, i)
             for i in os.listdir(test_directory)
-            if i not in ["ctx.yaml", "setup.yaml", "teardown.yaml", "before_case.yaml, after_case.yaml"]
+            if i not in ["ctx.yaml", "setup.yaml", "teardown.yaml", "before_case.yaml, after_case.yaml", "common_step.yaml"]
             and os.path.isfile(os.path.join(test_directory, i))
         ]:
             for case in self.load_case(filename):
