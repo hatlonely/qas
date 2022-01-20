@@ -114,7 +114,7 @@ class Framework:
         if not self.skip_setup:
             for case_info in self.teardowns(info, test_directory):
                 self.reporter.report_setup_start(case_info)
-                result = self.run_case([], case_info, [], dft_info, var=var, ctx=ctx)
+                result = self.run_case([], case_info, [], {}, dft_info, var=var, ctx=ctx)
                 test_result.add_setup_result(result)
                 self.reporter.report_setup_end(result)
                 if not result.is_pass:
@@ -128,7 +128,7 @@ class Framework:
                 self.reporter.report_skip_case(case_info["name"])
                 continue
             self.reporter.report_case_start(case_info)
-            result = self.run_case(before_case_info, case_info, after_case_info, dft_info, var=var, ctx=ctx)
+            result = self.run_case(before_case_info, case_info, after_case_info, common_step_info, dft_info, var=var, ctx=ctx)
             test_result.add_case_result(result)
             self.reporter.report_case_end(result)
 
@@ -145,7 +145,7 @@ class Framework:
         if not self.skip_teardown:
             for case_info in self.teardowns(info, test_directory):
                 self.reporter.report_teardown_start(case_info)
-                result = self.run_case([], case_info, [], dft_info, var=var, ctx=ctx)
+                result = self.run_case([], case_info, [], {}, dft_info, var=var, ctx=ctx)
                 test_result.teardowns.append(result)
                 self.reporter.report_teardown_end(result)
                 if not result.is_pass:
@@ -248,7 +248,7 @@ class Framework:
         with open(filename, "r", encoding="utf-8") as fp:
             return yaml.safe_load(fp)
 
-    def run_case(self, before_case_info, case_info, after_case_info, dft, var=None, ctx=None):
+    def run_case(self, before_case_info, case_info, after_case_info, common_step_info, dft, var=None, ctx=None):
         case = CaseResult(case_info["name"])
 
         now = datetime.now()
