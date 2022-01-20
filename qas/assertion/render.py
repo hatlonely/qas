@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 
 
+from .include import *
+
+
 def render(req, case=None, var=None):
     if isinstance(req, dict):
         res = {}

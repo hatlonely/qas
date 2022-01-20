@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 
 
-from datetime import datetime, timezone
-from dateutil import parser
+from .include import *
 from ..result import *
 
 
@@ -49,7 +48,3 @@ def expect_val(val, rule, case=None, step=None, var=None):
     if not isinstance(res, bool):
         return res == val
     return res
-
-
-def to_time(val) -> datetime:
-    return parser.parse(val)
