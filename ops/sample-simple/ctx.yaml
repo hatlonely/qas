@@ -47,15 +47,29 @@ afterCase:
     req:
       command: "echo after case"
 
+commonStep:
+  step1:
+    ctx: sehll
+    req:
+      command: "echo pre step1"
+  step2:
+    ctx: shell
+    req:
+      command: "echo pre step2"
+
 case:
   - name: TestHttpJson
     label:
       key: val
     cond: "var.jsonValue == 'value'"
+    preStep:
+      - step1
+      - step2
     step:
       - ctx: jsontest
         req:
           "#path": "'/key/{}/one/two'.format(var.jsonValue)"
+          timeout: "10s"
         cond: "var.jsonValue == 'value'"
         retry:
           cond: "step.res['status'] == 500"
