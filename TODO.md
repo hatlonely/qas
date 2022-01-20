@@ -4,3 +4,4 @@
 2. label 机制
 6. 支持 readonly
 10. 支持 sls
+11. 支持 oss
