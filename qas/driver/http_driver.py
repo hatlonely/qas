@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 
+import durationpy
 import requests
 from .default import merge, REQUIRED
 
@@ -27,6 +28,8 @@ class HttpDriver:
             "data": None,
             "json": None,
             "path": "",
+            "timeout": "1s",
+            "allowRedirects": True,
         })
         req["headers"] = self.headers | req["headers"]
 
@@ -37,6 +40,8 @@ class HttpDriver:
             data=req["data"],
             json=req["json"],
             headers=req["headers"],
+            timeout=durationpy.from_str(req["timeout"]).total_seconds(),
+            allow_redirects=req["allowRedirects"],
         )
 
         body = None
