@@ -78,7 +78,7 @@ class TextReporter(Reporter):
             ))
         else:
             lines.append("{}{} {} 失败，断言成功 {}，失败 {}，耗时 {}{}".format(
-                Fore.GREEN, step_type, res.name, res.assertion_succ, res.assertion_fail, durationpy.to_str(res.elapse), Fore.RESET,
+                Fore.RED, step_type, res.name, res.assertion_succ, res.assertion_fail, durationpy.to_str(res.elapse), Fore.RESET,
             ))
 
         lines.extend(("req: " + json.dumps(res.req, indent=True)).split("\n"))

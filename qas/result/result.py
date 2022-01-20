@@ -48,8 +48,9 @@ class StepResult:
         self.is_pass = self.assertion_fail == 0
 
     def set_error(self, message):
+        self.is_pass = False
         self.is_err = True
-        self.assertion_fail = True
+        self.assertion_fail += 1
         self.err = message
 
 
@@ -151,10 +152,11 @@ class TestResult:
 
     def add_case_result(self, case):
         self.cases.append(case)
-        if case.is_pass:
-            self.case_succ += 1
-        else:
+        if not case.is_pass:
             self.case_fail += 1
+            self.is_pass = False
+        else:
+            self.case_succ += 1
         self.step_succ += case.step_succ
         self.step_fail += case.step_fail
         self.step_skip += case.step_skip

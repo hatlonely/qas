@@ -38,9 +38,16 @@ class HttpDriver:
             json=req["json"],
             headers=req["headers"],
         )
+
+        body = None
+        try:
+            body = res.json()
+        except Exception as e:
+            pass
+
         return {
             "status": res.status_code,
             "headers": dict(res.headers),
-            "json": res.json(),
+            "json": body,
             "text": res.text,
         }
