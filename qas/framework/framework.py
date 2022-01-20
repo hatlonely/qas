@@ -282,6 +282,8 @@ class Framework:
             step = self.run_step(step_info, case, dft, var=var, ctx=ctx)
             case_add_step_func(step)
             self.reporter.report_step_end(step)
+            if not step.is_pass:
+                break
 
         case.elapse = datetime.now() - now
         return case
