@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+
+
 import json
 import unittest
 import oss2
@@ -24,7 +26,7 @@ class TestOSS(unittest.TestCase):
         )
 
     def test_get_object_meta(self):
-        res = self.client.get_object_meta(key="checklist.pptx")
+        res = self.client.get_object_meta(key="test-file.txt")
         res = {
             "Status": res.status,
             "Headers": dict([(i, res.headers[i]) for i in res.headers]),
@@ -40,7 +42,7 @@ class TestOSS(unittest.TestCase):
     def test_sign_url(self):
         res = self.client.sign_url(
             method="GET",
-            key="checklist.pptx",
+            key="test-file.txt",
             expires=1800,
             headers=None,
             params=None,
@@ -48,7 +50,7 @@ class TestOSS(unittest.TestCase):
         print(res)
 
     def test_get_object_to_file(self):
-        res = self.client.get_object_to_file("checklist.pptx", "checklist.pptx")
+        res = self.client.get_object_to_file("test-file.txt", "test-file.txt")
         res = {
             "Status": res.status,
             "Headers": dict([(i, res.headers[i]) for i in res.headers]),
@@ -62,7 +64,7 @@ class TestOSS(unittest.TestCase):
         print(json.dumps(res, indent=True))
 
     def test_put_object_from_file(self):
-        res = self.client.put_object_from_file("checklist.pptx", "/Users/hatlonely/hatlonely/github.com/hatlonely/qas/checklist.pptx")
+        res = self.client.put_object_from_file("test-file.txt", "test-file.txt")
         res = {
             "Status": res.status,
             "Headers": dict([(i, res.headers[i]) for i in res.headers]),
@@ -86,30 +88,30 @@ class TestOSSDriver(unittest.TestCase):
     def test_get_object_meta(self):
         res = self.driver.do({
             "Action": "GetObjectMeta",
-            "Key": "checklist.pptx"
+            "Key": "test-file.txt"
         })
         print(json.dumps(res, indent=True))
 
     def test_sign_url(self):
         res = self.driver.do({
             "Action": "SignURL",
-            "Key": "checklist.pptx"
+            "Key": "test-file.txt"
         })
         print(json.dumps(res))
 
     def test_get_object_to_file(self):
         res = self.driver.do({
             "Action": "GetObjectToFile",
-            "Key": "checklist.pptx",
-            "Filename": "/Users/hatlonely/hatlonely/github.com/hatlonely/qas/checklist.pptx"
+            "Key": "test-file.txt",
+            "Filename": "test-file.txt"
         })
         print(json.dumps(res, indent=True))
 
     def test_put_object_from_file(self):
         res = self.driver.do({
             "Action": "PutObjectFromFile",
-            "Key": "checklist.pptx",
-            "Filename": "/Users/hatlonely/hatlonely/github.com/hatlonely/qas/checklist.pptx"
+            "Key": "test-file.txt",
+            "Filename": "test-file.txt"
         })
         print(json.dumps(res, indent=True))
 
