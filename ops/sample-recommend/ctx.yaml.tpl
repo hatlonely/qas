@@ -9,7 +9,7 @@ ctx:
   py:
     type: shell
     args:
-      shebang: python3
+      shebang: /usr/local/bin/python3
       args:
         - -c
       envs:
