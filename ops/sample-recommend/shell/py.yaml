@@ -8,3 +8,19 @@
         stdout: |
           hello world
         stderr: ""
+- name: JsonExample
+  step:
+    - ctx: py
+      req:
+        command: |
+          import json
+          print(json.dumps({"key1": "val1", "key2": "val2"}))
+        decoder: json
+      res:
+        exitCode: 0
+        stdout: |
+          {"key1": "val1", "key2": "val2"}
+        stderr: ""
+        json:
+          key1: val1
+          key2: val2
