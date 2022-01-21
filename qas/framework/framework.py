@@ -161,7 +161,7 @@ class Framework:
             return True
         if self.case_regex and not re.search(self.case_regex, case["name"]):
             return True
-        if case["cond"] and not expect_val(None, case["cond"], var=var):
+        if "cond" in case and case["cond"] and not expect_val(None, case["cond"], var=var):
             return True
         return False
 
