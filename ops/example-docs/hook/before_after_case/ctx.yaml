@@ -1,0 +1,22 @@
+name: setup-example
+
+ctx:
+  shell:
+    type: shell
+
+beforeCase:
+  - ctx: shell
+    req:
+      command: echo before case
+
+afterCase:
+  - ctx: shell
+    req:
+      command: echo after case
+
+case:
+  - name: Case
+    step:
+      - ctx: shell
+        req:
+          command: echo case
