@@ -42,6 +42,7 @@ reporters = {
 
 class Framework:
     test_directory: str
+    case_directory: str
     case_regex: str
     case_name: str
     skip_setup: bool
@@ -51,6 +52,7 @@ class Framework:
     def __init__(
         self,
         test_directory,
+        case_directory=None,
         case_name=None,
         case_regex=None,
         skip_setup=False,
@@ -59,6 +61,7 @@ class Framework:
         reporter="text",
     ):
         self.test_directory = test_directory
+        self.case_directory = case_directory
         self.case_regex = case_regex
         self.case_name = case_name
         self.skip_setup = skip_setup
@@ -138,6 +141,8 @@ class Framework:
             for i in os.listdir(test_directory)
             if os.path.isdir(os.path.join(test_directory, i))
         ]:
+            if self.case_directory and not re.search(self.case_directory, directory):
+                continue
             sub_test_result = self.run_test(directory, var_info, ctx, dft_info, common_step_info, before_case_info, after_case_info)
             test_result.add_sub_test_result(sub_test_result)
 
