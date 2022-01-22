@@ -107,6 +107,10 @@ class OTSDriver:
     def get_row(self, req):
         req = merge(req, {
             "TableName": REQUIRED,
+            "PrimaryKey": [{
+                "Key": REQUIRED,
+                "Val": REQUIRED,
+            }],
             "MaxVersion": 1,
         })
 
@@ -149,7 +153,8 @@ class OTSDriver:
             "EndPrimaryKey": [{
                 "Key": REQUIRED,
                 "Val": tablestore.INF_MAX,
-            }]
+            }],
+            "MaxVersion": 1,
         })
 
         _, _, rows, _ = self.client.get_range(
@@ -157,6 +162,7 @@ class OTSDriver:
             direction=req["Direction"],
             inclusive_start_primary_key=[(i["Key"], pk_val(i["Val"]) if "Val" in i else tablestore.INF_MIN) for i in req["StartPrimaryKey"]],
             exclusive_end_primary_key=[(i["Key"], pk_val(i["Val"]) if "Val" in i else tablestore.INF_MAX) for i in req["EndPrimaryKey"]],
+            max_version=req["MaxVersion"],
         )
 
         return [dict([(i[0], i[1]) for i in row.primary_key]) | dict([(i[0], i[1]) for i in row.attribute_columns]) for row in rows]
