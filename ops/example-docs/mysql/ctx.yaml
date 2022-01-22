@@ -51,7 +51,7 @@ case:
           code: OK
       - ctx: db
         req:
-          action: fetchone
+          cmd: fetchone
           sql: |
             SELECT `id`, `password` FROM `users` WHERE `email`=%s
           args:
@@ -62,7 +62,7 @@ case:
             password: "123456"
       - ctx: db
         req:
-          action: fetchall
+          cmd: fetchall
           sql: |
             SELECT * FROM `users` WHERE 1=1
         res:

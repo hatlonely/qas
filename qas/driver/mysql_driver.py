@@ -29,7 +29,7 @@ class MysqlDriver:
 
     def do(self, req):
         req = merge(req, {
-            "action": "sql",
+            "cmd": "sql",
             "sql": REQUIRED,
             "args": [],
         })
@@ -39,11 +39,11 @@ class MysqlDriver:
             "fetchone": self.fetchone,
             "fetchall": self.fetchall,
         }
-        if req["action"] not in do_map:
-            raise Exception("unsupported action [{}]".format(req["action"]))
+        if req["cmd"] not in do_map:
+            raise Exception("unsupported cmd [{}]".format(req["cmd"]))
 
         try:
-            return do_map[req["action"]](req)
+            return do_map[req["cmd"]](req)
         except pymysql.err.OperationalError as e:
             return {
                 "code": "OperationalError",
