@@ -42,24 +42,43 @@ class MysqlDriver:
         if req["action"] not in do_map:
             raise Exception("unsupported action [{}]".format(req["action"]))
 
-        return do_map[req["action"]](req)
+        try:
+            return do_map[req["action"]](req)
+        except pymysql.err.OperationalError as e:
+            return {
+                "code": "OperationalError",
+                "err": {
+                    "type": "OperationalError",
+                    "args": e.args
+                },
+            }
+        except Exception as e:
+            raise e
 
     def sql(self, req):
         with self.connection.cursor() as cursor:
             cursor.execute(req["sql"], req["args"])
         self.connection.commit()
-        return {}
+        return {
+            "code": "OK"
+        }
 
     def fetchone(self, req):
         with self.connection.cursor() as cursor:
             cursor.execute(req["sql"], req["args"])
             result = cursor.fetchone()
         self.connection.commit()
-        return result
+        return {
+            "code": "OK",
+            "res": result
+        }
 
     def fetchall(self, req):
         with self.connection.cursor() as cursor:
             cursor.execute(req["sql"], req["args"])
             result = cursor.fetchall()
         self.connection.commit()
-        return result
+        return {
+            "code": "OK",
+            "res": result
+        }

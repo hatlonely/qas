@@ -1,0 +1,55 @@
+name: mysql example
+
+ctx:
+  db:
+    type: mysql
+    args:
+      host: "localhost"
+      port: 3306
+      username: "hatlonely"
+      password: "keaiduo1"
+      database: "hatlonely"
+
+case:
+  - name: MysqlExample
+    step:
+      - ctx: db
+        req:
+          sql: |
+            INSERT INTO `users` (`email`, `password`) VALUES (%s, %s)
+          args:
+            - "hatlonely@foxmail.com"
+            - "123456"
+        res:
+          code: OK
+      - ctx: db
+        req:
+          action: fetchone
+          sql: |
+            SELECT `id`, `password` FROM `users` WHERE `email`=%s
+          args:
+            - "hatlonely@foxmail.com"
+        res:
+          code: OK
+          res:
+            password: "123456"
+      - ctx: db
+        req:
+          action: fetchall
+          sql: |
+            SELECT * FROM `users` WHERE 1=1
+        res:
+          code: OK
+          res: [{
+            "id": 16,
+            "email": "hatlonely@foxmail.com",
+            "password": "123456"
+          }, {
+            "id": 17,
+            "email": "hatlonely@foxmail.com",
+            "password": "123456"
+          }, {
+            "id": 18,
+            "email": "hatlonely@foxmail.com",
+            "password": "123456"
+          }]

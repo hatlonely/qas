@@ -22,7 +22,7 @@ def _expect_recursive(root: str, vals, rules, is_dict: bool, expect_results: lis
     else:
         to_enumerate = enumerate(rules)
     for key, rule in to_enumerate:
-        root_dot_key = "{}.{}".format(root, key.lstrip("#")).lstrip(".")
+        root_dot_key = "{}.{}".format(root, str(key).lstrip("#")).lstrip(".")
         if isinstance(rule, dict):
             _expect_recursive(root_dot_key, vals[key], rule, True, expect_results, case=case, step=step, var=var)
         elif isinstance(rule, list):
