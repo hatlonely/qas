@@ -1,4 +1,4 @@
-name: setup-example
+name: before-after-case-example
 
 ctx:
   shell:
@@ -15,7 +15,7 @@ afterCase:
       command: echo after case
 
 case:
-  - name: Case
+  - name: BeforeAfterCaseExample
     step:
       - ctx: shell
         req:
