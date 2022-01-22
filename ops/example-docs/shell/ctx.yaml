@@ -1,0 +1,45 @@
+name: shell example
+
+ctx:
+  sh:
+    type: shell
+    dft:
+      req:
+        envs:
+          SH_CTX_ENV_KEY: sh-ctx-env-val
+  py:
+    type: shell
+    args:
+      shebang: /usr/local/bin/python3
+      args:
+        - -c
+
+case:
+  - name: ShellExample
+    step:
+      - ctx: sh
+        req:
+          command: |
+            echo SH_CTX_ENV_KEY=${SH_CTX_ENV_KEY}
+            echo CASE_ENV_KYE=${CASE_ENV_KYE}
+          envs:
+            CASE_ENV_KYE: case-env-val
+        res:
+          exitCode: 0
+          stdout: |
+            SH_CTX_ENV_KEY=sh-ctx-env-val
+            CASE_ENV_KYE=case-env-val
+      - ctx: py
+        req:
+          command: |
+            import json
+            print(json.dumps({"key1": "val1", "key2": "val2"}))
+          decoder: json
+        res:
+          exitCode: 0
+          stdout: |
+              {"key1": "val1", "key2": "val2"}
+          stderr: ""
+          json:
+            key1: val1
+            key2: val2

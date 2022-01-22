@@ -22,6 +22,10 @@ task:
     step:
       - sh ${DEP}/ops/tool/render.sh ops/sample-recommend ${TMP}/sample-recommend
       - python3 main.py --test "${TMP}/sample-recommend" --case-regex http
+  example-docs:
+    step:
+      - sh ${DEP}/ops/tool/render.sh ops/example-docs ${TMP}/example-docs
+      - python3 main.py --test "${TMP}/example-docs"
   sample-simple:
     step:
       - sh ${DEP}/ops/tool/render.sh ops/sample-simple ${TMP}/sample-simple
