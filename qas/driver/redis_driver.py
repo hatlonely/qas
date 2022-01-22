@@ -34,6 +34,10 @@ class RedisDriver:
             "get": self.get,
             "setJson": self.set_json,
             "getJson": self.get_json,
+            "hset": self.hset,
+            "hget": self.hget,
+            "del": self.delete,
+            "hdel": self.hdel,
         }
 
         if req["cmd"] not in do_map:
@@ -48,18 +52,21 @@ class RedisDriver:
             "exp": None,
         })
         ok = self.client.set(req["key"], req["val"], ex=req["exp"])
-        return {
-            "ok": ok
-        }
+        return {"ok": ok}
 
     def get(self, req):
         req = merge(req, {
             "key": REQUIRED
         })
         val = self.client.get(req["key"])
-        return {
-            "val": val
-        }
+        return {"val": val}
+
+    def delete(self, req):
+        req = merge(req, {
+            "key": REQUIRED,
+        })
+        ok = self.client.delete(req["key"])
+        return {"ok": ok}
 
     def set_json(self, req):
         req = merge(req, {
@@ -68,9 +75,7 @@ class RedisDriver:
             "exp": None,
         })
         ok = self.client.set(req["key"], json.dumps(req["val"]), ex=req["exp"])
-        return {
-            "ok": ok
-        }
+        return {"ok": ok}
 
     def get_json(self, req):
         req = merge(req, {
@@ -86,9 +91,7 @@ class RedisDriver:
             "val": REQUIRED,
         })
         n = self.client.hset(req["key"], req["field"], req["val"])
-        return {
-            "n": n
-        }
+        return {"n": n}
 
     def hget(self, req):
         req = merge(req, {
@@ -96,6 +99,12 @@ class RedisDriver:
             "field": REQUIRED,
         })
         val = self.client.hget(req["key"], req["field"])
-        return {
-            "val": val
-        }
+        return {"val": val}
+
+    def hdel(self, req):
+        req = merge(req, {
+            "key": REQUIRED,
+            "field": REQUIRED,
+        })
+        n = self.client.hdel(req["key"], req["field"])
+        return {"n": n}
