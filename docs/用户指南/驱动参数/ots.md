@@ -114,17 +114,6 @@ ctx:
 
 **请求**
 
-"TableName": REQUIRED,
-            "Direction": "FORWARD",
-            "StartPrimaryKey": [{
-                "Key": REQUIRED,
-                "Val": tablestore.INF_MIN
-            }],
-            "EndPrimaryKey": [{
-                "Key": REQUIRED,
-                "Val": tablestore.INF_MAX,
-            }]
-
 - `Action`: `string`，服务方法，常量 `GetRange`
 - `TableName`: `string`，表名，必填
 - `Direction`: `string`，遍历方向，默认 `FORWARD`，取值 `FORWARD / BACKWARD`
