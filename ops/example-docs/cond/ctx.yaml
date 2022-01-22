@@ -1,14 +1,33 @@
 name: cond-example
 
+var:
+  key1: val1
+
 ctx:
   shell:
     type: shell
 
 case:
-  - name: CondExample
+  - name: CondPassExample
+    cond: "var.key1 == 'val1'"
     step:
       - ctx: shell
         req:
-          command: echo hello world
+          command: date +%s
         res:
           exitCode: 0
+      - ctx: shell
+        cond: "int(case.steps[0].res['stdout']) % 2 == 1"
+        req:
+          command: echo odd
+      - ctx: shell
+        cond: "int(case.steps[0].res['stdout']) % 2 == 0"
+        req:
+          command: echo even
+  - name: CondDenyExample
+    cond: "var.key1 == 'val2'"
+    step:
+      - ctx: shell
+        req:
+          command: |
+            echo "this case whill skip by cond"
