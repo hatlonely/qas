@@ -36,26 +36,22 @@ class POPDriver:
         args = merge(args, {
             "AccessKeyId": REQUIRED,
             "AccessKeySecret": REQUIRED,
-            "RegionId": "",
             "DisableVerify": False,
-            "Method": "POST",
-            "Scheme": "https",
-            "Endpoint": "",
-            "ProductId": "",
+            "RegionId": "",
         })
 
         self.endpoint = args["Endpoint"].rstrip("/")
         self.client = AcsClient(args["AccessKeyId"], args["AccessKeySecret"], args["RegionId"], verify=not args["DisableVerify"])
-        self.product_id = args["ProductId"]
-        self.method = args["Method"]
-        self.scheme = args["Scheme"]
+        self.region_id = args["RegionId"]
 
     def do(self, req: dict):
         req = merge(req, {
-            "Method": self.method,
-            "Scheme": self.scheme,
             "Action": REQUIRED,
-            "ProductId": self.product_id,
+            "Method": "POST",
+            "Scheme": "https",
+            "ProductId": "",
+            "Version": "",
+            "RegionId": self.region_id,
             "Endpoint": self.endpoint,
         })
 
@@ -66,7 +62,7 @@ class POPDriver:
         if req["Endpoint"]:
             creq.set_domain(req["Endpoint"])
 
-        if "Version" in req:
+        if req["Version"]:
             creq.set_version(req["Version"])
         elif req["ProductId"]:
             creq.set_version(product_to_version[req["ProductId"]])

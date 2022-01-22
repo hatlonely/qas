@@ -7,8 +7,9 @@ ctx:
       AccessKeyId: ${IMM_AK}
       AccessKeySecret: ${IMM_SK}
       Endpoint: ${IMM_ENDPOINT}
-      Method: POST
-      ProductId: imm
+    dft:
+      req:
+        ProductId: imm
 
 case:
   - name: POPExample
