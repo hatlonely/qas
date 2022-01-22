@@ -18,7 +18,11 @@ def str2bool(v):
 
 def main():
     parser = argparse.ArgumentParser(formatter_class=lambda prog: argparse.RawTextHelpFormatter(prog, width=200), description="""example:
-    qas --test "tmp/env/dev/sample"
+    qas --test example-docs
+    qas --test example-docs --case helloworld
+    qas --test example-docs --case-regex helloworld
+    qas --test example-docs --case-name EchoHelloWorld
+    qas --test example-docs --case-name EchoHelloWorld --setup --teardown
 """)
     parser.add_argument("--debug", nargs="?", const=True, default=False, help="debug mod")
     parser.add_argument("-r", "--reporter", default="text", choices=["text", "json"], help="reporter result")
