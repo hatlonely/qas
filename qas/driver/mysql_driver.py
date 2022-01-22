@@ -49,7 +49,7 @@ class MysqlDriver:
                 "code": "OperationalError",
                 "err": {
                     "type": "OperationalError",
-                    "args": e.args
+                    "args": list(e.args)
                 },
             }
         except Exception as e:

@@ -128,4 +128,7 @@ class TextReporter(Reporter):
                 vals = vals[k]
             else:
                 vals = vals[int(k)]
-        vals[keys[-1]] = "{}{}".format(json.dumps(vals[keys[-1]]), val)
+        if isinstance(vals, dict):
+            vals[keys[-1]] = "{}{}".format(json.dumps(vals[keys[-1]]), val)
+        else:
+            vals[int(keys[-1])] = "{}{}".format(json.dumps(vals[int(keys[-1])]), val)
