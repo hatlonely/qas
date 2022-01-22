@@ -105,15 +105,27 @@ class TextReporter(Reporter):
         for line in res_lines:
             mr = re.match(r'(\s+".*?": )"(.*)<GREEN>(.*)<END>"(.*)', line)
             if mr:
-                format_lines.append(
-                    "{}{}{} # {}{}{}".format(mr.groups()[0], json.loads('"{}"'.format(mr.groups()[1])), mr.groups()[3], Fore.GREEN,
-                                             mr.groups()[2], Fore.RESET))
+                format_lines.append("{}{}{} # {}{}{}".format(
+                    mr.groups()[0], json.loads('"{}"'.format(mr.groups()[1])), mr.groups()[3], Fore.GREEN, mr.groups()[2], Fore.RESET,
+                ))
                 continue
             mr = re.match(r'(\s+".*?": )"(.*)<RED>(.*)<END>"(.*)', line)
             if mr:
-                format_lines.append(
-                    "{}{}{} # {}{}{}".format(mr.groups()[0], json.loads('"{}"'.format(mr.groups()[1])), mr.groups()[3], Fore.RED,
-                                             mr.groups()[2], Fore.RESET))
+                format_lines.append("{}{}{} # {}{}{}".format(
+                    mr.groups()[0], json.loads('"{}"'.format(mr.groups()[1])), mr.groups()[3], Fore.RED, mr.groups()[2], Fore.RESET,
+                ))
+                continue
+            mr = re.match(r'(\s+)"(.*)<GREEN>(.*)<END>"(.*)', line)
+            if mr:
+                format_lines.append("{}{}{} # {}{}{}".format(
+                    mr.groups()[0], json.loads('"{}"'.format(mr.groups()[1])), mr.groups()[3], Fore.GREEN, mr.groups()[2], Fore.RESET,
+                ))
+                continue
+            mr = re.match(r'(\s+)"(.*)<RED>(.*)<END>"(.*)', line)
+            if mr:
+                format_lines.append("{}{}{} # {}{}{}".format(
+                    mr.groups()[0], json.loads('"{}"'.format(mr.groups()[1])), mr.groups()[3], Fore.RED, mr.groups()[2], Fore.RESET,
+                ))
                 continue
             format_lines.append(line)
 
