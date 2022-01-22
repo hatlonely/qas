@@ -23,6 +23,7 @@ def main():
     parser.add_argument("--debug", nargs="?", const=True, default=False, help="debug mod")
     parser.add_argument("-r", "--reporter", default="text", help="test directory")
     parser.add_argument("-t", "--test", required=True, help="test directory")
+    parser.add_argument("-c", "--case", help="case directory")
     parser.add_argument("--case-name", help="case name")
     parser.add_argument("--case-regex", help="case regex")
     parser.add_argument("--skip-setup", nargs="?", const=True, default=False, type=str2bool, help="skip setup")
@@ -31,6 +32,7 @@ def main():
 
     fw = Framework(
         args.test,
+        case_directory=args.case,
         case_name=args.case_name,
         case_regex=args.case_regex,
         skip_setup=args.skip_setup,
