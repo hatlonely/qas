@@ -11,3 +11,4 @@
 10. 参数支持 validator
 11. 断言 import 拓展
 12. 用户 driver 拓展
+13. http 支持文件上传
