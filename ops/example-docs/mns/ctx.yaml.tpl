@@ -47,3 +47,8 @@ case:
             Body:
               key1: val1
               key2: val2
+      - ctx: mns
+        req:
+          Action: DeleteMessage
+          Queue: imm-test-hl-mns-queue-shanghai
+          "#ReceiptHandle": "case.steps[3].res['ReceiptHandle']"
