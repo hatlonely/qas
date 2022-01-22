@@ -1,0 +1,14 @@
+name: hello-world
+
+ctx:
+  shell:
+    type: shell
+
+case:
+  - name: EchoHelloWorld
+    step:
+      - ctx: shell
+        req:
+          command: echo hello world
+        res:
+          exitCode: 0
