@@ -1,4 +1,4 @@
-name: redis example
+name: redis-example
 
 ctx:
   redis:

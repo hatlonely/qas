@@ -1,4 +1,4 @@
-name: oss example
+name: oss-example
 
 ctx:
   oss:

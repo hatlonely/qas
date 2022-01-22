@@ -1,4 +1,4 @@
-name: shell example
+name: shell-example
 
 ctx:
   sh:

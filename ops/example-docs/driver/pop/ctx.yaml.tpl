@@ -1,4 +1,4 @@
-name: pop example
+name: pop-example
 
 ctx:
   imm:

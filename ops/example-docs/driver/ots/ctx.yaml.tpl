@@ -1,4 +1,4 @@
-name: ots example
+name: ots-example
 
 ctx:
   ots:
