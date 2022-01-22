@@ -16,3 +16,4 @@ case:
           command: date +%s
         res:
           exitCode: 0
+          "#stdout": "int(val) % 5 == 0"
