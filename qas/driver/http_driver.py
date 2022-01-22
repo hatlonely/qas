@@ -8,16 +8,13 @@ from .default import merge, REQUIRED
 
 class HttpDriver:
     endpoint = None
-    headers = None
 
     def __init__(self, args: dict):
         args = merge(args, {
             "endpoint": REQUIRED,
-            "headers": {},
         })
 
         self.endpoint = args["endpoint"].rstrip("/")
-        self.headers = args["headers"]
 
     def do(self, req: dict):
         req = merge(req, {
@@ -31,7 +28,6 @@ class HttpDriver:
             "timeout": "1s",
             "allowRedirects": True,
         })
-        req["headers"] = self.headers | req["headers"]
 
         res = requests.request(
             method=req["method"],

@@ -18,8 +18,10 @@ ctx:
     type: http
     args:
       endpoint: http://echo.jsontest.com/
-    req:
-      method: GET
+    dft:
+      req:
+        method: GET
+        timeout: 10s
   imm:
     type: pop
     args:
