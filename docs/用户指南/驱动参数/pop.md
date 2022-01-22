@@ -24,6 +24,27 @@ ctx:
 
 ### 发起请求
 
+**请求**
+
+- `Action`: `string`，调用服务方法，必填
+- `Method`: `string`，http 方法，默认 POST
+- `ProductId`: `string`，阿里云服务 id，这个字段只是为了服务默认的 api 版本，可不填，直接设置 `Version` 字段，目前支持: `ots/imm/ram/slb/ack/rds/redis/ecs/vpc/kms/sts`
+- `Version`: `string`，阿里服务 api 版本
+- `RegionId`: `string`，服务地区，默认为空
+- `Endpoint`: `string`，服务地址，默认使用启动参数中的 `Endpoint`
+
+其他 api 参数参考具体的 api 文档
+
+**返回**
+
+返回参考具体的 api 文档
+
+**错误**
+
+- `Status`: `int`，http 状态码
+- `Code`: `string`，错误码
+- `Message`: `string`，错误信息
+- `RequestId`: `string`，请求 id
 
 ```yaml
 case:
