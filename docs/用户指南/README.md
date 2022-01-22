@@ -8,4 +8,8 @@
   - [http](驱动参数/http.md)
   - [mysql](驱动参数/mysql.md)
   - [redis](驱动参数/redis.md)
+  - [pop](驱动参数/pop.md)
+  - [oss](驱动参数/oss.md)
+  - [ots](驱动参数/ots.md)
+  - [mns](驱动参数/mns.md)
 - [最佳实践](最佳实践.md)
