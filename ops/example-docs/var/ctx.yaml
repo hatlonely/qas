@@ -34,3 +34,18 @@ case:
             val3
             val5
             val6
+  - name: CaseExample
+    step:
+      - ctx: shell
+        req:
+          command: date +%s
+        res:
+          "#stdout": "(datetime.now() - datetime.fromtimestamp(int(val))).total_seconds() < 3"
+      - ctx: shell
+        req:
+          command: |
+            echo -n "${KEY7}"
+          envs:
+            "#KEY7": "case.steps[0].res['stdout']"
+        res:
+          "#stdout": "case.steps[0].res['stdout']"
