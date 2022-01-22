@@ -1,0 +1,26 @@
+name: http example
+
+ctx:
+  jsontest:
+    type: http
+    args:
+      endpoint: http://echo.jsontest.com/
+
+case:
+  - name: HttpExample
+    step:
+      - ctx: jsontest
+        req:
+          path: /key/value/one/two
+          timeout: 10s
+        res:
+          status: 200
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Content-Type": "application/json",
+            "#X-Cloud-Trace-Context": "len(val) == 32"
+          }
+          json: {
+            "one": "two",
+            "key": "value"
+          }
