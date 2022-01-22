@@ -1,0 +1,26 @@
+name: setup-example
+
+ctx:
+  shell:
+    type: shell
+
+setUp:
+  - name: SetUpExample
+    step:
+      - ctx: shell
+        req:
+          command: echo setup
+
+tearDown:
+  - name: TearDownExample
+    step:
+      - ctx: shell
+        req:
+          command: echo teardown
+
+case:
+  - name: Case
+    step:
+      - ctx: shell
+        req:
+          command: echo case
