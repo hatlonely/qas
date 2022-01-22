@@ -1,0 +1,26 @@
+name: pre-post-step-example
+
+ctx:
+  shell:
+    type: shell
+
+commonStep:
+  step1:
+    ctx: shell
+    req:
+      command: echo step1
+  step2:
+    ctx: shell
+    req:
+      command: echo step2
+
+case:
+  - name: PrePostStepExample
+    preStep:
+      - step1
+    postStep:
+      - step2
+    step:
+      - ctx: shell
+        req:
+          command: echo case step
