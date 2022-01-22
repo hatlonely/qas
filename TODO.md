@@ -8,4 +8,6 @@
 7. driver 支持 thrift
 8. driver 支持 mongo
 9. driver 支持 elasticsearch
-10. 公共步骤引用 preStep
+10. 参数支持 validator
+11. 断言 import 拓展
+12. 用户 driver 拓展
