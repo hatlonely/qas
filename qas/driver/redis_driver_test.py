@@ -42,7 +42,7 @@ class TestRedisDriver(unittest.TestCase):
             "cmd": "set",
             "key": "key1",
             "val": "val1",
-            "expiration": 60,
+            "exp": 60,
         })
         print(res)
 

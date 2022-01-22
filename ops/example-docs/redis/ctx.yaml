@@ -1,0 +1,22 @@
+name: redis example
+
+ctx:
+  redis:
+    type: redis
+    args:
+      host: "localhost"
+      port: 6379
+      db: 0
+      password:
+
+case:
+  - name: RedisExample
+    step:
+      - ctx: redis
+        req:
+          cmd: set
+          key: name
+          val: hatlonely
+          exp: 60
+        res:
+

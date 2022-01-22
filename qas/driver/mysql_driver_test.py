@@ -57,7 +57,7 @@ class TestMysqlDriver(unittest.TestCase):
 
     def test_sql(self):
         res = self.driver.do(req={
-            "action": "sql",
+            "cmd": "sql",
             "sql": "INSERT INTO `users` (`email`, `password`) VALUES (%s, %s)",
             "args": [
                 "hatlonely@foxmail.com",
@@ -68,7 +68,7 @@ class TestMysqlDriver(unittest.TestCase):
 
     def test_fetchone(self):
         res = self.driver.do(req={
-            "action": "fetchone",
+            "cmd": "fetchone",
             "sql": "SELECT `id`, `password` FROM `users` WHERE `email`=%s",
             "args": [
                 "hatlonely@foxmail.com"
@@ -78,7 +78,7 @@ class TestMysqlDriver(unittest.TestCase):
 
     def test_fetchall(self):
         res = self.driver.do(req={
-            "action": "fetchall",
+            "cmd": "fetchall",
             "sql": "SELECT `id`, `password` FROM `users` WHERE `email`=%s",
             "args": [
                 "hatlonely@foxmail.com"

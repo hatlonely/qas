@@ -45,9 +45,9 @@ class RedisDriver:
         req = merge(req, {
             "key": REQUIRED,
             "val": REQUIRED,
-            "expiration": None,
+            "exp": None,
         })
-        ok = self.client.set(req["key"], req["val"], ex=req["expiration"])
+        ok = self.client.set(req["key"], req["val"], ex=req["exp"])
         return {
             "ok": ok
         }
@@ -65,9 +65,9 @@ class RedisDriver:
         req = merge(req, {
             "key": REQUIRED,
             "val": REQUIRED,
-            "expiration": None,
+            "exp": None,
         })
-        ok = self.client.set(req["key"], json.dumps(req["val"]), ex=req["expiration"])
+        ok = self.client.set(req["key"], json.dumps(req["val"]), ex=req["exp"])
         return {
             "ok": ok
         }
