@@ -5,7 +5,7 @@ ctx:
     type: shell
 
 case:
-  - name: EchoHelloWorld
+  - name: HelloWorld
     step:
       - ctx: shell
         req:

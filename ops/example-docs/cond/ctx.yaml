@@ -1,0 +1,14 @@
+name: cond-example
+
+ctx:
+  shell:
+    type: shell
+
+case:
+  - name: CondExample
+    step:
+      - ctx: shell
+        req:
+          command: echo hello world
+        res:
+          exitCode: 0
