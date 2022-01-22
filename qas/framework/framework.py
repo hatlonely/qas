@@ -112,7 +112,7 @@ class Framework:
 
         # 执行 setup
         if not self.skip_setup:
-            for case_info in self.teardowns(info, test_directory):
+            for case_info in self.setups(info, test_directory):
                 self.reporter.report_setup_start(case_info)
                 result = self.run_case([], case_info, [], {}, dft_info, var=var, ctx=ctx)
                 test_result.add_setup_result(result)

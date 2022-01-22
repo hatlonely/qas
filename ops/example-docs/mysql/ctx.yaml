@@ -10,16 +10,43 @@ ctx:
       password: "keaiduo1"
       database: "hatlonely"
 
+setUp:
+  - name: CreateUserTableIfNotExist
+    step:
+      - ctx: db
+        req:
+          sql: |
+            CREATE TABLE IF NOT EXISTS `users` (
+              `id` int(11) NOT NULL AUTO_INCREMENT,
+              `email` varchar(255) COLLATE utf8_bin NOT NULL,
+              `password` varchar(255) COLLATE utf8_bin NOT NULL,
+              PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin AUTO_INCREMENT=1;
+        res:
+          code: OK
+
+tearDown:
+  - name: DropUserTable
+    step:
+      - ctx: db
+        req:
+          sql: |
+            DROP TABLE `users`
+        res:
+          code: OK
+
 case:
   - name: MysqlExample
     step:
       - ctx: db
         req:
           sql: |
-            INSERT INTO `users` (`email`, `password`) VALUES (%s, %s)
+            INSERT INTO `users` (`email`, `password`) VALUES (%s, %s), (%s, %s)
           args:
             - "hatlonely@foxmail.com"
             - "123456"
+            - "playjokes@foxmail.com"
+            - "456789"
         res:
           code: OK
       - ctx: db
@@ -41,15 +68,11 @@ case:
         res:
           code: OK
           res: [{
-            "id": 16,
+            "id": 1,
             "email": "hatlonely@foxmail.com",
             "password": "123456"
           }, {
-            "id": 17,
-            "email": "hatlonely@foxmail.com",
-            "password": "123456"
-          }, {
-            "id": 18,
-            "email": "hatlonely@foxmail.com",
-            "password": "123456"
+            "id": 2,
+            "email": "playjokes@foxmail.com",
+            "password": "456789"
           }]
