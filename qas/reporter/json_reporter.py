@@ -10,7 +10,7 @@ from ..result import TestResult, CaseResult, StepResult, ExpectResult
 
 class JsonReporter(Reporter):
     def report_test_end(self, res: TestResult):
-        print(json.dumps(JsonReporter.test_summary(res), indent=True))
+        print(json.dumps(JsonReporter.test_summary(res), indent=True, default=lambda x: x.__name__))
 
     @staticmethod
     def test_summary(res: TestResult) -> dict:

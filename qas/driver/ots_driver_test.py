@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 
-
+import json
 import unittest
-from ots_driver import *
+
+import tablestore
+
+from .ots_driver import *
 
 
 class TestOTSDriver(unittest.TestCase):
@@ -13,7 +16,7 @@ class TestOTSDriver(unittest.TestCase):
             "AccessKeySecret": "xx",
             "Instance": "xx",
         })
-        self.test_table_name="testQAS"
+        self.test_table_name = "TestQAS"
 
     def test_list_table(self):
         res = self.driver.do(req={
@@ -113,6 +116,18 @@ class TestOTSDriver(unittest.TestCase):
             }]
         })
         print(json.dumps(res))
+
+    def test_json(self):
+        a = {
+            "StartPrimaryKey": [{
+                "Val": tablestore.INF_MIN
+            }],
+            "EndPrimaryKey": [{
+                "Val": tablestore.INF_MAX,
+            }]
+        }
+        print(tablestore.INF_MAX.__name__)
+        print(json.dumps(a, default=lambda x: x.__name__))
 
 
 if __name__ == '__main__':

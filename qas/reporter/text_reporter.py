@@ -85,7 +85,7 @@ class TextReporter(Reporter):
                 Fore.RED, step_type, res.name, res.assertion_succ, res.assertion_fail, durationpy.to_str(res.elapse), Fore.RESET,
             ))
 
-        lines.extend(("req: " + json.dumps(res.req, indent=True)).split("\n"))
+        lines.extend(("req: " + json.dumps(res.req, default=lambda x: x.__name__, indent=True)).split("\n"))
 
         if res.is_err:
             lines.extend(("res: " + json.dumps(res.res, indent=True)).split("\n"))
