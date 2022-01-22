@@ -25,7 +25,7 @@ task:
   example-docs:
     step:
       - sh ${DEP}/ops/tool/render.sh ops/example-docs ${TMP}/example-docs
-      - python3 main.py --test "${TMP}/example-docs" --case ots --skip-setup --skip-teardown
+      - python3 main.py --test "${TMP}/example-docs" --case ots
   sample-simple:
     step:
       - sh ${DEP}/ops/tool/render.sh ops/sample-simple ${TMP}/sample-simple

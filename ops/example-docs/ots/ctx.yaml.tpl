@@ -84,3 +84,12 @@ case:
             PK2: pkVal2
             key1: val1
             key2: val2
+      - ctx: ots
+        req:
+          Action: DeleteRow
+          TableName: TestQAS
+          PrimaryKey:
+            - Key: PK1
+              Val: pkVal1
+            - Key: PK2
+              Val: pkVal2
