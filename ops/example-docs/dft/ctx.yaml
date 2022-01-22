@@ -1,0 +1,23 @@
+name: dft-example
+
+var:
+  key1: val1
+
+ctx:
+  shell:
+    type: shell
+    dft:
+      req:
+        envs:
+          "#KEY1": var.key1
+
+case:
+  - name: VarExample
+    step:
+      - ctx: shell
+        req:
+          command: echo "${KEY1}"
+        res:
+          exitCode: 0
+          stdout: |
+            val1
