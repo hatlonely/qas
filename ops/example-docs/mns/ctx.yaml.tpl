@@ -41,6 +41,7 @@ case:
           Action: ReceiveMessage
           Queue: imm-test-hl-mns-queue-shanghai
           WaitSeconds: 10
+          AutoRelease: false
         res:
           Status: 200
           Body:
@@ -52,3 +53,5 @@ case:
           Action: DeleteMessage
           Queue: imm-test-hl-mns-queue-shanghai
           "#ReceiptHandle": "case.steps[3].res['ReceiptHandle']"
+        res:
+          Status: 204
