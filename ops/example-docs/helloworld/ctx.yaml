@@ -9,6 +9,7 @@ case:
     step:
       - ctx: shell
         req:
-          command: echo hello world
+          command: echo -n hello world
         res:
           exitCode: 0
+          stdout: hello world
