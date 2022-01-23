@@ -1,8 +1,0 @@
-- name: EchoSetUp
-  step:
-    - ctx: sh
-      req:
-        command: echo set up
-      res:
-        exitCode: 0
-        stdout: "set up\n"
