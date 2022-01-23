@@ -1,0 +1,10 @@
+name: subtest1
+
+ctx:
+  shell:
+    type: shell
+    dft:
+      req:
+        envs:
+          "#KEY1": var.key1
+          "#KEY2": var.key2

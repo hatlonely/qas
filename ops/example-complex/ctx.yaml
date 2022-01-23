@@ -1,0 +1,9 @@
+name: example-complex
+
+ctx:
+  shell:
+    type: shell
+    dft:
+      req:
+        envs:
+          "#KEY1": var.key1

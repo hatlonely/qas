@@ -1,0 +1,16 @@
+- name: setup1
+  step:
+    - ctx: shell
+      req:
+        command: echo setup1 step1
+    - ctx: shell
+      req:
+        command: echo setup1 step2
+- name: setup2
+  step:
+    - ctx: shell
+      req:
+        command: echo setup2 step1
+    - ctx: shell
+      req:
+        command: echo setup2 step2

@@ -1,0 +1,3 @@
+- ctx: shell
+  req:
+    command: echo before case

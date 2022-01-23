@@ -1,0 +1,16 @@
+- name: teardown1
+  step:
+    - ctx: shell
+      req:
+        command: echo teardown1 step1
+    - ctx: shell
+      req:
+        command: echo teardown1 step2
+- name: teardown2
+  step:
+    - ctx: shell
+      req:
+        command: echo teardown2 step1
+    - ctx: shell
+      req:
+        command: echo teardown2 step2

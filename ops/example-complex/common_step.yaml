@@ -1,0 +1,8 @@
+step1:
+  ctx: shell
+  req:
+    command: echo common step1
+step2:
+  ctx: shell
+  req:
+    command: echo common step1
