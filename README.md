@@ -73,30 +73,22 @@ qas --test helloworld
 上面说的问题，其实只是站在两个不同的角度，一个是系统开发的角度，一个是系统使用的角度。在系统开发方面，我们更关注系统实现的细节，
 在系统使用方面，我们更关注系统使用的场景。两个角度虽然关注点有所侧重，但其本质都是对接口的调用和结果的校验，这也是这个工具设计的基础。
 
-## 设计目标
-
-1. 系统状态校验
-2. 场景测试
-3. 使用简单，可以方便地构造 case
-4. 方便调试，可以跑单个 case，测试结果清晰
-5. 测试报告，支持多种报告格式
-6. 可拓展性，报告形式拓展，支持服务拓展，报告拓展
-
 ## 特性
 
-1. 全局变量引用，运行结果引用
-2. 断言，比较断言，python 断言
-3. case/step 条件执行
-4. 执行 hook，setup/teardown/before_case/after_case
-5. 信息统计，case/step/assertion/elapse
-6. retry/until 重试和等待
-7. 可拓展的 drivers，目前支持 http/shell/redis/mysql/pop/ots/mns/oss
-8. 可拓展的 reporters，目前支持 text/json
-
+1. 完全 yaml 描述
+2. 变量引用，支持常量引用 `var`，支持运行结果引用 `case/step/val`
+3. 断言，支持相等断言，支持 python 断言
+4. 支持请求默认值
+5. 支持条件执行
+6. 支持执行 hook，`setUp/tearDown/beforeCase/afterCase`
+7. 支持公共步骤引用，`preStep/postStep`
+8. 支持重试和等待，`retry/until`
+9. 测试信息统计，`case/step/assertion` 成功失败数，`elapse` 时间统计
+10. 测试报告，支持 `text/json`
+11. 支持 `http/shell/redis/mysql/pop/ots/mns/oss`
 
 ## ops 命令
 
 ```shell
-ops --variable .cfg/dev.yaml --env dev -a run --task sample-simple
-ops --variable .cfg/dev.yaml --env dev -a run --task sample-recommend
+ops --variable .cfg/dev.yaml --env dev -a run --task example-docs
 ```

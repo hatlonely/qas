@@ -25,10 +25,6 @@ env:
     MNS_ENDPOINT: http://{{.credential.mns.ownerId}}.mns.cn-shanghai.aliyuncs.com
 
 task:
-  sample-recommend:
-    step:
-      - sh ${DEP}/ops/tool/render.sh ops/sample-recommend ${TMP}/sample-recommend
-      - python3 main.py --test "${TMP}/sample-recommend"
   example-docs:
     args:
       case:
@@ -41,10 +37,6 @@ task:
         else
           python3 main.py --test "${TMP}/example-docs" --case "${case}"
         fi
-  sample-simple:
-    step:
-      - sh ${DEP}/ops/tool/render.sh ops/sample-simple ${TMP}/sample-simple
-      - qas --test "${TMP}/sample-simple"
   install:
     step:
       - python3 setup.py install
