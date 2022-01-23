@@ -2,6 +2,8 @@
 
 一个适合 devops 使用的功能测试框架
 
+![qas-架构](docs/assets/qas-架构.png)
+
 ## 安装
 
 ### 源码安装
