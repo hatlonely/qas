@@ -48,4 +48,4 @@ case:
           envs:
             "#KEY7": "case.steps[0].res['stdout']"
         res:
-          "#stdout": "case.steps[0].res['stdout']"
+          "#stdout": "step.req['envs']['KEY7']"
