@@ -192,7 +192,7 @@ class Framework:
         for filename in [
             os.path.join(test_directory, i)
             for i in os.listdir(test_directory)
-            if i not in ["var.yaml", "ctx.yaml", "setup.yaml", "teardown.yaml", "before_case.yaml, after_case.yaml", "common_step.yaml"]
+            if i not in ["var.yaml", "ctx.yaml", "setup.yaml", "teardown.yaml", "before_case.yaml", "after_case.yaml", "common_step.yaml"]
             and os.path.isfile(os.path.join(test_directory, i))
         ]:
             if not filename.endswith(".yaml"):
@@ -252,6 +252,8 @@ class Framework:
             return []
         with open(filename, "r", encoding="utf-8") as fp:
             info = yaml.safe_load(fp)
+            if not info:
+                return []
             for step in info:
                 yield step
 
@@ -260,7 +262,10 @@ class Framework:
         if not os.path.exists(filename) or not os.path.isfile(filename):
             return {}
         with open(filename, "r", encoding="utf-8") as fp:
-            return yaml.safe_load(fp)
+            info = yaml.safe_load(fp)
+            if not info:
+                return {}
+        return info
 
     def run_case(self, before_case_info, case_info, after_case_info, common_step_info, dft, var=None, ctx=None):
         case_info = merge(case_info, {
