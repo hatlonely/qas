@@ -78,7 +78,7 @@ class Framework:
         self.debug("enter {}".format(test_directory))
 
         info = Framework.load_ctx(os.path.basename(test_directory), "{}/ctx.yaml".format(test_directory))
-        var_info = copy.deepcopy(parent_var_info) | info["var"]
+        var_info = copy.deepcopy(parent_var_info) | info["var"] | Framework.load_var("{}/var.yaml".format(test_directory))
         var = json.loads(json.dumps(var_info), object_hook=dict_to_sns)
         common_step_info = copy.deepcopy(parent_common_step_info) | info["commonStep"] | Framework.load_common_step("{}/common_step.yaml".format(test_directory))
         before_case_info = copy.deepcopy(parent_before_case_info) + info["beforeCase"] + list(Framework.load_step("{}/before_case.yaml".format(test_directory)))
@@ -192,11 +192,21 @@ class Framework:
         for filename in [
             os.path.join(test_directory, i)
             for i in os.listdir(test_directory)
-            if i not in ["ctx.yaml", "setup.yaml", "teardown.yaml", "before_case.yaml, after_case.yaml", "common_step.yaml"]
+            if i not in ["var.yaml", "ctx.yaml", "setup.yaml", "teardown.yaml", "before_case.yaml, after_case.yaml", "common_step.yaml"]
             and os.path.isfile(os.path.join(test_directory, i))
         ]:
+            if not filename.endswith(".yaml"):
+                continue
             for case in self.load_case(filename):
                 yield case
+
+    @staticmethod
+    def load_var(filename):
+        if not os.path.exists(filename) or not os.path.isfile(filename):
+            return {}
+        with open(filename, "r", encoding="utf-8") as fp:
+            info = yaml.safe_load(fp)
+        return info
 
     @staticmethod
     def load_ctx(name, filename):
