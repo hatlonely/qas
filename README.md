@@ -14,58 +14,30 @@ python3 setup.py install
 
 ## 快速入门
 
-1. 创建测试文件 [sample.yaml](ops/sample-simple/sample.yaml)
+1. 创建一个 case 文件 `helloworld/ctx.yaml`
 
 ```yaml
-name: sample
+name: hello-world
 
 ctx:
   shell:
     type: shell
-  jsontest:
-    type: http
-    args:
-      endpoint: http://echo.jsontest.com/
-    req:
-      method: GET
-
-setUp:
-  - name: EchoHelloWorld
-    step:
-      - ctx: shell
-        req:
-          command: "echo hello world"
-
-tearDown:
-  - name: GoodBye
-    step:
-      - ctx: shell
-        req:
-          command: "echo good bye"
 
 case:
-  - name: TestHttpJson
+  - name: HelloWorld
     step:
-      - ctx: jsontest
+      - ctx: shell
         req:
-          path: /key/value/one/two
+          command: echo -n hello world
         res:
-          status: 200
-          headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Content-Type": "application/json",
-            "#X-Cloud-Trace-Context": "len(val) == 32"
-          }
-          json: {
-            "one": "two",
-            "key": "value"
-          }
+          exitCode: 0
+          stdout: hello world
 ```
 
 2. 执行测试
 
 ```shell
-qas --test sample.yaml
+qas --test helloworld
 ```
 
 ## 背景
