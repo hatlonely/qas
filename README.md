@@ -40,7 +40,7 @@ case:
 qas --test helloworld
 ```
 
-更多使用帮助，参考[用户指南](docs/用户指南)
+更多使用帮助，参考[用户指南](/docs/用户指南)
 
 ## 背景
 
@@ -56,7 +56,7 @@ qas --test helloworld
 
 qas 就是为了解决 devops 的功能测试问题，通过 yaml 来描述测试的执行过程和结果校验，以驱动的方式拓展服务的后端，自动生成测试报告。
 
-![qas-架构](docs/assets/qas-架构.png)
+![qas-架构](/docs/assets/qas-架构.png)
 
 ## 特性
 
