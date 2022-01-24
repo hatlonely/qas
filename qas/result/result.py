@@ -58,7 +58,9 @@ class StepResult:
 class CaseResult:
     name: str
     before_case_steps: list[StepResult]
+    pre_steps: list[StepResult]
     steps: list[StepResult]
+    post_steps: list[StepResult]
     after_case_steps: list[StepResult]
     is_pass: bool
     is_skip: bool
@@ -73,9 +75,9 @@ class CaseResult:
         self.name = name
         self.is_skip = is_skip
         self.before_case_steps = list[StepResult]()
-        self.preSteps = list[StepResult]()
+        self.pre_steps = list[StepResult]()
         self.steps = list[StepResult]()
-        self.postSteps = list[StepResult]()
+        self.post_steps = list[StepResult]()
         self.after_case_steps = list[StepResult]()
         self.is_pass = True
         self.elapse = timedelta(seconds=0)
@@ -96,7 +98,7 @@ class CaseResult:
         self.assertion_fail += step.assertion_fail
 
     def add_case_pre_step_result(self, step: StepResult):
-        self.preSteps.append(step)
+        self.pre_steps.append(step)
         if not step.is_pass:
             self.is_pass = False
             self.step_fail += 1
@@ -106,7 +108,7 @@ class CaseResult:
         self.assertion_fail += step.assertion_fail
 
     def add_case_post_step_result(self, step: StepResult):
-        self.postSteps.append(step)
+        self.post_steps.append(step)
         if not step.is_pass:
             self.is_pass = False
             self.step_fail += 1
