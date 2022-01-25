@@ -4,6 +4,7 @@
 from .shell_driver import ShellDriver
 from .mysql_driver import MysqlDriver
 from .redis_driver import RedisDriver
+from .mongo_driver import MongoDriver
 from .http_driver import HttpDriver
 from .pop_driver import POPDriver
 from .ots_driver import OTSDriver
@@ -16,6 +17,7 @@ __all__ = [
     "ShellDriver",
     "MysqlDriver",
     "RedisDriver",
+    "MongoDriver",
     "MNSDriver",
     "POPDriver",
     "OTSDriver",
