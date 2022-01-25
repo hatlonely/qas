@@ -9,6 +9,8 @@ import yaml
 import traceback
 import os
 import json
+import importlib
+import sys
 from types import SimpleNamespace
 from datetime import datetime
 
@@ -19,11 +21,14 @@ from ..reporter import TextReporter, JsonReporter
 from .retry_until import Retry, Until, RetryError, UntilError
 
 
+sys.path.append(".")
+
+
 def dict_to_sns(d):
     return SimpleNamespace(**d)
 
 
-drivers = {
+_drivers = {
     "http": HttpDriver,
     "redis": RedisDriver,
     "shell": ShellDriver,
@@ -71,13 +76,24 @@ class Framework:
         self.reporter = reporters[reporter]()
 
     def run(self):
-        res = self.run_test(self.test_directory, {}, {}, {}, {}, [], [])
+        res = self.run_test(self.test_directory, {}, {}, {}, {}, [], [], _drivers)
         return res.is_pass
 
-    def run_test(self, test_directory, parent_var_info, parent_ctx, parent_dft_info, parent_common_step_info, parent_before_case_info, parent_after_case_info):
+    def run_test(
+            self,
+            test_directory,
+            parent_var_info,
+            parent_ctx,
+            parent_dft_info,
+            parent_common_step_info,
+            parent_before_case_info,
+            parent_after_case_info,
+            parent_drivers,
+    ):
         now = datetime.now()
         self.debug("enter {}".format(test_directory))
 
+        drivers = parent_drivers | Framework.load_driver("{}/qas".format(test_directory))
         info = Framework.load_ctx(os.path.basename(test_directory), "{}/ctx.yaml".format(test_directory))
         var_info = copy.deepcopy(parent_var_info) | info["var"] | Framework.load_var("{}/var.yaml".format(test_directory))
         var = json.loads(json.dumps(var_info), object_hook=dict_to_sns)
@@ -140,11 +156,11 @@ class Framework:
         for directory in [
             os.path.join(test_directory, i)
             for i in os.listdir(test_directory)
-            if os.path.isdir(os.path.join(test_directory, i))
+            if i != "qas" and os.path.isdir(os.path.join(test_directory, i))
         ]:
             if self.case_directory and not re.search(self.case_directory, directory):
                 continue
-            sub_test_result = self.run_test(directory, var_info, ctx, dft_info, common_step_info, before_case_info, after_case_info)
+            sub_test_result = self.run_test(directory, var_info, ctx, dft_info, common_step_info, before_case_info, after_case_info, drivers)
             test_result.add_sub_test_result(sub_test_result)
 
         # 执行 teardown
@@ -200,6 +216,12 @@ class Framework:
                 continue
             for case in self.load_case(filename):
                 yield case
+
+    @staticmethod
+    def load_driver(filename):
+        if not os.path.exists(filename) or not os.path.isdir(filename):
+            return {}
+        return importlib.import_module(filename.replace("/", "."), "custom").drivers
 
     @staticmethod
     def load_var(filename):

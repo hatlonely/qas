@@ -1,0 +1,26 @@
+name: custom-example
+
+ctx:
+  calc:
+    type: calc
+  echo:
+    type: echo
+
+case:
+  - name: CustomExample
+    step:
+      - ctx: calc
+        req:
+          num1: 123
+          num2: 456
+        res:
+          val: 579
+  - name: SubTestEchoExample
+    step:
+      - ctx: echo
+        req:
+          key1: val1
+          key2: val2
+        res:
+          key1: val1
+          key2: val2

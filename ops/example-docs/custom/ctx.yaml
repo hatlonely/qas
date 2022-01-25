@@ -1,0 +1,16 @@
+name: custom-example
+
+ctx:
+  echo:
+    type: echo
+
+case:
+  - name: CustomExample
+    step:
+      - ctx: echo
+        req:
+          key1: val1
+          key2: val2
+        res:
+          key1: val1
+          key2: val2
