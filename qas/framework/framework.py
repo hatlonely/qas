@@ -12,7 +12,7 @@ import json
 from types import SimpleNamespace
 from datetime import datetime
 
-from ..driver import HttpDriver, POPDriver, OTSDriver, ShellDriver, MysqlDriver, RedisDriver, MNSDriver, OSSDriver, merge, REQUIRED
+from ..driver import HttpDriver, POPDriver, OTSDriver, ShellDriver, MysqlDriver, RedisDriver, MNSDriver, OSSDriver, MongoDriver, merge, REQUIRED
 from ..assertion import expect, render, expect_val
 from ..result import TestResult, CaseResult, StepResult
 from ..reporter import TextReporter, JsonReporter
@@ -28,6 +28,7 @@ drivers = {
     "redis": RedisDriver,
     "shell": ShellDriver,
     "mysql": MysqlDriver,
+    "mongo": MongoDriver,
     "pop": POPDriver,
     "ots": OTSDriver,
     "mns": MNSDriver,
