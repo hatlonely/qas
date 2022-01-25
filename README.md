@@ -70,7 +70,8 @@ qas 就是为了解决 devops 的功能测试问题，通过 yaml 来描述测�
 8. 支持重试和等待，`retry/until`
 9. 测试信息统计，`case/step/assertion` 成功失败数，`elapse` 时间统计
 10. 测试报告，支持 `text/json`
-11. 支持 `http/shell/redis/mysql/pop/ots/mns/oss`
+11. 支持 `http/shell/redis/mysql/mongo/pop/ots/mns/oss`
+12. 用户自定义 `driver` python 拓展
 
 ## ops 命令
 
