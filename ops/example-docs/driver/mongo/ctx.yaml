@@ -1,0 +1,100 @@
+name: mongo-example
+
+ctx:
+  mongo:
+    type: mongo
+    args:
+      host: localhost
+      port: 27017
+      database: test_database
+
+case:
+  - name: MongoExample
+    step:
+      - ctx: mongo
+        req:
+          cmd: insertOne
+          collection: "test_collection"
+          document: {
+            "key1": "value1",
+            "key2": "value2",
+            "key3": {
+              "key4": "value4",
+              "key5": 5,
+              "key6": [
+                  "value61",
+                  "value62"
+              ],
+              "key7": [{
+                "key8": "value8"
+              }]
+            }
+          }
+        res:
+          "#_id": "len(val) != 0"
+      - ctx: mongo
+        req:
+          cmd: findOne
+          collection: "test_collection"
+          "#_id": "case.steps[0].res['_id']"
+        res: {
+          "key1": "value1",
+          "key2": "value2",
+          "key3": {
+            "key4": "value4",
+            "key5": 5,
+            "key6": [
+                "value61",
+                "value62"
+            ],
+            "key7": [{
+              "key8": "value8"
+            }]
+          }
+        }
+      - ctx: mongo
+        req:
+          cmd: updateOne
+          collection: "test_collection"
+          "#_id": "case.steps[0].res['_id']"
+          update: {
+            "key3": {
+              "key4": "newval4"
+            }
+          }
+        res:  {
+          "acknowledged": true,
+          "matchedCount": 1,
+          "modifiedCount": 1
+        }
+      - ctx: mongo
+        req:
+          cmd: findOne
+          collection: "test_collection"
+          "#_id": "case.steps[0].res['_id']"
+        res: {
+          "key1": "value1",
+          "key2": "value2",
+          "key3": {
+            "key4": "newval4",
+            "key5": 5,
+            "key6": [
+                "value61",
+                "value62"
+            ],
+            "key7": [ {
+              "key8": "value8"
+            } ]
+          }
+        }
+      - ctx: mongo
+        req:
+          cmd: deleteOne
+          collection: "test_collection"
+          "#_id": "case.steps[0].res['_id']"
+        res: {
+          "acknowledged": true,
+          "deleteCount": 1
+        }
+
+

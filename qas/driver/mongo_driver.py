@@ -31,6 +31,7 @@ class MongoDriver:
             "insertOne": self.insert_one,
             "findOne": self.find_one,
             "updateOne": self.update_one,
+            "deleteOne": self.delete_one,
         }
         if req["cmd"] not in do_map:
             raise Exception("unsupported action [{}]".format(req["cmd"]))
