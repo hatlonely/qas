@@ -85,10 +85,10 @@ class TextReporter(Reporter):
                 Fore.RED, step_type, res.name, res.assertion_succ, res.assertion_fail, durationpy.to_str(res.elapse), Fore.RESET,
             ))
 
-        lines.extend(("req: " + json.dumps(res.req, default=lambda x: str(x), indent=True)).split("\n"))
+        lines.extend(("req: " + json.dumps(res.req, default=lambda x: str(x), indent=2)).split("\n"))
 
         if res.is_err:
-            lines.extend(("res: " + json.dumps(res.res, indent=True)).split("\n"))
+            lines.extend(("res: " + json.dumps(res.res, indent=2)).split("\n"))
             lines.extend(["  " + i for i in res.err.split("\n")])
             return lines
 
@@ -99,7 +99,7 @@ class TextReporter(Reporter):
             else:
                 TextReporter.append_val_to_key(res.res, expect_result.node, "<RED>{}<END>".format(expect_result.expect))
 
-        res_lines = ("res: " + json.dumps(res.res, indent=True)).split("\n")
+        res_lines = ("res: " + json.dumps(res.res, indent=2)).split("\n")
         format_lines = []
         # 解析 res 中 value 的值，重新拼接成带颜色的结果值
         for line in res_lines:
