@@ -9,7 +9,14 @@ case:
     step:
       - ctx: shell
         req:
-          command: echo -n hello world
+          command: echo -n "${KEY1} ${KEY2}"
+          envs:
+            "!KEY1": ["hello", "world"]
+            "!KEY2": ["123", "456"]
         res:
           exitCode: 0
-          stdout: hello world
+          "!stdout":
+            - "hello 123"
+            - "world 123"
+            - "hello 456"
+            - "world 456"

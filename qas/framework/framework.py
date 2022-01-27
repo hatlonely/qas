@@ -338,37 +338,38 @@ class Framework:
         step = StepResult(step_info["name"])
         now = datetime.now()
         self.reporter.report_step_start(step_info)
-        try:
-            req = merge(step_info["req"], dft[step_info["ctx"]]["req"])
-            req = render(req, case=case, var=var)
-            step.req = req
+        for req, res in zip(generate_req(step_info["req"]), generate_res(step_info["res"], calculate_num(step_info["req"]))):
+            try:
+                req = merge(req, dft[step_info["ctx"]]["req"])
+                req = render(req, case=case, var=var)
+                step.req = req
 
-            retry = Retry(merge(step_info["retry"], dft[step_info["ctx"]]["retry"]))
-            until = Until(merge(step_info["until"], dft[step_info["ctx"]]["until"]))
+                retry = Retry(merge(step_info["retry"], dft[step_info["ctx"]]["retry"]))
+                until = Until(merge(step_info["until"], dft[step_info["ctx"]]["until"]))
 
-            for i in range(until.attempts):
-                for j in range(retry.attempts):
-                    res = ctx[step_info["ctx"]].do(req)
-                    step.res = res
-                    if retry.condition == "" or not expect_val(None, retry.condition, case=case, step=step, var=var):
+                for i in range(until.attempts):
+                    for j in range(retry.attempts):
+                        step_res = ctx[step_info["ctx"]].do(req)
+                        step.res = step_res
+                        if retry.condition == "" or not expect_val(None, retry.condition, case=case, step=step, var=var):
+                            break
+                        time.sleep(retry.delay.total_seconds())
+                    else:
+                        raise RetryError()
+                    if until.condition == "" or expect_val(None, until.condition, case=case, step=step, var=var):
                         break
-                    time.sleep(retry.delay.total_seconds())
+                    time.sleep(until.delay.total_seconds())
                 else:
-                    raise RetryError()
-                if until.condition == "" or expect_val(None, until.condition, case=case, step=step, var=var):
-                    break
-                time.sleep(until.delay.total_seconds())
-            else:
-                raise UntilError()
+                    raise UntilError()
 
-            result = expect(res, step_info["res"], case=case, step=step, var=var)
-            step.add_expect_result(result)
-        except RetryError as e:
-            step.set_error("RetryError [{}]".format(retry))
-        except UntilError as e:
-            step.set_error("UntilError [{}], ".format(until))
-        except Exception as e:
-            step.set_error("Exception {}".format(traceback.format_exc()))
+                result = expect(step_res, res, case=case, step=step, var=var)
+                step.add_expect_result(result)
+            except RetryError as e:
+                step.set_error("RetryError [{}]".format(retry))
+            except UntilError as e:
+                step.set_error("UntilError [{}], ".format(until))
+            except Exception as e:
+                step.set_error("Exception {}".format(traceback.format_exc()))
 
         step.elapse = datetime.now() - now
         return step
