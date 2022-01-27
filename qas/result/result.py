@@ -15,15 +15,48 @@ class ExpectResult:
 
 
 @dataclass
+class SubStepResult:
+    req: dict
+    res: dict
+    assertions: list[ExpectResult]
+    is_err: bool
+    err: str
+    assertion_succ: int
+    assertion_fail: int
+    elapse: timedelta
+
+    def __init__(self):
+        self.is_pass = True
+        self.is_err = False
+        self.err = ""
+        self.assertions = list[ExpectResult]()
+        self.assertion_succ = 0
+        self.assertion_fail = 0
+        self.req = {}
+        self.res = {}
+        self.elapse = timedelta(seconds=0)
+
+    def set_error(self, message):
+        self.is_pass = False
+        self.is_err = True
+        self.err = message
+        self.assertion_fail += 1
+
+    def add_expect_result(self, result):
+        self.assertions = result
+        self.assertion_succ += sum(1 for i in self.assertions if i.is_pass)
+        self.assertion_fail += len(self.assertions) - self.assertion_succ
+        self.is_pass = self.assertion_fail == 0
+
+
+@dataclass
 class StepResult:
     name: str
     req: dict
     res: dict
-    assertions: list[ExpectResult]
+    sub_steps: list[SubStepResult]
     is_pass: bool
     is_skip: bool
-    is_err: bool
-    err: str
     assertion_succ: int
     assertion_fail: int
     elapse: timedelta
@@ -32,6 +65,7 @@ class StepResult:
         self.name = name
         self.is_skip = is_skip
         self.assertions = list[ExpectResult]()
+        self.sub_steps = list[SubStepResult]()
         self.is_pass = True
         self.is_err = False
         self.err = ""
@@ -41,17 +75,12 @@ class StepResult:
         self.res = {}
         self.elapse = timedelta(seconds=0)
 
-    def add_expect_result(self, result):
-        self.assertions = result
-        self.assertion_succ = sum(1 for i in self.assertions if i.is_pass)
-        self.assertion_fail = len(self.assertions) - self.assertion_succ
+    def add_sub_step_result(self, result: SubStepResult):
+        self.sub_steps.append(result)
+        self.assertion_succ += result.assertion_succ
+        self.assertion_fail += result.assertion_fail
+        self.elapse += result.elapse
         self.is_pass = self.assertion_fail == 0
-
-    def set_error(self, message):
-        self.is_pass = False
-        self.is_err = True
-        self.assertion_fail += 1
-        self.err = message
 
 
 @dataclass

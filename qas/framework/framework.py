@@ -16,7 +16,7 @@ from datetime import datetime
 
 from ..driver import HttpDriver, POPDriver, OTSDriver, ShellDriver, MysqlDriver, RedisDriver, MNSDriver, OSSDriver, MongoDriver, merge, REQUIRED
 from ..assertion import expect, render, expect_val
-from ..result import TestResult, CaseResult, StepResult
+from ..result import TestResult, CaseResult, StepResult, SubStepResult
 from ..reporter import TextReporter, JsonReporter
 from .retry_until import Retry, Until, RetryError, UntilError
 from .generate import generate_req, generate_res, calculate_num
@@ -339,10 +339,13 @@ class Framework:
         now = datetime.now()
         self.reporter.report_step_start(step_info)
         for req, res in zip(generate_req(step_info["req"]), generate_res(step_info["res"], calculate_num(step_info["req"]))):
+            sub_step_start = datetime.now()
+            sub_step_result = SubStepResult()
             try:
                 req = merge(req, dft[step_info["ctx"]]["req"])
                 req = render(req, case=case, var=var)
                 step.req = req
+                sub_step_result.req = req
 
                 retry = Retry(merge(step_info["retry"], dft[step_info["ctx"]]["retry"]))
                 until = Until(merge(step_info["until"], dft[step_info["ctx"]]["until"]))
@@ -351,6 +354,7 @@ class Framework:
                     for j in range(retry.attempts):
                         step_res = ctx[step_info["ctx"]].do(req)
                         step.res = step_res
+                        sub_step_result.res = step_res
                         if retry.condition == "" or not expect_val(None, retry.condition, case=case, step=step, var=var):
                             break
                         time.sleep(retry.delay.total_seconds())
@@ -363,13 +367,15 @@ class Framework:
                     raise UntilError()
 
                 result = expect(step_res, res, case=case, step=step, var=var)
-                step.add_expect_result(result)
+                sub_step_result.add_expect_result(result)
             except RetryError as e:
-                step.set_error("RetryError [{}]".format(retry))
+                sub_step_result.set_error("RetryError [{}]".format(retry))
             except UntilError as e:
-                step.set_error("UntilError [{}], ".format(until))
+                sub_step_result.set_error("UntilError [{}], ".format(until))
             except Exception as e:
-                step.set_error("Exception {}".format(traceback.format_exc()))
+                sub_step_result.set_error("Exception {}".format(traceback.format_exc()))
+            sub_step_result.elapse = datetime.now() - sub_step_start
+            step.add_sub_step_result(sub_step_result)
 
         step.elapse = datetime.now() - now
         return step

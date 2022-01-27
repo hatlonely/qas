@@ -71,65 +71,65 @@ class TextReporter(Reporter):
         return lines
 
     @staticmethod
-    def format_step(res, step_type: str) -> list[str]:
-        if res.is_skip:
-            return ["{}{} {} 跳过{}".format(Fore.YELLOW, step_type, res.name, Fore.RESET)]
+    def format_step(step, step_type: str) -> list[str]:
+        if step.is_skip:
+            return ["{}{} {} 跳过{}".format(Fore.YELLOW, step_type, step.name, Fore.RESET)]
 
         lines = []
-        if res.is_pass:
+        if step.is_pass:
             lines.append("{}{} {} 通过，断言成功 {}，耗时 {}{}".format(
-                Fore.GREEN, step_type, res.name, res.assertion_succ, durationpy.to_str(res.elapse), Fore.RESET,
+                Fore.GREEN, step_type, step.name, step.assertion_succ, durationpy.to_str(step.elapse), Fore.RESET,
             ))
         else:
             lines.append("{}{} {} 失败，断言成功 {}，失败 {}，耗时 {}{}".format(
-                Fore.RED, step_type, res.name, res.assertion_succ, res.assertion_fail, durationpy.to_str(res.elapse), Fore.RESET,
+                Fore.RED, step_type, step.name, step.assertion_succ, step.assertion_fail, durationpy.to_str(step.elapse), Fore.RESET,
             ))
 
-        lines.extend(("req: " + json.dumps(res.req, default=lambda x: str(x), indent=2)).split("\n"))
+        for sub_step in step.sub_steps:
+            lines.extend(("req: " + json.dumps(sub_step.req, default=lambda x: str(x), indent=2)).split("\n"))
 
-        if res.is_err:
-            lines.extend(("res: " + json.dumps(res.res, indent=2)).split("\n"))
-            lines.extend(["  " + i for i in res.err.split("\n")])
-            return lines
+            if sub_step.is_err:
+                lines.extend(("res: " + json.dumps(sub_step.res, indent=2)).split("\n"))
+                lines.extend(["  " + i for i in sub_step.err.split("\n")])
+                return lines
 
-        # 修改 res 返回值，将预期值标记后拼接在 value 后面
-        for expect_result in res.assertions:
-            if expect_result.is_pass:
-                TextReporter.append_val_to_key(res.res, expect_result.node, "<GREEN>{}<END>".format(expect_result.expect))
-            else:
-                TextReporter.append_val_to_key(res.res, expect_result.node, "<RED>{}<END>".format(expect_result.expect))
+            # 修改 res 返回值，将预期值标记后拼接在 value 后面
+            for expect_result in sub_step.assertions:
+                if expect_result.is_pass:
+                    TextReporter.append_val_to_key(sub_step.res, expect_result.node, "<GREEN>{}<END>".format(expect_result.expect))
+                else:
+                    TextReporter.append_val_to_key(sub_step.res, expect_result.node, "<RED>{}<END>".format(expect_result.expect))
 
-        res_lines = ("res: " + json.dumps(res.res, indent=2)).split("\n")
-        format_lines = []
-        # 解析 res 中 value 的值，重新拼接成带颜色的结果值
-        for line in res_lines:
-            mr = re.match(r'(\s+".*?": )"(.*)<GREEN>(.*)<END>"(.*)', line)
-            if mr:
-                format_lines.append("{}{}{} # {}{}{}".format(
-                    mr.groups()[0], json.loads('"{}"'.format(mr.groups()[1])), mr.groups()[3], Fore.GREEN, mr.groups()[2], Fore.RESET,
-                ))
-                continue
-            mr = re.match(r'(\s+".*?": )"(.*)<RED>(.*)<END>"(.*)', line)
-            if mr:
-                format_lines.append("{}{}{} # {}{}{}".format(
-                    mr.groups()[0], json.loads('"{}"'.format(mr.groups()[1])), mr.groups()[3], Fore.RED, mr.groups()[2], Fore.RESET,
-                ))
-                continue
-            mr = re.match(r'(\s+)"(.*)<GREEN>(.*)<END>"(.*)', line)
-            if mr:
-                format_lines.append("{}{}{} # {}{}{}".format(
-                    mr.groups()[0], json.loads('"{}"'.format(mr.groups()[1])), mr.groups()[3], Fore.GREEN, mr.groups()[2], Fore.RESET,
-                ))
-                continue
-            mr = re.match(r'(\s+)"(.*)<RED>(.*)<END>"(.*)', line)
-            if mr:
-                format_lines.append("{}{}{} # {}{}{}".format(
-                    mr.groups()[0], json.loads('"{}"'.format(mr.groups()[1])), mr.groups()[3], Fore.RED, mr.groups()[2], Fore.RESET,
-                ))
-                continue
-            format_lines.append(line)
-
-        lines.extend(format_lines)
+            res_lines = ("res: " + json.dumps(sub_step.res, indent=2)).split("\n")
+            format_lines = []
+            # 解析 res 中 value 的值，重新拼接成带颜色的结果值
+            for line in res_lines:
+                mr = re.match(r'(\s+".*?": )"(.*)<GREEN>(.*)<END>"(.*)', line)
+                if mr:
+                    format_lines.append("{}{}{} # {}{}{}".format(
+                        mr.groups()[0], json.loads('"{}"'.format(mr.groups()[1])), mr.groups()[3], Fore.GREEN, mr.groups()[2], Fore.RESET,
+                    ))
+                    continue
+                mr = re.match(r'(\s+".*?": )"(.*)<RED>(.*)<END>"(.*)', line)
+                if mr:
+                    format_lines.append("{}{}{} # {}{}{}".format(
+                        mr.groups()[0], json.loads('"{}"'.format(mr.groups()[1])), mr.groups()[3], Fore.RED, mr.groups()[2], Fore.RESET,
+                    ))
+                    continue
+                mr = re.match(r'(\s+)"(.*)<GREEN>(.*)<END>"(.*)', line)
+                if mr:
+                    format_lines.append("{}{}{} # {}{}{}".format(
+                        mr.groups()[0], json.loads('"{}"'.format(mr.groups()[1])), mr.groups()[3], Fore.GREEN, mr.groups()[2], Fore.RESET,
+                    ))
+                    continue
+                mr = re.match(r'(\s+)"(.*)<RED>(.*)<END>"(.*)', line)
+                if mr:
+                    format_lines.append("{}{}{} # {}{}{}".format(
+                        mr.groups()[0], json.loads('"{}"'.format(mr.groups()[1])), mr.groups()[3], Fore.RED, mr.groups()[2], Fore.RESET,
+                    ))
+                    continue
+                format_lines.append(line)
+            lines.extend(format_lines)
         return lines
 
     @staticmethod

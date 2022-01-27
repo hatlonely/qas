@@ -1,11 +1,11 @@
-name: hello-world
+name: loop-example
 
 ctx:
   shell:
     type: shell
 
 case:
-  - name: HelloWorld
+  - name: LoopExample
     step:
       - ctx: shell
         req:
@@ -17,6 +17,6 @@ case:
           exitCode: 0
           "!stdout":
             - "hello 123"
-            - "world 123"
             - "hello 456"
+            - "world 123"
             - "world 456"
