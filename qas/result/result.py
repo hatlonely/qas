@@ -79,7 +79,6 @@ class StepResult:
         self.sub_steps.append(result)
         self.assertion_succ += result.assertion_succ
         self.assertion_fail += result.assertion_fail
-        self.elapse += result.elapse
         self.is_pass = self.assertion_fail == 0
 
 
