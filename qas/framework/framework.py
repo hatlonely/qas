@@ -19,6 +19,7 @@ from ..assertion import expect, render, expect_val
 from ..result import TestResult, CaseResult, StepResult
 from ..reporter import TextReporter, JsonReporter
 from .retry_until import Retry, Until, RetryError, UntilError
+from .generate import generate_req, generate_res, calculate_num
 
 
 sys.path.append(".")
