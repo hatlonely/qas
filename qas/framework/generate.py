@@ -18,7 +18,7 @@ def generate_req(d):
                 [
                     *[(k, i) for i in generate_req(v)]
                 ]
-                for k, v in d.items()
+                for k, v in sorted(d.items())
             ])
         ]
     return d,
@@ -34,7 +34,7 @@ def generate_res(d, n):
                 [(k[1:], i) for i in v]
                 if k.startswith("!") else
                 [(k, i) for i in generate_res(v, n)]
-                for k, v in d.items()
+                for k, v in sorted(d.items())
             ])
         ]
     return itertools.repeat(d, n)
