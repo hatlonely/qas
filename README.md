@@ -65,13 +65,14 @@ qas 就是为了解决 devops 的功能测试问题，通过 yaml 来描述测�
 3. 断言，支持相等断言，支持 python 断言
 4. 支持请求默认值
 5. 支持条件执行
-6. 支持执行 hook，`setUp/tearDown/beforeCase/afterCase`
-7. 支持公共步骤引用，`preStep/postStep`
-8. 支持重试和等待，`retry/until`
-9. 测试信息统计，`case/step/assertion` 成功失败数，`elapse` 时间统计
-10. 测试报告，支持 `text/json`
-11. 支持 `http/shell/redis/mysql/mongo/pop/ots/mns/oss`
-12. 支持用户 python 拓展
+6. 支持循环执行
+7. 支持执行 hook，`setUp/tearDown/beforeCase/afterCase`
+8. 支持公共步骤引用，`preStep/postStep`
+9. 支持重试和等待，`retry/until`
+10. 测试信息统计，`case/step/assertion` 成功失败数，`elapse` 时间统计
+11. 测试报告，支持 `text/json`
+12. 支持 `http/shell/redis/mysql/mongo/pop/ots/mns/oss`
+13. 支持用户 python 拓展
 
 ## ops 命令
 
