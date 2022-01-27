@@ -41,7 +41,7 @@ _drivers = {
     "oss": OSSDriver,
 }
 
-reporters = {
+_reporters = {
     "text": TextReporter,
     "json": JsonReporter,
 }
@@ -74,9 +74,17 @@ class Framework:
         self.skip_setup = skip_setup
         self.skip_teardown = skip_teardown
         self.debug_mode = debug
-        self.reporter = reporters[reporter]()
+        self.reporter_name = reporter
+        self.reporter = None
 
     def run(self):
+        x = Framework.load_x("{}/qas".format(self.test_directory))
+        if hasattr(x, "reporters"):
+            reporters = _reporters | x.reporters
+        else:
+            reporters = _reporters
+        self.reporter = reporters[self.reporter_name]()
+
         res = self.run_test(self.test_directory, {}, {}, {}, {}, [], [], _drivers)
         return res.is_pass
 
@@ -94,7 +102,8 @@ class Framework:
         now = datetime.now()
         self.debug("enter {}".format(test_directory))
 
-        drivers = parent_drivers | Framework.load_driver("{}/qas".format(test_directory))
+        x = Framework.load_x("{}/qas".format(test_directory))
+        drivers = parent_drivers | x.drivers
         info = Framework.load_ctx(os.path.basename(test_directory), "{}/ctx.yaml".format(test_directory))
         var_info = copy.deepcopy(parent_var_info) | info["var"] | Framework.load_var("{}/var.yaml".format(test_directory))
         var = json.loads(json.dumps(var_info), object_hook=dict_to_sns)
@@ -219,10 +228,10 @@ class Framework:
                 yield case
 
     @staticmethod
-    def load_driver(filename):
+    def load_x(filename):
         if not os.path.exists(filename) or not os.path.isdir(filename):
             return {}
-        return importlib.import_module(filename.replace("/", "."), "custom").drivers
+        return importlib.import_module(filename.replace("/", "."), "x")
 
     @staticmethod
     def load_var(filename):
