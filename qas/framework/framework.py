@@ -78,7 +78,7 @@ class Framework:
         self.reporter = None
 
     def run(self):
-        x = Framework.load_x("{}/qas".format(self.test_directory))
+        x = Framework.load_x("{}/x".format(self.test_directory))
         if hasattr(x, "reporters"):
             reporters = _reporters | x.reporters
         else:
@@ -102,8 +102,11 @@ class Framework:
         now = datetime.now()
         self.debug("enter {}".format(test_directory))
 
-        x = Framework.load_x("{}/qas".format(test_directory))
-        drivers = parent_drivers | x.drivers
+        x = Framework.load_x("{}/x".format(test_directory))
+        if hasattr(x, "drivers"):
+            drivers = parent_drivers | x.drivers
+        else:
+            drivers = parent_drivers
         info = Framework.load_ctx(os.path.basename(test_directory), "{}/ctx.yaml".format(test_directory))
         var_info = copy.deepcopy(parent_var_info) | info["var"] | Framework.load_var("{}/var.yaml".format(test_directory))
         var = json.loads(json.dumps(var_info), object_hook=dict_to_sns)
@@ -166,7 +169,7 @@ class Framework:
         for directory in [
             os.path.join(test_directory, i)
             for i in os.listdir(test_directory)
-            if i != "qas" and os.path.isdir(os.path.join(test_directory, i))
+            if i != "x" and os.path.isdir(os.path.join(test_directory, i))
         ]:
             if self.case_directory and not re.search(self.case_directory, directory):
                 continue
