@@ -366,7 +366,7 @@ class Framework:
                 else:
                     raise UntilError()
 
-                result = expect(step_res, res, case=case, step=step, var=var)
+                result = expect(step_res, json.loads(json.dumps(res)), case=case, step=step, var=var)
                 sub_step_result.add_expect_result(result)
             except RetryError as e:
                 sub_step_result.set_error("RetryError [{}]".format(retry))
