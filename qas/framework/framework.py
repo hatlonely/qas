@@ -85,7 +85,7 @@ class Framework:
             reporters = _reporters
         self.reporter = reporters[self.reporter_name]()
 
-        res = self.run_test(self.test_directory, {}, {}, {}, {}, [], [], _drivers)
+        res = self.run_test(self.test_directory, {}, {}, {}, {}, [], [], _drivers, x)
         return res.is_pass
 
     def run_test(
@@ -98,6 +98,7 @@ class Framework:
             parent_before_case_info,
             parent_after_case_info,
             parent_drivers,
+            parent_x,
     ):
         now = datetime.now()
         self.debug("enter {}".format(test_directory))
@@ -147,7 +148,7 @@ class Framework:
         if not self.skip_setup:
             for case_info in self.setups(info, test_directory):
                 self.reporter.report_setup_start(case_info)
-                result = self.run_case([], case_info, [], {}, dft_info, var=var, ctx=ctx)
+                result = self.run_case([], case_info, [], {}, dft_info, var=var, ctx=ctx, x=parent_x)
                 test_result.add_setup_result(result)
                 self.reporter.report_setup_end(result)
                 if not result.is_pass:
@@ -161,7 +162,7 @@ class Framework:
                 self.reporter.report_skip_case(case_info["name"])
                 continue
             self.reporter.report_case_start(case_info)
-            result = self.run_case(before_case_info, case_info, after_case_info, common_step_info, dft_info, var=var, ctx=ctx)
+            result = self.run_case(before_case_info, case_info, after_case_info, common_step_info, dft_info, var=var, ctx=ctx, x=parent_x)
             test_result.add_case_result(result)
             self.reporter.report_case_end(result)
 
@@ -173,14 +174,14 @@ class Framework:
         ]:
             if self.case_directory and not re.search(self.case_directory, directory):
                 continue
-            sub_test_result = self.run_test(directory, var_info, ctx, dft_info, common_step_info, before_case_info, after_case_info, drivers)
+            sub_test_result = self.run_test(directory, var_info, ctx, dft_info, common_step_info, before_case_info, after_case_info, drivers, parent_x)
             test_result.add_sub_test_result(sub_test_result)
 
         # 执行 teardown
         if not self.skip_teardown:
             for case_info in self.teardowns(info, test_directory):
                 self.reporter.report_teardown_start(case_info)
-                result = self.run_case([], case_info, [], {}, dft_info, var=var, ctx=ctx)
+                result = self.run_case([], case_info, [], {}, dft_info, var=var, ctx=ctx, x=parent_x)
                 test_result.teardowns.append(result)
                 self.reporter.report_teardown_end(result)
                 if not result.is_pass:
@@ -303,7 +304,7 @@ class Framework:
                 return {}
         return info
 
-    def run_case(self, before_case_info, case_info, after_case_info, common_step_info, dft, var=None, ctx=None):
+    def run_case(self, before_case_info, case_info, after_case_info, common_step_info, dft, var=None, ctx=None, x=None):
         case_info = merge(case_info, {
             "name": REQUIRED,
             "cond": "",
@@ -331,11 +332,11 @@ class Framework:
             })
 
             # 条件步骤
-            if step_info["cond"] and not expect_val(None, step_info["cond"], case=case, var=var):
+            if step_info["cond"] and not expect_val(None, step_info["cond"], case=case, var=var, x=x):
                 case_skip_step_func(step_info["name"])
                 self.reporter.report_skip_step(step_info["name"])
                 continue
-            step = self.run_step(step_info, case, dft, var=var, ctx=ctx)
+            step = self.run_step(step_info, case, dft, var=var, ctx=ctx, x=x)
             case_add_step_func(step)
             self.reporter.report_step_end(step)
             if not step.is_pass:
@@ -344,7 +345,7 @@ class Framework:
         case.elapse = datetime.now() - now
         return case
 
-    def run_step(self, step_info, case, dft, var=None, ctx=None):
+    def run_step(self, step_info, case, dft, var=None, ctx=None, x=None):
         self.debug("step {}".format(json.dumps(step_info, indent=True)))
 
         step = StepResult(step_info["name"])
@@ -355,7 +356,7 @@ class Framework:
             sub_step_result = SubStepResult()
             try:
                 req = merge(req, dft[step_info["ctx"]]["req"])
-                req = render(req, case=case, var=var)
+                req = render(req, case=case, var=var, x=x)
                 step.req = req
                 sub_step_result.req = req
 
@@ -367,18 +368,18 @@ class Framework:
                         step_res = ctx[step_info["ctx"]].do(req)
                         step.res = step_res
                         sub_step_result.res = step_res
-                        if retry.condition == "" or not expect_val(None, retry.condition, case=case, step=step, var=var):
+                        if retry.condition == "" or not expect_val(None, retry.condition, case=case, step=step, var=var, x=x):
                             break
                         time.sleep(retry.delay.total_seconds())
                     else:
                         raise RetryError()
-                    if until.condition == "" or expect_val(None, until.condition, case=case, step=step, var=var):
+                    if until.condition == "" or expect_val(None, until.condition, case=case, step=step, var=var, x=x):
                         break
                     time.sleep(until.delay.total_seconds())
                 else:
                     raise UntilError()
 
-                result = expect(step_res, json.loads(json.dumps(res)), case=case, step=step, var=var)
+                result = expect(step_res, json.loads(json.dumps(res)), case=case, step=step, var=var, x=x)
                 sub_step_result.add_expect_result(result)
             except RetryError as e:
                 sub_step_result.set_error("RetryError [{}]".format(retry))

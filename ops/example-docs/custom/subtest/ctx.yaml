@@ -24,3 +24,10 @@ case:
         res:
           key1: val1
           key2: val2
+  - name: TestHello
+    step:
+      - ctx: echo
+        req:
+          "#key": "x.hello()"
+        res:
+          key: "hello"
