@@ -12,6 +12,14 @@ cd qas && \
 python3 setup.py install
 ```
 
+### docker 运行
+
+```shell
+docker run -i --tty --rm \
+  -v $(pwd)/ops/example-docs/helloworld:/example-docs/helloworld \
+  docker.io/hatlonely/qas:1.0.0 qas -t example-docs/helloworld
+```
+
 ## 快速入门
 
 1. 创建一个 case 文件 `helloworld/ctx.yaml`
@@ -78,4 +86,5 @@ qas 就是为了解决 devops 的功能测试问题，通过 yaml 来描述测�
 
 ```shell
 ops --variable .cfg/dev.yaml --env dev -a run --task example-docs
+ops --variable .cfg/dev.yaml --env dev -a run --task image
 ```
