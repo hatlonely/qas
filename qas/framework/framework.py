@@ -167,7 +167,7 @@ class Framework:
         for directory in [
             os.path.join(test_directory, i)
             for i in os.listdir(test_directory)
-            if i != "x" and os.path.isdir(os.path.join(test_directory, i))
+            if os.path.isdir(os.path.join(test_directory, i))
         ]:
             if self.case_directory and not re.search(self.case_directory, directory):
                 continue
