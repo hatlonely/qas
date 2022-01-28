@@ -25,6 +25,8 @@ def generate_req(d):
 
 
 def generate_res(d, n):
+    if not d:
+        return itertools.repeat(d, n)
     if isinstance(d, list):
         return zip(*[generate_res(v, n) for v in d])
     if isinstance(d, dict):
