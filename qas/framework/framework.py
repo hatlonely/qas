@@ -66,6 +66,7 @@ class Framework:
         skip_teardown=False,
         debug=False,
         reporter="text",
+        x=None,
     ):
         self.test_directory = test_directory
         self.case_directory = case_directory
@@ -76,16 +77,22 @@ class Framework:
         self.debug_mode = debug
         self.reporter_name = reporter
         self.reporter = None
+        self.x = x
 
     def run(self):
-        x = Framework.load_x("{}/x".format(self.test_directory))
-        if hasattr(x, "reporters"):
-            reporters = _reporters | x.reporters
-        else:
-            reporters = _reporters
-        self.reporter = reporters[self.reporter_name]()
+        if self.x:
+            x = Framework.load_x("{}/x".format(self.test_directory))
+            if hasattr(x, "reporters"):
+                reporters = _reporters | x.reporters
+            else:
+                reporters = _reporters
+            self.reporter = reporters[self.reporter_name]()
+            if hasattr(x, "drivers"):
+                drivers = _drivers | x.drivers
+            else:
+                drivers = _drivers
 
-        res = self.run_test(self.test_directory, {}, {}, {}, {}, [], [], _drivers, x)
+        res = self.run_test(self.test_directory, {}, {}, {}, {}, [], [], drivers, x)
         return res.is_pass
 
     def run_test(
@@ -103,11 +110,7 @@ class Framework:
         now = datetime.now()
         self.debug("enter {}".format(test_directory))
 
-        x = Framework.load_x("{}/x".format(test_directory))
-        if hasattr(x, "drivers"):
-            drivers = parent_drivers | x.drivers
-        else:
-            drivers = parent_drivers
+        drivers = parent_drivers
         info = Framework.load_ctx(os.path.basename(test_directory), "{}/ctx.yaml".format(test_directory))
         var_info = copy.deepcopy(parent_var_info) | info["var"] | Framework.load_var("{}/var.yaml".format(test_directory))
         var = json.loads(json.dumps(var_info), object_hook=dict_to_sns)
