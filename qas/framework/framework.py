@@ -105,7 +105,6 @@ class Framework:
         now = datetime.now()
         self.debug("enter {}".format(test_directory))
 
-        drivers = parent_drivers
         info = Framework.load_ctx(os.path.basename(test_directory), "{}/ctx.yaml".format(test_directory))
         var_info = copy.deepcopy(parent_var_info) | info["var"] | Framework.load_var("{}/var.yaml".format(test_directory))
         var = json.loads(json.dumps(var_info), object_hook=dict_to_sns)
@@ -132,7 +131,7 @@ class Framework:
                 },
             })
             val = render(val, var=var)
-            ctx[key] = drivers[val["type"]](val["args"])
+            ctx[key] = parent_drivers[val["type"]](val["args"])
             dft_info[key] = val["dft"]
 
         self.debug("var: {}".format(var_info))
@@ -172,7 +171,7 @@ class Framework:
         ]:
             if self.case_directory and not re.search(self.case_directory, directory):
                 continue
-            sub_test_result = self.run_test(directory, var_info, ctx, dft_info, common_step_info, before_case_info, after_case_info, drivers, parent_x)
+            sub_test_result = self.run_test(directory, var_info, ctx, dft_info, common_step_info, before_case_info, after_case_info, parent_drivers, parent_x)
             test_result.add_sub_test_result(sub_test_result)
 
         # 执行 teardown
