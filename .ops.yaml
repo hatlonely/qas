@@ -8,21 +8,26 @@ dep:
 
 env:
   default:
+    REGISTRY_ENDPOINT: "{{.registry.dockerhub.endpoint}}"
+    REGISTRY_USERNAME: "{{.registry.dockerhub.username}}"
+    REGISTRY_PASSWORD: "{{.registry.dockerhub.password}}"
+    REGISTRY_NAMESPACE: "{{.registry.dockerhub.namespace}}"
+    IMAGE_TAG: "$(git describe --tags | awk '{print(substr($0,2,length($0)))}'; test ${PIPESTATUS[0]} -eq 0)"
   dev:
-    IMM_AK: {{.credential.imm.accessKeyId}}
-    IMM_SK: {{.credential.imm.accessKeySecret}}
+    IMM_AK: "{{.credential.imm.accessKeyId}}"
+    IMM_SK: "{{.credential.imm.accessKeySecret}}"
     IMM_ENDPOINT: https://imm.cn-shanghai.aliyuncs.com
-    OTS_AK: {{.credential.ots.accessKeyId}}
-    OTS_SK: {{.credential.ots.accessKeySecret}}
+    OTS_AK: "{{.credential.ots.accessKeyId}}"
+    OTS_SK: "{{.credential.ots.accessKeySecret}}"
     OTS_INSTANCE: imm-dev-hl
     OTS_ENDPOINT: https://imm-dev-hl.cn-shanghai.ots.aliyuncs.com
-    OSS_AK: {{.credential.oss.accessKeyId}}
-    OSS_SK: {{.credential.oss.accessKeySecret}}
+    OSS_AK: "{{.credential.oss.accessKeyId}}"
+    OSS_SK: "{{.credential.oss.accessKeySecret}}"
     OSS_ENDPOINT: oss-cn-shanghai.aliyuncs.com
     OSS_BUCKET: imm-test-hl-shanghai
-    MNS_AK: {{.credential.mns.accessKeyId}}
-    MNS_SK: {{.credential.mns.accessKeySecret}}
-    MNS_ENDPOINT: http://{{.credential.mns.ownerId}}.mns.cn-shanghai.aliyuncs.com
+    MNS_AK: "{{.credential.mns.accessKeyId}}"
+    MNS_SK: "{{.credential.mns.accessKeySecret}}"
+    MNS_ENDPOINT: "http://{{.credential.mns.ownerId}}.mns.cn-shanghai.aliyuncs.com"
 
 task:
   example-docs:
@@ -40,3 +45,8 @@ task:
   install:
     step:
       - python3 setup.py install
+  image:
+    step:
+      - docker login --username="${REGISTRY_USERNAME}" --password="${REGISTRY_PASSWORD}" "${REGISTRY_ENDPOINT}"
+      - docker build --tag=${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/${NAME}:${IMAGE_TAG} .
+      - docker push "${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/${NAME}:${IMAGE_TAG}"
