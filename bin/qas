@@ -28,6 +28,7 @@ def main():
     parser.add_argument("--debug", nargs="?", const=True, default=False, help="debug mod")
     parser.add_argument("-r", "--reporter", default="text", choices=["text", "json"], help="reporter result")
     parser.add_argument("-t", "--test", required=True, help="test directory")
+    parser.add_argument("-x", "--x", help="user custom directory")
     parser.add_argument("-c", "--case", help="case directory regex match")
     parser.add_argument("--case-name", help="case name")
     parser.add_argument("--case-regex", help="case name regex match")
@@ -44,6 +45,7 @@ def main():
         skip_teardown=args.skip_teardown,
         debug=args.debug,
         reporter=args.reporter,
+        x=args.x,
     )
     if not fw.run():
         sys.exit(1)
