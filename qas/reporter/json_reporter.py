@@ -4,13 +4,13 @@
 import json
 import durationpy
 
+from ..result import TestResult, CaseResult, StepResult, SubStepResult, ExpectResult
 from .reporter import Reporter
-from ..result import TestResult, CaseResult, StepResult, ExpectResult
 
 
 class JsonReporter(Reporter):
     def report_test_end(self, res: TestResult):
-        print(json.dumps(JsonReporter.test_summary(res), indent=True, default=lambda x: x.__name__))
+        print(json.dumps(JsonReporter.test_summary(res), indent=2, default=lambda x: x.__name__))
 
     @staticmethod
     def test_summary(res: TestResult) -> dict:
@@ -51,16 +51,28 @@ class JsonReporter(Reporter):
     def step_summary(res: StepResult) -> dict:
         return {
             "name": res.name,
-            "isPass": res.is_pass,
-            "isSkip": res.is_skip,
-            "elapse": durationpy.to_str(res.elapse),
-            "assertion_succ": res.assertion_succ,
-            "assertion_fail": res.assertion_fail,
+            "is_skip": res.is_skip,
+            "is_pass": res.is_pass,
             "req": res.req,
             "res": res.res,
-            "assertions": [JsonReporter.expect_summary(i) for i in res.assertions],
-            "isErr": res.is_err,
+            "sub_steps": [JsonReporter.sub_step_summary(i) for i in res.sub_steps],
+            "assertion_succ": res.assertion_succ,
+            "assertion_fail": res.assertion_fail,
+            "elapse": durationpy.to_str(res.elapse),
+        }
+
+    @staticmethod
+    def sub_step_summary(res: SubStepResult) -> dict:
+        return {
+            "is_pass": res.is_pass,
+            "is_err": res.is_err,
             "err": res.err,
+            "req": res.req,
+            "res": res.res,
+            "assertions":  [JsonReporter.expect_summary(i) for i in res.assertions],
+            "assertion_succ": res.assertion_succ,
+            "assertion_fail": res.assertion_fail,
+            "elapse": durationpy.to_str(res.elapse),
         }
 
     @staticmethod

@@ -16,11 +16,12 @@ class ExpectResult:
 
 @dataclass
 class SubStepResult:
+    is_pass: bool
+    is_err: bool
+    err: str
     req: dict
     res: dict
     assertions: list[ExpectResult]
-    is_err: bool
-    err: str
     assertion_succ: int
     assertion_fail: int
     elapse: timedelta
@@ -29,11 +30,11 @@ class SubStepResult:
         self.is_pass = True
         self.is_err = False
         self.err = ""
+        self.req = {}
+        self.res = {}
         self.assertions = list[ExpectResult]()
         self.assertion_succ = 0
         self.assertion_fail = 0
-        self.req = {}
-        self.res = {}
         self.elapse = timedelta(seconds=0)
 
     def set_error(self, message):
@@ -52,11 +53,11 @@ class SubStepResult:
 @dataclass
 class StepResult:
     name: str
+    is_skip: bool
+    is_pass: bool
     req: dict
     res: dict
     sub_steps: list[SubStepResult]
-    is_pass: bool
-    is_skip: bool
     assertion_succ: int
     assertion_fail: int
     elapse: timedelta
@@ -64,15 +65,12 @@ class StepResult:
     def __init__(self, name, is_skip=False):
         self.name = name
         self.is_skip = is_skip
-        self.assertions = list[ExpectResult]()
-        self.sub_steps = list[SubStepResult]()
         self.is_pass = True
-        self.is_err = False
-        self.err = ""
-        self.assertion_succ = 0
-        self.assertion_fail = 0
         self.req = {}
         self.res = {}
+        self.sub_steps = list[SubStepResult]()
+        self.assertion_succ = 0
+        self.assertion_fail = 0
         self.elapse = timedelta(seconds=0)
 
     def add_sub_step_result(self, result: SubStepResult):
