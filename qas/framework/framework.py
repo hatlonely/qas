@@ -75,24 +75,19 @@ class Framework:
         self.skip_setup = skip_setup
         self.skip_teardown = skip_teardown
         self.debug_mode = debug
-        self.reporter_name = reporter
-        self.reporter = None
-        self.x = x
+        self.reporters = _reporters
+        self.drivers = _drivers
+        self.x = None
+        if x:
+            self.x = Framework.load_x(x)
+            if hasattr(self.x, "reporters"):
+                self.reporters = _reporters | self.x.reporters
+            if hasattr(self.x, "drivers"):
+                self.drivers = _drivers | self.x.drivers
+        self.reporter = self.reporters[reporter]()
 
     def run(self):
-        if self.x:
-            x = Framework.load_x("{}/x".format(self.test_directory))
-            if hasattr(x, "reporters"):
-                reporters = _reporters | x.reporters
-            else:
-                reporters = _reporters
-            self.reporter = reporters[self.reporter_name]()
-            if hasattr(x, "drivers"):
-                drivers = _drivers | x.drivers
-            else:
-                drivers = _drivers
-
-        res = self.run_test(self.test_directory, {}, {}, {}, {}, [], [], drivers, x)
+        res = self.run_test(self.test_directory, {}, {}, {}, {}, [], [], self.drivers, self.x)
         return res.is_pass
 
     def run_test(

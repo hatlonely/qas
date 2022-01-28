@@ -3,9 +3,11 @@ name: custom-example
 ctx:
   echo:
     type: echo
+  calc:
+    type: calc
 
 case:
-  - name: CustomExample
+  - name: CustomEchoExample
     step:
       - ctx: echo
         req:
@@ -14,3 +16,18 @@ case:
         res:
           key1: val1
           key2: val2
+  - name: CustomCalcExample
+    step:
+      - ctx: calc
+        req:
+          num1: 123
+          num2: 456
+        res:
+          val: 579
+  - name: CustomHelloExample
+    step:
+      - ctx: echo
+        req:
+          "#key": "x.hello()"
+        res:
+          key: "hello"
