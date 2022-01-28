@@ -8,6 +8,7 @@ dep:
 
 env:
   default:
+    NAME: qas
     REGISTRY_ENDPOINT: "{{.registry.dockerhub.endpoint}}"
     REGISTRY_USERNAME: "{{.registry.dockerhub.username}}"
     REGISTRY_PASSWORD: "{{.registry.dockerhub.password}}"
