@@ -1,0 +1,170 @@
+name: TestAssert
+step:
+  - ctx: shell
+    req:
+      command: qas --test ops/example-docs/assert --reporter json
+      decoder: json
+    res:
+      exitCode: 0
+      json: {
+        "name": "assert-example",
+        "isPass": true,
+        "#elapse": "len(val) > 0",
+        "caseSucc": 1,
+        "caseFail": 0,
+        "caseSkip": 0,
+        "stepSucc": 1,
+        "stepFail": 0,
+        "assertionSucc": 8,
+        "assertionFail": 0,
+        "cases": [
+          {
+            "name": "AssertExample",
+            "#elapse": "len(val) > 0",
+            "isPass": true,
+            "isSkip": false,
+            "steps": [
+              {
+                "name": "step-0",
+                "isSkip": false,
+                "isPass": true,
+                "req": {
+                  "command": "echo '{\n  \"key1\": \"val1\",\n  \"key2\": 123,\n  \"key3\": {\n    \"key4\": \"val4\",\n    \"key5\": [{\n      \"key6\": \"val6\",\n      \"key7\": [\n        456,\n        \"val7\"\n      ],\n      \"key8\": 333\n    }]\n  }\n}'\n",
+                  "decoder": "json",
+                  "envs": {}
+                },
+                "res": {
+                  "exitCode": 0,
+                  "stdout": "{\n  \"key1\": \"val1\",\n  \"key2\": 123,\n  \"key3\": {\n    \"key4\": \"val4\",\n    \"key5\": [{\n      \"key6\": \"val6\",\n      \"key7\": [\n        456,\n        \"val7\"\n      ],\n      \"key8\": 333\n    }]\n  }\n}\n",
+                  "stderr": "",
+                  "json": {
+                    "key1": "val1",
+                    "key2": 123,
+                    "key3": {
+                      "key4": "val4",
+                      "key5": [
+                        {
+                          "key6": "val6",
+                          "key7": [
+                            456,
+                            "val7"
+                          ],
+                          "key8": 333
+                        }
+                      ]
+                    }
+                  }
+                },
+                "subSteps": [
+                  {
+                    "isPass": true,
+                    "isErr": false,
+                    "err": "",
+                    "req": {
+                      "command": "echo '{\n  \"key1\": \"val1\",\n  \"key2\": 123,\n  \"key3\": {\n    \"key4\": \"val4\",\n    \"key5\": [{\n      \"key6\": \"val6\",\n      \"key7\": [\n        456,\n        \"val7\"\n      ],\n      \"key8\": 333\n    }]\n  }\n}'\n",
+                      "decoder": "json",
+                      "envs": {}
+                    },
+                    "res": {
+                      "exitCode": 0,
+                      "stdout": "{\n  \"key1\": \"val1\",\n  \"key2\": 123,\n  \"key3\": {\n    \"key4\": \"val4\",\n    \"key5\": [{\n      \"key6\": \"val6\",\n      \"key7\": [\n        456,\n        \"val7\"\n      ],\n      \"key8\": 333\n    }]\n  }\n}\n",
+                      "stderr": "",
+                      "json": {
+                        "key1": "val1",
+                        "key2": 123,
+                        "key3": {
+                          "key4": "val4",
+                          "key5": [
+                            {
+                              "key6": "val6",
+                              "key7": [
+                                456,
+                                "val7"
+                              ],
+                              "key8": 333
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    "assertions": [
+                      {
+                        "isPass": true,
+                        "message": "OK",
+                        "node": "exitCode",
+                        "val": 0,
+                        "expect": 0
+                      },
+                      {
+                        "isPass": true,
+                        "message": "OK",
+                        "node": "json.key2",
+                        "val": 123,
+                        "expect": "val % 3 == 0"
+                      },
+                      {
+                        "isPass": true,
+                        "message": "OK",
+                        "node": "json.key1",
+                        "val": "val1",
+                        "expect": "val1"
+                      },
+                      {
+                        "isPass": true,
+                        "message": "OK",
+                        "node": "json.key3.key4",
+                        "val": "val4",
+                        "expect": "len(val) == 4"
+                      },
+                      {
+                        "isPass": true,
+                        "message": "OK",
+                        "node": "json.key3.key5.0.key6",
+                        "val": "val6",
+                        "expect": "val.endswith('6')"
+                      },
+                      {
+                        "isPass": true,
+                        "message": "OK",
+                        "node": "json.key3.key5.0.key8",
+                        "val": 333,
+                        "expect": "111 * 3"
+                      },
+                      {
+                        "isPass": true,
+                        "message": "OK",
+                        "node": "json.key3.key5.0.key7.0",
+                        "val": 456,
+                        "expect": 456
+                      },
+                      {
+                        "isPass": true,
+                        "message": "OK",
+                        "node": "json.key3.key5.0.key7.1",
+                        "val": "val7",
+                        "expect": "val7"
+                      }
+                    ],
+                    "assertionSucc": 8,
+                    "assertionFail": 0,
+                    "#elapse": "len(val) > 0"
+                  }
+                ],
+                "assertionSucc": 8,
+                "assertionFail": 0,
+                "#elapse": "len(val) > 0"
+              }
+            ],
+            "beforeCaseSteps": [],
+            "afterCaseSteps": [],
+            "stepSucc": 1,
+            "stepFail": 0,
+            "assertionSucc": 8,
+            "assertionFail": 0
+          }
+        ],
+        "setups": [],
+        "teardowns": [],
+        "subTests": []
+      }
+

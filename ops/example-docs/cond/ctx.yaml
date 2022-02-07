@@ -13,7 +13,7 @@ case:
     step:
       - ctx: shell
         req:
-          command: date +%s
+          command: echo 1644245980 # date +%s
         res:
           exitCode: 0
       - ctx: shell

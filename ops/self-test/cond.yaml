@@ -1,0 +1,149 @@
+name: TestHelloWorld
+step:
+  - ctx: shell
+    req:
+      command: qas --test ops/example-docs/cond --reporter json
+      decoder: json
+    res:
+      exitCode: 0
+      json: {
+        "name": "cond-example",
+        "isPass": true,
+        "#elapse": "len(val) > 0",
+        "caseSucc": 1,
+        "caseFail": 0,
+        "caseSkip": 1,
+        "stepSucc": 2,
+        "stepFail": 0,
+        "assertionSucc": 1,
+        "assertionFail": 0,
+        "cases": [
+          {
+            "name": "CondPassExample",
+            "#elapse": "len(val) > 0",
+            "isPass": true,
+            "isSkip": false,
+            "steps": [
+              {
+                "name": "step-0",
+                "isSkip": false,
+                "isPass": true,
+                "req": {
+                  "command": "echo 1644245980",
+                  "envs": {},
+                  "decoder": "text"
+                },
+                "res": {
+                  "exitCode": 0,
+                  "#stdout": "int(val) % 2 == 0",
+                  "stderr": ""
+                },
+                "subSteps": [
+                  {
+                    "isPass": true,
+                    "isErr": false,
+                    "err": "",
+                    "req": {
+                      "command": "echo 1644245980",
+                      "envs": {},
+                      "decoder": "text"
+                    },
+                    "res": {
+                      "exitCode": 0,
+                      "#stdout": "int(val) % 2 == 0",
+                      "stderr": ""
+                    },
+                    "assertions": [
+                      {
+                        "isPass": true,
+                        "message": "OK",
+                        "node": "exitCode",
+                        "val": 0,
+                        "expect": 0
+                      }
+                    ],
+                    "assertionSucc": 1,
+                    "assertionFail": 0,
+                    "#elapse": "len(val) > 0"
+                  }
+                ],
+                "assertionSucc": 1,
+                "assertionFail": 0,
+                "#elapse": "len(val) > 0"
+              },
+              {
+                "name": "step-1",
+                "isSkip": true,
+                "isPass": true,
+                "req": {},
+                "res": {},
+                "subSteps": [],
+                "assertionSucc": 0,
+                "assertionFail": 0,
+                "#elapse": "len(val) > 0"
+              },
+              {
+                "name": "step-2",
+                "isSkip": false,
+                "isPass": true,
+                "req": {
+                  "command": "echo even",
+                  "envs": {},
+                  "decoder": "text"
+                },
+                "res": {
+                  "exitCode": 0,
+                  "stdout": "even\n",
+                  "stderr": ""
+                },
+                "subSteps": [
+                  {
+                    "isPass": true,
+                    "isErr": false,
+                    "err": "",
+                    "req": {
+                      "command": "echo even",
+                      "envs": {},
+                      "decoder": "text"
+                    },
+                    "res": {
+                      "exitCode": 0,
+                      "stdout": "even\n",
+                      "stderr": ""
+                    },
+                    "assertions": [],
+                    "assertionSucc": 0,
+                    "assertionFail": 0,
+                    "#elapse": "len(val) > 0"
+                  }
+                ],
+                "assertionSucc": 0,
+                "assertionFail": 0,
+                "#elapse": "len(val) > 0"
+              }
+            ],
+            "beforeCaseSteps": [],
+            "afterCaseSteps": [],
+            "stepSucc": 2,
+            "stepFail": 0,
+            "assertionSucc": 1,
+            "assertionFail": 0
+          },
+          {
+            "name": "CondDenyExample",
+            "#elapse": "len(val) > 0",
+            "isPass": true,
+            "isSkip": true,
+            "steps": [],
+            "beforeCaseSteps": [],
+            "afterCaseSteps": [],
+            "stepSucc": 0,
+            "stepFail": 0,
+            "assertionSucc": 0,
+            "assertionFail": 0
+          }
+        ],
+        "setups": [],
+        "teardowns": [],
+        "subTests": []
+      }

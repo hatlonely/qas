@@ -1,0 +1,159 @@
+name: TestBeforeAfterCase
+step:
+  - ctx: shell
+    req:
+      command: qas --test ops/example-docs/before_after_case --reporter json
+      decoder: json
+    res:
+      exitCode: 0
+      json: {
+        "name": "before-after-case-example",
+        "isPass": true,
+        "#elapse": "len(val) > 0",
+        "caseSucc": 1,
+        "caseFail": 0,
+        "caseSkip": 0,
+        "stepSucc": 1,
+        "stepFail": 0,
+        "assertionSucc": 0,
+        "assertionFail": 0,
+        "cases": [
+          {
+            "name": "BeforeAfterCaseExample",
+            "#elapse": "len(val) > 0",
+            "isPass": true,
+            "isSkip": false,
+            "steps": [
+              {
+                "name": "step-0",
+                "isSkip": false,
+                "isPass": true,
+                "req": {
+                  "command": "echo case",
+                  "envs": {},
+                  "decoder": "text"
+                },
+                "res": {
+                  "exitCode": 0,
+                  "stdout": "case\n",
+                  "stderr": ""
+                },
+                "subSteps": [
+                  {
+                    "isPass": true,
+                    "isErr": false,
+                    "err": "",
+                    "req": {
+                      "command": "echo case",
+                      "envs": {},
+                      "decoder": "text"
+                    },
+                    "res": {
+                      "exitCode": 0,
+                      "stdout": "case\n",
+                      "stderr": ""
+                    },
+                    "assertions": [],
+                    "assertionSucc": 0,
+                    "assertionFail": 0,
+                    "#elapse": "len(val) > 0"
+                  }
+                ],
+                "assertionSucc": 0,
+                "assertionFail": 0,
+                "#elapse": "len(val) > 0"
+              }
+            ],
+            "beforeCaseSteps": [
+              {
+                "name": "step-0",
+                "isSkip": false,
+                "isPass": true,
+                "req": {
+                  "command": "echo before case",
+                  "envs": {},
+                  "decoder": "text"
+                },
+                "res": {
+                  "exitCode": 0,
+                  "stdout": "before case\n",
+                  "stderr": ""
+                },
+                "subSteps": [
+                  {
+                    "isPass": true,
+                    "isErr": false,
+                    "err": "",
+                    "req": {
+                      "command": "echo before case",
+                      "envs": {},
+                      "decoder": "text"
+                    },
+                    "res": {
+                      "exitCode": 0,
+                      "stdout": "before case\n",
+                      "stderr": ""
+                    },
+                    "assertions": [],
+                    "assertionSucc": 0,
+                    "assertionFail": 0,
+                    "#elapse": "len(val) > 0"
+                  }
+                ],
+                "assertionSucc": 0,
+                "assertionFail": 0,
+                "#elapse": "len(val) > 0"
+              }
+            ],
+            "afterCaseSteps": [
+              {
+                "name": "step-0",
+                "isSkip": false,
+                "isPass": true,
+                "req": {
+                  "command": "echo after case",
+                  "envs": {},
+                  "decoder": "text"
+                },
+                "res": {
+                  "exitCode": 0,
+                  "stdout": "after case\n",
+                  "stderr": ""
+                },
+                "subSteps": [
+                  {
+                    "isPass": true,
+                    "isErr": false,
+                    "err": "",
+                    "req": {
+                      "command": "echo after case",
+                      "envs": {},
+                      "decoder": "text"
+                    },
+                    "res": {
+                      "exitCode": 0,
+                      "stdout": "after case\n",
+                      "stderr": ""
+                    },
+                    "assertions": [],
+                    "assertionSucc": 0,
+                    "assertionFail": 0,
+                    "#elapse": "len(val) > 0"
+                  }
+                ],
+                "assertionSucc": 0,
+                "assertionFail": 0,
+                "#elapse": "len(val) > 0"
+              }
+            ],
+            "stepSucc": 1,
+            "stepFail": 0,
+            "assertionSucc": 0,
+            "assertionFail": 0
+          }
+        ],
+        "setups": [],
+        "teardowns": [],
+        "subTests": []
+      }
+
