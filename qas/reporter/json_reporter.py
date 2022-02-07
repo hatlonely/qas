@@ -18,13 +18,13 @@ class JsonReporter(Reporter):
             "name": res.name,
             "isPass": res.is_pass,
             "elapse": durationpy.to_str(res.elapse),
-            "case_succ": res.case_succ,
-            "case_fail": res.case_fail,
-            "case_skip": res.case_skip,
-            "step_succ": res.step_succ,
-            "step_fail": res.step_fail,
-            "assertion_succ": res.assertion_succ,
-            "assertion_fail": res.assertion_fail,
+            "caseSucc": res.case_succ,
+            "caseFail": res.case_fail,
+            "caseSkip": res.case_skip,
+            "stepSucc": res.step_succ,
+            "stepFail": res.step_fail,
+            "assertionSucc": res.assertion_succ,
+            "assertionFail": res.assertion_fail,
             "cases": [JsonReporter.case_summary(i) for i in res.cases],
             "setups": [JsonReporter.case_summary(i) for i in res.setups],
             "teardowns": [JsonReporter.case_summary(i) for i in res.teardowns],
@@ -41,37 +41,37 @@ class JsonReporter(Reporter):
             "steps": [JsonReporter.step_summary(i) for i in res.steps],
             "beforeCaseSteps": [JsonReporter.step_summary(i) for i in res.before_case_steps],
             "afterCaseSteps": [JsonReporter.step_summary(i) for i in res.after_case_steps],
-            "step_succ": res.step_succ,
-            "step_fail": res.step_fail,
-            "assertion_succ": res.assertion_succ,
-            "assertion_fail": res.assertion_fail,
+            "stepSucc": res.step_succ,
+            "stepFail": res.step_fail,
+            "assertionSucc": res.assertion_succ,
+            "assertionFail": res.assertion_fail,
         }
 
     @staticmethod
     def step_summary(res: StepResult) -> dict:
         return {
             "name": res.name,
-            "is_skip": res.is_skip,
-            "is_pass": res.is_pass,
+            "isSkip": res.is_skip,
+            "isPass": res.is_pass,
             "req": res.req,
             "res": res.res,
-            "sub_steps": [JsonReporter.sub_step_summary(i) for i in res.sub_steps],
-            "assertion_succ": res.assertion_succ,
-            "assertion_fail": res.assertion_fail,
+            "subSteps": [JsonReporter.sub_step_summary(i) for i in res.sub_steps],
+            "assertionSucc": res.assertion_succ,
+            "assertionFail": res.assertion_fail,
             "elapse": durationpy.to_str(res.elapse),
         }
 
     @staticmethod
     def sub_step_summary(res: SubStepResult) -> dict:
         return {
-            "is_pass": res.is_pass,
-            "is_err": res.is_err,
+            "isPass": res.is_pass,
+            "isErr": res.is_err,
             "err": res.err,
             "req": res.req,
             "res": res.res,
             "assertions":  [JsonReporter.expect_summary(i) for i in res.assertions],
-            "assertion_succ": res.assertion_succ,
-            "assertion_fail": res.assertion_fail,
+            "assertionSucc": res.assertion_succ,
+            "assertionFail": res.assertion_fail,
             "elapse": durationpy.to_str(res.elapse),
         }
 
