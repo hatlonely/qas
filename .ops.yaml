@@ -43,6 +43,17 @@ task:
         else
           python3 main.py --test "${TMP}/example-docs" --case "${case}"
         fi
+  self-test:
+    args:
+      case:
+        type: string
+    step:
+      - |
+        if [[ "${case}" == "" ]]; then
+          python3 main.py --test "ops/self-test"
+        else
+          python3 main.py --test "ops/self-test" --case "${case}"
+        fi
   install:
     step:
       - python3 setup.py install
