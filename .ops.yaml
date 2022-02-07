@@ -45,14 +45,14 @@ task:
         fi
   self-test:
     args:
-      case:
+      case_regex:
         type: string
     step:
       - |
-        if [[ "${case}" == "" ]]; then
+        if [[ "${case_regex}" == "" ]]; then
           python3 main.py --test "ops/self-test"
         else
-          python3 main.py --test "ops/self-test" --case "${case}"
+          python3 main.py --test "ops/self-test" --case-regex "${case_regex}"
         fi
   install:
     step:
