@@ -3,7 +3,6 @@
 
 import json
 import re
-import itertools
 
 import durationpy
 from colorama import Fore
@@ -14,15 +13,6 @@ from ..result import TestResult, CaseResult, StepResult, ExpectResult
 class TextReporter(Reporter):
     def __init__(self):
         self.padding = ""
-
-    def format(self, res: TestResult):
-        self.report_test_start(res.directory)
-        for case in itertools.chain(res.setups, res.cases, res.teardowns):
-            self.report_case_end(case)
-        for sub_test in res.sub_tests:
-            self.format(sub_test)
-        self.report_test_end(res)
-        self.report_final_result(res)
 
     def report_test_start(self, directory):
         print("{}进入 {}".format(self.padding, directory))

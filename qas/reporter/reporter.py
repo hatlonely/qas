@@ -1,11 +1,26 @@
 #!/usr/bin/env python3
 
+
+import itertools
 from ..result import TestResult, CaseResult, StepResult, ExpectResult
 
 
 class Reporter:
     def format(self, res: TestResult):
-        pass
+        self.report_test_start(res.directory)
+        for case in res.setups:
+            self.report_setup_start(case.name)
+            self.report_setup_end(case)
+        for case in res.cases:
+            self.report_case_start(case.name)
+            self.report_case_end(case)
+        for case in res.teardowns:
+            self.report_teardown_start(case.name)
+            self.report_teardown_end(case)
+        for sub_test in res.sub_tests:
+            self.format(sub_test)
+        self.report_test_end(res)
+        self.report_final_result(res)
 
     def report_final_result(self, res: TestResult):
         pass
