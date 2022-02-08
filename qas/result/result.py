@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-
-
+import json
 from dataclasses import dataclass
 from datetime import timedelta
+import durationpy
 
 
 @dataclass
@@ -12,6 +12,15 @@ class ExpectResult:
     node: str
     val: any
     expect: any
+
+    def to_json(self):
+        return {
+            "isPass": self.is_pass,
+            "message": self.message,
+            "node": self.node,
+            "val": self.val,
+            "expect": self.expect,
+        }
 
 
 @dataclass
@@ -25,6 +34,19 @@ class SubStepResult:
     assertion_succ: int
     assertion_fail: int
     elapse: timedelta
+
+    def to_json(self):
+        return {
+            "isPass": self.is_pass,
+            "isErr": self.is_err,
+            "err": self.err,
+            "req": self.req,
+            "res": self.res,
+            "assertions":  self.assertions,
+            "assertionSucc": self.assertion_succ,
+            "assertionFail": self.assertion_fail,
+            "elapse": durationpy.to_str(self.elapse),
+        }
 
     def __init__(self):
         self.is_pass = True
@@ -62,6 +84,19 @@ class StepResult:
     assertion_fail: int
     elapse: timedelta
 
+    def to_json(self):
+        return {
+            "name": self.name,
+            "isSkip": self.is_skip,
+            "isPass": self.is_pass,
+            "req": self.req,
+            "res": self.res,
+            "subSteps": self.sub_steps,
+            "assertionSucc": self.assertion_succ,
+            "assertionFail": self.assertion_fail,
+            "elapse": durationpy.to_str(self.elapse),
+        }
+
     def __init__(self, name, is_skip=False):
         self.name = name
         self.is_skip = is_skip
@@ -96,6 +131,21 @@ class CaseResult:
     assertion_succ: int
     assertion_fail: int
     elapse: timedelta
+
+    def to_json(self):
+        return {
+            "name": self.name,
+            "elapse": durationpy.to_str(self.elapse),
+            "isPass": self.is_pass,
+            "isSkip": self.is_skip,
+            "steps": self.steps,
+            "beforeCaseSteps": self.before_case_steps,
+            "afterCaseSteps": self.after_case_steps,
+            "stepSucc": self.step_succ,
+            "stepFail": self.step_fail,
+            "assertionSucc": self.assertion_succ,
+            "assertionFail": self.assertion_fail,
+        }
 
     def __init__(self, name, is_skip=False):
         self.name = name
@@ -177,6 +227,24 @@ class TestResult:
     case_skip: int
     sub_tests: list
     elapse: timedelta
+
+    def to_json(self):
+        return {
+            "name": self.name,
+            "isPass": self.is_pass,
+            "elapse": durationpy.to_str(self.elapse),
+            "caseSucc": self.case_succ,
+            "caseFail": self.case_fail,
+            "caseSkip": self.case_skip,
+            "stepSucc": self.step_succ,
+            "stepFail": self.step_fail,
+            "assertionSucc": self.assertion_succ,
+            "assertionFail": self.assertion_fail,
+            "cases": self.cases,
+            "setups": self.setups,
+            "teardowns": self.teardowns,
+            "subTests": self.sub_tests,
+        }
 
     def __init__(self, name):
         self.name = name
