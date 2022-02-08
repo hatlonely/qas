@@ -12,7 +12,7 @@ import json
 import importlib
 import sys
 from types import SimpleNamespace
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from ..driver import HttpDriver, POPDriver, OTSDriver, ShellDriver, MysqlDriver, RedisDriver, MNSDriver, OSSDriver, MongoDriver, merge, REQUIRED
 from ..assertion import expect, render, expect_val
@@ -202,7 +202,7 @@ class Framework:
                     test_result.case_fail += 1
                     return test_result
 
-        test_result.elapse = datetime.now() - now
+        test_result.elapse = timedelta(microseconds=int((datetime.now() - now).microseconds))
         return test_result
 
     def need_skip(self, case, var):
@@ -356,7 +356,7 @@ class Framework:
             if not step.is_pass:
                 break
 
-        case.elapse = datetime.now() - now
+        case.elapse = timedelta(microseconds=int((datetime.now() - now).microseconds))
         return case
 
     def run_step(self, step_info, case, dft, var=None, ctx=None, x=None):
@@ -404,10 +404,10 @@ class Framework:
                 sub_step_result.set_error("UntilError [{}], ".format(until))
             except Exception as e:
                 sub_step_result.set_error("Exception {}".format(traceback.format_exc()))
-            sub_step_result.elapse = datetime.now() - sub_step_start
+            sub_step_result.elapse = timedelta(microseconds=int((datetime.now() - sub_step_start).microseconds))
             step.add_sub_step_result(sub_step_result)
 
-        step.elapse = datetime.now() - now
+        step.elapse = timedelta(microseconds=int((datetime.now() - now).microseconds))
         return step
 
     def debug(self, message):
