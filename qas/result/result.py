@@ -250,7 +250,7 @@ class TestResult:
             "subTests": self.sub_tests,
         }
 
-    def __init__(self, name):
+    def __init__(self, name, err_message=None):
         self.name = name
         self.is_pass = True
         self.is_err = False
@@ -268,6 +268,11 @@ class TestResult:
         self.step_succ = 0
         self.step_fail = 0
         self.step_skip = 0
+        if err_message:
+            self.is_pass = False
+            self.is_err = True
+            self.err = err_message
+            self.case_fail += 1
 
     def add_setup_result(self, case: CaseResult):
         self.setups.append(case)
@@ -308,11 +313,3 @@ class TestResult:
         self.assertion_fail += sub_test.assertion_fail
         if not sub_test.is_pass:
             self.is_pass = False
-
-    def add_sub_test_error(self, directory, message):
-        res = TestResult(directory)
-        res.is_pass = False
-        res.is_err = True
-        res.err = message
-        res.case_fail += 1
-        self.add_sub_test_result(res)

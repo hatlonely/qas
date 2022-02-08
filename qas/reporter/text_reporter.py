@@ -31,6 +31,11 @@ class TextReporter(Reporter):
                 self.padding, Fore.RED, res.name, res.case_succ, res.case_fail, res.case_skip,
                 res.step_succ, res.step_fail, res.assertion_succ, res.assertion_fail,
                 durationpy.to_str(res.elapse), Fore.RESET))
+            if res.is_err:
+                print('\n'.join([
+                    "{}  {}".format(self.padding, line)
+                    for line in res.err.split("\n")
+                ]))
 
     def report_case_end(self, res: CaseResult):
         print("\n".join([self.padding + i for i in TextReporter.format_case(res, "case")]))

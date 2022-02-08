@@ -87,7 +87,11 @@ class Framework:
         self.reporter = self.reporters[reporter]()
 
     def run(self):
-        res = self.run_test(self.test_directory, {}, {}, {}, {}, [], [], self.drivers, self.x)
+        try:
+            res = self.run_test(self.test_directory, {}, {}, {}, {}, [], [], self.drivers, self.x)
+        except Exception as e:
+            res = TestResult(self.test_directory, "Exception {}".format(traceback.format_exc()))
+            self.reporter.report_test_end(res)
         self.reporter.report_final_result(res)
         return res.is_pass
 
@@ -176,7 +180,9 @@ class Framework:
                 sub_test_result = self.run_test(directory, var_info, ctx, dft_info, common_step_info, before_case_info, after_case_info, parent_drivers, parent_x)
                 test_result.add_sub_test_result(sub_test_result)
             except Exception as e:
-                test_result.add_sub_test_error(directory, "Exception {}".format(traceback.format_exc()))
+                sub_test_result = TestResult(directory, "Exception {}".format(traceback.format_exc()))
+                test_result.add_sub_test_result(sub_test_result)
+                self.reporter.report_test_end(sub_test_result)
 
         # 执行 teardown
         if not self.skip_teardown:
