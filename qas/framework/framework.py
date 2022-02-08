@@ -154,6 +154,7 @@ class Framework:
                 test_result.add_setup_result(result)
                 self.reporter.report_setup_end(result)
                 if not result.is_pass:
+                    test_result.case_fail += 1
                     self.reporter.report_test_end(test_result)
                     return test_result
 
@@ -192,6 +193,7 @@ class Framework:
                 test_result.teardowns.append(result)
                 self.reporter.report_teardown_end(result)
                 if not result.is_pass:
+                    test_result.case_fail += 1
                     self.reporter.report_test_end(test_result)
                     return test_result
 
