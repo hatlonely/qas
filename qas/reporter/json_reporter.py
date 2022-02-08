@@ -9,7 +9,7 @@ from .reporter import Reporter
 
 
 class JsonReporter(Reporter):
-    def report_test_end(self, res: TestResult):
+    def report_final_result(self, res: TestResult):
         print(json.dumps(JsonReporter.test_summary(res), indent=2, default=lambda x: x.__name__))
 
     @staticmethod

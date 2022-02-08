@@ -88,6 +88,7 @@ class Framework:
 
     def run(self):
         res = self.run_test(self.test_directory, {}, {}, {}, {}, [], [], self.drivers, self.x)
+        self.reporter.report_final_result(res)
         return res.is_pass
 
     def run_test(
