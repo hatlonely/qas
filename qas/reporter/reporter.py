@@ -4,6 +4,9 @@ from ..result import TestResult, CaseResult, StepResult, ExpectResult
 
 
 class Reporter:
+    def format(self, res: TestResult):
+        pass
+
     def report_final_result(self, res: TestResult):
         pass
 
