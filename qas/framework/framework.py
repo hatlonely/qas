@@ -334,6 +334,7 @@ class Framework:
                 case_skip_step_func(step_info["name"])
                 self.reporter.report_skip_step(step_info["name"])
                 continue
+            self.reporter.report_step_start(step_info["name"])
             step = self.run_step(step_info, case, dft, var=var, ctx=ctx, x=x)
             case_add_step_func(step)
             self.reporter.report_step_end(step)
@@ -348,7 +349,6 @@ class Framework:
 
         step = StepResult(step_info["name"])
         now = datetime.now()
-        self.reporter.report_step_start(step_info)
         for req, res in zip(generate_req(step_info["req"]), generate_res(step_info["res"], calculate_num(step_info["req"]))):
             sub_step_start = datetime.now()
             sub_step_result = SubStepResult()
