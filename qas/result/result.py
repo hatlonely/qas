@@ -234,6 +234,8 @@ class TestResult:
         return {
             "name": self.name,
             "isPass": self.is_pass,
+            "isErr": self.is_err,
+            "err": self.err,
             "elapse": durationpy.to_str(self.elapse),
             "caseSucc": self.case_succ,
             "caseFail": self.case_fail,
