@@ -24,6 +24,7 @@ def main():
     qas --test example-docs --case-regex helloworld
     qas --test example-docs --case-name EchoHelloWorld
     qas --test example-docs --case-name EchoHelloWorld --setup --teardown
+    qas --json-result test.json --reporter text
 """)
     parser.add_argument("--debug", nargs="?", const=True, default=False, help="debug mod")
     parser.add_argument("-r", "--reporter", default="text", choices=["text", "json"], help="reporter result")
