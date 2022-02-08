@@ -354,7 +354,7 @@ class Framework:
             sub_step_result = SubStepResult()
             try:
                 req = merge(req, dft[step_info["ctx"]]["req"])
-                req = render(req, case=case, var=var, x=x)
+                req = render(json.loads(json.dumps(req)), case=case, var=var, x=x)  # use json translate tuple to list
                 step.req = req
                 sub_step_result.req = req
 
@@ -379,6 +379,10 @@ class Framework:
 
                 result = expect(step_res, json.loads(json.dumps(res)), case=case, step=step, var=var, x=x)
                 sub_step_result.add_expect_result(result)
+
+                # ensure req can json serialize
+                step.req = json.loads(json.dumps(step.req, default=lambda y: y.__name__))
+                sub_step_result.req = json.loads(json.dumps(sub_step_result.req, default=lambda y: y.__name__))
             except RetryError as e:
                 sub_step_result.set_error("RetryError [{}]".format(retry))
             except UntilError as e:

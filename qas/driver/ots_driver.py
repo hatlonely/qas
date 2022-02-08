@@ -4,6 +4,7 @@
 import tablestore
 import json
 from .default import merge, REQUIRED
+import traceback
 
 
 class OTSDriver:
@@ -35,8 +36,19 @@ class OTSDriver:
         }
         if req["Action"] not in do_map:
             raise Exception("unsupported action [{}]".format(req["Action"]))
-
-        return do_map[req["Action"]](req)
+        try:
+            return do_map[req["Action"]](req)
+        except tablestore.error.OTSServiceError as e:
+            return {
+                "Code": e.error_code,
+                "Message": e.message,
+                "RequestId": e.request_id,
+                "Status": e.http_status
+            }
+        except Exception as e:
+            return {
+                "Exception": traceback.format_exc(),
+            }
 
     def list_table(self, req):
         res = self.client.list_table()
