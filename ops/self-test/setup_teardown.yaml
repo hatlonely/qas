@@ -1,0 +1,186 @@
+name: TestSetupTeardown
+step:
+  - ctx: shell
+    req:
+      command: qas --test ops/example-docs/setup_teardown --reporter json
+      decoder: json
+    res:
+      exitCode: 0
+      json: {
+        "name": "setup-teardown-example",
+        "isPass": true,
+        "#elapse": "len(val) > 0",
+        "caseSucc": 1,
+        "caseFail": 0,
+        "caseSkip": 0,
+        "stepSucc": 1,
+        "stepFail": 0,
+        "assertionSucc": 0,
+        "assertionFail": 0,
+        "cases": [
+          {
+            "name": "SetUpTearDownExample",
+            "#elapse": "len(val) > 0",
+            "isPass": true,
+            "isSkip": false,
+            "steps": [
+              {
+                "name": "step-0",
+                "isSkip": false,
+                "isPass": true,
+                "req": {
+                  "command": "echo case",
+                  "envs": {},
+                  "decoder": "text"
+                },
+                "res": {
+                  "exitCode": 0,
+                  "stdout": "case\n",
+                  "stderr": ""
+                },
+                "subSteps": [
+                  {
+                    "isPass": true,
+                    "isErr": false,
+                    "err": "",
+                    "req": {
+                      "command": "echo case",
+                      "envs": {},
+                      "decoder": "text"
+                    },
+                    "res": {
+                      "exitCode": 0,
+                      "stdout": "case\n",
+                      "stderr": ""
+                    },
+                    "assertions": [],
+                    "assertionSucc": 0,
+                    "assertionFail": 0,
+                    "#elapse": "len(val) > 0"
+                  }
+                ],
+                "assertionSucc": 0,
+                "assertionFail": 0,
+                "#elapse": "len(val) > 0"
+              }
+            ],
+            "beforeCaseSteps": [],
+            "afterCaseSteps": [],
+            "stepSucc": 1,
+            "stepFail": 0,
+            "assertionSucc": 0,
+            "assertionFail": 0
+          }
+        ],
+        "setups": [
+          {
+            "name": "SetUpCase",
+            "#elapse": "len(val) > 0",
+            "isPass": true,
+            "isSkip": false,
+            "steps": [
+              {
+                "name": "step-0",
+                "isSkip": false,
+                "isPass": true,
+                "req": {
+                  "command": "echo setup",
+                  "envs": {},
+                  "decoder": "text"
+                },
+                "res": {
+                  "exitCode": 0,
+                  "stdout": "setup\n",
+                  "stderr": ""
+                },
+                "subSteps": [
+                  {
+                    "isPass": true,
+                    "isErr": false,
+                    "err": "",
+                    "req": {
+                      "command": "echo setup",
+                      "envs": {},
+                      "decoder": "text"
+                    },
+                    "res": {
+                      "exitCode": 0,
+                      "stdout": "setup\n",
+                      "stderr": ""
+                    },
+                    "assertions": [],
+                    "assertionSucc": 0,
+                    "assertionFail": 0,
+                    "#elapse": "len(val) > 0"
+                  }
+                ],
+                "assertionSucc": 0,
+                "assertionFail": 0,
+                "#elapse": "len(val) > 0"
+              }
+            ],
+            "beforeCaseSteps": [],
+            "afterCaseSteps": [],
+            "stepSucc": 1,
+            "stepFail": 0,
+            "assertionSucc": 0,
+            "assertionFail": 0
+          }
+        ],
+        "teardowns": [
+          {
+            "name": "TearDownCase",
+            "#elapse": "len(val) > 0",
+            "isPass": true,
+            "isSkip": false,
+            "steps": [
+              {
+                "name": "step-0",
+                "isSkip": false,
+                "isPass": true,
+                "req": {
+                  "command": "echo teardown",
+                  "envs": {},
+                  "decoder": "text"
+                },
+                "res": {
+                  "exitCode": 0,
+                  "stdout": "teardown\n",
+                  "stderr": ""
+                },
+                "subSteps": [
+                  {
+                    "isPass": true,
+                    "isErr": false,
+                    "err": "",
+                    "req": {
+                      "command": "echo teardown",
+                      "envs": {},
+                      "decoder": "text"
+                    },
+                    "res": {
+                      "exitCode": 0,
+                      "stdout": "teardown\n",
+                      "stderr": ""
+                    },
+                    "assertions": [],
+                    "assertionSucc": 0,
+                    "assertionFail": 0,
+                    "#elapse": "len(val) > 0"
+                  }
+                ],
+                "assertionSucc": 0,
+                "assertionFail": 0,
+                "#elapse": "len(val) > 0"
+              }
+            ],
+            "beforeCaseSteps": [],
+            "afterCaseSteps": [],
+            "stepSucc": 1,
+            "stepFail": 0,
+            "assertionSucc": 0,
+            "assertionFail": 0
+          }
+        ],
+        "subTests": []
+      }

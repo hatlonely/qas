@@ -1,0 +1,78 @@
+name: TestPrePostStep
+step:
+  - ctx: shell
+    req:
+      command: qas --test ops/example-docs/pre_post_step --reporter json
+      decoder: json
+    res:
+      exitCode: 0
+      json: {
+        "name": "pre-post-step-example",
+        "isPass": true,
+        "#elapse": "len(val) > 0",
+        "caseSucc": 1,
+        "caseFail": 0,
+        "caseSkip": 0,
+        "stepSucc": 3,
+        "stepFail": 0,
+        "assertionSucc": 0,
+        "assertionFail": 0,
+        "cases": [
+          {
+            "name": "PrePostStepExample",
+            "#elapse": "len(val) > 0",
+            "isPass": true,
+            "isSkip": false,
+            "steps": [
+              {
+                "name": "step-0",
+                "isSkip": false,
+                "isPass": true,
+                "req": {
+                  "command": "echo case step",
+                  "envs": {},
+                  "decoder": "text"
+                },
+                "res": {
+                  "exitCode": 0,
+                  "stdout": "case step\n",
+                  "stderr": ""
+                },
+                "subSteps": [
+                  {
+                    "isPass": true,
+                    "isErr": false,
+                    "err": "",
+                    "req": {
+                      "command": "echo case step",
+                      "envs": {},
+                      "decoder": "text"
+                    },
+                    "res": {
+                      "exitCode": 0,
+                      "stdout": "case step\n",
+                      "stderr": ""
+                    },
+                    "assertions": [],
+                    "assertionSucc": 0,
+                    "assertionFail": 0,
+                    "#elapse": "len(val) > 0"
+                  }
+                ],
+                "assertionSucc": 0,
+                "assertionFail": 0,
+                "#elapse": "len(val) > 0"
+              }
+            ],
+            "beforeCaseSteps": [],
+            "afterCaseSteps": [],
+            "stepSucc": 3,
+            "stepFail": 0,
+            "assertionSucc": 0,
+            "assertionFail": 0
+          }
+        ],
+        "setups": [],
+        "teardowns": [],
+        "subTests": []
+      }
