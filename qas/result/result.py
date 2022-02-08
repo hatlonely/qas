@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-import json
+
+
 from dataclasses import dataclass
 from datetime import timedelta
 import durationpy
@@ -22,6 +23,16 @@ class ExpectResult:
             "expect": self.expect,
         }
 
+    @staticmethod
+    def from_json(obj):
+        res = ExpectResult(
+            is_pass=obj["isPass"],
+            message=obj["message"],
+            node=obj["node"],
+            val=obj["val"],
+            expect=obj["expect"],
+        )
+        return res
 
 @dataclass
 class SubStepResult:
@@ -47,6 +58,20 @@ class SubStepResult:
             "assertionFail": self.assertion_fail,
             "elapse": durationpy.to_str(self.elapse),
         }
+
+    @staticmethod
+    def from_json(obj):
+        res = SubStepResult()
+        res.is_pass = obj["isPass"]
+        res.is_err = obj["isErr"]
+        res.err = obj["err"]
+        res.req = obj["req"]
+        res.res = obj["res"]
+        res.assertions = [ExpectResult.from_json(i) for i in obj["assertions"]]
+        res.assertion_succ = obj["assertionSucc"]
+        res.assertion_fail = obj["assertionSucc"]
+        res.elapse = durationpy.from_str(obj["elapse"])
+        return res
 
     def __init__(self):
         self.is_pass = True
@@ -97,6 +122,20 @@ class StepResult:
             "elapse": durationpy.to_str(self.elapse),
         }
 
+    @staticmethod
+    def from_json(obj):
+        res = StepResult("")
+        res.name = obj["name"]
+        res.is_skip = obj["isSkip"]
+        res.is_pass = obj["isPass"]
+        res.req = obj["req"]
+        res.res = obj["res"]
+        res.sub_steps = [SubStepResult.from_json(i) for i in obj["subSteps"]]
+        res.assertion_succ = obj["assertionSucc"]
+        res.assertion_fail = obj["assertionSucc"]
+        res.elapse = durationpy.from_str(obj["elapse"])
+        return res
+
     def __init__(self, name, is_skip=False):
         self.name = name
         self.is_skip = is_skip
@@ -146,6 +185,22 @@ class CaseResult:
             "assertionSucc": self.assertion_succ,
             "assertionFail": self.assertion_fail,
         }
+
+    @staticmethod
+    def from_json(obj):
+        res = CaseResult("")
+        res.name = obj["name"]
+        res.is_skip = obj["isSkip"]
+        res.is_pass = obj["isPass"]
+        res.before_case_steps = [StepResult.from_json(i) for i in obj["beforeCaseSteps"]]
+        res.steps = [StepResult.from_json(i) for i in obj["steps"]]
+        res.after_case_steps = [StepResult.from_json(i) for i in obj["afterCaseSteps"]]
+        res.step_succ = obj["stepSucc"]
+        res.step_fail = obj["stepFail"]
+        res.assertion_succ = obj["assertionSucc"]
+        res.assertion_fail = obj["assertionSucc"]
+        res.elapse = durationpy.from_str(obj["elapse"])
+        return res
 
     def __init__(self, name, is_skip=False):
         self.name = name
@@ -251,6 +306,27 @@ class TestResult:
             "teardowns": self.teardowns,
             "subTests": self.sub_tests,
         }
+
+    @staticmethod
+    def from_json(obj):
+        res = TestResult("", "")
+        res.directory = obj["directory"]
+        res.name = obj["name"]
+        res.is_pass = obj["isPass"]
+        res.is_err = obj["isErr"]
+        res.err = obj["err"]
+        res.setups = [CaseResult.from_json(i) for i in obj["setups"]]
+        res.cases = [CaseResult.from_json(i) for i in obj["cases"]]
+        res.teardowns = [CaseResult.from_json(i) for i in obj["teardowns"]]
+        res.sub_tests = [TestResult.from_json(i) for i in obj["subTests"]]
+        res.case_succ = obj["caseSucc"]
+        res.case_fail = obj["caseFail"]
+        res.step_succ = obj["stepSucc"]
+        res.step_fail = obj["stepFail"]
+        res.assertion_succ = obj["assertionSucc"]
+        res.assertion_fail = obj["assertionSucc"]
+        res.elapse = durationpy.from_str(obj["elapse"])
+        return res
 
     def __init__(self, directory, name, err_message=None):
         self.directory = directory

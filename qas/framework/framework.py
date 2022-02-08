@@ -55,6 +55,7 @@ class Framework:
     skip_setup: bool
     skip_teardown: bool
     debug_mode: bool
+    json_result: str
 
     def __init__(
         self,
@@ -67,6 +68,7 @@ class Framework:
         debug=False,
         reporter="text",
         x=None,
+        json_result=None,
     ):
         self.test_directory = test_directory
         self.case_directory = case_directory
@@ -85,6 +87,11 @@ class Framework:
             if hasattr(self.x, "drivers"):
                 self.drivers = _drivers | self.x.drivers
         self.reporter = self.reporters[reporter]()
+        self.json_result = json_result
+
+    def format(self):
+        res = TestResult.from_json(json.load(open(self.json_result)))
+        self.reporter.format(res)
 
     def run(self):
         self.reporter.report_test_start(self.test_directory)
