@@ -1,0 +1,198 @@
+name: TestCustom
+step:
+  - ctx: shell
+    req:
+      command: qas --test ops/example-docs/custom -x ops/x --reporter json
+      decoder: json
+    res:
+      exitCode: 0
+      json: {
+        "name": "custom-example",
+        "isPass": true,
+        "#elapse": "len(val) > 0",
+        "caseSucc": 3,
+        "caseFail": 0,
+        "caseSkip": 0,
+        "stepSucc": 3,
+        "stepFail": 0,
+        "assertionSucc": 4,
+        "assertionFail": 0,
+        "cases": [
+          {
+            "name": "CustomEchoExample",
+            "#elapse": "len(val) > 0",
+            "isPass": true,
+            "isSkip": false,
+            "steps": [
+              {
+                "name": "step-0",
+                "isSkip": false,
+                "isPass": true,
+                "req": {
+                  "key1": "val1",
+                  "key2": "val2"
+                },
+                "res": {
+                  "key1": "val1",
+                  "key2": "val2"
+                },
+                "subSteps": [
+                  {
+                    "isPass": true,
+                    "isErr": false,
+                    "err": "",
+                    "req": {
+                      "key1": "val1",
+                      "key2": "val2"
+                    },
+                    "res": {
+                      "key1": "val1",
+                      "key2": "val2"
+                    },
+                    "assertions": [
+                      {
+                        "isPass": true,
+                        "message": "OK",
+                        "node": "key1",
+                        "val": "val1",
+                        "expect": "val1"
+                      },
+                      {
+                        "isPass": true,
+                        "message": "OK",
+                        "node": "key2",
+                        "val": "val2",
+                        "expect": "val2"
+                      }
+                    ],
+                    "assertionSucc": 2,
+                    "assertionFail": 0,
+                    "#elapse": "len(val) > 0"
+                  }
+                ],
+                "assertionSucc": 2,
+                "assertionFail": 0,
+                "#elapse": "len(val) > 0"
+              }
+            ],
+            "beforeCaseSteps": [],
+            "afterCaseSteps": [],
+            "stepSucc": 1,
+            "stepFail": 0,
+            "assertionSucc": 2,
+            "assertionFail": 0
+          },
+          {
+            "name": "CustomCalcExample",
+            "#elapse": "len(val) > 0",
+            "isPass": true,
+            "isSkip": false,
+            "steps": [
+              {
+                "name": "step-0",
+                "isSkip": false,
+                "isPass": true,
+                "req": {
+                  "num1": 123,
+                  "num2": 456
+                },
+                "res": {
+                  "val": 579
+                },
+                "subSteps": [
+                  {
+                    "isPass": true,
+                    "isErr": false,
+                    "err": "",
+                    "req": {
+                      "num1": 123,
+                      "num2": 456
+                    },
+                    "res": {
+                      "val": 579
+                    },
+                    "assertions": [
+                      {
+                        "isPass": true,
+                        "message": "OK",
+                        "node": "val",
+                        "val": 579,
+                        "expect": 579
+                      }
+                    ],
+                    "assertionSucc": 1,
+                    "assertionFail": 0,
+                    "#elapse": "len(val) > 0"
+                  }
+                ],
+                "assertionSucc": 1,
+                "assertionFail": 0,
+                "#elapse": "len(val) > 0"
+              }
+            ],
+            "beforeCaseSteps": [],
+            "afterCaseSteps": [],
+            "stepSucc": 1,
+            "stepFail": 0,
+            "assertionSucc": 1,
+            "assertionFail": 0
+          },
+          {
+            "name": "CustomHelloExample",
+            "#elapse": "len(val) > 0",
+            "isPass": true,
+            "isSkip": false,
+            "steps": [
+              {
+                "name": "step-0",
+                "isSkip": false,
+                "isPass": true,
+                "req": {
+                  "key": "hello"
+                },
+                "res": {
+                  "key": "hello"
+                },
+                "subSteps": [
+                  {
+                    "isPass": true,
+                    "isErr": false,
+                    "err": "",
+                    "req": {
+                      "key": "hello"
+                    },
+                    "res": {
+                      "key": "hello"
+                    },
+                    "assertions": [
+                      {
+                        "isPass": true,
+                        "message": "OK",
+                        "node": "key",
+                        "val": "hello",
+                        "expect": "hello"
+                      }
+                    ],
+                    "assertionSucc": 1,
+                    "assertionFail": 0,
+                    "#elapse": "len(val) > 0"
+                  }
+                ],
+                "assertionSucc": 1,
+                "assertionFail": 0,
+                "#elapse": "len(val) > 0"
+              }
+            ],
+            "beforeCaseSteps": [],
+            "afterCaseSteps": [],
+            "stepSucc": 1,
+            "stepFail": 0,
+            "assertionSucc": 1,
+            "assertionFail": 0
+          }
+        ],
+        "setups": [],
+        "teardowns": [],
+        "subTests": []
+      }
+
