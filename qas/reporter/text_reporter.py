@@ -14,8 +14,8 @@ class TextReporter(Reporter):
     def __init__(self):
         self.padding = ""
 
-    def report_test_start(self, info):
-        print("{}测试 {} 开始".format(self.padding, info["name"]))
+    def report_test_start(self, directory):
+        print("{}进入 {}".format(self.padding, directory))
         self.padding += "  "
 
     def report_test_end(self, res: TestResult):
@@ -26,21 +26,16 @@ class TextReporter(Reporter):
                 res.step_succ, res.step_skip, res.assertion_succ,
                 durationpy.to_str(res.elapse), Fore.RESET,
             ))
-        elif res.is_err:
-            print("  {}{}测试 {} 失败，成功 {}，失败 {}，跳过 {}，步骤成功 {}，失败 {}，断言成功 {}，失败 {}，耗时 {}{}".format(
-                self.padding, Fore.RED, res.name, res.case_succ, res.case_fail, res.case_skip,
-                res.step_succ, res.step_fail, res.assertion_succ, res.assertion_fail,
-                durationpy.to_str(res.elapse), Fore.RESET))
-            print('\n'.join([
-                "  {}  {}".format(self.padding, line)
-                for line in res.err.split("\n")
-            ]))
         else:
+            if res.is_err:
+                print('\n'.join([
+                    "  {}  {}".format(self.padding, line)
+                    for line in res.err.split("\n")
+                ]))
             print("{}{}测试 {} 失败，成功 {}，失败 {}，跳过 {}，步骤成功 {}，失败 {}，断言成功 {}，失败 {}，耗时 {}{}".format(
                 self.padding, Fore.RED, res.name, res.case_succ, res.case_fail, res.case_skip,
                 res.step_succ, res.step_fail, res.assertion_succ, res.assertion_fail,
                 durationpy.to_str(res.elapse), Fore.RESET))
-
 
     def report_case_end(self, res: CaseResult):
         print("\n".join([self.padding + i for i in TextReporter.format_case(res, "case")]))

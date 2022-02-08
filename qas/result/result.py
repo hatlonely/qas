@@ -216,6 +216,7 @@ class CaseResult:
 
 @dataclass
 class TestResult:
+    directory: str
     name: str
     is_pass: bool
     is_err: bool
@@ -232,6 +233,7 @@ class TestResult:
 
     def to_json(self):
         return {
+            "directory": self.directory,
             "name": self.name,
             "isPass": self.is_pass,
             "isErr": self.is_err,
@@ -250,7 +252,8 @@ class TestResult:
             "subTests": self.sub_tests,
         }
 
-    def __init__(self, name, err_message=None):
+    def __init__(self, directory, name, err_message=None):
+        self.directory = directory
         self.name = name
         self.is_pass = True
         self.is_err = False

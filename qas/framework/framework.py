@@ -87,11 +87,12 @@ class Framework:
         self.reporter = self.reporters[reporter]()
 
     def run(self):
+        self.reporter.report_test_start(self.test_directory)
         try:
             res = self.run_test(self.test_directory, {}, {}, {}, {}, [], [], self.drivers, self.x)
         except Exception as e:
-            res = TestResult(self.test_directory, "Exception {}".format(traceback.format_exc()))
-            self.reporter.report_test_end(res)
+            res = TestResult(self.test_directory, self.test_directory, "Exception {}".format(traceback.format_exc()))
+        self.reporter.report_test_end(res)
         self.reporter.report_final_result(res)
         return res.is_pass
 
@@ -143,8 +144,7 @@ class Framework:
         self.debug("ctx: {}".format(ctx))
         self.debug("req: {}".format(dft_info))
 
-        test_result = TestResult(info["name"])
-        self.reporter.report_test_start(info)
+        test_result = TestResult(test_directory, info["name"])
 
         # 执行 setup
         if not self.skip_setup:
@@ -155,7 +155,6 @@ class Framework:
                 self.reporter.report_setup_end(result)
                 if not result.is_pass:
                     test_result.case_fail += 1
-                    self.reporter.report_test_end(test_result)
                     return test_result
 
         # 执行 case
@@ -177,13 +176,13 @@ class Framework:
         ]:
             if self.case_directory and not re.search(self.case_directory, directory):
                 continue
+            self.reporter.report_test_start(directory)
             try:
                 sub_test_result = self.run_test(directory, var_info, ctx, dft_info, common_step_info, before_case_info, after_case_info, parent_drivers, parent_x)
-                test_result.add_sub_test_result(sub_test_result)
             except Exception as e:
-                sub_test_result = TestResult(directory, "Exception {}".format(traceback.format_exc()))
-                test_result.add_sub_test_result(sub_test_result)
-                self.reporter.report_test_end(sub_test_result)
+                sub_test_result = TestResult(directory, directory, "Exception {}".format(traceback.format_exc()))
+            test_result.add_sub_test_result(sub_test_result)
+            self.reporter.report_test_end(sub_test_result)
 
         # 执行 teardown
         if not self.skip_teardown:
@@ -194,11 +193,9 @@ class Framework:
                 self.reporter.report_teardown_end(result)
                 if not result.is_pass:
                     test_result.case_fail += 1
-                    self.reporter.report_test_end(test_result)
                     return test_result
 
         test_result.elapse = datetime.now() - now
-        self.reporter.report_test_end(test_result)
         return test_result
 
     def need_skip(self, case, var):
