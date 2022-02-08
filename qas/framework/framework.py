@@ -59,7 +59,7 @@ class Framework:
 
     def __init__(
         self,
-        test_directory,
+        test_directory=None,
         case_directory=None,
         case_name=None,
         case_regex=None,
