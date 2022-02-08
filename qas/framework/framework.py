@@ -172,8 +172,11 @@ class Framework:
         ]:
             if self.case_directory and not re.search(self.case_directory, directory):
                 continue
-            sub_test_result = self.run_test(directory, var_info, ctx, dft_info, common_step_info, before_case_info, after_case_info, parent_drivers, parent_x)
-            test_result.add_sub_test_result(sub_test_result)
+            try:
+                sub_test_result = self.run_test(directory, var_info, ctx, dft_info, common_step_info, before_case_info, after_case_info, parent_drivers, parent_x)
+                test_result.add_sub_test_result(sub_test_result)
+            except Exception as e:
+                test_result.add_sub_test_error(directory, "Exception {}".format(traceback.format_exc()))
 
         # 执行 teardown
         if not self.skip_teardown:
@@ -381,8 +384,8 @@ class Framework:
                 sub_step_result.add_expect_result(result)
 
                 # ensure req can json serialize
-                step.req = json.loads(json.dumps(step.req, default=lambda y: y.__name__))
-                sub_step_result.req = json.loads(json.dumps(sub_step_result.req, default=lambda y: y.__name__))
+                step.req = json.loads(json.dumps(step.req, default=lambda y: str(y)))
+                sub_step_result.req = json.loads(json.dumps(sub_step_result.req, default=lambda y: str(y)))
             except RetryError as e:
                 sub_step_result.set_error("RetryError [{}]".format(retry))
             except UntilError as e:

@@ -217,11 +217,13 @@ class CaseResult:
 @dataclass
 class TestResult:
     name: str
+    is_pass: bool
+    is_err: bool
+    err: str
     setups: list[CaseResult]
     cases: list[CaseResult]
     teardowns: list[CaseResult]
     sub_tests: list
-    is_pass: bool
     case_succ: int
     case_fail: int
     case_skip: int
@@ -248,11 +250,13 @@ class TestResult:
 
     def __init__(self, name):
         self.name = name
+        self.is_pass = True
+        self.is_err = False
+        self.err = ""
         self.setups = list[CaseResult]()
         self.cases = list[CaseResult]()
         self.teardowns = list[CaseResult]()
         self.sub_tests = list[TestResult]()
-        self.is_pass = True
         self.elapse = timedelta(seconds=0)
         self.case_succ = 0
         self.case_fail = 0
@@ -302,3 +306,11 @@ class TestResult:
         self.assertion_fail += sub_test.assertion_fail
         if not sub_test.is_pass:
             self.is_pass = False
+
+    def add_sub_test_error(self, directory, message):
+        res = TestResult(directory)
+        res.is_pass = False
+        res.is_err = True
+        res.err = message
+        res.case_fail += 1
+        self.add_sub_test_result(res)
