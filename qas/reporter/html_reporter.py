@@ -162,7 +162,12 @@ _test_tpl = """
 """
 
 _case_tpl = """
-{% if case.is_pass %}
+{% if case.is_skip %}
+<a class="card-title btn d-flex justify-content-between align-items-center">
+    {{ case.name }}
+    <span class="badge bg-warning rounded-pill">skip</span>
+</a>
+{% elif case.is_pass %}
 <a class="card-title btn d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#{{ name }}" role="button" aria-expanded="false" aria-controls="{{ name }}">
     {{ case.name }}
     <span>{% print(format_timedelta(case.elapse)) %}</span>
@@ -233,7 +238,12 @@ _case_tpl = """
 """
 
 _step_tpl = """
-{% if step.is_pass %}
+{% if step.is_skip %}
+<a class="card-title btn d-flex justify-content-between align-items-center">
+    {{ step.ctx }}
+    <span class="badge bg-warning rounded-pill">skip</span>
+</a>
+{% elif step.is_pass %}
 <a class="card-title btn d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#{{ name }}" role="button" aria-expanded="false" aria-controls="{{ name }}">
     {{ step.ctx }}.{{ step.name }}
     <span>{% print(format_timedelta(step.elapse)) %}</span>
