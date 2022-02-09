@@ -34,9 +34,9 @@ _test_tpl = """
 <div class="col-md-12">
     <div class="card mt-3">
         {% if res.is_pass %}
-        <div class="card-header text-white bg-success">{{ res.name }}测试通过</div>
+        <div class="card-header text-white bg-success"><h5>{{ res.name }} 测试通过</h5></div>
         {% else %}
-        <div class="card-header text-white bg-danger">{{ res.name }}测试失败</div>
+        <div class="card-header text-white bg-danger"><h5>{{ res.name }} 测试失败<h5></div>
         {% endif %}
         
         <div class="card-body">
@@ -106,6 +106,9 @@ _test_tpl = """
             Case
             <span>
                 <span class="badge bg-success rounded-pill">{% print(res.curr_case_succ) %}</span>
+                {% if res.curr_case_skip %}
+                <span class="badge bg-warning rounded-pill">{% print(res.curr_case_skip) %}</span>
+                {% endif %}
                 {% if res.curr_case_fail %}
                 <span class="badge bg-danger rounded-pill">{% print(res.curr_case_fail) %}</span>
                 {% endif %}
