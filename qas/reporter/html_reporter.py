@@ -47,6 +47,7 @@ _test_tpl = """
                         <th>测试跳过</th>
                         <th>测试失败</th>
                         <th>步骤通过</th>
+                        <th>步骤跳过</th>
                         <th>步骤失败</th>
                         <th>断言成功</th>
                         <th>断言失败</th>
@@ -55,13 +56,42 @@ _test_tpl = """
                 </thead>
                 <tbody>
                     <tr>
-                        <td>{{ res.case_succ }}</td>
-                        <td>{{ res.case_skip }}</td>
-                        <td>{{ res.case_fail }}</td>
-                        <td>{{ res.step_succ }}</td>
-                        <td>{{ res.step_fail }}</td>
-                        <td>{{ res.assertion_succ }}</td>
-                        <td>{{ res.assertion_fail }}</td>
+                        <td><span class="badge bg-success rounded-pill">{{ res.case_succ }}</span></td>
+
+                        {% if res.case_skip %}
+                        <td><span class="badge bg-warning rounded-pill">{{ res.case_skip }}</span></td>
+                        {% else %}
+                        <td><span class="badge bg-secondary rounded-pill">{{ res.case_skip }}</span></td>
+                        {% endif %}
+
+                        {% if res.case_fail %}
+                        <td><span class="badge bg-danger rounded-pill">{{ res.case_fail }}</span></td>
+                        {% else %}
+                        <td><span class="badge bg-secondary rounded-pill">{{ res.case_fail }}</span></td>
+                        {% endif %}
+
+                        <td><span class="badge bg-success rounded-pill">{{ res.step_succ }}</span></td>
+
+                        {% if res.step_skip %}
+                        <td><span class="badge bg-warning rounded-pill">{{ res.step_skip }}</span></td>
+                        {% else %}
+                        <td><span class="badge bg-secondary rounded-pill">{{ res.step_skip }}</span></td>
+                        {% endif %}
+
+                        {% if res.step_fail %}
+                        <td><span class="badge bg-danger rounded-pill">{{ res.step_fail }}</span></td>
+                        {% else %}
+                        <td><span class="badge bg-secondary rounded-pill">{{ res.step_fail }}</span></td>
+                        {% endif %}
+
+                        <td><span class="badge bg-success rounded-pill">{{ res.assertion_succ }}</span></td>
+
+                        {% if res.assertion_fail %}
+                        <td><span class="badge bg-danger rounded-pill">{{ res.assertion_fail }}</span></td>
+                        {% else %}
+                        <td><span class="badge bg-secondary rounded-pill">{{ res.assertion_fail }}</span></td>
+                        {% endif %}
+
                         <td>{{ format_timedelta(res.elapse) }}</td>
                     </tr>
                 </tbody>
