@@ -248,9 +248,11 @@ _step_tpl = """
 
 <div class="collapse card" id="{{ name }}">
     <div class="card">
+        {% if not brief_mode %}
         <div class="card-header">
             SubStep
         </div>
+        {% endif %}
         <ul class="list-group list-group-flush">
             {% for sub_step in step.sub_steps %}
             <li class="list-group-item">
@@ -263,6 +265,7 @@ _step_tpl = """
 """
 
 _sub_step_tpl = """
+{% if not brief_mode %}
 {% if sub_step.is_pass %}
 <a class="card-title btn d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#{{ name }}" role="button" aria-expanded="false" aria-controls="{{ name }}">
     sub-step {{ index }}
@@ -274,8 +277,13 @@ _sub_step_tpl = """
     <span>{% print(durationpy.to_str(sub_step.elapse)) %}</span>
 </a>
 {% endif %}
+{% endif %}
 
+{% if not brief_mode %}
 <div class="collapse card" id="{{ name }}">
+{% else %}
+<div class="card" id="{{ name }}">
+{% endif %}
     {% if sub_step.is_pass %}
     <div class="card border-success">
     {% else %}
@@ -318,6 +326,7 @@ class HtmlReporter(Reporter):
         env.globals.update(render_sub_step=self.render_sub_step)
         env.globals.update(format_sub_step_res=HtmlReporter.format_sub_step_res)
         env.globals.update(len=len)
+        env.globals.update(brief_mode=True)
         self.report_tpl = env.from_string(_report_tpl)
         self.test_tpl = env.from_string(_test_tpl)
         self.case_tpl = env.from_string(_case_tpl)
