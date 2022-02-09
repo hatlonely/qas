@@ -26,6 +26,7 @@ step:
             "steps": [
               {
                 "name": "echo",
+                "ctx": "shell",
                 "isSkip": false,
                 "isPass": true,
                 "req": {

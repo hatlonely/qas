@@ -26,6 +26,7 @@ step:
             "steps": [
               {
                 "name": "echo",
+                "ctx": "shell",
                 "isSkip": false,
                 "isPass": true,
                 "req": {
@@ -67,6 +68,7 @@ step:
             "beforeCaseSteps": [
               {
                 "name": "echo",
+                "ctx": "shell",
                 "isSkip": false,
                 "isPass": true,
                 "req": {
@@ -108,6 +110,7 @@ step:
             "afterCaseSteps": [
               {
                 "name": "echo",
+                "ctx": "shell",
                 "isSkip": false,
                 "isPass": true,
                 "req": {
