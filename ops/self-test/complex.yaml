@@ -9,7 +9,7 @@ step:
       json: {
         "name": "example-complex",
         "isPass": true,
-        "#elapse": "len(val) > 0",
+        "#elapse": "val > 0",
         "caseSucc": 3,
         "caseFail": 0,
         "caseSkip": 0,
@@ -20,7 +20,7 @@ step:
         "cases": [
           {
             "name": "ops/example-complex/case1.yaml/case1",
-            "#elapse": "len(val) > 0",
+            "#elapse": "val > 0",
             "isPass": true,
             "isSkip": false,
             "steps": [
@@ -75,12 +75,12 @@ step:
                     ],
                     "assertionSucc": 2,
                     "assertionFail": 0,
-                    "#elapse": "len(val) > 0"
+                    "#elapse": "val > 0"
                   }
                 ],
                 "assertionSucc": 2,
                 "assertionFail": 0,
-                "#elapse": "len(val) > 0"
+                "#elapse": "val > 0"
               }
             ],
             "beforeCaseSteps": [
@@ -120,12 +120,12 @@ step:
                     "assertions": [],
                     "assertionSucc": 0,
                     "assertionFail": 0,
-                    "#elapse": "len(val) > 0"
+                    "#elapse": "val > 0"
                   }
                 ],
                 "assertionSucc": 0,
                 "assertionFail": 0,
-                "#elapse": "len(val) > 0"
+                "#elapse": "val > 0"
               }
             ],
             "afterCaseSteps": [
@@ -165,12 +165,12 @@ step:
                     "assertions": [],
                     "assertionSucc": 0,
                     "assertionFail": 0,
-                    "#elapse": "len(val) > 0"
+                    "#elapse": "val > 0"
                   }
                 ],
                 "assertionSucc": 0,
                 "assertionFail": 0,
-                "#elapse": "len(val) > 0"
+                "#elapse": "val > 0"
               }
             ],
             "stepSucc": 3,
@@ -182,7 +182,7 @@ step:
         "setups": [
           {
             "name": "ops/example-complex/setup.yaml/setup1",
-            "#elapse": "len(val) > 0",
+            "#elapse": "val > 0",
             "isPass": true,
             "isSkip": false,
             "steps": [
@@ -222,12 +222,12 @@ step:
                     "assertions": [],
                     "assertionSucc": 0,
                     "assertionFail": 0,
-                    "#elapse": "len(val) > 0"
+                    "#elapse": "val > 0"
                   }
                 ],
                 "assertionSucc": 0,
                 "assertionFail": 0,
-                "#elapse": "len(val) > 0"
+                "#elapse": "val > 0"
               },
               {
                 "name": "step-1",
@@ -265,12 +265,12 @@ step:
                     "assertions": [],
                     "assertionSucc": 0,
                     "assertionFail": 0,
-                    "#elapse": "len(val) > 0"
+                    "#elapse": "val > 0"
                   }
                 ],
                 "assertionSucc": 0,
                 "assertionFail": 0,
-                "#elapse": "len(val) > 0"
+                "#elapse": "val > 0"
               }
             ],
             "beforeCaseSteps": [],
@@ -282,7 +282,7 @@ step:
           },
           {
             "name": "ops/example-complex/setup.yaml/setup2",
-            "#elapse": "len(val) > 0",
+            "#elapse": "val > 0",
             "isPass": true,
             "isSkip": false,
             "steps": [
@@ -322,12 +322,12 @@ step:
                     "assertions": [],
                     "assertionSucc": 0,
                     "assertionFail": 0,
-                    "#elapse": "len(val) > 0"
+                    "#elapse": "val > 0"
                   }
                 ],
                 "assertionSucc": 0,
                 "assertionFail": 0,
-                "#elapse": "len(val) > 0"
+                "#elapse": "val > 0"
               },
               {
                 "name": "step-1",
@@ -365,12 +365,12 @@ step:
                     "assertions": [],
                     "assertionSucc": 0,
                     "assertionFail": 0,
-                    "#elapse": "len(val) > 0"
+                    "#elapse": "val > 0"
                   }
                 ],
                 "assertionSucc": 0,
                 "assertionFail": 0,
-                "#elapse": "len(val) > 0"
+                "#elapse": "val > 0"
               }
             ],
             "beforeCaseSteps": [],
@@ -384,7 +384,7 @@ step:
         "teardowns": [
           {
             "name": "ops/example-complex/teardown.yaml/teardown1",
-            "#elapse": "len(val) > 0",
+            "#elapse": "val > 0",
             "isPass": true,
             "isSkip": false,
             "steps": [
@@ -424,12 +424,12 @@ step:
                     "assertions": [],
                     "assertionSucc": 0,
                     "assertionFail": 0,
-                    "#elapse": "len(val) > 0"
+                    "#elapse": "val > 0"
                   }
                 ],
                 "assertionSucc": 0,
                 "assertionFail": 0,
-                "#elapse": "len(val) > 0"
+                "#elapse": "val > 0"
               },
               {
                 "name": "step-1",
@@ -467,12 +467,12 @@ step:
                     "assertions": [],
                     "assertionSucc": 0,
                     "assertionFail": 0,
-                    "#elapse": "len(val) > 0"
+                    "#elapse": "val > 0"
                   }
                 ],
                 "assertionSucc": 0,
                 "assertionFail": 0,
-                "#elapse": "len(val) > 0"
+                "#elapse": "val > 0"
               }
             ],
             "beforeCaseSteps": [],
@@ -484,7 +484,7 @@ step:
           },
           {
             "name": "ops/example-complex/teardown.yaml/teardown2",
-            "#elapse": "len(val) > 0",
+            "#elapse": "val > 0",
             "isPass": true,
             "isSkip": false,
             "steps": [
@@ -524,12 +524,12 @@ step:
                     "assertions": [],
                     "assertionSucc": 0,
                     "assertionFail": 0,
-                    "#elapse": "len(val) > 0"
+                    "#elapse": "val > 0"
                   }
                 ],
                 "assertionSucc": 0,
                 "assertionFail": 0,
-                "#elapse": "len(val) > 0"
+                "#elapse": "val > 0"
               },
               {
                 "name": "step-1",
@@ -567,12 +567,12 @@ step:
                     "assertions": [],
                     "assertionSucc": 0,
                     "assertionFail": 0,
-                    "#elapse": "len(val) > 0"
+                    "#elapse": "val > 0"
                   }
                 ],
                 "assertionSucc": 0,
                 "assertionFail": 0,
-                "#elapse": "len(val) > 0"
+                "#elapse": "val > 0"
               }
             ],
             "beforeCaseSteps": [],
@@ -587,7 +587,7 @@ step:
           {
             "name": "subtest2",
             "isPass": true,
-            "#elapse": "len(val) > 0",
+            "#elapse": "val > 0",
             "caseSucc": 1,
             "caseFail": 0,
             "caseSkip": 0,
@@ -598,7 +598,7 @@ step:
             "cases": [
               {
                 "name": "ops/example-complex/subtest2/case3.yaml/case3",
-                "#elapse": "len(val) > 0",
+                "#elapse": "val > 0",
                 "isPass": true,
                 "isSkip": false,
                 "steps": [
@@ -653,12 +653,12 @@ step:
                         ],
                         "assertionSucc": 2,
                         "assertionFail": 0,
-                        "#elapse": "len(val) > 0"
+                        "#elapse": "val > 0"
                       }
                     ],
                     "assertionSucc": 2,
                     "assertionFail": 0,
-                    "#elapse": "len(val) > 0"
+                    "#elapse": "val > 0"
                   }
                 ],
                 "beforeCaseSteps": [
@@ -698,12 +698,12 @@ step:
                         "assertions": [],
                         "assertionSucc": 0,
                         "assertionFail": 0,
-                        "#elapse": "len(val) > 0"
+                        "#elapse": "val > 0"
                       }
                     ],
                     "assertionSucc": 0,
                     "assertionFail": 0,
-                    "#elapse": "len(val) > 0"
+                    "#elapse": "val > 0"
                   }
                 ],
                 "afterCaseSteps": [
@@ -743,12 +743,12 @@ step:
                         "assertions": [],
                         "assertionSucc": 0,
                         "assertionFail": 0,
-                        "#elapse": "len(val) > 0"
+                        "#elapse": "val > 0"
                       }
                     ],
                     "assertionSucc": 0,
                     "assertionFail": 0,
-                    "#elapse": "len(val) > 0"
+                    "#elapse": "val > 0"
                   }
                 ],
                 "stepSucc": 3,
@@ -764,7 +764,7 @@ step:
           {
             "name": "subtest1",
             "isPass": true,
-            "#elapse": "len(val) > 0",
+            "#elapse": "val > 0",
             "caseSucc": 1,
             "caseFail": 0,
             "caseSkip": 0,
@@ -775,7 +775,7 @@ step:
             "cases": [
               {
                 "name": "ops/example-complex/subtest1/case2.yaml/case2",
-                "#elapse": "len(val) > 0",
+                "#elapse": "val > 0",
                 "isPass": true,
                 "isSkip": false,
                 "steps": [
@@ -832,12 +832,12 @@ step:
                         ],
                         "assertionSucc": 2,
                         "assertionFail": 0,
-                        "#elapse": "len(val) > 0"
+                        "#elapse": "val > 0"
                       }
                     ],
                     "assertionSucc": 2,
                     "assertionFail": 0,
-                    "#elapse": "len(val) > 0"
+                    "#elapse": "val > 0"
                   }
                 ],
                 "beforeCaseSteps": [
@@ -879,12 +879,12 @@ step:
                         "assertions": [],
                         "assertionSucc": 0,
                         "assertionFail": 0,
-                        "#elapse": "len(val) > 0"
+                        "#elapse": "val > 0"
                       }
                     ],
                     "assertionSucc": 0,
                     "assertionFail": 0,
-                    "#elapse": "len(val) > 0"
+                    "#elapse": "val > 0"
                   }
                 ],
                 "afterCaseSteps": [
@@ -926,12 +926,12 @@ step:
                         "assertions": [],
                         "assertionSucc": 0,
                         "assertionFail": 0,
-                        "#elapse": "len(val) > 0"
+                        "#elapse": "val > 0"
                       }
                     ],
                     "assertionSucc": 0,
                     "assertionFail": 0,
-                    "#elapse": "len(val) > 0"
+                    "#elapse": "val > 0"
                   }
                 ],
                 "stepSucc": 3,

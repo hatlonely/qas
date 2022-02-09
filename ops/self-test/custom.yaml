@@ -9,7 +9,7 @@ step:
       json: {
         "name": "custom-example",
         "isPass": true,
-        "#elapse": "len(val) > 0",
+        "#elapse": "val > 0",
         "caseSucc": 3,
         "caseFail": 0,
         "caseSkip": 0,
@@ -20,7 +20,7 @@ step:
         "cases": [
           {
             "name": "CustomEchoExample",
-            "#elapse": "len(val) > 0",
+            "#elapse": "val > 0",
             "isPass": true,
             "isSkip": false,
             "steps": [
@@ -67,12 +67,12 @@ step:
                     ],
                     "assertionSucc": 2,
                     "assertionFail": 0,
-                    "#elapse": "len(val) > 0"
+                    "#elapse": "val > 0"
                   }
                 ],
                 "assertionSucc": 2,
                 "assertionFail": 0,
-                "#elapse": "len(val) > 0"
+                "#elapse": "val > 0"
               }
             ],
             "beforeCaseSteps": [],
@@ -84,7 +84,7 @@ step:
           },
           {
             "name": "CustomCalcExample",
-            "#elapse": "len(val) > 0",
+            "#elapse": "val > 0",
             "isPass": true,
             "isSkip": false,
             "steps": [
@@ -122,12 +122,12 @@ step:
                     ],
                     "assertionSucc": 1,
                     "assertionFail": 0,
-                    "#elapse": "len(val) > 0"
+                    "#elapse": "val > 0"
                   }
                 ],
                 "assertionSucc": 1,
                 "assertionFail": 0,
-                "#elapse": "len(val) > 0"
+                "#elapse": "val > 0"
               }
             ],
             "beforeCaseSteps": [],
@@ -139,7 +139,7 @@ step:
           },
           {
             "name": "CustomHelloExample",
-            "#elapse": "len(val) > 0",
+            "#elapse": "val > 0",
             "isPass": true,
             "isSkip": false,
             "steps": [
@@ -175,12 +175,12 @@ step:
                     ],
                     "assertionSucc": 1,
                     "assertionFail": 0,
-                    "#elapse": "len(val) > 0"
+                    "#elapse": "val > 0"
                   }
                 ],
                 "assertionSucc": 1,
                 "assertionFail": 0,
-                "#elapse": "len(val) > 0"
+                "#elapse": "val > 0"
               }
             ],
             "beforeCaseSteps": [],

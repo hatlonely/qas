@@ -9,7 +9,7 @@ step:
       json: {
         "name": "var-example",
         "isPass": true,
-        "#elapse": "len(val) > 0",
+        "#elapse": "val > 0",
         "caseSucc": 2,
         "caseFail": 0,
         "caseSkip": 0,
@@ -20,7 +20,7 @@ step:
         "cases": [
           {
             "name": "VarExample",
-            "#elapse": "len(val) > 0",
+            "#elapse": "val > 0",
             "isPass": true,
             "isSkip": false,
             "steps": [
@@ -81,12 +81,12 @@ step:
                     ],
                     "assertionSucc": 2,
                     "assertionFail": 0,
-                    "#elapse": "len(val) > 0"
+                    "#elapse": "val > 0"
                   }
                 ],
                 "assertionSucc": 2,
                 "assertionFail": 0,
-                "#elapse": "len(val) > 0"
+                "#elapse": "val > 0"
               }
             ],
             "beforeCaseSteps": [],
@@ -98,7 +98,7 @@ step:
           },
           {
             "name": "CaseExample",
-            "#elapse": "len(val) > 0",
+            "#elapse": "val > 0",
             "isPass": true,
             "isSkip": false,
             "steps": [
@@ -142,12 +142,12 @@ step:
                     ],
                     "assertionSucc": 1,
                     "assertionFail": 0,
-                    "#elapse": "len(val) > 0"
+                    "#elapse": "val > 0"
                   }
                 ],
                 "assertionSucc": 1,
                 "assertionFail": 0,
-                "#elapse": "len(val) > 0"
+                "#elapse": "val > 0"
               },
               {
                 "name": "step-1",
@@ -193,12 +193,12 @@ step:
                     ],
                     "assertionSucc": 1,
                     "assertionFail": 0,
-                    "#elapse": "len(val) > 0"
+                    "#elapse": "val > 0"
                   }
                 ],
                 "assertionSucc": 1,
                 "assertionFail": 0,
-                "#elapse": "len(val) > 0"
+                "#elapse": "val > 0"
               }
             ],
             "beforeCaseSteps": [],

@@ -9,7 +9,7 @@ step:
       json: {
         "name": "pre-post-step-example",
         "isPass": true,
-        "#elapse": "len(val) > 0",
+        "#elapse": "val > 0",
         "caseSucc": 1,
         "caseFail": 0,
         "caseSkip": 0,
@@ -20,7 +20,7 @@ step:
         "cases": [
           {
             "name": "PrePostStepExample",
-            "#elapse": "len(val) > 0",
+            "#elapse": "val > 0",
             "isPass": true,
             "isSkip": false,
             "steps": [
@@ -56,12 +56,12 @@ step:
                     "assertions": [],
                     "assertionSucc": 0,
                     "assertionFail": 0,
-                    "#elapse": "len(val) > 0"
+                    "#elapse": "val > 0"
                   }
                 ],
                 "assertionSucc": 0,
                 "assertionFail": 0,
-                "#elapse": "len(val) > 0"
+                "#elapse": "val > 0"
               }
             ],
             "beforeCaseSteps": [],

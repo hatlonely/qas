@@ -9,7 +9,7 @@ step:
       json: {
         "name": "until-example",
         "isPass": true,
-        "#elapse": "len(val) > 0",
+        "#elapse": "val > 0",
         "caseSucc": 1,
         "caseFail": 0,
         "caseSkip": 0,
@@ -20,7 +20,7 @@ step:
         "cases": [
           {
             "name": "RetryExample",
-            "#elapse": "len(val) > 0",
+            "#elapse": "val > 0",
             "isPass": true,
             "isSkip": false,
             "steps": [
@@ -71,12 +71,12 @@ step:
                     ],
                     "assertionSucc": 2,
                     "assertionFail": 0,
-                    "#elapse": "len(val) > 0"
+                    "#elapse": "val > 0"
                   }
                 ],
                 "assertionSucc": 2,
                 "assertionFail": 0,
-                "#elapse": "len(val) > 0"
+                "#elapse": "val > 0"
               }
             ],
             "beforeCaseSteps": [],

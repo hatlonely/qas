@@ -9,7 +9,7 @@ step:
       json: {
         "name": "loop-example",
         "isPass": true,
-        "#elapse": "len(val) > 0",
+        "#elapse": "val > 0",
         "caseSucc": 1,
         "caseFail": 0,
         "caseSkip": 0,
@@ -20,7 +20,7 @@ step:
         "cases": [
           {
             "name": "LoopExample",
-            "#elapse": "len(val) > 0",
+            "#elapse": "val > 0",
             "isPass": true,
             "isSkip": false,
             "steps": [
@@ -77,7 +77,7 @@ step:
                     ],
                     "assertionSucc": 2,
                     "assertionFail": 0,
-                    "#elapse": "len(val) > 0"
+                    "#elapse": "val > 0"
                   },
                   {
                     "isPass": true,
@@ -114,7 +114,7 @@ step:
                     ],
                     "assertionSucc": 2,
                     "assertionFail": 0,
-                    "#elapse": "len(val) > 0"
+                    "#elapse": "val > 0"
                   },
                   {
                     "isPass": true,
@@ -151,7 +151,7 @@ step:
                     ],
                     "assertionSucc": 2,
                     "assertionFail": 0,
-                    "#elapse": "len(val) > 0"
+                    "#elapse": "val > 0"
                   },
                   {
                     "isPass": true,
@@ -188,12 +188,12 @@ step:
                     ],
                     "assertionSucc": 2,
                     "assertionFail": 0,
-                    "#elapse": "len(val) > 0"
+                    "#elapse": "val > 0"
                   }
                 ],
                 "assertionSucc": 8,
                 "assertionFail": 0,
-                "#elapse": "len(val) > 0"
+                "#elapse": "val > 0"
               }
             ],
             "beforeCaseSteps": [],

@@ -9,7 +9,7 @@ step:
       json: {
         "name": "cond-example",
         "isPass": true,
-        "#elapse": "len(val) > 0",
+        "#elapse": "val > 0",
         "caseSucc": 1,
         "caseFail": 0,
         "caseSkip": 1,
@@ -20,7 +20,7 @@ step:
         "cases": [
           {
             "name": "CondPassExample",
-            "#elapse": "len(val) > 0",
+            "#elapse": "val > 0",
             "isPass": true,
             "isSkip": false,
             "steps": [
@@ -64,12 +64,12 @@ step:
                     ],
                     "assertionSucc": 1,
                     "assertionFail": 0,
-                    "#elapse": "len(val) > 0"
+                    "#elapse": "val > 0"
                   }
                 ],
                 "assertionSucc": 1,
                 "assertionFail": 0,
-                "#elapse": "len(val) > 0"
+                "#elapse": "val > 0"
               },
               {
                 "name": "step-1",
@@ -80,7 +80,7 @@ step:
                 "subSteps": [],
                 "assertionSucc": 0,
                 "assertionFail": 0,
-                "#elapse": "len(val) > 0"
+                "elapse": 0
               },
               {
                 "name": "step-2",
@@ -114,12 +114,12 @@ step:
                     "assertions": [],
                     "assertionSucc": 0,
                     "assertionFail": 0,
-                    "#elapse": "len(val) > 0"
+                    "#elapse": "val > 0"
                   }
                 ],
                 "assertionSucc": 0,
                 "assertionFail": 0,
-                "#elapse": "len(val) > 0"
+                "#elapse": "val > 0"
               }
             ],
             "beforeCaseSteps": [],
@@ -131,7 +131,7 @@ step:
           },
           {
             "name": "CondDenyExample",
-            "#elapse": "len(val) > 0",
+            "elapse": 0,
             "isPass": true,
             "isSkip": true,
             "steps": [],
