@@ -3,7 +3,6 @@
 
 from dataclasses import dataclass
 from datetime import timedelta
-import durationpy
 
 
 @dataclass
@@ -56,7 +55,7 @@ class SubStepResult:
             "assertions":  self.assertions,
             "assertionSucc": self.assertion_succ,
             "assertionFail": self.assertion_fail,
-            "elapse": durationpy.to_str(self.elapse),
+            "elapse": int(self.elapse.microseconds),
         }
 
     @staticmethod
@@ -70,7 +69,7 @@ class SubStepResult:
         res.assertions = [ExpectResult.from_json(i) for i in obj["assertions"]]
         res.assertion_succ = obj["assertionSucc"]
         res.assertion_fail = obj["assertionSucc"]
-        res.elapse = durationpy.from_str(obj["elapse"])
+        res.elapse = timedelta(microseconds=obj["elapse"])
         return res
 
     def __init__(self):
@@ -119,7 +118,7 @@ class StepResult:
             "subSteps": self.sub_steps,
             "assertionSucc": self.assertion_succ,
             "assertionFail": self.assertion_fail,
-            "elapse": durationpy.to_str(self.elapse),
+            "elapse": int(self.elapse.microseconds),
         }
 
     @staticmethod
@@ -133,7 +132,7 @@ class StepResult:
         res.sub_steps = [SubStepResult.from_json(i) for i in obj["subSteps"]]
         res.assertion_succ = obj["assertionSucc"]
         res.assertion_fail = obj["assertionSucc"]
-        res.elapse = durationpy.from_str(obj["elapse"])
+        res.elapse = timedelta(microseconds=obj["elapse"])
         return res
 
     def __init__(self, name, is_skip=False):
@@ -174,7 +173,7 @@ class CaseResult:
     def to_json(self):
         return {
             "name": self.name,
-            "elapse": durationpy.to_str(self.elapse),
+            "elapse": int(self.elapse.microseconds),
             "isPass": self.is_pass,
             "isSkip": self.is_skip,
             "steps": self.steps,
@@ -199,7 +198,7 @@ class CaseResult:
         res.step_fail = obj["stepFail"]
         res.assertion_succ = obj["assertionSucc"]
         res.assertion_fail = obj["assertionSucc"]
-        res.elapse = durationpy.from_str(obj["elapse"])
+        res.elapse = timedelta(microseconds=obj["elapse"])
         return res
 
     def __init__(self, name, is_skip=False):
@@ -293,7 +292,7 @@ class TestResult:
             "isPass": self.is_pass,
             "isErr": self.is_err,
             "err": self.err,
-            "elapse": durationpy.to_str(self.elapse),
+            "elapse": int(self.elapse.microseconds),
             "caseSucc": self.case_succ,
             "caseFail": self.case_fail,
             "caseSkip": self.case_skip,
@@ -325,7 +324,7 @@ class TestResult:
         res.step_fail = obj["stepFail"]
         res.assertion_succ = obj["assertionSucc"]
         res.assertion_fail = obj["assertionSucc"]
-        res.elapse = durationpy.from_str(obj["elapse"])
+        res.elapse = timedelta(microseconds=obj["elapse"])
         return res
 
     def __init__(self, directory, name, err_message=None):
