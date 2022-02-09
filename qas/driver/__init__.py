@@ -12,6 +12,20 @@ from .mns_driver import MNSDriver
 from .oss_driver import OSSDriver
 from .default import merge, REQUIRED
 
+
+drivers = {
+    "http": HttpDriver,
+    "redis": RedisDriver,
+    "shell": ShellDriver,
+    "mysql": MysqlDriver,
+    "mongo": MongoDriver,
+    "pop": POPDriver,
+    "ots": OTSDriver,
+    "mns": MNSDriver,
+    "oss": OSSDriver,
+}
+
+
 __all__ = [
     "HttpDriver",
     "ShellDriver",
@@ -23,5 +37,6 @@ __all__ = [
     "OTSDriver",
     "OSSDriver",
     "merge",
-    "REQUIRED"
+    "REQUIRED",
+    "drivers",
 ]

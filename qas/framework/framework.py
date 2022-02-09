@@ -12,12 +12,12 @@ import json
 import importlib
 import sys
 from types import SimpleNamespace
-from datetime import datetime, timedelta
+from datetime import datetime
 
-from ..driver import HttpDriver, POPDriver, OTSDriver, ShellDriver, MysqlDriver, RedisDriver, MNSDriver, OSSDriver, MongoDriver, merge, REQUIRED
+from ..driver import drivers, merge, REQUIRED
 from ..assertion import expect, render, expect_val
 from ..result import TestResult, CaseResult, StepResult, SubStepResult
-from ..reporter import TextReporter, JsonReporter
+from ..reporter import reporters
 from .retry_until import Retry, Until, RetryError, UntilError
 from .generate import generate_req, generate_res, calculate_num
 
@@ -27,24 +27,6 @@ sys.path.append(".")
 
 def dict_to_sns(d):
     return SimpleNamespace(**d)
-
-
-_drivers = {
-    "http": HttpDriver,
-    "redis": RedisDriver,
-    "shell": ShellDriver,
-    "mysql": MysqlDriver,
-    "mongo": MongoDriver,
-    "pop": POPDriver,
-    "ots": OTSDriver,
-    "mns": MNSDriver,
-    "oss": OSSDriver,
-}
-
-_reporters = {
-    "text": TextReporter,
-    "json": JsonReporter,
-}
 
 
 class Framework:
@@ -77,15 +59,15 @@ class Framework:
         self.skip_setup = skip_setup
         self.skip_teardown = skip_teardown
         self.debug_mode = debug
-        self.reporters = _reporters
-        self.drivers = _drivers
+        self.reporters = reporters
+        self.drivers = drivers
         self.x = None
         if x:
             self.x = Framework.load_x(x)
             if hasattr(self.x, "reporters"):
-                self.reporters = _reporters | self.x.reporters
+                self.reporters = self.reporters | self.x.reporters
             if hasattr(self.x, "drivers"):
-                self.drivers = _drivers | self.x.drivers
+                self.drivers = self.drivers | self.x.drivers
         self.reporter = self.reporters[reporter]()
         self.json_result = json_result
 
