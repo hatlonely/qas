@@ -25,7 +25,7 @@ step:
             "isSkip": false,
             "steps": [
               {
-                "name": "step-0",
+                "name": "echo",
                 "isSkip": false,
                 "isPass": true,
                 "req": {

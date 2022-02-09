@@ -25,7 +25,7 @@ step:
             "isSkip": false,
             "steps": [
               {
-                "name": "step-0",
+                "name": "echo",
                 "isSkip": false,
                 "isPass": true,
                 "req": {
@@ -66,7 +66,7 @@ step:
             ],
             "beforeCaseSteps": [
               {
-                "name": "step-0",
+                "name": "echo",
                 "isSkip": false,
                 "isPass": true,
                 "req": {
@@ -107,7 +107,7 @@ step:
             ],
             "afterCaseSteps": [
               {
-                "name": "step-0",
+                "name": "echo",
                 "isSkip": false,
                 "isPass": true,
                 "req": {
