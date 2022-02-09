@@ -19,7 +19,7 @@ _report_tpl = """<!DOCTYPE html>
 </head>
 
 <body>
-    {{ body }}
+    {% print(render_test(res)) %}
 </body>
 </html>
 """
@@ -169,10 +169,10 @@ class HtmlReporter(Reporter):
         self.sub_step_tpl = env.from_string(_sub_step_tpl)
 
     def report_final_result(self, res: TestResult):
-        print(self.report_tpl.render(res=res, body=self.test_tpl.render(res=res)))
+        print(self.report_tpl.render(res=res))
 
     def render_test(self, res):
-        pass
+        return self.test_tpl.render(res=res)
 
     def render_case(self, case, name):
         return self.case_tpl.render(case=case, name=name)
