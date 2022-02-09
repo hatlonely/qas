@@ -7,25 +7,33 @@ step:
     res:
       exitCode: 0
       json: {
+        "directory": "ops/example-complex",
         "name": "example-complex",
         "isPass": true,
+        "isErr": false,
+        "err": "",
         "#elapse": "val > 0",
         "caseSucc": 3,
         "caseFail": 0,
         "caseSkip": 0,
+        "CurrCaseSucc": 1,
+        "CurrCaseFail": 0,
+        "CurrCaseSkip": 0,
         "stepSucc": 9,
         "stepFail": 0,
+        "stepSkip": 0,
         "assertionSucc": 6,
         "assertionFail": 0,
         "cases": [
           {
-            "name": "ops/example-complex/case1.yaml/case1",
+            "name": "case1",
             "#elapse": "val > 0",
             "isPass": true,
             "isSkip": false,
             "steps": [
               {
-                "name": "step-0",
+                "name": "echo",
+                "ctx": "shell",
                 "isSkip": false,
                 "isPass": true,
                 "req": {
@@ -85,7 +93,8 @@ step:
             ],
             "beforeCaseSteps": [
               {
-                "name": "step-0",
+                "name": "echo",
+                "ctx": "shell",
                 "isSkip": false,
                 "isPass": true,
                 "req": {
@@ -130,7 +139,8 @@ step:
             ],
             "afterCaseSteps": [
               {
-                "name": "step-0",
+                "name": "echo",
+                "ctx": "shell",
                 "isSkip": false,
                 "isPass": true,
                 "req": {
@@ -181,13 +191,14 @@ step:
         ],
         "setups": [
           {
-            "name": "ops/example-complex/setup.yaml/setup1",
+            "name": "setup1",
             "#elapse": "val > 0",
             "isPass": true,
             "isSkip": false,
             "steps": [
               {
-                "name": "step-0",
+                "name": "echo",
+                "ctx": "shell",
                 "isSkip": false,
                 "isPass": true,
                 "req": {
@@ -230,7 +241,8 @@ step:
                 "#elapse": "val > 0"
               },
               {
-                "name": "step-1",
+                "name": "echo",
+                "ctx": "shell",
                 "isSkip": false,
                 "isPass": true,
                 "req": {
@@ -281,13 +293,14 @@ step:
             "assertionFail": 0
           },
           {
-            "name": "ops/example-complex/setup.yaml/setup2",
+            "name": "setup2",
             "#elapse": "val > 0",
             "isPass": true,
             "isSkip": false,
             "steps": [
               {
-                "name": "step-0",
+                "name": "echo",
+                "ctx": "shell",
                 "isSkip": false,
                 "isPass": true,
                 "req": {
@@ -330,7 +343,8 @@ step:
                 "#elapse": "val > 0"
               },
               {
-                "name": "step-1",
+                "name": "echo",
+                "ctx": "shell",
                 "isSkip": false,
                 "isPass": true,
                 "req": {
@@ -383,13 +397,14 @@ step:
         ],
         "teardowns": [
           {
-            "name": "ops/example-complex/teardown.yaml/teardown1",
+            "name": "teardown1",
             "#elapse": "val > 0",
             "isPass": true,
             "isSkip": false,
             "steps": [
               {
-                "name": "step-0",
+                "name": "echo",
+                "ctx": "shell",
                 "isSkip": false,
                 "isPass": true,
                 "req": {
@@ -432,7 +447,8 @@ step:
                 "#elapse": "val > 0"
               },
               {
-                "name": "step-1",
+                "name": "echo",
+                "ctx": "shell",
                 "isSkip": false,
                 "isPass": true,
                 "req": {
@@ -483,13 +499,14 @@ step:
             "assertionFail": 0
           },
           {
-            "name": "ops/example-complex/teardown.yaml/teardown2",
+            "name": "teardown2",
             "#elapse": "val > 0",
             "isPass": true,
             "isSkip": false,
             "steps": [
               {
-                "name": "step-0",
+                "name": "echo",
+                "ctx": "shell",
                 "isSkip": false,
                 "isPass": true,
                 "req": {
@@ -532,7 +549,8 @@ step:
                 "#elapse": "val > 0"
               },
               {
-                "name": "step-1",
+                "name": "echo",
+                "ctx": "shell",
                 "isSkip": false,
                 "isPass": true,
                 "req": {
@@ -585,25 +603,33 @@ step:
         ],
         "subTests": [
           {
+            "directory": "ops/example-complex/subtest2",
             "name": "subtest2",
             "isPass": true,
+            "isErr": false,
+            "err": "",
             "#elapse": "val > 0",
             "caseSucc": 1,
             "caseFail": 0,
             "caseSkip": 0,
+            "CurrCaseSucc": 1,
+            "CurrCaseFail": 0,
+            "CurrCaseSkip": 0,
             "stepSucc": 3,
             "stepFail": 0,
+            "stepSkip": 0,
             "assertionSucc": 2,
             "assertionFail": 0,
             "cases": [
               {
-                "name": "ops/example-complex/subtest2/case3.yaml/case3",
+                "name": "case3",
                 "#elapse": "val > 0",
                 "isPass": true,
                 "isSkip": false,
                 "steps": [
                   {
-                    "name": "step-0",
+                    "name": "echo",
+                    "ctx": "shell",
                     "isSkip": false,
                     "isPass": true,
                     "req": {
@@ -663,7 +689,8 @@ step:
                 ],
                 "beforeCaseSteps": [
                   {
-                    "name": "step-0",
+                    "name": "echo",
+                    "ctx": "shell",
                     "isSkip": false,
                     "isPass": true,
                     "req": {
@@ -708,7 +735,8 @@ step:
                 ],
                 "afterCaseSteps": [
                   {
-                    "name": "step-0",
+                    "name": "echo",
+                    "ctx": "shell",
                     "isSkip": false,
                     "isPass": true,
                     "req": {
@@ -762,25 +790,33 @@ step:
             "subTests": []
           },
           {
+            "directory": "ops/example-complex/subtest1",
             "name": "subtest1",
             "isPass": true,
+            "isErr": false,
+            "err": "",
             "#elapse": "val > 0",
             "caseSucc": 1,
             "caseFail": 0,
             "caseSkip": 0,
+            "CurrCaseSucc": 1,
+            "CurrCaseFail": 0,
+            "CurrCaseSkip": 0,
             "stepSucc": 3,
             "stepFail": 0,
+            "stepSkip": 0,
             "assertionSucc": 2,
             "assertionFail": 0,
             "cases": [
               {
-                "name": "ops/example-complex/subtest1/case2.yaml/case2",
+                "name": "case2",
                 "#elapse": "val > 0",
                 "isPass": true,
                 "isSkip": false,
                 "steps": [
                   {
-                    "name": "step-0",
+                    "name": "echo",
+                    "ctx": "shell",
                     "isSkip": false,
                     "isPass": true,
                     "req": {
@@ -842,7 +878,8 @@ step:
                 ],
                 "beforeCaseSteps": [
                   {
-                    "name": "step-0",
+                    "name": "echo",
+                    "ctx": "shell",
                     "isSkip": false,
                     "isPass": true,
                     "req": {
@@ -889,7 +926,8 @@ step:
                 ],
                 "afterCaseSteps": [
                   {
-                    "name": "step-0",
+                    "name": "echo",
+                    "ctx": "shell",
                     "isSkip": false,
                     "isPass": true,
                     "req": {
@@ -946,4 +984,3 @@ step:
           }
         ]
       }
-
