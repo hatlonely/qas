@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-
-
+import datetime
 import hashlib
 import json
 import re
@@ -63,7 +62,7 @@ _test_tpl = """
                         <td>{{ res.step_fail }}</td>
                         <td>{{ res.assertion_succ }}</td>
                         <td>{{ res.assertion_fail }}</td>
-                        <td>{{ durationpy.to_str(res.elapse) }}</td>
+                        <td>{{ format_timedelta(res.elapse) }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -166,12 +165,12 @@ _case_tpl = """
 {% if case.is_pass %}
 <a class="card-title btn d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#{{ name }}" role="button" aria-expanded="false" aria-controls="{{ name }}">
     {{ case.name }}
-    <span>{% print(durationpy.to_str(case.elapse)) %}</span>
+    <span>{% print(format_timedelta(case.elapse)) %}</span>
 </a>
 {% else %}
 <a class="card-title text-white bg-danger btn btn-danger d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#{{ name }}" role="button" aria-expanded="false" aria-controls="{{ name }}">
     {{ case.name }}
-    <span>{% print(durationpy.to_str(case.elapse)) %}</span>
+    <span>{% print(format_timedelta(case.elapse)) %}</span>
 </a>
 {% endif %}
 <div class="collapse card" id="{{ name }}">
@@ -237,12 +236,12 @@ _step_tpl = """
 {% if step.is_pass %}
 <a class="card-title btn d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#{{ name }}" role="button" aria-expanded="false" aria-controls="{{ name }}">
     {{ step.ctx }} {{ step.name }}
-    <span>{% print(durationpy.to_str(step.elapse)) %}</span>
+    <span>{% print(format_timedelta(step.elapse)) %}</span>
 </a>
 {% else %}
 <a class="card-title text-white bg-danger btn btn-danger d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#{{ name }}" role="button" aria-expanded="false" aria-controls="{{ name }}">
     {{ step.name }}
-    <span>{% print(durationpy.to_str(step.elapse)) %}</span>
+    <span>{% print(format_timedelta(step.elapse)) %}</span>
 </a>
 {% endif %}
 
@@ -269,12 +268,12 @@ _sub_step_tpl = """
 {% if sub_step.is_pass %}
 <a class="card-title btn d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#{{ name }}" role="button" aria-expanded="false" aria-controls="{{ name }}">
     sub-step {{ index }}
-    <span>{% print(durationpy.to_str(sub_step.elapse)) %}</span>
+    <span>{% print(format_timedelta(sub_step.elapse)) %}</span>
 </a>
 {% else %}
 <a class="card-title text-white bg-danger btn btn-danger d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#{{ name }}" role="button" aria-expanded="false" aria-controls="{{ name }}">
     sub-step {{ index }}
-    <span>{% print(durationpy.to_str(sub_step.elapse)) %}</span>
+    <span>{% print(format_timedelta(sub_step.elapse)) %}</span>
 </a>
 {% endif %}
 {% endif %}
@@ -325,7 +324,7 @@ _sub_step_tpl = """
 class HtmlReporter(Reporter):
     def __init__(self):
         env = Environment(loader=BaseLoader)
-        env.globals.update(durationpy=durationpy)
+        env.globals.update(format_timedelta=HtmlReporter.format_timedelta)
         env.globals.update(hashlib=hashlib)
         env.globals.update(json=json)
         env.globals.update(render_test=self.render_test)
@@ -408,3 +407,7 @@ class HtmlReporter(Reporter):
             vals[keys[-1]] = "{}{}".format(json.dumps(vals[keys[-1]]), val)
         else:
             vals[int(keys[-1])] = "{}{}".format(json.dumps(vals[int(keys[-1])]), val)
+
+    @staticmethod
+    def format_timedelta(t: datetime.timedelta):
+        return "{:.3f}s".format(t.total_seconds())
