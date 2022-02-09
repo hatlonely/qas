@@ -73,7 +73,8 @@ step:
                 "#elapse": "val > 0"
               },
               {
-                "name": "step-1",
+                "name": "",
+                "ctx": "shell",
                 "isSkip": true,
                 "isPass": true,
                 "req": {},
@@ -84,7 +85,8 @@ step:
                 "elapse": 0
               },
               {
-                "name": "step-2",
+                "name": "echo",
+                "ctx": "shell",
                 "isSkip": false,
                 "isPass": true,
                 "req": {

@@ -25,7 +25,8 @@ step:
             "isSkip": false,
             "steps": [
               {
-                "name": "step-0",
+                "name": "date",
+                "ctx": "shell",
                 "isSkip": false,
                 "isPass": true,
                 "req": {
