@@ -3,8 +3,9 @@
 
 import hashlib
 import json
+import re
 
-from ..result import TestResult
+from ..result import TestResult, SubStepResult
 from .reporter import Reporter
 
 from jinja2 import Environment, BaseLoader
@@ -277,7 +278,7 @@ _sub_step_tpl = """
             Res
         </div>
         <div class="card-body">
-            <pre>{% print(json.dumps(sub_step.res, indent=2)) %}</pre>
+            <pre>{% print(format_sub_step_res(sub_step)) %}</pre>
         </div>
 
         {% if sub_step.is_err %}
@@ -303,6 +304,7 @@ class HtmlReporter(Reporter):
         env.globals.update(render_case=self.render_case)
         env.globals.update(render_step=self.render_step)
         env.globals.update(render_sub_step=self.render_sub_step)
+        env.globals.update(format_sub_step_res=HtmlReporter.format_sub_step_res)
         self.report_tpl = env.from_string(_report_tpl)
         self.test_tpl = env.from_string(_test_tpl)
         self.case_tpl = env.from_string(_case_tpl)
@@ -323,3 +325,56 @@ class HtmlReporter(Reporter):
 
     def render_sub_step(self, sub_step, name, index):
         return self.sub_step_tpl.render(sub_step=sub_step, name=name, index=index)
+
+    @staticmethod
+    def format_sub_step_res(sub_step: SubStepResult) -> str:
+        # 修改 res 返回值，将预期值标记后拼接在 value 后面
+        for expect_result in sub_step.assertions:
+            if expect_result.is_pass:
+                HtmlReporter.append_val_to_key(sub_step.res, expect_result.node, "<GREEN>{}<END>".format(expect_result.expect))
+            else:
+                HtmlReporter.append_val_to_key(sub_step.res, expect_result.node, "<RED>{}<END>".format(expect_result.expect))
+
+        res_lines = json.dumps(sub_step.res, indent=2).split("\n")
+        lines = []
+        # 解析 res 中 value 的值，重新拼接成带颜色的结果值
+        for line in res_lines:
+            mr = re.match(r'(\s+".*?": )"(.*)<GREEN>(.*)<END>"(.*)', line)
+            if mr:
+                lines.append("{}{}{} # <span class='text-success'>{}</span>".format(
+                    mr.groups()[0], json.loads('"{}"'.format(mr.groups()[1])), mr.groups()[3], mr.groups()[2],
+                ))
+                continue
+            mr = re.match(r'(\s+".*?": )"(.*)<RED>(.*)<END>"(.*)', line)
+            if mr:
+                lines.append("{}{}{} # <span class='text-danger'>{}</span>".format(
+                    mr.groups()[0], json.loads('"{}"'.format(mr.groups()[1])), mr.groups()[3], mr.groups()[2],
+                ))
+                continue
+            mr = re.match(r'(\s+)"(.*)<GREEN>(.*)<END>"(.*)', line)
+            if mr:
+                lines.append("{}{}{} # <span class='text-success'>{}</span>".format(
+                    mr.groups()[0], json.loads('"{}"'.format(mr.groups()[1])), mr.groups()[3], mr.groups()[2],
+                ))
+                continue
+            mr = re.match(r'(\s+)"(.*)<RED>(.*)<END>"(.*)', line)
+            if mr:
+                lines.append("{}{}{} # <span class='text-danger'>{}</span>".format(
+                    mr.groups()[0], json.loads('"{}"'.format(mr.groups()[1])), mr.groups()[3], mr.groups()[2],
+                ))
+                continue
+            lines.append(line)
+        return '\n'.join(lines)
+
+    @staticmethod
+    def append_val_to_key(vals: dict, key, val):
+        keys = key.split(".")
+        for k in keys[:-1]:
+            if isinstance(vals, dict):
+                vals = vals[k]
+            else:
+                vals = vals[int(k)]
+        if isinstance(vals, dict):
+            vals[keys[-1]] = "{}{}".format(json.dumps(vals[keys[-1]]), val)
+        else:
+            vals[int(keys[-1])] = "{}{}".format(json.dumps(vals[int(keys[-1])]), val)
