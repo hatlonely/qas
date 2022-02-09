@@ -255,6 +255,15 @@ _sub_step_tpl = """
         <div class="card-body">
             <pre>{% print(json.dumps(sub_step.res, indent=2)) %}</pre>
         </div>
+
+        {% if sub_step.is_err %}
+        <div class="card-header text-white bg-danger">
+            Err
+        </div>
+        <div class="card-body">
+            <pre>{{ sub_step.err }}</pre>
+        </div>
+        {% endif %}
     </div>
 </div>
 """
