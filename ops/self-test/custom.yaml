@@ -25,7 +25,8 @@ step:
             "isSkip": false,
             "steps": [
               {
-                "name": "step-0",
+                "name": "echo",
+                "ctx": "echo",
                 "isSkip": false,
                 "isPass": true,
                 "req": {
@@ -89,7 +90,8 @@ step:
             "isSkip": false,
             "steps": [
               {
-                "name": "step-0",
+                "name": "calc",
+                "ctx": "calc",
                 "isSkip": false,
                 "isPass": true,
                 "req": {
@@ -144,7 +146,8 @@ step:
             "isSkip": false,
             "steps": [
               {
-                "name": "step-0",
+                "name": "echo",
+                "ctx": "echo",
                 "isSkip": false,
                 "isPass": true,
                 "req": {
