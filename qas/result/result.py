@@ -68,7 +68,7 @@ class SubStepResult:
         res.res = obj["res"]
         res.assertions = [ExpectResult.from_json(i) for i in obj["assertions"]]
         res.assertion_succ = obj["assertionSucc"]
-        res.assertion_fail = obj["assertionSucc"]
+        res.assertion_fail = obj["assertionFail"]
         res.elapse = timedelta(microseconds=obj["elapse"])
         return res
 
@@ -132,7 +132,7 @@ class StepResult:
         res.res = obj["res"]
         res.sub_steps = [SubStepResult.from_json(i) for i in obj["subSteps"]]
         res.assertion_succ = obj["assertionSucc"]
-        res.assertion_fail = obj["assertionSucc"]
+        res.assertion_fail = obj["assertionFail"]
         res.elapse = timedelta(microseconds=obj["elapse"])
         return res
 
@@ -199,7 +199,7 @@ class CaseResult:
         res.step_succ = obj["stepSucc"]
         res.step_fail = obj["stepFail"]
         res.assertion_succ = obj["assertionSucc"]
-        res.assertion_fail = obj["assertionSucc"]
+        res.assertion_fail = obj["assertionFail"]
         res.elapse = timedelta(microseconds=obj["elapse"])
         return res
 
@@ -342,7 +342,7 @@ class TestResult:
         res.step_fail = obj["stepFail"]
         res.step_skip = obj["stepSkip"]
         res.assertion_succ = obj["assertionSucc"]
-        res.assertion_fail = obj["assertionSucc"]
+        res.assertion_fail = obj["assertionFail"]
         res.elapse = timedelta(microseconds=obj["elapse"])
         return res
 

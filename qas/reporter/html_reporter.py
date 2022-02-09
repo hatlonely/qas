@@ -295,10 +295,18 @@ _sub_step_tpl = """
         </div>
 
         {% if sub_step.is_pass or sub_step.is_err %}
-        <div class="card-header">Res</div>
+        <div class="card-header justify-content-between d-flex">
         {% else %}
-        <div class="card-header text-white bg-danger">Res</div>
+        <div class="card-header text-white bg-danger justify-content-between d-flex">
         {% endif %}
+            Res
+            <span>
+                <span class="badge bg-success rounded-pill">{{ sub_step.assertion_succ }}</span>
+                {% if sub_step.assertion_fail %}
+                <span class="badge bg-danger rounded-pill">{{ sub_step.assertion_fail }}</span>
+                {% endif %}
+            </span>
+        </div>
         <div class="card-body">
             <pre>{% print(format_sub_step_res(sub_step)) %}</pre>
         </div>
