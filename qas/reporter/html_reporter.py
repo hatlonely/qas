@@ -2,6 +2,7 @@
 
 
 import hashlib
+import json
 
 from ..result import TestResult
 from .reporter import Reporter
@@ -70,23 +71,7 @@ _test_tpl = """
                 <ul class="list-group list-group-flush">
                     {% for case in res.cases %}
                     <li class="list-group-item">
-                        <h5 class="mb-0">
-                            <button
-                                class="btn"
-                                type="button"
-                                data-bs-toggle="collapse"
-                                data-bs-target="#{{ md5sum }}{{ loop.index }}"
-                                aria-expanded="false"
-                                aria-controls="{{ md5sum }}{{ loop.index }}"
-                            >
-                                {{ case.name }}
-                            </button>
-                        </h5>
-                        <div class="collapse" id="{{ md5sum }}{{ loop.index }}">
-                            <div class="card-body">
-                                Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-                            </div>
-                        </div>
+                        {% print(render_case(case, '{}-{}'.format(md5sum, loop.index))) %}
                     </li>
                     {% endfor %}
                 </ul>
@@ -96,15 +81,92 @@ _test_tpl = """
 </div>
 """
 
+_case_tpl = """
+<h5 class="card-title">
+    <a class="btn" data-bs-toggle="collapse" href="#{{ name }}" role="button" aria-expanded="false" aria-controls="{{ name }}">
+        {{ case.name }}
+    </a>
+</h5>
+<div class="collapse card" id="{{ name }}">
+    <div class="card">
+        <div class="card-header">
+            执行步骤
+        </div>
+        <ul class="list-group list-group-flush">
+            {% for step in case.steps %}
+            <li class="list-group-item">
+                {% print(render_step(step, '{}-step-{}'.format(name, loop.index))) %}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+"""
+
+_step_tpl = """
+<h5 class="card-title">
+    <a class="btn" data-bs-toggle="collapse" href="#{{ name }}" role="button" aria-expanded="false" aria-controls="{{ name }}">
+        {{ step.name }}
+    </a>
+</h5>
+
+<div class="collapse card" id="{{ name }}">
+    <div class="card">
+        <div class="card-header">
+            {{ step.name }}
+        </div>
+        <ul class="list-group list-group-flush">
+            {% for sub_step in step.sub_steps %}
+            <li class="list-group-item">
+                {% print(render_sub_step(sub_step, '{}-sub-step-{}'.format(name, loop.index), loop.index)) %}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+"""
+
+_sub_step_tpl = """
+<h5 class="card-title">
+    <a class="btn" data-bs-toggle="collapse" href="#{{ name }}" role="button" aria-expanded="false" aria-controls="{{ name }}">
+        步骤 {{ index }}
+    </a>
+</h5>
+
+<div class="collapse card" id="{{ name }}">
+    <div class="card border-success">
+        <div class="card-header">
+            Req
+        </div>
+        <div class="card-body">
+            <pre>{% print(json.dumps(sub_step.req, indent=2)) %}</pre>
+        </div>
+        <div class="card-header">
+            Res
+        </div>
+        <div class="card-body">
+            <pre>{% print(json.dumps(sub_step.res, indent=2)) %}</pre>
+        </div>
+    </div>
+</div>
+"""
+
 
 class HtmlReporter(Reporter):
     def __init__(self):
         env = Environment(loader=BaseLoader)
-        env.globals.update(render=self.render_test)
         env.globals.update(durationpy=durationpy)
         env.globals.update(hashlib=hashlib)
+        env.globals.update(json=json)
+        env.globals.update(render_test=self.render_test)
+        env.globals.update(render_case=self.render_case)
+        env.globals.update(render_step=self.render_step)
+        env.globals.update(render_sub_step=self.render_sub_step)
         self.report_tpl = env.from_string(_report_tpl)
         self.test_tpl = env.from_string(_test_tpl)
+        self.case_tpl = env.from_string(_case_tpl)
+        self.step_tpl = env.from_string(_step_tpl)
+        self.sub_step_tpl = env.from_string(_sub_step_tpl)
 
     def report_final_result(self, res: TestResult):
         print(self.report_tpl.render(res=res, body=self.test_tpl.render(res=res)))
@@ -112,3 +174,11 @@ class HtmlReporter(Reporter):
     def render_test(self, res):
         pass
 
+    def render_case(self, case, name):
+        return self.case_tpl.render(case=case, name=name)
+
+    def render_step(self, step, name):
+        return self.step_tpl.render(step=step, name=name)
+
+    def render_sub_step(self, sub_step, name, index):
+        return self.sub_step_tpl.render(sub_step=sub_step, name=name, index=index)
