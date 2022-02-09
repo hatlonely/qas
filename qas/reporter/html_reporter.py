@@ -21,7 +21,9 @@ _report_tpl = """<!DOCTYPE html>
 <body>
     <div class="container">
         <div class="row justify-content-md-center">
-        {% print(render_test(res, "test")) %}
+            <div class="col-lg-10 col-md-12">
+            {% print(render_test(res, "test")) %}
+            </div>
         </div>
     </div>
 </body>
@@ -29,7 +31,7 @@ _report_tpl = """<!DOCTYPE html>
 """
 
 _test_tpl = """
-<div class="col-lg-10 col-md-12">
+<div class="col-md-12">
     <table class="table table-striped">
         <thead>
             {% if res.is_pass %}
@@ -65,7 +67,7 @@ _test_tpl = """
 </div>
 
 {# 渲染 setup #}
-<div class="col-lg-10 col-md-12">
+<div class="col-md-12">
     <div class="card mt-3">
         <div class="card-header">
             SetUp
@@ -81,7 +83,7 @@ _test_tpl = """
 </div>
 
 {# 渲染 case #}
-<div class="col-lg-10 col-md-12">
+<div class="col-md-12">
     <div class="card mt-3">
         <div class="card-header">
             Case
@@ -97,7 +99,7 @@ _test_tpl = """
 </div>
 
 {# 渲染 teardown #}
-<div class="col-lg-10 col-md-12">
+<div class="col-md-12">
     <div class="card mt-3">
         <div class="card-header">
             TearDown
@@ -113,7 +115,7 @@ _test_tpl = """
 </div>
 
 {# 渲染 subtest #}
-<div class="col-lg-10 col-md-12">
+<div class="col-md-12">
     <div class="card mt-3">
         <div class="card-header">
             SubTest
