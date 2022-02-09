@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
+
+
 import datetime
 import hashlib
 import json
 import re
+from jinja2 import Environment, BaseLoader
 
 from ..result import TestResult, SubStepResult
 from .reporter import Reporter
 
-from jinja2 import Environment, BaseLoader
-import durationpy
 
 _report_tpl = """<!DOCTYPE html>
 <html lang="en">
