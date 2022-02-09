@@ -76,7 +76,7 @@ _test_tpl = """
         <ul class="list-group list-group-flush">
             {% for case in res.setups %}
             <li class="list-group-item">
-                {% print(render_case(case, '{}-setup-{}'.format(name, loop.index))) %}
+                {% print(render_case(case, '{}-setup-{}'.format(name, loop.index0))) %}
             </li>
             {% endfor %}
         </ul>
@@ -94,7 +94,7 @@ _test_tpl = """
         <ul class="list-group list-group-flush">
             {% for case in res.cases %}
             <li class="list-group-item">
-                {% print(render_case(case, '{}-case-{}'.format(name, loop.index))) %}
+                {% print(render_case(case, '{}-case-{}'.format(name, loop.index0))) %}
             </li>
             {% endfor %}
         </ul>
@@ -112,7 +112,7 @@ _test_tpl = """
         <ul class="list-group list-group-flush">
             {% for case in res.teardowns %}
             <li class="list-group-item">
-                {% print(render_case(case, '{}-teardown-{}'.format(name, loop.index))) %}
+                {% print(render_case(case, '{}-teardown-{}'.format(name, loop.index0))) %}
             </li>
             {% endfor %}
         </ul>
@@ -130,7 +130,7 @@ _test_tpl = """
         <ul class="list-group list-group-flush">
             {% for sub_test in res.sub_tests %}
             <li class="list-group-item">
-                {% print(render_test(sub_test, '{}-subtest-{}'.format(name, loop.index))) %}
+                {% print(render_test(sub_test, '{}-subtest-{}'.format(name, loop.index0))) %}
             </li>
             {% endfor %}
         </ul>
@@ -147,13 +147,50 @@ _case_tpl = """
 </h5>
 <div class="collapse card" id="{{ name }}">
     <div class="card">
+        {# BeforeCaseStep #}
         <div class="card-header">
-            执行步骤
+            BeforeCaseStep
+        </div>
+        <ul class="list-group list-group-flush">
+            {% for step in case.before_case_steps %}
+            <li class="list-group-item">
+                {% print(render_step(step, '{}-step-{}'.format(name, loop.index0))) %}
+            </li>
+            {% endfor %}
+        </ul>
+        
+        {# PreStep #}
+        <div class="card-header">
+            PreStep
+        </div>
+        <ul class="list-group list-group-flush">
+            {% for step in case.pre_steps %}
+            <li class="list-group-item">
+                {% print(render_step(step, '{}-step-{}'.format(name, loop.index0))) %}
+            </li>
+            {% endfor %}
+        </ul>
+        
+        {# Step #}
+        <div class="card-header">
+            Step
         </div>
         <ul class="list-group list-group-flush">
             {% for step in case.steps %}
             <li class="list-group-item">
-                {% print(render_step(step, '{}-step-{}'.format(name, loop.index))) %}
+                {% print(render_step(step, '{}-step-{}'.format(name, loop.index0))) %}
+            </li>
+            {% endfor %}
+        </ul>
+        
+        {# AfterCaseStep #}
+        <div class="card-header">
+            AfterCaseStep
+        </div>
+        <ul class="list-group list-group-flush">
+            {% for step in case.after_case_steps %}
+            <li class="list-group-item">
+                {% print(render_step(step, '{}-step-{}'.format(name, loop.index0))) %}
             </li>
             {% endfor %}
         </ul>
@@ -171,12 +208,12 @@ _step_tpl = """
 <div class="collapse card" id="{{ name }}">
     <div class="card">
         <div class="card-header">
-            {{ step.name }}
+            SubStep
         </div>
         <ul class="list-group list-group-flush">
             {% for sub_step in step.sub_steps %}
             <li class="list-group-item">
-                {% print(render_sub_step(sub_step, '{}-sub-step-{}'.format(name, loop.index), loop.index)) %}
+                {% print(render_sub_step(sub_step, '{}-sub-step-{}'.format(name, loop.index0), loop.index0)) %}
             </li>
             {% endfor %}
         </ul>
@@ -187,7 +224,7 @@ _step_tpl = """
 _sub_step_tpl = """
 <h5 class="card-title">
     <a class="btn" data-bs-toggle="collapse" href="#{{ name }}" role="button" aria-expanded="false" aria-controls="{{ name }}">
-        步骤 {{ index }}
+        sub-step {{ index }}
     </a>
 </h5>
 
