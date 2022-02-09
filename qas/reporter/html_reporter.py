@@ -235,12 +235,12 @@ _case_tpl = """
 _step_tpl = """
 {% if step.is_pass %}
 <a class="card-title btn d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#{{ name }}" role="button" aria-expanded="false" aria-controls="{{ name }}">
-    {{ step.ctx }} {{ step.name }}
+    {{ step.ctx }}.{{ step.name }}
     <span>{% print(format_timedelta(step.elapse)) %}</span>
 </a>
 {% else %}
 <a class="card-title text-white bg-danger btn btn-danger d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#{{ name }}" role="button" aria-expanded="false" aria-controls="{{ name }}">
-    {{ step.name }}
+    {{ step.ctx }}.{{ step.name }}
     <span>{% print(format_timedelta(step.elapse)) %}</span>
 </a>
 {% endif %}
