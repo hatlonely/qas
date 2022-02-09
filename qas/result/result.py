@@ -294,6 +294,8 @@ class TestResult:
     curr_case_succ: int
     curr_case_fail: int
     curr_case_skip: int
+    sub_test_succ: int
+    sub_test_fail: int
 
     def to_json(self):
         return {
@@ -314,6 +316,8 @@ class TestResult:
             "stepSkip": self.step_skip,
             "assertionSucc": self.assertion_succ,
             "assertionFail": self.assertion_fail,
+            "subTestSucc": self.sub_test_succ,
+            "subTestFail": self.sub_test_fail,
             "cases": self.cases,
             "setups": self.setups,
             "teardowns": self.teardowns,
@@ -343,6 +347,8 @@ class TestResult:
         res.step_skip = obj["stepSkip"]
         res.assertion_succ = obj["assertionSucc"]
         res.assertion_fail = obj["assertionFail"]
+        res.sub_test_succ = obj["subTestSucc"]
+        res.sub_test_fail = obj["subTestFail"]
         res.elapse = timedelta(microseconds=obj["elapse"])
         return res
 
@@ -368,6 +374,8 @@ class TestResult:
         self.step_succ = 0
         self.step_fail = 0
         self.step_skip = 0
+        self.sub_test_succ = 0
+        self.sub_test_fail = 0
         if err_message:
             self.is_pass = False
             self.is_err = True
@@ -416,3 +424,6 @@ class TestResult:
         self.assertion_fail += sub_test.assertion_fail
         if not sub_test.is_pass:
             self.is_pass = False
+            self.sub_test_fail += 1
+        else:
+            self.sub_test_succ += 1

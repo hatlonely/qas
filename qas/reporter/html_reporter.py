@@ -180,7 +180,12 @@ _test_tpl = """
     <div class="card mt-3">
         <div class="card-header justify-content-between d-flex">
             SubTest
-            <span class="badge bg-primary rounded-pill">{% print(len(res.sub_tests)) %}</span>
+            <span>
+            <span class="badge bg-success rounded-pill">{{ res.sub_test_succ }}</span>
+            {% if res.sub_test_fail %}
+            <span class="badge bg-danger rounded-pill">{{ res.sub_test_fail }}</span>
+            {% endif %}
+            </span>
         </div>
         <ul class="list-group list-group-flush">
             {% for sub_test in res.sub_tests %}
