@@ -67,6 +67,15 @@ _test_tpl = """
                 </tbody>
             </table>
         </div>
+        
+        {% if res.is_err %}
+        <div class="card-header text-white bg-danger">
+            Err
+        </div>
+        <div class="card-body">
+            <pre>{{ res.err }}</pre>
+        </div>
+        {% endif %}
     </div>
 </div>
 
