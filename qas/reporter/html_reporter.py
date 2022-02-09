@@ -230,17 +230,15 @@ _case_tpl = """
 
 _step_tpl = """
 {% if step.is_pass %}
-<h5 class="card-title">
-    <a class="btn" data-bs-toggle="collapse" href="#{{ name }}" role="button" aria-expanded="false" aria-controls="{{ name }}">
-        {{ step.name }}
-    </a>
-</h5>
+<a class="card-title btn d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#{{ name }}" role="button" aria-expanded="false" aria-controls="{{ name }}">
+    {{ step.name }}
+    <span>{% print(durationpy.to_str(step.elapse)) %}</span>
+</a>
 {% else %}
-<h5 class="card-title text-white bg-danger">
-    <a class="btn btn-danger" data-bs-toggle="collapse" href="#{{ name }}" role="button" aria-expanded="false" aria-controls="{{ name }}">
-        {{ step.name }}
-    </a>
-</h5>
+<a class="card-title text-white bg-danger btn btn-danger d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#{{ name }}" role="button" aria-expanded="false" aria-controls="{{ name }}">
+    {{ step.name }}
+    <span>{% print(durationpy.to_str(step.elapse)) %}</span>
+</a>
 {% endif %}
 
 <div class="collapse card" id="{{ name }}">
@@ -261,17 +259,15 @@ _step_tpl = """
 
 _sub_step_tpl = """
 {% if sub_step.is_pass %}
-<h5 class="card-title">
-    <a class="btn" data-bs-toggle="collapse" href="#{{ name }}" role="button" aria-expanded="false" aria-controls="{{ name }}">
-        sub-step {{ index }}
-    </a>
-</h5>
+<a class="card-title btn d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#{{ name }}" role="button" aria-expanded="false" aria-controls="{{ name }}">
+    sub-step {{ index }}
+    <span>{% print(durationpy.to_str(sub_step.elapse)) %}</span>
+</a>
 {% else %}
-<h5 class="card-title text-white bg-danger">
-    <a class="btn btn-danger" data-bs-toggle="collapse" href="#{{ name }}" role="button" aria-expanded="false" aria-controls="{{ name }}">
-        sub-step {{ index }}
-    </a>
-</h5>
+<a class="card-title text-white bg-danger btn btn-danger d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#{{ name }}" role="button" aria-expanded="false" aria-controls="{{ name }}">
+    sub-step {{ index }}
+    <span>{% print(durationpy.to_str(sub_step.elapse)) %}</span>
+</a>
 {% endif %}
 
 <div class="collapse card" id="{{ name }}">
