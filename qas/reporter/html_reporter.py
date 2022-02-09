@@ -32,38 +32,42 @@ _report_tpl = """<!DOCTYPE html>
 
 _test_tpl = """
 <div class="col-md-12">
-    <table class="table table-striped">
-        <thead>
-            {% if res.is_pass %}
-            <tr class="table-success"><th colspan="8">{{ res.name }} 测试通过</th></tr>
-            {% else %}
-            <tr class="table-danger"><th colspan="8">{{ res.name }} 测试失败</th></tr>
-            {% endif %}
-
-            <tr>
-                <th>测试通过</th>
-                <th>测试跳过</th>
-                <th>测试失败</th>
-                <th>步骤通过</th>
-                <th>步骤失败</th>
-                <th>断言成功</th>
-                <th>断言失败</th>
-                <th>耗时</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>{{ res.case_succ }}</td>
-                <td>{{ res.case_skip }}</td>
-                <td>{{ res.case_fail }}</td>
-                <td>{{ res.step_succ }}</td>
-                <td>{{ res.step_fail }}</td>
-                <td>{{ res.assertion_succ }}</td>
-                <td>{{ res.assertion_fail }}</td>
-                <td>{{ durationpy.to_str(res.elapse) }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="card mt-3">
+        {% if res.is_pass %}
+        <div class="card-header text-white bg-success">{{ res.name }}测试通过</div>
+        {% else %}
+        <div class="card-header text-white bg-danger">{{ res.name }}测试失败</div>
+        {% endif %}
+        
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>测试通过</th>
+                        <th>测试跳过</th>
+                        <th>测试失败</th>
+                        <th>步骤通过</th>
+                        <th>步骤失败</th>
+                        <th>断言成功</th>
+                        <th>断言失败</th>
+                        <th>耗时</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ res.case_succ }}</td>
+                        <td>{{ res.case_skip }}</td>
+                        <td>{{ res.case_fail }}</td>
+                        <td>{{ res.step_succ }}</td>
+                        <td>{{ res.step_fail }}</td>
+                        <td>{{ res.assertion_succ }}</td>
+                        <td>{{ res.assertion_fail }}</td>
+                        <td>{{ durationpy.to_str(res.elapse) }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
 {# 渲染 setup #}
