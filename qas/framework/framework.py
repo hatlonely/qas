@@ -275,7 +275,6 @@ class Framework:
             "name": REQUIRED,
             "cond": "",
         })
-        info["name"] = "{}/{}".format(filename, info["name"])
         return info
 
     @staticmethod
