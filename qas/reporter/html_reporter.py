@@ -170,28 +170,32 @@ _case_tpl = """
 <div class="collapse card" id="{{ name }}">
     <div class="card">
         {# BeforeCaseStep #}
+        {% if case.before_case_steps %}
         <div class="card-header">
             BeforeCaseStep
         </div>
         <ul class="list-group list-group-flush">
             {% for step in case.before_case_steps %}
             <li class="list-group-item">
-                {% print(render_step(step, '{}-step-{}'.format(name, loop.index0))) %}
+                {% print(render_step(step, '{}-before-case-step-{}'.format(name, loop.index0))) %}
             </li>
             {% endfor %}
         </ul>
+        {% endif %}
         
         {# PreStep #}
+        {% if case.pre_steps %}
         <div class="card-header">
             PreStep
         </div>
         <ul class="list-group list-group-flush">
             {% for step in case.pre_steps %}
             <li class="list-group-item">
-                {% print(render_step(step, '{}-step-{}'.format(name, loop.index0))) %}
+                {% print(render_step(step, '{}-pre-step-{}'.format(name, loop.index0))) %}
             </li>
             {% endfor %}
         </ul>
+        {% endif %}
         
         {# Step #}
         <div class="card-header">
@@ -206,16 +210,18 @@ _case_tpl = """
         </ul>
         
         {# AfterCaseStep #}
+        {% if case.after_case_steps %}
         <div class="card-header">
             AfterCaseStep
         </div>
         <ul class="list-group list-group-flush">
             {% for step in case.after_case_steps %}
             <li class="list-group-item">
-                {% print(render_step(step, '{}-step-{}'.format(name, loop.index0))) %}
+                {% print(render_step(step, '{}-after-case-step-{}'.format(name, loop.index0))) %}
             </li>
             {% endfor %}
         </ul>
+        {% endif %}
     </div>
 </div>
 """
