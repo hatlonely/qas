@@ -7,6 +7,7 @@ import aliyunsdkcore.acs_exception.exceptions
 from aliyunsdkcore.client import AcsClient
 from aliyunsdkcore.request import CommonRequest
 from .default import merge, REQUIRED
+from .driver import Driver
 
 
 product_to_version = {
@@ -25,7 +26,7 @@ product_to_version = {
 }
 
 
-class POPDriver:
+class POPDriver(Driver):
     client: AcsClient
     endpoint: str
     product_id: str

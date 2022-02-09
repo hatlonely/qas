@@ -7,9 +7,10 @@ import subprocess
 import traceback
 
 from .default import merge, REQUIRED
+from .driver import Driver
 
 
-class ShellDriver:
+class ShellDriver(Driver):
     shebang: str
     args: list[str]
     envs: dict[str, str]

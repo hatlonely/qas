@@ -5,9 +5,10 @@ import json
 import mns.mns_client
 import mns.mns_exception
 from .default import merge, REQUIRED
+from .driver import Driver
 
 
-class MNSDriver:
+class MNSDriver(Driver):
     client: mns.mns_client.MNSClient
 
     def __init__(self, args):

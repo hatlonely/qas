@@ -4,9 +4,10 @@
 import pymysql
 
 from .default import merge, REQUIRED
+from .driver import Driver
 
 
-class MysqlDriver:
+class MysqlDriver(Driver):
     connection: pymysql.Connection
 
     def __init__(self, args):

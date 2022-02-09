@@ -4,9 +4,10 @@
 import oss2
 
 from .default import merge, REQUIRED
+from .driver import Driver
 
 
-class OSSDriver:
+class OSSDriver(Driver):
     client: oss2.Bucket
 
     def __init__(self, args):

@@ -6,9 +6,10 @@ import pymongo
 from bson.objectid import ObjectId
 
 from .default import merge, REQUIRED
+from .driver import Driver
 
 
-class MongoDriver:
+class MongoDriver(Driver):
     def __init__(self, args):
         args = merge(args, {
             "host": "localhost",

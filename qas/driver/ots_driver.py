@@ -4,10 +4,11 @@
 import tablestore
 import json
 from .default import merge, REQUIRED
+from .driver import Driver
 import traceback
 
 
-class OTSDriver:
+class OTSDriver(Driver):
     client: tablestore.OTSClient = None
 
     def __init__(self, args: dict):

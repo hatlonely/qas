@@ -4,9 +4,10 @@
 import durationpy
 import requests
 from .default import merge, REQUIRED
+from .driver import Driver
 
 
-class HttpDriver:
+class HttpDriver(Driver):
     endpoint = None
 
     def __init__(self, args: dict):

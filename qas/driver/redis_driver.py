@@ -4,9 +4,10 @@
 import json
 import redis
 from .default import merge, REQUIRED
+from .driver import Driver
 
 
-class RedisDriver:
+class RedisDriver(Driver):
     client: redis.Redis
 
     def __init__(self, args):
