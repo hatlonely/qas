@@ -105,7 +105,12 @@ _test_tpl = """
     <div class="card mt-3">
         <div class="card-header justify-content-between d-flex">
             Case
-            <span class="badge bg-primary rounded-pill">{% print(len(res.cases)) %}</span>
+            <span>
+                <span class="badge bg-success rounded-pill">{% print(res.curr_case_succ) %}</span>
+                {% if res.curr_case_fail %}
+                <span class="badge bg-danger rounded-pill">{% print(res.curr_case_fail) %}</span>
+                {% endif %}
+            </span>
         </div>
         <ul class="list-group list-group-flush">
             {% for case in res.cases %}

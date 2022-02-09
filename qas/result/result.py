@@ -279,11 +279,19 @@ class TestResult:
     cases: list[CaseResult]
     teardowns: list[CaseResult]
     sub_tests: list
+    elapse: timedelta
+    sub_tests: list
     case_succ: int
     case_fail: int
     case_skip: int
-    sub_tests: list
-    elapse: timedelta
+    step_succ: int
+    step_fail: int
+    step_skip: int
+    assertion_succ: int
+    assertion_fail: int
+    curr_case_succ: int
+    curr_case_fail: int
+    curr_case_skip: int
 
     def to_json(self):
         return {
@@ -296,8 +304,12 @@ class TestResult:
             "caseSucc": self.case_succ,
             "caseFail": self.case_fail,
             "caseSkip": self.case_skip,
+            "CurrCaseSucc": self.curr_case_succ,
+            "CurrCaseFail": self.curr_case_fail,
+            "CurrCaseSkip": self.curr_case_skip,
             "stepSucc": self.step_succ,
             "stepFail": self.step_fail,
+            "stepSkip": self.step_skip,
             "assertionSucc": self.assertion_succ,
             "assertionFail": self.assertion_fail,
             "cases": self.cases,
@@ -320,8 +332,13 @@ class TestResult:
         res.sub_tests = [TestResult.from_json(i) for i in obj["subTests"]]
         res.case_succ = obj["caseSucc"]
         res.case_fail = obj["caseFail"]
+        res.case_skip = obj["caseSkip"]
+        res.curr_case_succ = obj["CurrCaseSucc"]
+        res.curr_case_fail = obj["CurrCaseFail"]
+        res.curr_case_skip = obj["CurrCaseSkip"]
         res.step_succ = obj["stepSucc"]
         res.step_fail = obj["stepFail"]
+        res.step_skip = obj["stepSkip"]
         res.assertion_succ = obj["assertionSucc"]
         res.assertion_fail = obj["assertionSucc"]
         res.elapse = timedelta(microseconds=obj["elapse"])
@@ -341,6 +358,9 @@ class TestResult:
         self.case_succ = 0
         self.case_fail = 0
         self.case_skip = 0
+        self.curr_case_succ = 0
+        self.curr_case_fail = 0
+        self.curr_case_skip = 0
         self.assertion_succ = 0
         self.assertion_fail = 0
         self.step_succ = 0
@@ -362,8 +382,10 @@ class TestResult:
         if not case.is_pass:
             self.case_fail += 1
             self.is_pass = False
+            self.curr_case_fail += 1
         else:
             self.case_succ += 1
+            self.curr_case_succ += 1
         self.step_succ += case.step_succ
         self.step_fail += case.step_fail
         self.step_skip += case.step_skip
@@ -372,6 +394,7 @@ class TestResult:
 
     def skip_case(self, name):
         self.case_skip += 1
+        self.curr_case_skip += 1
         self.cases.append(CaseResult(name, is_skip=True))
 
     def add_teardown_result(self, case):
