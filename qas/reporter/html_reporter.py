@@ -84,8 +84,9 @@ _test_tpl = """
 {% if res.setups %}
 <div class="col-md-12">
     <div class="card mt-3">
-        <div class="card-header">
+        <div class="card-header justify-content-between d-flex">
             SetUp
+            <span class="badge bg-primary rounded-pill">{% print(len(res.setups)) %}</span>
         </div>
         <ul class="list-group list-group-flush">
             {% for case in res.setups %}
@@ -102,8 +103,9 @@ _test_tpl = """
 {% if res.cases %}
 <div class="col-md-12">
     <div class="card mt-3">
-        <div class="card-header">
+        <div class="card-header justify-content-between d-flex">
             Case
+            <span class="badge bg-primary rounded-pill">{% print(len(res.cases)) %}</span>
         </div>
         <ul class="list-group list-group-flush">
             {% for case in res.cases %}
@@ -120,8 +122,9 @@ _test_tpl = """
 {% if res.teardowns %}
 <div class="col-md-12">
     <div class="card mt-3">
-        <div class="card-header">
+        <div class="card-header justify-content-between d-flex">
             TearDown
+            <span class="badge bg-primary rounded-pill">{% print(len(res.teardowns)) %}</span>
         </div>
         <ul class="list-group list-group-flush">
             {% for case in res.teardowns %}
@@ -138,8 +141,9 @@ _test_tpl = """
 {% if res.sub_tests %}
 <div class="col-md-12">
     <div class="card mt-3">
-        <div class="card-header">
+        <div class="card-header justify-content-between d-flex">
             SubTest
+            <span class="badge bg-primary rounded-pill">{% print(len(res.sub_tests)) %}</span>
         </div>
         <ul class="list-group list-group-flush">
             {% for sub_test in res.sub_tests %}
@@ -155,17 +159,15 @@ _test_tpl = """
 
 _case_tpl = """
 {% if case.is_pass %}
-<h5 class="card-title">
-    <a class="btn" data-bs-toggle="collapse" href="#{{ name }}" role="button" aria-expanded="false" aria-controls="{{ name }}">
-        {{ case.name }}
-    </a>
-</h5>
+<a class="card-title btn d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#{{ name }}" role="button" aria-expanded="false" aria-controls="{{ name }}">
+    {{ case.name }}
+    <span>{% print(durationpy.to_str(case.elapse)) %}</span>
+</a>
 {% else %}
-<h5 class="card-title text-white bg-danger">
-    <a class="btn btn-danger" data-bs-toggle="collapse" href="#{{ name }}" role="button" aria-expanded="false" aria-controls="{{ name }}">
-        {{ case.name }}
-    </a>
-</h5>
+<a class="card-title text-white bg-danger btn btn-danger d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#{{ name }}" role="button" aria-expanded="false" aria-controls="{{ name }}">
+    {{ case.name }}
+    <span>{% print(durationpy.to_str(case.elapse)) %}</span>
+</a>
 {% endif %}
 <div class="collapse card" id="{{ name }}">
     <div class="card">
@@ -311,6 +313,7 @@ class HtmlReporter(Reporter):
         env.globals.update(render_step=self.render_step)
         env.globals.update(render_sub_step=self.render_sub_step)
         env.globals.update(format_sub_step_res=HtmlReporter.format_sub_step_res)
+        env.globals.update(len=len)
         self.report_tpl = env.from_string(_report_tpl)
         self.test_tpl = env.from_string(_test_tpl)
         self.case_tpl = env.from_string(_case_tpl)
