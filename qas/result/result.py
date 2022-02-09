@@ -99,6 +99,7 @@ class SubStepResult:
 @dataclass
 class StepResult:
     name: str
+    ctx: str
     is_skip: bool
     is_pass: bool
     req: dict
@@ -111,6 +112,7 @@ class StepResult:
     def to_json(self):
         return {
             "name": self.name,
+            "ctx": self.ctx,
             "isSkip": self.is_skip,
             "isPass": self.is_pass,
             "req": self.req,
@@ -123,8 +125,7 @@ class StepResult:
 
     @staticmethod
     def from_json(obj):
-        res = StepResult("")
-        res.name = obj["name"]
+        res = StepResult(obj["name"], obj["ctx"])
         res.is_skip = obj["isSkip"]
         res.is_pass = obj["isPass"]
         res.req = obj["req"]
@@ -135,8 +136,9 @@ class StepResult:
         res.elapse = timedelta(microseconds=obj["elapse"])
         return res
 
-    def __init__(self, name, is_skip=False):
+    def __init__(self, name, ctx, is_skip=False):
         self.name = name
+        self.ctx = ctx
         self.is_skip = is_skip
         self.is_pass = True
         self.req = {}
@@ -257,15 +259,15 @@ class CaseResult:
         if not step.is_pass:
             self.is_pass = False
 
-    def skip_case_step(self, name):
-        self.steps.append(StepResult(name, is_skip=True))
+    def skip_case_step(self, name, ctx):
+        self.steps.append(StepResult(name, ctx, is_skip=True))
         self.step_skip += 1
 
-    def skip_before_case_step(self, name):
-        self.before_case_steps.append(StepResult(name, is_skip=True))
+    def skip_before_case_step(self, name, ctx):
+        self.before_case_steps.append(StepResult(name, ctx, is_skip=True))
 
-    def skip_after_case_step(self, name):
-        self.after_case_steps.append(StepResult(name, is_skip=True))
+    def skip_after_case_step(self, name, ctx):
+        self.after_case_steps.append(StepResult(name, ctx, is_skip=True))
 
 
 @dataclass
