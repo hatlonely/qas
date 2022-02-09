@@ -67,6 +67,7 @@ _test_tpl = """
 </div>
 
 {# 渲染 setup #}
+{% if res.setups %}
 <div class="col-md-12">
     <div class="card mt-3">
         <div class="card-header">
@@ -81,8 +82,10 @@ _test_tpl = """
         </ul>
     </div>
 </div>
+{% endif %}
 
 {# 渲染 case #}
+{% if res.cases %}
 <div class="col-md-12">
     <div class="card mt-3">
         <div class="card-header">
@@ -97,8 +100,10 @@ _test_tpl = """
         </ul>
     </div>
 </div>
+{% endif %}
 
 {# 渲染 teardown #}
+{% if res.teardowns %}
 <div class="col-md-12">
     <div class="card mt-3">
         <div class="card-header">
@@ -113,8 +118,10 @@ _test_tpl = """
         </ul>
     </div>
 </div>
+{% endif %}
 
 {# 渲染 subtest #}
+{% if res.sub_tests %}
 <div class="col-md-12">
     <div class="card mt-3">
         <div class="card-header">
@@ -129,6 +136,7 @@ _test_tpl = """
         </ul>
     </div>
 </div>
+{% endif %}
 """
 
 _case_tpl = """
