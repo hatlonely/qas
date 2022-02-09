@@ -23,6 +23,9 @@ class MNSDriver(Driver):
             access_key=args["AccessKeySecret"],
         )
 
+    def default_step_name(self, req):
+        return req["Action"]
+
     def do(self, req):
         req = merge(req, {
             "Action": REQUIRED

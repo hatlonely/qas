@@ -45,6 +45,9 @@ class POPDriver(Driver):
         self.client = AcsClient(args["AccessKeyId"], args["AccessKeySecret"], args["RegionId"], verify=not args["DisableVerify"])
         self.region_id = args["RegionId"]
 
+    def default_step_name(self, req):
+        return req["Action"]
+
     def do(self, req: dict):
         req = merge(req, {
             "Action": REQUIRED,

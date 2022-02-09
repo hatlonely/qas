@@ -25,6 +25,9 @@ class ShellDriver(Driver):
         self.args = args["args"]
         self.envs = args["envs"]
 
+    def default_step_name(self, req):
+        return req["command"].split(" ")[0]
+
     def do(self, req):
         req = merge(req, {
             "command": REQUIRED,

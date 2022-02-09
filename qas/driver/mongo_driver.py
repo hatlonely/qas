@@ -23,6 +23,9 @@ class MongoDriver(Driver):
         )
         self.database = self.client.get_database(args["database"])
 
+    def default_step_name(self, req):
+        return req["cmd"]
+
     def do(self, req):
         req = merge(req, {
             "cmd": REQUIRED

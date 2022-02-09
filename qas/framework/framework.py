@@ -318,7 +318,7 @@ class Framework:
             [list(i) + [case.add_after_case_step_result, case.skip_after_case_step] for i in enumerate(after_case_info)],
         ):
             step_info = merge(step_info, {
-                "name": "step-{}".format(idx),
+                "name": "",
                 "res": {},
                 "retry": {},
                 "until": {},
@@ -353,6 +353,11 @@ class Framework:
                 req = render(json.loads(json.dumps(req)), case=case, var=var, x=x)  # use json translate tuple to list
                 step.req = req
                 sub_step_result.req = req
+                # auto name step
+                if not step.name:
+                    step.name = ctx[step_info["ctx"]].default_step_name(req)
+                    if not step.name:
+                        step.name = "anonymous-step"
 
                 retry = Retry(merge(step_info["retry"], dft[step_info["ctx"]]["retry"]))
                 until = Until(merge(step_info["until"], dft[step_info["ctx"]]["until"]))

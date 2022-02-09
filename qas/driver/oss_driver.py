@@ -27,6 +27,9 @@ class OSSDriver(Driver):
             bucket_name=args["Bucket"],
         )
 
+    def default_step_name(self, req):
+        return req["Action"]
+
     def do(self, req):
         req = merge(req, {
             "Action": REQUIRED

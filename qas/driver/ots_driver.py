@@ -21,6 +21,9 @@ class OTSDriver(Driver):
 
         self.client = tablestore.OTSClient(args["Endpoint"], args["AccessKeyId"], args["AccessKeySecret"], args["Instance"])
 
+    def default_step_name(self, req):
+        return req["Action"]
+
     def do(self, req: dict):
         req = merge(req, {
             "Action": REQUIRED

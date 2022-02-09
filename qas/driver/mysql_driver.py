@@ -28,6 +28,9 @@ class MysqlDriver(Driver):
             cursorclass=pymysql.cursors.DictCursor,
         )
 
+    def default_step_name(self, req):
+        return req["sql"].split(" ")[0]
+
     def do(self, req):
         req = merge(req, {
             "cmd": "sql",
