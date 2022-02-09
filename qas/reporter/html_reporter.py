@@ -19,64 +19,112 @@ _report_tpl = """<!DOCTYPE html>
 </head>
 
 <body>
-    {% print(render_test(res)) %}
+    <div class="container">
+        <div class="row justify-content-md-center">
+        {% print(render_test(res, "test")) %}
+        </div>
+    </div>
 </body>
 </html>
 """
 
 _test_tpl = """
-<div class="container">
-    <div class="row justify-content-md-center">
-        <div class="col-lg-10 col-md-12">
-            <table class="table table-striped">
-                <thead>
-                    {% if res.is_pass %}
-                    <tr class="table-success"><th colspan="8">{{ res.name }} 测试通过</th></tr>
-                    {% else %}
-                    <tr class="table-danger"><th colspan="8">{{ res.name }} 测试失败</th></tr>
-                    {% endif %}
+<div class="col-lg-10 col-md-12">
+    <table class="table table-striped">
+        <thead>
+            {% if res.is_pass %}
+            <tr class="table-success"><th colspan="8">{{ res.name }} 测试通过</th></tr>
+            {% else %}
+            <tr class="table-danger"><th colspan="8">{{ res.name }} 测试失败</th></tr>
+            {% endif %}
 
-                    <tr>
-                        <th>测试通过</th>
-                        <th>测试跳过</th>
-                        <th>测试失败</th>
-                        <th>步骤通过</th>
-                        <th>步骤失败</th>
-                        <th>断言成功</th>
-                        <th>断言失败</th>
-                        <th>耗时</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>{{ res.case_succ }}</td>
-                        <td>{{ res.case_skip }}</td>
-                        <td>{{ res.case_fail }}</td>
-                        <td>{{ res.step_succ }}</td>
-                        <td>{{ res.step_fail }}</td>
-                        <td>{{ res.assertion_succ }}</td>
-                        <td>{{ res.assertion_fail }}</td>
-                        <td>{{ durationpy.to_str(res.elapse) }}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+            <tr>
+                <th>测试通过</th>
+                <th>测试跳过</th>
+                <th>测试失败</th>
+                <th>步骤通过</th>
+                <th>步骤失败</th>
+                <th>断言成功</th>
+                <th>断言失败</th>
+                <th>耗时</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ res.case_succ }}</td>
+                <td>{{ res.case_skip }}</td>
+                <td>{{ res.case_fail }}</td>
+                <td>{{ res.step_succ }}</td>
+                <td>{{ res.step_fail }}</td>
+                <td>{{ res.assertion_succ }}</td>
+                <td>{{ res.assertion_fail }}</td>
+                <td>{{ durationpy.to_str(res.elapse) }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 
-        <div class="col-lg-10 col-md-12">
-            {% set md5sum = "case" + hashlib.md5(res.name.encode()).hexdigest() %}
-            <div class="card">
-                <div class="card-header">
-                    Cases
-                </div>
-                <ul class="list-group list-group-flush">
-                    {% for case in res.cases %}
-                    <li class="list-group-item">
-                        {% print(render_case(case, '{}-{}'.format(md5sum, loop.index))) %}
-                    </li>
-                    {% endfor %}
-                </ul>
-            </div>
+{# 渲染 setup #}
+<div class="col-lg-10 col-md-12">
+    <div class="card mt-3">
+        <div class="card-header">
+            SetUp
         </div>
+        <ul class="list-group list-group-flush">
+            {% for case in res.setups %}
+            <li class="list-group-item">
+                {% print(render_case(case, '{}-setup-{}'.format(name, loop.index))) %}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+{# 渲染 case #}
+<div class="col-lg-10 col-md-12">
+    <div class="card mt-3">
+        <div class="card-header">
+            Case
+        </div>
+        <ul class="list-group list-group-flush">
+            {% for case in res.cases %}
+            <li class="list-group-item">
+                {% print(render_case(case, '{}-case-{}'.format(name, loop.index))) %}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+{# 渲染 teardown #}
+<div class="col-lg-10 col-md-12">
+    <div class="card mt-3">
+        <div class="card-header">
+            TearDown
+        </div>
+        <ul class="list-group list-group-flush">
+            {% for case in res.teardowns %}
+            <li class="list-group-item">
+                {% print(render_case(case, '{}-teardown-{}'.format(name, loop.index))) %}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+{# 渲染 subtest #}
+<div class="col-lg-10 col-md-12">
+    <div class="card mt-3">
+        <div class="card-header">
+            SubTest
+        </div>
+        <ul class="list-group list-group-flush">
+            {% for sub_test in res.sub_tests %}
+            <li class="list-group-item">
+                {% print(render_test(sub_test, '{}-subtest-{}'.format(name, loop.index))) %}
+            </li>
+            {% endfor %}
+        </ul>
     </div>
 </div>
 """
@@ -171,8 +219,8 @@ class HtmlReporter(Reporter):
     def report_final_result(self, res: TestResult):
         print(self.report_tpl.render(res=res))
 
-    def render_test(self, res):
-        return self.test_tpl.render(res=res)
+    def render_test(self, res, name):
+        return self.test_tpl.render(res=res, name=name)
 
     def render_case(self, case, name):
         return self.case_tpl.render(case=case, name=name)
