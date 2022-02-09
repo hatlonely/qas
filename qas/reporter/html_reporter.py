@@ -271,24 +271,27 @@ _sub_step_tpl = """
 {% endif %}
 
 <div class="collapse card" id="{{ name }}">
+    {% if sub_step.is_pass %}
     <div class="card border-success">
-        <div class="card-header">
-            Req
-        </div>
+    {% else %}
+    <div class="card border-danger">
+    {% endif %}
+        <div class="card-header">Req</div>
         <div class="card-body">
             <pre>{% print(json.dumps(sub_step.req, indent=2)) %}</pre>
         </div>
-        <div class="card-header">
-            Res
-        </div>
+
+        {% if sub_step.is_pass or sub_step.is_err %}
+        <div class="card-header">Res</div>
+        {% else %}
+        <div class="card-header text-white bg-danger">Res</div>
+        {% endif %}
         <div class="card-body">
             <pre>{% print(format_sub_step_res(sub_step)) %}</pre>
         </div>
 
         {% if sub_step.is_err %}
-        <div class="card-header text-white bg-danger">
-            Err
-        </div>
+        <div class="card-header text-white bg-danger">Err</div>
         <div class="card-body">
             <pre>{{ sub_step.err }}</pre>
         </div>
