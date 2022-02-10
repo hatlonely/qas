@@ -224,7 +224,11 @@ _case_tpl = """
 </a>
 {% endif %}
 <div class="collapse card" id="{{ name }}">
-    <div class="card">
+    {% if case.is_pass %}
+    <div class="card border-success">
+    {% else %}
+    <div class="card border-danger">
+    {% endif %}
         {# Description #}
         {% if case.description %}
         <div class="card-header">Description</div>
@@ -307,7 +311,11 @@ _step_tpl = """
 {% endif %}
 
 <div class="collapse card" id="{{ name }}">
-    <div class="card">
+    {% if step.is_pass %}
+    <div class="card border-success">
+    {% else %}
+    <div class="card border-danger">
+    {% endif %}
         {# Description #}
         {% if step.description %}
         <div class="card-header">Description</div>
