@@ -1,4 +1,4 @@
-name: description
+name: description-example
 description: |
   ## test description
 
@@ -12,7 +12,7 @@ ctx:
     type: shell
 
 case:
-  - name: HelloWorld
+  - name: DescriptionExample
     description: |
       ## case description
 
