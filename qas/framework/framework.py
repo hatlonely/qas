@@ -331,6 +331,7 @@ class Framework:
         ):
             step_info = merge(step_info, {
                 "name": "",
+                "description": "",
                 "res": {},
                 "retry": {},
                 "until": {},
@@ -355,7 +356,7 @@ class Framework:
     def run_step(self, step_info, case, dft, var=None, ctx=None, x=None):
         self.debug("step {}".format(json.dumps(step_info, indent=True)))
 
-        step = StepResult(step_info["name"], step_info["ctx"])
+        step = StepResult(step_info["name"], step_info["ctx"], step_info["description"])
         now = datetime.now()
         for req, res in zip(generate_req(step_info["req"]), generate_res(step_info["res"], calculate_num(step_info["req"]))):
             sub_step_start = datetime.now()

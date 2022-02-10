@@ -127,8 +127,7 @@ class StepResult:
 
     @staticmethod
     def from_json(obj):
-        res = StepResult(obj["name"], obj["ctx"])
-        res.description = obj["description"]
+        res = StepResult(obj["name"], obj["ctx"], description=obj["description"])
         res.is_skip = obj["isSkip"]
         res.is_pass = obj["isPass"]
         res.req = obj["req"]
@@ -139,10 +138,10 @@ class StepResult:
         res.elapse = timedelta(microseconds=obj["elapse"])
         return res
 
-    def __init__(self, name, ctx, is_skip=False):
+    def __init__(self, name, ctx, description="", is_skip=False):
         self.name = name
         self.ctx = ctx
-        self.description = ""
+        self.description = description
         self.is_skip = is_skip
         self.is_pass = True
         self.req = {}
