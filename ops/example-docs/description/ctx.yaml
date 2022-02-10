@@ -1,0 +1,31 @@
+name: description
+description: |
+  ## test description
+
+  markdown test descripiton
+
+  - case1: brief description of case1
+  - case2: brief description of case2
+
+ctx:
+  shell:
+    type: shell
+
+case:
+  - name: HelloWorld
+    description: |
+      ## case description
+
+      markdown case descripiton
+
+      - step1: echo hello world
+      - step2: echo hello world
+    step:
+      - ctx: shell
+        description: |
+          echo hello world
+        req:
+          command: echo -n hello world
+        res:
+          exitCode: 0
+          stdout: hello world

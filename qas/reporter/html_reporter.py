@@ -6,6 +6,7 @@ import hashlib
 import json
 import re
 from jinja2 import Environment, BaseLoader
+import markdown
 
 from ..result import TestResult, SubStepResult
 from .reporter import Reporter
@@ -34,7 +35,7 @@ _report_tpl = """<!DOCTYPE html>
     <div class="container">
         <div class="row justify-content-md-center">
             <div class="col-lg-10 col-md-12">
-            {% print(render_test(res, "test")) %}
+            {{ render_test(res, "test") }}
             </div>
         </div>
     </div>
@@ -121,18 +122,33 @@ _test_tpl = """
     </div>
 </div>
 
+{# 渲染 description #}
+{% if res.description %}
+<div class="col-md-12">
+    <div class="card mt-3">
+        <div class="card-header justify-content-between d-flex">
+            Description
+        </div>
+        <div class="card-body">
+            {{ markdown(res.description) }}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+
 {# 渲染 setup #}
 {% if res.setups %}
 <div class="col-md-12">
     <div class="card mt-3">
         <div class="card-header justify-content-between d-flex">
             SetUp
-            <span class="badge bg-primary rounded-pill">{% print(len(res.setups)) %}</span>
+            <span class="badge bg-primary rounded-pill">{{ len(res.setups) }}</span>
         </div>
         <ul class="list-group list-group-flush">
             {% for case in res.setups %}
             <li class="list-group-item">
-                {% print(render_case(case, '{}-setup-{}'.format(name, loop.index0))) %}
+                {{ render_case(case, '{}-setup-{}'.format(name, loop.index0)) }}
             </li>
             {% endfor %}
         </ul>
@@ -147,19 +163,19 @@ _test_tpl = """
         <div class="card-header justify-content-between d-flex">
             Case
             <span>
-                <span class="badge bg-success rounded-pill">{% print(res.curr_case_succ) %}</span>
+                <span class="badge bg-success rounded-pill">{{ res.curr_case_succ }}</span>
                 {% if res.curr_case_skip %}
-                <span class="badge bg-warning rounded-pill">{% print(res.curr_case_skip) %}</span>
+                <span class="badge bg-warning rounded-pill">{{ res.curr_case_skip }}</span>
                 {% endif %}
                 {% if res.curr_case_fail %}
-                <span class="badge bg-danger rounded-pill">{% print(res.curr_case_fail) %}</span>
+                <span class="badge bg-danger rounded-pill">{{ res.curr_case_fail }}</span>
                 {% endif %}
             </span>
         </div>
         <ul class="list-group list-group-flush">
             {% for case in res.cases %}
             <li class="list-group-item">
-                {% print(render_case(case, '{}-case-{}'.format(name, loop.index0))) %}
+                {{ render_case(case, '{}-case-{}'.format(name, loop.index0)) }}
             </li>
             {% endfor %}
         </ul>
@@ -173,12 +189,12 @@ _test_tpl = """
     <div class="card mt-3">
         <div class="card-header justify-content-between d-flex">
             TearDown
-            <span class="badge bg-primary rounded-pill">{% print(len(res.teardowns)) %}</span>
+            <span class="badge bg-primary rounded-pill">{{ len(res.teardowns) }}</span>
         </div>
         <ul class="list-group list-group-flush">
             {% for case in res.teardowns %}
             <li class="list-group-item">
-                {% print(render_case(case, '{}-teardown-{}'.format(name, loop.index0))) %}
+                {{ render_case(case, '{}-teardown-{}'.format(name, loop.index0)) }}
             </li>
             {% endfor %}
         </ul>
@@ -202,7 +218,7 @@ _test_tpl = """
         <ul class="list-group list-group-flush">
             {% for sub_test in res.sub_tests %}
             <li class="list-group-item">
-                {% print(render_test(sub_test, '{}-subtest-{}'.format(name, loop.index0))) %}
+                {{ render_test(sub_test, '{}-subtest-{}'.format(name, loop.index0)) }}
             </li>
             {% endfor %}
         </ul>
@@ -220,12 +236,12 @@ _case_tpl = """
 {% elif case.is_pass %}
 <a class="card-title btn d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#{{ name }}" role="button" aria-expanded="false" aria-controls="{{ name }}">
     {{ case.name }}
-    <span>{% print(format_timedelta(case.elapse)) %}</span>
+    <span>{{ format_timedelta(case.elapse) }}</span>
 </a>
 {% else %}
 <a class="card-title text-white bg-danger btn btn-danger d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#{{ name }}" role="button" aria-expanded="false" aria-controls="{{ name }}">
     {{ case.name }}
-    <span>{% print(format_timedelta(case.elapse)) %}</span>
+    <span>{{ format_timedelta(case.elapse) }}</span>
 </a>
 {% endif %}
 <div class="collapse card" id="{{ name }}">
@@ -238,7 +254,7 @@ _case_tpl = """
         <ul class="list-group list-group-flush">
             {% for step in case.before_case_steps %}
             <li class="list-group-item">
-                {% print(render_step(step, '{}-before-case-step-{}'.format(name, loop.index0))) %}
+                {{ render_step(step, '{}-before-case-step-{}'.format(name, loop.index0)) }}
             </li>
             {% endfor %}
         </ul>
@@ -252,7 +268,7 @@ _case_tpl = """
         <ul class="list-group list-group-flush">
             {% for step in case.pre_steps %}
             <li class="list-group-item">
-                {% print(render_step(step, '{}-pre-step-{}'.format(name, loop.index0))) %}
+                {{ render_step(step, '{}-pre-step-{}'.format(name, loop.index0)) }}
             </li>
             {% endfor %}
         </ul>
@@ -265,7 +281,7 @@ _case_tpl = """
         <ul class="list-group list-group-flush">
             {% for step in case.steps %}
             <li class="list-group-item">
-                {% print(render_step(step, '{}-step-{}'.format(name, loop.index0))) %}
+                {{ render_step(step, '{}-step-{}'.format(name, loop.index0)) }}
             </li>
             {% endfor %}
         </ul>
@@ -278,7 +294,7 @@ _case_tpl = """
         <ul class="list-group list-group-flush">
             {% for step in case.after_case_steps %}
             <li class="list-group-item">
-                {% print(render_step(step, '{}-after-case-step-{}'.format(name, loop.index0))) %}
+                {{ render_step(step, '{}-after-case-step-{}'.format(name, loop.index0)) }}
             </li>
             {% endfor %}
         </ul>
@@ -296,12 +312,12 @@ _step_tpl = """
 {% elif step.is_pass %}
 <a class="card-title btn d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#{{ name }}" role="button" aria-expanded="false" aria-controls="{{ name }}">
     {{ step.ctx }}.{{ step.name }}
-    <span>{% print(format_timedelta(step.elapse)) %}</span>
+    <span>{{ format_timedelta(step.elapse) }}</span>
 </a>
 {% else %}
 <a class="card-title text-white bg-danger btn btn-danger d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#{{ name }}" role="button" aria-expanded="false" aria-controls="{{ name }}">
     {{ step.ctx }}.{{ step.name }}
-    <span>{% print(format_timedelta(step.elapse)) %}</span>
+    <span>{{ format_timedelta(step.elapse) }}</span>
 </a>
 {% endif %}
 
@@ -315,7 +331,7 @@ _step_tpl = """
         <ul class="list-group list-group-flush">
             {% for sub_step in step.sub_steps %}
             <li class="list-group-item">
-                {% print(render_sub_step(sub_step, '{}-sub-step-{}'.format(name, loop.index0), loop.index0)) %}
+                {{ render_sub_step(sub_step, '{}-sub-step-{}'.format(name, loop.index0), loop.index0) }}
             </li>
             {% endfor %}
         </ul>
@@ -328,12 +344,12 @@ _sub_step_tpl = """
 {% if sub_step.is_pass %}
 <a class="card-title btn d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#{{ name }}" role="button" aria-expanded="false" aria-controls="{{ name }}">
     sub-step {{ index }}
-    <span>{% print(format_timedelta(sub_step.elapse)) %}</span>
+    <span>{{ format_timedelta(sub_step.elapse) }}</span>
 </a>
 {% else %}
 <a class="card-title text-white bg-danger btn btn-danger d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#{{ name }}" role="button" aria-expanded="false" aria-controls="{{ name }}">
     sub-step {{ index }}
-    <span>{% print(format_timedelta(sub_step.elapse)) %}</span>
+    <span>{{ format_timedelta(sub_step.elapse) }}</span>
 </a>
 {% endif %}
 {% endif %}
@@ -350,7 +366,7 @@ _sub_step_tpl = """
     {% endif %}
         <div class="card-header">Req</div>
         <div class="card-body">
-            <pre>{% print(json.dumps(sub_step.req, indent=2)) %}</pre>
+            <pre>{{ json.dumps(sub_step.req, indent=2) }}</pre>
         </div>
 
         {% if sub_step.is_pass or sub_step.is_err %}
@@ -367,7 +383,7 @@ _sub_step_tpl = """
             </span>
         </div>
         <div class="card-body">
-            <pre>{% print(format_sub_step_res(sub_step)) %}</pre>
+            <pre>{{ format_sub_step_res(sub_step) }}</pre>
         </div>
 
         {% if sub_step.is_err %}
@@ -394,6 +410,7 @@ class HtmlReporter(Reporter):
         env.globals.update(format_sub_step_res=HtmlReporter.format_sub_step_res)
         env.globals.update(len=len)
         env.globals.update(brief_mode=True)
+        env.globals.update(markdown=markdown.markdown)
         self.report_tpl = env.from_string(_report_tpl)
         self.test_tpl = env.from_string(_test_tpl)
         self.case_tpl = env.from_string(_case_tpl)
