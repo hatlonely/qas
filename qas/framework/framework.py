@@ -231,7 +231,8 @@ class Framework:
     def load_x(filename):
         if not os.path.exists(filename) or not os.path.isdir(filename):
             return {}
-        return importlib.import_module(filename.replace("/", "."), "x")
+        prefix = os.path.commonprefix([filename, os.getcwd()]) + "/"
+        return importlib.import_module(filename.removeprefix(prefix).replace("/", "."), "x")
 
     @staticmethod
     def load_var(filename):
