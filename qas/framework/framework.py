@@ -11,6 +11,7 @@ import os
 import json
 import importlib
 import sys
+import pathlib
 from types import SimpleNamespace
 from datetime import datetime
 
@@ -20,9 +21,6 @@ from ..result import TestResult, CaseResult, StepResult, SubStepResult
 from ..reporter import reporters
 from .retry_until import Retry, Until, RetryError, UntilError
 from .generate import generate_req, generate_res, calculate_num
-
-
-sys.path.append(".")
 
 
 def dict_to_sns(d):
@@ -231,8 +229,9 @@ class Framework:
     def load_x(filename):
         if not os.path.exists(filename) or not os.path.isdir(filename):
             return {}
-        prefix = os.path.commonprefix([filename, os.getcwd()]) + "/"
-        return importlib.import_module(filename.removeprefix(prefix).replace("/", "."), "x")
+        p = pathlib.Path(filename)
+        sys.path.append(str(p.parent.absolute()))
+        return importlib.import_module(str(p.name), "x")
 
     @staticmethod
     def load_var(filename):
