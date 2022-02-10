@@ -6,7 +6,8 @@ import traceback
 import aliyunsdkcore.acs_exception.exceptions
 from aliyunsdkcore.client import AcsClient
 from aliyunsdkcore.request import CommonRequest
-from .default import merge, REQUIRED
+
+from ..util import merge, REQUIRED
 from .driver import Driver
 
 

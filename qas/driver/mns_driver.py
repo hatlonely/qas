@@ -4,7 +4,7 @@
 import json
 import mns.mns_client
 import mns.mns_exception
-from .default import merge, REQUIRED
+from ..util import merge, REQUIRED
 from .driver import Driver
 
 

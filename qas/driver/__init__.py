@@ -10,7 +10,6 @@ from .pop_driver import POPDriver
 from .ots_driver import OTSDriver
 from .mns_driver import MNSDriver
 from .oss_driver import OSSDriver
-from .default import merge, REQUIRED
 
 
 drivers = {

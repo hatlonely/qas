@@ -15,9 +15,9 @@ import pathlib
 from types import SimpleNamespace
 from datetime import datetime
 
-from ..driver import drivers, merge, REQUIRED
+from ..driver import drivers
 from ..assertion import expect, expect_val
-from ..util import render
+from ..util import render, merge, REQUIRED
 from ..result import TestResult, CaseResult, StepResult, SubStepResult
 from ..reporter import reporters
 from .retry_until import Retry, Until, RetryError, UntilError

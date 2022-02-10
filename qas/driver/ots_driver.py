@@ -3,9 +3,10 @@
 
 import tablestore
 import json
-from .default import merge, REQUIRED
-from .driver import Driver
 import traceback
+
+from ..util import merge, REQUIRED
+from .driver import Driver
 
 
 class OTSDriver(Driver):

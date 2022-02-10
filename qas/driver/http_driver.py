@@ -3,7 +3,7 @@
 
 import durationpy
 import requests
-from .default import merge, REQUIRED
+from ..util import merge, REQUIRED
 from .driver import Driver
 
 

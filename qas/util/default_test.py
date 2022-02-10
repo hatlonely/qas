@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 
 
-import json
 import unittest
-from .default import *
+from qas.util.default import *
 
 
 class TestMerge(unittest.TestCase):

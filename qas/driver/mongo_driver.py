@@ -5,7 +5,7 @@ import json
 import pymongo
 from bson.objectid import ObjectId
 
-from .default import merge, REQUIRED
+from ..util import merge, REQUIRED
 from .driver import Driver
 
 

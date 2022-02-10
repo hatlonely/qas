@@ -6,7 +6,7 @@ import yaml
 import subprocess
 import traceback
 
-from .default import merge, REQUIRED
+from ..util import merge, REQUIRED
 from .driver import Driver
 
 

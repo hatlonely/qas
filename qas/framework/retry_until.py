@@ -3,7 +3,7 @@
 
 import datetime
 import durationpy
-from ..driver import merge
+from ..util import merge
 
 
 class RetryError(Exception):
