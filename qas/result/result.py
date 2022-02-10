@@ -333,8 +333,7 @@ class TestResult:
 
     @staticmethod
     def from_json(obj):
-        res = TestResult(directory=obj["directory"], name=obj["name"])
-        res.description = obj["description"]
+        res = TestResult(directory=obj["directory"], name=obj["name"], description=obj["description"])
         res.is_pass = obj["isPass"]
         res.is_err = obj["isErr"]
         res.err = obj["err"]
