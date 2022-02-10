@@ -195,8 +195,7 @@ class CaseResult:
 
     @staticmethod
     def from_json(obj):
-        res = CaseResult(name=obj["name"])
-        res.description = obj["description"]
+        res = CaseResult(name=obj["name"], description=obj["description"])
         res.is_skip = obj["isSkip"]
         res.is_pass = obj["isPass"]
         res.before_case_steps = [StepResult.from_json(i) for i in obj["beforeCaseSteps"]]
@@ -209,9 +208,9 @@ class CaseResult:
         res.elapse = timedelta(microseconds=obj["elapse"])
         return res
 
-    def __init__(self, name, is_skip=False):
+    def __init__(self, name, description="", is_skip=False):
         self.name = name
-        self.description = ""
+        self.description = description
         self.is_skip = is_skip
         self.before_case_steps = list[StepResult]()
         self.pre_steps = list[StepResult]()

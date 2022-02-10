@@ -283,6 +283,7 @@ class Framework:
     def format_case(filename, info):
         info = merge(info, {
             "name": REQUIRED,
+            "description": "",
             "cond": "",
         })
         return info
@@ -311,13 +312,14 @@ class Framework:
     def run_case(self, before_case_info, case_info, after_case_info, common_step_info, dft, var=None, ctx=None, x=None):
         case_info = merge(case_info, {
             "name": REQUIRED,
+            "description": "",
             "cond": "",
             "label": {},
             "preStep": [],
             "postStep": [],
         })
 
-        case = CaseResult(case_info["name"])
+        case = CaseResult(case_info["name"], case_info["description"])
 
         now = datetime.now()
         for idx, step_info, case_add_step_func, case_skip_step_func in itertools.chain(
