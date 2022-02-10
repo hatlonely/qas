@@ -39,9 +39,9 @@ task:
       - sh ${DEP}/ops/tool/render.sh ops/example-docs ${TMP}/example-docs
       - |
         if [[ "${case}" == "" ]]; then
-          python3 main.py --test "${TMP}/example-docs"
+          python3 main.py --test "${TMP}/example-docs" -x ops/x
         else
-          python3 main.py --test "${TMP}/example-docs" --case "${case}"
+          python3 main.py --test "${TMP}/example-docs" -x ops/x --case "${case}"
         fi
   self-test:
     args:
