@@ -246,6 +246,12 @@ _case_tpl = """
 {% endif %}
 <div class="collapse card" id="{{ name }}">
     <div class="card">
+        {# Description #}
+        {% if case.description %}
+        <div class="card-header">Description</div>
+        <div class="card-body">{{ markdown(case.description) }}</div>
+        {% endif %}
+
         {# BeforeCaseStep #}
         {% if case.before_case_steps %}
         <div class="card-header">
@@ -323,6 +329,12 @@ _step_tpl = """
 
 <div class="collapse card" id="{{ name }}">
     <div class="card">
+        {# Description #}
+        {% if step.description %}
+        <div class="card-header">Description</div>
+        <div class="card-body">{{ markdown(step.description) }}</div>
+        {% endif %}
+
         {% if not brief_mode %}
         <div class="card-header">
             SubStep
