@@ -111,36 +111,21 @@ _test_tpl = """
             </table>
         </div>
         
+        {# 渲染 Err #}
         {% if res.is_err %}
-        <div class="card-header text-white bg-danger">
-            Err
-        </div>
-        <div class="card-body">
-            <pre>{{ res.err }}</pre>
-        </div>
+        <div class="card-header text-white bg-danger">Err</div>
+        <div class="card-body"><pre>{{ res.err }}</pre></div>
         {% endif %}
-    </div>
-</div>
 
-{# 渲染 description #}
-{% if res.description %}
-<div class="col-md-12">
-    <div class="card mt-3">
-        <div class="card-header justify-content-between d-flex">
-            Description
-        </div>
-        <div class="card-body">
-            {{ markdown(res.description) }}
-        </div>
-    </div>
-</div>
-{% endif %}
+        {# 渲染 Description #}
+        {% if res.description %}
+        <div class="card-header justify-content-between d-flex">Description</div>
+        <div class="card-body">{{ markdown(res.description) }}</div>
+        {% endif %}
 
 
-{# 渲染 setup #}
-{% if res.setups %}
-<div class="col-md-12">
-    <div class="card mt-3">
+        {# 渲染 setup #}
+        {% if res.setups %}
         <div class="card-header justify-content-between d-flex">
             SetUp
             <span class="badge bg-primary rounded-pill">{{ len(res.setups) }}</span>
@@ -152,14 +137,10 @@ _test_tpl = """
             </li>
             {% endfor %}
         </ul>
-    </div>
-</div>
-{% endif %}
+        {% endif %}
 
-{# 渲染 case #}
-{% if res.cases %}
-<div class="col-md-12">
-    <div class="card mt-3">
+        {# 渲染 case #}
+        {% if res.cases %}
         <div class="card-header justify-content-between d-flex">
             Case
             <span>
@@ -179,14 +160,10 @@ _test_tpl = """
             </li>
             {% endfor %}
         </ul>
-    </div>
-</div>
-{% endif %}
+        {% endif %}
 
-{# 渲染 teardown #}
-{% if res.teardowns %}
-<div class="col-md-12">
-    <div class="card mt-3">
+        {# 渲染 teardown #}
+        {% if res.teardowns %}
         <div class="card-header justify-content-between d-flex">
             TearDown
             <span class="badge bg-primary rounded-pill">{{ len(res.teardowns) }}</span>
@@ -198,14 +175,10 @@ _test_tpl = """
             </li>
             {% endfor %}
         </ul>
-    </div>
-</div>
-{% endif %}
+        {% endif %}
 
-{# 渲染 subtest #}
-{% if res.sub_tests %}
-<div class="col-md-12">
-    <div class="card mt-3">
+        {# 渲染 subtest #}
+        {% if res.sub_tests %}
         <div class="card-header justify-content-between d-flex">
             SubTest
             <span>
@@ -222,9 +195,10 @@ _test_tpl = """
             </li>
             {% endfor %}
         </ul>
+        {% endif %}
+
     </div>
 </div>
-{% endif %}
 """
 
 _case_tpl = """
