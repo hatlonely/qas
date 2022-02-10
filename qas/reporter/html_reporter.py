@@ -25,10 +25,23 @@ _report_tpl = """<!DOCTYPE html>
         body {
             font-family: 'Oswald', sans-serif !important;
         }
-        pre {
+        pre, code {
             font-family: 'Ubuntu Mono', monospace !important;
         }
     </style>
+    <script>
+        function copyToClipboard(elementId) {
+            var aux = document.createElement("textarea");
+            aux.value = document.getElementById(elementId).textContent;
+            aux.style.height = "0";
+            aux.style.overflow = "hidden";
+            aux.style.position = "fixed";
+            document.body.appendChild(aux);
+            aux.select();
+            document.execCommand("copy");
+            document.body.removeChild(aux);
+        }
+    </script>
 </head>
 
 <body>
@@ -365,7 +378,13 @@ _sub_step_tpl = """
     {% endif %}
         <div class="card-header">Req</div>
         <div class="card-body">
-            <pre>{{ json.dumps(sub_step.req, indent=2) }}</pre>
+            <div class="float-end">
+                <button type="button" class="btn btn-outline-primary btn-sm py-0" onclick="copyToClipboard('{{ name }}-req')"
+                    data-bs-toggle="tooltip" data-bs-placement="top" title="Copy to clipboard">
+                    copy
+                </button>
+            </div>
+            <pre id="{{ name }}-req">{{ json.dumps(sub_step.req, indent=2) }}</pre>
         </div>
 
         {% if sub_step.is_pass or sub_step.is_err %}
@@ -382,7 +401,13 @@ _sub_step_tpl = """
             </span>
         </div>
         <div class="card-body">
-            <pre>{{ format_sub_step_res(sub_step) }}</pre>
+            <div class="float-end">
+                <button type="button" class="btn btn-outline-primary btn-sm py-0" onclick="copyToClipboard('{{ name }}-res')"
+                    data-bs-toggle="tooltip" data-bs-placement="top" title="Copy to clipboard">
+                    copy
+                </button>
+            </div>
+            <pre id="{{ name }}-res">{{ format_sub_step_res(sub_step) }}</pre>
         </div>
 
         {% if sub_step.is_err %}
