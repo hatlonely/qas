@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
 
-from .include import *
 from ..result import *
+from ..util.include import *
 
 
 def expect(vals, rules, case=None, step=None, var=None, x=None):

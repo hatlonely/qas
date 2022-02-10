@@ -3,7 +3,7 @@
 
 import unittest
 import json
-from render import *
+from .render import render
 
 
 class TestRender(unittest.TestCase):

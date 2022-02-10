@@ -16,7 +16,8 @@ from types import SimpleNamespace
 from datetime import datetime
 
 from ..driver import drivers, merge, REQUIRED
-from ..assertion import expect, render, expect_val
+from ..assertion import expect, expect_val
+from ..util import render
 from ..result import TestResult, CaseResult, StepResult, SubStepResult
 from ..reporter import reporters
 from .retry_until import Retry, Until, RetryError, UntilError
