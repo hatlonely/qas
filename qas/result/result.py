@@ -99,6 +99,7 @@ class SubStepResult:
 @dataclass
 class StepResult:
     name: str
+    description: str
     ctx: str
     is_skip: bool
     is_pass: bool
@@ -112,6 +113,7 @@ class StepResult:
     def to_json(self):
         return {
             "name": self.name,
+            "description": self.description,
             "ctx": self.ctx,
             "isSkip": self.is_skip,
             "isPass": self.is_pass,
@@ -126,6 +128,7 @@ class StepResult:
     @staticmethod
     def from_json(obj):
         res = StepResult(obj["name"], obj["ctx"])
+        res.description = obj["description"]
         res.is_skip = obj["isSkip"]
         res.is_pass = obj["isPass"]
         res.req = obj["req"]
@@ -139,6 +142,7 @@ class StepResult:
     def __init__(self, name, ctx, is_skip=False):
         self.name = name
         self.ctx = ctx
+        self.description = ""
         self.is_skip = is_skip
         self.is_pass = True
         self.req = {}
@@ -158,6 +162,7 @@ class StepResult:
 @dataclass
 class CaseResult:
     name: str
+    description: str
     before_case_steps: list[StepResult]
     pre_steps: list[StepResult]
     steps: list[StepResult]
@@ -175,6 +180,7 @@ class CaseResult:
     def to_json(self):
         return {
             "name": self.name,
+            "description": self.description,
             "elapse": int(self.elapse.microseconds),
             "isPass": self.is_pass,
             "isSkip": self.is_skip,
@@ -189,8 +195,8 @@ class CaseResult:
 
     @staticmethod
     def from_json(obj):
-        res = CaseResult("")
-        res.name = obj["name"]
+        res = CaseResult(name=obj["name"])
+        res.description = obj["description"]
         res.is_skip = obj["isSkip"]
         res.is_pass = obj["isPass"]
         res.before_case_steps = [StepResult.from_json(i) for i in obj["beforeCaseSteps"]]
@@ -205,6 +211,7 @@ class CaseResult:
 
     def __init__(self, name, is_skip=False):
         self.name = name
+        self.description = ""
         self.is_skip = is_skip
         self.before_case_steps = list[StepResult]()
         self.pre_steps = list[StepResult]()
@@ -274,6 +281,7 @@ class CaseResult:
 class TestResult:
     directory: str
     name: str
+    description: str
     is_pass: bool
     is_err: bool
     err: str
@@ -301,6 +309,7 @@ class TestResult:
         return {
             "directory": self.directory,
             "name": self.name,
+            "description": self.description,
             "isPass": self.is_pass,
             "isErr": self.is_err,
             "err": self.err,
@@ -326,9 +335,8 @@ class TestResult:
 
     @staticmethod
     def from_json(obj):
-        res = TestResult("", "")
-        res.directory = obj["directory"]
-        res.name = obj["name"]
+        res = TestResult(directory=obj["directory"], name=obj["name"])
+        res.description = obj["description"]
         res.is_pass = obj["isPass"]
         res.is_err = obj["isErr"]
         res.err = obj["err"]
@@ -355,6 +363,7 @@ class TestResult:
     def __init__(self, directory, name, err_message=None):
         self.directory = directory
         self.name = name
+        self.description = ""
         self.is_pass = True
         self.is_err = False
         self.err = ""

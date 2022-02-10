@@ -9,4 +9,6 @@
 9. driver 支持 elasticsearch
 10. 参数支持 validator
 11. 断言 import 拓展
-13. http 支持文件上传
+12. http 支持文件上传
+13. description 支持
+14. config 支持，html css 以及字体配置
