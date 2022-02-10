@@ -18,7 +18,7 @@ class HttpDriver(Driver):
         self.endpoint = args["endpoint"].rstrip("/")
 
     def default_step_name(self, req):
-        return req["path"]
+        return req["path"] if "path" in req else "/"
 
     def do(self, req: dict):
         req = merge(req, {
