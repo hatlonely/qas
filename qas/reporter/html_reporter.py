@@ -45,7 +45,12 @@ _report_tpl = """<!DOCTYPE html>
 
 _test_tpl = """
 <div class="col-md-12">
-    <div class="card mt-3">
+    {% if res.is_pass %}
+    <div class="card my-3 border-success">
+    {% else %}
+    <div class="card my-3 border-danger">
+    {% endif %}
+
         {% if res.is_pass %}
         <div class="card-header text-white bg-success"><h5>{{ res.name }} 测试通过</h5></div>
         {% else %}
