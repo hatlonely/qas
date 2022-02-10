@@ -360,10 +360,10 @@ class TestResult:
         res.elapse = timedelta(microseconds=obj["elapse"])
         return res
 
-    def __init__(self, directory, name, err_message=None):
+    def __init__(self, directory, name, description, err_message=None):
         self.directory = directory
         self.name = name
-        self.description = ""
+        self.description = description
         self.is_pass = True
         self.is_err = False
         self.err = ""

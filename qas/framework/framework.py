@@ -80,7 +80,7 @@ class Framework:
         try:
             res = self.run_test(self.test_directory, {}, {}, {}, {}, [], [], self.drivers, self.x)
         except Exception as e:
-            res = TestResult(self.test_directory, self.test_directory, "Exception {}".format(traceback.format_exc()))
+            res = TestResult(self.test_directory, self.test_directory, "", "Exception {}".format(traceback.format_exc()))
         self.reporter.report_test_end(res)
         self.reporter.report_final_result(res)
         return res.is_pass
@@ -101,6 +101,7 @@ class Framework:
         self.debug("enter {}".format(test_directory))
 
         info = Framework.load_ctx(os.path.basename(test_directory), "{}/ctx.yaml".format(test_directory))
+        description = info["description"] + Framework.load_description("{}/README.md".format(test_directory))
         var_info = copy.deepcopy(parent_var_info) | info["var"] | Framework.load_var("{}/var.yaml".format(test_directory))
         var = json.loads(json.dumps(var_info), object_hook=dict_to_sns)
         common_step_info = copy.deepcopy(parent_common_step_info) | info["commonStep"] | Framework.load_common_step("{}/common_step.yaml".format(test_directory))
@@ -133,7 +134,7 @@ class Framework:
         self.debug("ctx: {}".format(ctx))
         self.debug("req: {}".format(dft_info))
 
-        test_result = TestResult(test_directory, info["name"])
+        test_result = TestResult(test_directory, info["name"], description)
 
         # 执行 setup
         if not self.skip_setup:
@@ -169,7 +170,7 @@ class Framework:
             try:
                 sub_test_result = self.run_test(directory, var_info, ctx, dft_info, common_step_info, before_case_info, after_case_info, parent_drivers, parent_x)
             except Exception as e:
-                sub_test_result = TestResult(directory, directory, "Exception {}".format(traceback.format_exc()))
+                sub_test_result = TestResult(directory, directory, "", "Exception {}".format(traceback.format_exc()))
             test_result.add_sub_test_result(sub_test_result)
             self.reporter.report_test_end(sub_test_result)
 
@@ -241,9 +242,18 @@ class Framework:
         return info
 
     @staticmethod
+    def load_description(filename):
+        if not os.path.exists(filename) or not os.path.isfile(filename):
+            return ""
+        with open(filename, "r", encoding="utf-8") as fp:
+            info = fp.readlines()
+        return info
+
+    @staticmethod
     def load_ctx(name, filename):
         dft = {
             "name": name,
+            "description": "",
             "ctx": {},
             "var": {},
             "case": [],
