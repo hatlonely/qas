@@ -315,9 +315,9 @@ class TestResult:
             "caseSucc": self.case_succ,
             "caseFail": self.case_fail,
             "caseSkip": self.case_skip,
-            "CurrCaseSucc": self.curr_case_succ,
-            "CurrCaseFail": self.curr_case_fail,
-            "CurrCaseSkip": self.curr_case_skip,
+            "currCaseSucc": self.curr_case_succ,
+            "currCaseFail": self.curr_case_fail,
+            "currCaseSkip": self.curr_case_skip,
             "stepSucc": self.step_succ,
             "stepFail": self.step_fail,
             "stepSkip": self.step_skip,
@@ -344,9 +344,9 @@ class TestResult:
         res.case_succ = obj["caseSucc"]
         res.case_fail = obj["caseFail"]
         res.case_skip = obj["caseSkip"]
-        res.curr_case_succ = obj["CurrCaseSucc"]
-        res.curr_case_fail = obj["CurrCaseFail"]
-        res.curr_case_skip = obj["CurrCaseSkip"]
+        res.curr_case_succ = obj["currCaseSucc"]
+        res.curr_case_fail = obj["currCaseFail"]
+        res.curr_case_skip = obj["currCaseSkip"]
         res.step_succ = obj["stepSucc"]
         res.step_fail = obj["stepFail"]
         res.step_skip = obj["stepSkip"]
