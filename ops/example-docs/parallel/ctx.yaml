@@ -11,28 +11,28 @@ case:
     step:
       - ctx: shell
         req:
-          command: date && sleep 2
+          command: date && sleep 1
   - name: ParallelExample2
     step:
       - ctx: shell
         req:
-          command: date && sleep 2
+          command: date && sleep 1
   - name: ParallelExample3
     step:
       - ctx: shell
         req:
-          command: date && sleep 2
+          command: date && sleep 1
   - name: ParallelExample4
     step:
       - ctx: shell
         req:
-          command: date && sleep 2
+          command: date && sleep 1
   - name: ParallelExample5
     step:
       - ctx: shell
         parallel: 3
         req:
-          command: date && sleep 2 && echo "${KEY1} ${KEY2}"
+          command: date && sleep 1 && echo "${KEY1} ${KEY2}"
           env:
             "!KEY1": ["1", "2", "3"]
             "!KEY2": ["4", "5"]
