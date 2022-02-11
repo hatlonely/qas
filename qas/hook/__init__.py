@@ -6,7 +6,7 @@ from .trace_hook import TraceHook
 
 hook_map = {
     "debug": DebugHook,
-    "trace": DebugHook,
+    "trace": TraceHook,
 }
 
 __all__ = ["DebugHook", "TraceHook", "hook_map"]

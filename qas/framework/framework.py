@@ -148,7 +148,7 @@ class Framework:
             for case_info in self.setups(info, test_directory):
                 for hook in hooks:
                     hook.on_setup_start(case_info)
-                result = self.run_case([], case_info, [], {}, dft_info, var=var, ctx=ctx, x=parent_x)
+                result = Framework.s_run_case(False, [], case_info, [], {}, dft_info, var=var, ctx=ctx, x=parent_x, hooks=hooks)
                 test_result.add_setup_result(result)
                 for hook in hooks:
                     hook.on_setup_end(result)
@@ -197,10 +197,10 @@ class Framework:
             for case_info in self.teardowns(info, test_directory):
                 for hook in hooks:
                     hook.on_teardown_start(case_info)
-                result = self.run_case([], case_info, [], {}, dft_info, var=var, ctx=ctx, x=parent_x)
+                result = Framework.s_run_case(False, [], case_info, [], {}, dft_info, var=var, ctx=ctx, x=parent_x, hooks=hooks)
                 test_result.add_teardown_result(result)
                 for hook in hooks:
-                    hook.on_teardown_end(case_info)
+                    hook.on_teardown_end(result)
                 if not result.is_pass:
                     return test_result
 
@@ -330,12 +330,6 @@ class Framework:
             if not info:
                 return {}
         return info
-
-    def run_case(self, before_case_info, case_info, after_case_info, common_step_info, dft, var=None, ctx=None, x=None):
-        return Framework.s_run_case(
-            self.need_skip(case_info, var),
-            before_case_info, case_info, after_case_info, common_step_info, dft, var=var, ctx=ctx, x=x, hooks=self.hooks,
-        )
 
     @staticmethod
     def s_run_case(need_skip, before_case_info, case_info, after_case_info, common_step_info, dft, var=None, ctx=None, x=None, hooks=None):
