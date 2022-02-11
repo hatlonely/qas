@@ -1,4 +1,4 @@
-name: hello-world
+name: self-test
 
 ctx:
   shell:
