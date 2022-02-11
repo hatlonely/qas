@@ -169,6 +169,7 @@ class Framework:
                 for hook in hooks:
                     hook.on_case_end(result)
         else:
+            # 并发执行，每次执行 ctx.yaml 中 parallel 定义的个数
             for i in grouper([
                 (self.need_skip(case_info, var), before_case_info, case_info, after_case_info, common_step_info, dft_info, var, ctx, parent_x, hooks)
                 for case_info in self.cases(info, test_directory)
