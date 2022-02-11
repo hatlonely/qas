@@ -312,7 +312,7 @@ class Framework:
         dft = {
             "name": name,
             "description": "",
-            "parallel": 1,
+            "parallel": 0,
             "ctx": {},
             "var": {},
             "case": [],
@@ -417,7 +417,7 @@ class Framework:
             step_info = merge(step_info, {
                 "name": "",
                 "description": "",
-                "parallel": 1,
+                "parallel": 0,
                 "res": {},
                 "retry": {},
                 "until": {},

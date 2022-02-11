@@ -86,6 +86,11 @@ class TestGenerate(unittest.TestCase):
             [7],
         ])
 
+        res = list(grouper([1, 2, 3, 4, 5, 6, 7], 0))
+        self.assertListEqual(res, [
+            [1, 2, 3, 4, 5, 6, 7]
+        ])
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -51,6 +51,9 @@ def calculate_num(d):
 
 
 def grouper(iterable, n):
+    if n == 0:
+        yield iterable
+
     it = iter(iterable)
     while True:
         chunk = list(itertools.islice(it, n))
