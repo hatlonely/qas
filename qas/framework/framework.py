@@ -15,6 +15,7 @@ import pathlib
 from types import SimpleNamespace
 from datetime import datetime
 from multiprocessing import Pool
+from dataclasses import dataclass
 
 
 from ..driver import driver_map
@@ -31,15 +32,19 @@ def dict_to_sns(d):
     return SimpleNamespace(**d)
 
 
-class Framework:
+@dataclass
+class Configuration:
     test_directory: str
     case_directory: str
     case_regex: str
     case_name: str
     skip_setup: bool
     skip_teardown: bool
-    debug_mode: bool
-    json_result: str
+    parallel: bool
+
+
+class Framework:
+    configuration: Configuration
 
     def __init__(
         self,
@@ -56,12 +61,15 @@ class Framework:
         worker_pool_size=None,
         hook=None,
     ):
-        self.test_directory = test_directory
-        self.case_directory = case_directory
-        self.case_regex = case_regex
-        self.case_name = case_name
-        self.skip_setup = skip_setup
-        self.skip_teardown = skip_teardown
+        self.configuration = Configuration(
+            test_directory=test_directory,
+            case_directory=case_directory,
+            case_regex=case_regex,
+            case_name=case_name,
+            skip_setup=skip_setup,
+            skip_teardown=skip_teardown,
+            parallel=parallel,
+        )
         self.reporter_map = reporter_map
         self.driver_map = driver_map
         self.hook_map = hook_map
@@ -76,13 +84,16 @@ class Framework:
                 self.hook_map = self.hook_map | self.x.hook_map
         self.reporter = self.reporter_map[reporter]()
         self.hooks = [self.hook_map[i]() for i in hook.split(",")] if hook else []
+
         self.json_result = json_result
-        self.parallel = parallel
-        if self.parallel:
+
+        if self.configuration.parallel:
             if worker_pool_size:
                 self.worker_pool = Pool(worker_pool_size)
             else:
                 self.worker_pool = Pool()
+        else:
+            self.worker_pool = None
 
     def format(self):
         res = TestResult.from_json(json.load(open(self.json_result)))
@@ -90,19 +101,20 @@ class Framework:
 
     def run(self):
         for hook in self.hooks:
-            hook.on_test_start(self.test_directory)
+            hook.on_test_start(self.configuration.test_directory)
         try:
-            res = self.run_test(self.test_directory, {}, {}, {}, {}, [], [], self.driver_map, self.x, self.hooks)
+            res = self.run_test(self.configuration, self.configuration.test_directory, {}, {}, {}, {}, [], [], self.driver_map, self.x, self.hooks, self.worker_pool)
         except Exception as e:
-            res = TestResult(self.test_directory, self.test_directory, "", "Exception {}".format(traceback.format_exc()))
+            res = TestResult(self.configuration.test_directory, self.configuration.test_directory, "", "Exception {}".format(traceback.format_exc()))
         for hook in self.hooks:
             hook.on_test_end(res)
 
         print(self.reporter.report(res))
         return res.is_pass
 
+    @staticmethod
     def run_test(
-            self,
+            configuration: Configuration,
             test_directory,
             parent_var_info,
             parent_ctx,
@@ -113,6 +125,7 @@ class Framework:
             parent_drivers,
             parent_x,
             hooks,
+            pool,
     ):
         now = datetime.now()
         info = Framework.load_ctx(os.path.basename(test_directory), "{}/ctx.yaml".format(test_directory))
@@ -148,7 +161,7 @@ class Framework:
         test_result = TestResult(test_directory, info["name"], description)
 
         # 执行 setup
-        if not self.skip_setup:
+        if not configuration.skip_setup:
             for case_info in Framework.setups(info, test_directory):
                 for hook in hooks:
                     hook.on_setup_start(case_info)
@@ -160,21 +173,21 @@ class Framework:
                     return test_result
 
         # 执行 case
-        if not self.parallel:
+        if not configuration.parallel:
             for case_info in Framework.cases(info, test_directory):
                 for hook in hooks:
                     hook.on_case_start(case_info)
-                result = Framework.run_case(self.need_skip(case_info, var), before_case_info, case_info, after_case_info, common_step_info, dft_info, var=var, ctx=ctx, x=parent_x, hooks=hooks)
+                result = Framework.run_case(Framework.need_skip(configuration, case_info, var), before_case_info, case_info, after_case_info, common_step_info, dft_info, var=var, ctx=ctx, x=parent_x, hooks=hooks)
                 test_result.add_case_result(result)
                 for hook in hooks:
                     hook.on_case_end(result)
         else:
             # 并发执行，每次执行 ctx.yaml 中 parallel 定义的个数
             for i in grouper([
-                (self.need_skip(case_info, var), before_case_info, case_info, after_case_info, common_step_info, dft_info, var, ctx, parent_x, hooks)
+                (Framework.need_skip(configuration, case_info, var), before_case_info, case_info, after_case_info, common_step_info, dft_info, var, ctx, parent_x, hooks)
                 for case_info in Framework.cases(info, test_directory)
             ], info["parallel"]):
-                results = self.worker_pool.starmap(Framework.run_case, i)
+                results = pool.starmap(Framework.run_case, i)
                 for result in results:
                     test_result.add_case_result(result)
 
@@ -184,12 +197,12 @@ class Framework:
             for i in os.listdir(test_directory)
             if os.path.isdir(os.path.join(test_directory, i))
         ]:
-            if self.case_directory and not re.search(self.case_directory, directory):
+            if configuration.case_directory and not re.search(configuration.case_directory, directory):
                 continue
             for hook in hooks:
                 hook.on_test_start(directory)
             try:
-                sub_test_result = self.run_test(directory, var_info, ctx, dft_info, common_step_info, before_case_info, after_case_info, parent_drivers, parent_x, hooks)
+                sub_test_result = Framework.run_test(configuration, directory, var_info, ctx, dft_info, common_step_info, before_case_info, after_case_info, parent_drivers, parent_x, hooks, pool)
             except Exception as e:
                 sub_test_result = TestResult(directory, directory, "", "Exception {}".format(traceback.format_exc()))
 
@@ -198,7 +211,7 @@ class Framework:
                 hook.on_test_end(sub_test_result)
 
         # 执行 teardown
-        if not self.skip_teardown:
+        if not configuration.skip_teardown:
             for case_info in Framework.teardowns(info, test_directory):
                 for hook in hooks:
                     hook.on_teardown_start(case_info)
@@ -212,10 +225,11 @@ class Framework:
         test_result.elapse = datetime.now() - now
         return test_result
 
-    def need_skip(self, case, var):
-        if self.case_name and self.case_name != case["name"]:
+    @staticmethod
+    def need_skip(configuration, case, var):
+        if configuration.case_name and configuration.case_name != case["name"]:
             return True
-        if self.case_regex and not re.search(self.case_regex, case["name"]):
+        if configuration.case_regex and not re.search(configuration.case_regex, case["name"]):
             return True
         if "cond" in case and case["cond"] and not expect_val(None, case["cond"], var=var):
             return True
