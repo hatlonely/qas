@@ -4,7 +4,7 @@ ctx:
   shell:
     type: shell
 
-parallel: 4
+parallel: 10
 
 case:
   - name: ParallelExample1
@@ -27,3 +27,11 @@ case:
       - ctx: shell
         req:
           command: date && sleep 2
+  - name: ParallelExample5
+    step:
+      - ctx: shell
+        req:
+          command: date && sleep 2 && echo "${KEY1} ${KEY2}"
+          env:
+            "!KEY1": ["1", "2"]
+            "!KEY2": ["3", "4"]
