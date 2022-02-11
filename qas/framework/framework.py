@@ -467,18 +467,18 @@ class Framework:
                 for j in range(retry.attempts):
                     step_res = ctx[step_info["ctx"]].do(req)
                     sub_step_result.res = step_res
-                    if retry.condition == "" or not expect_val(None, retry.condition, case=case, step=step, var=var, x=x):
+                    if retry.condition == "" or not expect_val(None, retry.condition, case=case, step=sub_step_result, var=var, x=x):
                         break
                     time.sleep(retry.delay.total_seconds())
                 else:
                     raise RetryError()
-                if until.condition == "" or expect_val(None, until.condition, case=case, step=step, var=var, x=x):
+                if until.condition == "" or expect_val(None, until.condition, case=case, step=sub_step_result, var=var, x=x):
                     break
                 time.sleep(until.delay.total_seconds())
             else:
                 raise UntilError()
 
-            result = expect(step_res, json.loads(json.dumps(res)), case=case, step=step, var=var, x=x)
+            result = expect(step_res, json.loads(json.dumps(res)), case=case, step=sub_step_result, var=var, x=x)
             sub_step_result.add_expect_result(result)
 
             # ensure req can json serialize
