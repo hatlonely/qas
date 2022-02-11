@@ -5,12 +5,12 @@ from .text_reporter import TextReporter
 from .html_reporter import HtmlReporter
 
 
-reporters = {
+reporter_map = {
     "text": TextReporter,
     "json": JsonReporter,
     "html": HtmlReporter,
 }
 
 
-__all__ = ["JsonReporter", "TextReporter", "HtmlReporter", "reporters"]
+__all__ = ["JsonReporter", "TextReporter", "HtmlReporter", "reporter_map"]
 

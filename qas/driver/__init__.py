@@ -12,7 +12,7 @@ from .mns_driver import MNSDriver
 from .oss_driver import OSSDriver
 
 
-drivers = {
+driver_map = {
     "http": HttpDriver,
     "redis": RedisDriver,
     "shell": ShellDriver,
@@ -37,5 +37,5 @@ __all__ = [
     "OSSDriver",
     "merge",
     "REQUIRED",
-    "drivers",
+    "driver_map",
 ]

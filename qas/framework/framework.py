@@ -17,12 +17,12 @@ from datetime import datetime
 from multiprocessing import Pool
 
 
-from ..driver import drivers
+from ..driver import driver_map
 from ..assertion import expect, expect_val
 from ..util import render, merge, REQUIRED
 from ..hook import hook_map
 from ..result import TestResult, CaseResult, StepResult, SubStepResult
-from ..reporter import reporters
+from ..reporter import reporter_map
 from .retry_until import Retry, Until, RetryError, UntilError
 from .generate import generate_req, generate_res, calculate_num
 
@@ -61,8 +61,8 @@ class Framework:
         self.case_name = case_name
         self.skip_setup = skip_setup
         self.skip_teardown = skip_teardown
-        self.reporter_map = reporters
-        self.driver_map = drivers
+        self.reporter_map = reporter_map
+        self.driver_map = driver_map
         self.hook_map = hook_map
         self.x = None
         if x:
