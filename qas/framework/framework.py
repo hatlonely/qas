@@ -370,7 +370,7 @@ class Framework:
 
             for hook in hooks:
                 hook.on_step_start(step_info)
-            step = Framework.s_run_step(step_info, case, dft, var=var, ctx=ctx, x=x)
+            step = Framework.run_step(step_info, case, dft, var=var, ctx=ctx, x=x)
             case_add_step_func(step)
             for hook in hooks:
                 hook.on_step_end(step)
@@ -380,7 +380,7 @@ class Framework:
         return case
 
     @staticmethod
-    def s_run_step(step_info, case, dft, var=None, ctx=None, x=None):
+    def run_step(step_info, case, dft, var=None, ctx=None, x=None):
         # 条件步骤
         if step_info["cond"] and not expect_val(None, step_info["cond"], case=case, var=var, x=x):
             return StepResult(step_info["name"], step_info["ctx"], is_skip=True)
