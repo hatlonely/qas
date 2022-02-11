@@ -17,16 +17,13 @@ class TextReporter(Reporter):
     def report(self, res: TestResult) -> str:
         self.report_test_start(res.directory)
         for case in res.setups:
-            self.report_setup_start(case.name)
             self.report_setup_end(case)
         for case in res.cases:
-            self.report_case_start(case.name)
             self.report_case_end(case)
         for case in res.teardowns:
-            self.report_teardown_start(case.name)
             self.report_teardown_end(case)
         for sub_test in res.sub_tests:
-            self._format(sub_test)
+            self.report(sub_test)
         self.report_test_end(res)
         return ""
 
