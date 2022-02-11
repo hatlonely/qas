@@ -3,9 +3,9 @@ from .calc_driver import CalcDriver
 from .hello import hello
 
 
-drivers = {
+driver_map = {
     "echo": EchoDriver,
     "calc": CalcDriver,
 }
 
-__all__ = ["drivers", "hello"]
+__all__ = ["driver_map", "hello"]

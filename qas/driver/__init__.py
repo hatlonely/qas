@@ -35,7 +35,5 @@ __all__ = [
     "POPDriver",
     "OTSDriver",
     "OSSDriver",
-    "merge",
-    "REQUIRED",
     "driver_map",
 ]
