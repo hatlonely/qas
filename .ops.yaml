@@ -50,7 +50,7 @@ task:
     step:
       - |
         if [[ "${case_regex}" == "" ]]; then
-          python3 main.py --test "ops/self-test" --hook debug
+          python3 main.py --test "ops/self-test" --hook trace
         else
           python3 main.py --test "ops/self-test" --case-regex "${case_regex}"
         fi
