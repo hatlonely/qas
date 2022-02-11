@@ -74,6 +74,7 @@ class Framework:
         self.reporter = self.reporters[reporter]()
         self.json_result = json_result
         self.worker_pool_size = worker_pool_size
+        self.worker_pool = Pool(self.worker_pool_size)
 
     def format(self):
         res = TestResult.from_json(json.load(open(self.json_result)))
@@ -152,23 +153,23 @@ class Framework:
                     return test_result
 
         # 执行 case
-        for case_info in self.cases(info, test_directory):
-            if self.need_skip(case_info, var):
-                test_result.add_case_result(CaseResult(case_info["name"], is_skip=True))
-                self.reporter.report_skip_case(case_info["name"])
-                continue
-            self.reporter.report_case_start(case_info)
-            result = self.run_case(before_case_info, case_info, after_case_info, common_step_info, dft_info, var=var, ctx=ctx, x=parent_x)
-            test_result.add_case_result(result)
-            self.reporter.report_case_end(result)
-
-        # with Pool(self.worker_pool_size) as p:
-        #     results = p.starmap(self.run_case_and_report, [
-        #         (before_case_info, case_info, after_case_info, common_step_info, dft_info, var, ctx, parent_x)
-        #         for case_info in self.cases(info, test_directory)
-        #     ])
-        #     for result in results:
-        #         test_result.add_case_result(result)
+        if self.worker_pool_size == 1:
+            for case_info in self.cases(info, test_directory):
+                if self.need_skip(case_info, var):
+                    test_result.add_case_result(CaseResult(case_info["name"], is_skip=True))
+                    self.reporter.report_skip_case(case_info["name"])
+                    continue
+                self.reporter.report_case_start(case_info)
+                result = self.run_case(before_case_info, case_info, after_case_info, common_step_info, dft_info, var=var, ctx=ctx, x=parent_x)
+                test_result.add_case_result(result)
+                self.reporter.report_case_end(result)
+        else:
+            results = self.worker_pool.starmap(Framework.s_run_case, [
+                (self.need_skip(case_info, var), before_case_info, case_info, after_case_info, common_step_info, dft_info, var, ctx, parent_x)
+                for case_info in self.cases(info, test_directory)
+            ])
+            for result in results:
+                test_result.add_case_result(result)
 
         # 执行子目录
         for directory in [
