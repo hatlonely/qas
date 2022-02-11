@@ -165,7 +165,7 @@ class Framework:
                 for hook in hooks:
                     hook.on_case_end(result)
         else:
-            with Pool(5) as pool:
+            with Pool(info["parallel"]) as pool:
                 results = pool.starmap(Framework.s_run_case, [
                     (self.need_skip(case_info, var), before_case_info, case_info, after_case_info, common_step_info, dft_info, var, ctx, parent_x, hooks)
                     for case_info in self.cases(info, test_directory)
@@ -275,6 +275,7 @@ class Framework:
         dft = {
             "name": name,
             "description": "",
+            "parallel": 1,
             "ctx": {},
             "var": {},
             "case": [],
