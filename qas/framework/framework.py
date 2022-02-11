@@ -59,6 +59,7 @@ class Framework:
         json_result=None,
         parallel=False,
         worker_pool_size=None,
+        sub_test_pool_size=None,
         hook=None,
     ):
         self.configuration = Configuration(
@@ -90,8 +91,10 @@ class Framework:
         if self.configuration.parallel:
             if worker_pool_size:
                 self.worker_pool = Pool(worker_pool_size)
+                self.sub_test_pool = Pool(sub_test_pool_size)
             else:
                 self.worker_pool = Pool()
+                self.sub_test_pool = Pool()
         else:
             self.worker_pool = None
 
@@ -175,19 +178,15 @@ class Framework:
         # 执行 case
         if not configuration.parallel:
             for case_info in Framework.cases(info, test_directory):
-                for hook in hooks:
-                    hook.on_case_start(case_info)
-                result = Framework.run_case(Framework.need_skip(configuration, case_info, var), before_case_info, case_info, after_case_info, common_step_info, dft_info, var=var, ctx=ctx, x=parent_x, hooks=hooks)
+                result = Framework.must_run_case(configuration, before_case_info, case_info, after_case_info, common_step_info, dft_info, var=var, ctx=ctx, x=parent_x, hooks=hooks)
                 test_result.add_case_result(result)
-                for hook in hooks:
-                    hook.on_case_end(result)
         else:
             # 并发执行，每次执行 ctx.yaml 中 parallel 定义的个数
             for i in grouper([
-                (Framework.need_skip(configuration, case_info, var), before_case_info, case_info, after_case_info, common_step_info, dft_info, var, ctx, parent_x, hooks)
+                (configuration, before_case_info, case_info, after_case_info, common_step_info, dft_info, var, ctx, parent_x, hooks)
                 for case_info in Framework.cases(info, test_directory)
             ], info["parallel"]):
-                results = pool.starmap(Framework.run_case, i)
+                results = pool.starmap(Framework.must_run_case, i)
                 for result in results:
                     test_result.add_case_result(result)
 
@@ -351,6 +350,19 @@ class Framework:
             if not info:
                 return {}
         return info
+
+    @staticmethod
+    def must_run_case(configuration, before_case_info, case_info, after_case_info, common_step_info, dft, var=None, ctx=None, x=None, hooks=None):
+        for hook in hooks:
+            hook.on_case_start(case_info)
+        result = Framework.run_case(
+            Framework.need_skip(configuration, case_info, var), before_case_info, case_info, after_case_info,
+            common_step_info, dft, var=var, ctx=ctx, x=x, hooks=hooks,
+        )
+        for hook in hooks:
+            hook.on_case_end(result)
+        return result
+
 
     @staticmethod
     def run_case(need_skip, before_case_info, case_info, after_case_info, common_step_info, dft, var=None, ctx=None, x=None, hooks=None):
