@@ -81,6 +81,7 @@ qas 就是为了解决 devops 的功能测试问题，通过 yaml 来描述测�
 11. 测试报告，支持 `text/json`
 12. 支持 `http/shell/redis/mysql/mongo/pop/ots/mns/oss`
 13. 支持用户 python 拓展
+14. 支持并发执行
 
 ## ops 命令
 
