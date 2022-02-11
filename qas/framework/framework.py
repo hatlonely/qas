@@ -14,6 +14,8 @@ import sys
 import pathlib
 from types import SimpleNamespace
 from datetime import datetime
+from multiprocessing import Pool
+
 
 from ..driver import drivers
 from ..assertion import expect, expect_val
@@ -37,6 +39,7 @@ class Framework:
     skip_teardown: bool
     debug_mode: bool
     json_result: str
+    worker_pool_size: int
 
     def __init__(
         self,
@@ -50,6 +53,7 @@ class Framework:
         reporter="text",
         x=None,
         json_result=None,
+        worker_pool_size=5,
     ):
         self.test_directory = test_directory
         self.case_directory = case_directory
@@ -69,6 +73,7 @@ class Framework:
                 self.drivers = self.drivers | self.x.drivers
         self.reporter = self.reporters[reporter]()
         self.json_result = json_result
+        self.worker_pool_size = worker_pool_size
 
     def format(self):
         res = TestResult.from_json(json.load(open(self.json_result)))
@@ -149,13 +154,22 @@ class Framework:
         # 执行 case
         for case_info in self.cases(info, test_directory):
             if self.need_skip(case_info, var):
-                test_result.skip_case(case_info["name"])
+                test_result.add_case_result(CaseResult(case_info["name"], is_skip=True))
                 self.reporter.report_skip_case(case_info["name"])
                 continue
             self.reporter.report_case_start(case_info)
             result = self.run_case(before_case_info, case_info, after_case_info, common_step_info, dft_info, var=var, ctx=ctx, x=parent_x)
             test_result.add_case_result(result)
             self.reporter.report_case_end(result)
+
+        # with Pool(self.worker_pool_size) as p:
+        #     __spec__ = None
+        #     results = p.starmap(self.run_case_and_report, [
+        #         (before_case_info, case_info, after_case_info, common_step_info, dft_info, var, ctx, parent_x)
+        #         for case_info in self.cases(info, test_directory)
+        #     ])
+        #     for result in results:
+        #         test_result.add_case_result(result)
 
         # 执行子目录
         for directory in [
@@ -310,6 +324,15 @@ class Framework:
                 return {}
         return info
 
+    def run_case_and_report(self, before_case_info, case_info, after_case_info, common_step_info, dft_info, var, ctx, parent_x):
+        if self.need_skip(case_info, var):
+            self.reporter.report_skip_case(case_info["name"])
+            return CaseResult(case_info["name"], is_skip=True)
+        self.reporter.report_case_start(case_info)
+        result = self.run_case(before_case_info, case_info, after_case_info, common_step_info, dft_info, var=var, ctx=ctx, x=parent_x)
+        self.reporter.report_case_end(result)
+        return result
+
     def run_case(self, before_case_info, case_info, after_case_info, common_step_info, dft, var=None, ctx=None, x=None):
         case_info = merge(case_info, {
             "name": REQUIRED,
@@ -323,12 +346,12 @@ class Framework:
         case = CaseResult(case_info["name"], case_info["description"])
 
         now = datetime.now()
-        for idx, step_info, case_add_step_func, case_skip_step_func in itertools.chain(
-            [list(i) + [case.add_before_case_step_result, case.skip_before_case_step] for i in enumerate(before_case_info)],
-            [list(i) + [case.add_case_pre_step_result, case.skip_case_step] for i in enumerate([common_step_info[i] for i in case_info["preStep"]])],
-            [list(i) + [case.add_case_step_result, case.skip_case_step] for i in enumerate(case_info["step"])],
-            [list(i) + [case.add_case_post_step_result, case.skip_case_step] for i in enumerate([common_step_info[i] for i in case_info["postStep"]])],
-            [list(i) + [case.add_after_case_step_result, case.skip_after_case_step] for i in enumerate(after_case_info)],
+        for idx, step_info, case_add_step_func in itertools.chain(
+            [list(i) + [case.add_before_case_step_result] for i in enumerate(before_case_info)],
+            [list(i) + [case.add_case_pre_step_result] for i in enumerate([common_step_info[i] for i in case_info["preStep"]])],
+            [list(i) + [case.add_case_step_result] for i in enumerate(case_info["step"])],
+            [list(i) + [case.add_case_post_step_result] for i in enumerate([common_step_info[i] for i in case_info["postStep"]])],
+            [list(i) + [case.add_after_case_step_result] for i in enumerate(after_case_info)],
         ):
             step_info = merge(step_info, {
                 "name": "",
@@ -341,7 +364,7 @@ class Framework:
 
             # 条件步骤
             if step_info["cond"] and not expect_val(None, step_info["cond"], case=case, var=var, x=x):
-                case_skip_step_func(step_info["name"], step_info["ctx"])
+                case_add_step_func(StepResult(step_info["name"], step_info["ctx"], is_skip=True))
                 self.reporter.report_skip_step(step_info["name"])
                 continue
             self.reporter.report_step_start(step_info["name"])
@@ -356,7 +379,10 @@ class Framework:
 
     def run_step(self, step_info, case, dft, var=None, ctx=None, x=None):
         self.debug("step {}".format(json.dumps(step_info, indent=True)))
+        return Framework.s_run_step(step_info, case, dft, var=var, ctx=ctx, x=x)
 
+    @staticmethod
+    def s_run_step(step_info, case, dft, var=None, ctx=None, x=None):
         step = StepResult(step_info["name"], step_info["ctx"], step_info["description"])
         now = datetime.now()
         for req, res in zip(generate_req(step_info["req"]), generate_res(step_info["res"], calculate_num(step_info["req"]))):

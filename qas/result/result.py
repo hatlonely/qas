@@ -226,7 +226,9 @@ class CaseResult:
 
     def add_case_step_result(self, step: StepResult):
         self.steps.append(step)
-        if not step.is_pass:
+        if step.is_skip:
+            self.step_skip += 1
+        elif not step.is_pass:
             self.is_pass = False
             self.step_fail += 1
         else:
@@ -236,7 +238,9 @@ class CaseResult:
 
     def add_case_pre_step_result(self, step: StepResult):
         self.pre_steps.append(step)
-        if not step.is_pass:
+        if step.is_skip:
+            self.step_skip += 1
+        elif not step.is_pass:
             self.is_pass = False
             self.step_fail += 1
         else:
@@ -246,7 +250,9 @@ class CaseResult:
 
     def add_case_post_step_result(self, step: StepResult):
         self.post_steps.append(step)
-        if not step.is_pass:
+        if step.is_skip:
+            self.step_skip += 1
+        elif not step.is_pass:
             self.is_pass = False
             self.step_fail += 1
         else:
@@ -263,17 +269,6 @@ class CaseResult:
         self.after_case_steps.append(step)
         if not step.is_pass:
             self.is_pass = False
-
-    def skip_case_step(self, name, ctx):
-        self.steps.append(StepResult(name, ctx, is_skip=True))
-        self.step_skip += 1
-
-    def skip_before_case_step(self, name, ctx):
-        self.before_case_steps.append(StepResult(name, ctx, is_skip=True))
-
-    def skip_after_case_step(self, name, ctx):
-        self.after_case_steps.append(StepResult(name, ctx, is_skip=True))
-
 
 @dataclass
 class TestResult:
@@ -393,9 +388,12 @@ class TestResult:
         if not case.is_pass:
             self.is_pass = False
 
-    def add_case_result(self, case):
+    def add_case_result(self, case: CaseResult):
         self.cases.append(case)
-        if not case.is_pass:
+        if case.is_skip:
+            self.case_skip += 1
+            self.curr_case_skip += 1
+        elif not case.is_pass:
             self.case_fail += 1
             self.is_pass = False
             self.curr_case_fail += 1
@@ -407,11 +405,6 @@ class TestResult:
         self.step_skip += case.step_skip
         self.assertion_succ += case.assertion_succ
         self.assertion_fail += case.assertion_fail
-
-    def skip_case(self, name):
-        self.case_skip += 1
-        self.curr_case_skip += 1
-        self.cases.append(CaseResult(name, is_skip=True))
 
     def add_teardown_result(self, case):
         self.teardowns.append(case)
