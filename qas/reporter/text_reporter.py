@@ -15,56 +15,42 @@ class TextReporter(Reporter):
         self.padding = ""
 
     def report(self, res: TestResult) -> str:
-        self.report_test_start(res.directory)
-        for case in res.setups:
-            self.report_setup_end(case)
-        for case in res.cases:
-            self.report_case_end(case)
-        for case in res.teardowns:
-            self.report_teardown_end(case)
-        for sub_test in res.sub_tests:
-            self.report(sub_test)
-        self.report_test_end(res)
-        return ""
+        return "\n".join(self._report(res))
 
-    def report_test_start(self, directory):
-        print("{}进入 {}".format(self.padding, directory))
+    def _report(self, res: TestResult):
+        lines = ["{}进入 {}".format(self.padding, res.directory)]
         self.padding += "  "
-
-    def report_test_end(self, res: TestResult):
+        for case in res.setups:
+            lines.extend([self.padding + i for i in TextReporter.format_case(case, "setUp")])
+        for case in res.cases:
+            lines.extend([self.padding + i for i in TextReporter.format_case(case, "case")])
+        for case in res.teardowns:
+            lines.extend([self.padding + i for i in TextReporter.format_case(case, "tearDown")])
+        for sub_test in res.sub_tests:
+            lines.extend(self._report(sub_test))
         self.padding = self.padding[:-2]
         if res.is_pass:
-            print("{}{}测试 {} 通过，成功 {}，跳过 {}，步骤成功 {}，跳过 {}，断言成功 {}，耗时 {}{}".format(
+            lines.append("{}{}测试 {} 通过，成功 {}，跳过 {}，步骤成功 {}，跳过 {}，断言成功 {}，耗时 {}{}".format(
                 self.padding, Fore.GREEN, res.name, res.case_succ, res.case_skip,
                 res.step_succ, res.step_skip, res.assertion_succ,
                 durationpy.to_str(res.elapse), Fore.RESET,
             ))
         else:
             if res.is_err:
-                print('\n'.join([
-                    "  {}  {}".format(self.padding, line)
-                    for line in res.err.split("\n")
-                ]))
-            print("{}{}测试 {} 失败，成功 {}，失败 {}，跳过 {}，步骤成功 {}，失败 {}，断言成功 {}，失败 {}，耗时 {}{}".format(
+                lines.append(["  {}  {}".format(self.padding, line) for line in res.err.split("\n")])
+            lines.append("{}{}测试 {} 失败，成功 {}，失败 {}，跳过 {}，步骤成功 {}，失败 {}，断言成功 {}，失败 {}，耗时 {}{}".format(
                 self.padding, Fore.RED, res.name, res.case_succ, res.case_fail, res.case_skip,
                 res.step_succ, res.step_fail, res.assertion_succ, res.assertion_fail,
-                durationpy.to_str(res.elapse), Fore.RESET))
-
-    def report_case_end(self, res: CaseResult):
-        print("\n".join([self.padding + i for i in TextReporter.format_case(res, "case")]))
-
-    def report_skip_case(self, name):
-        print("{}{}case {} 跳过{}".format(self.padding, Fore.YELLOW, name, Fore.RESET))
-
-    def report_setup_end(self, res: CaseResult):
-        print("\n".join([self.padding + i for i in TextReporter.format_case(res, "setUp")]))
-
-    def report_teardown_end(self, res: CaseResult):
-        print("\n".join([self.padding + i for i in TextReporter.format_case(res, "tearDown")]))
+                durationpy.to_str(res.elapse), Fore.RESET
+            ))
+        return lines
 
     @staticmethod
     def format_case(res: CaseResult, case_type: str) -> list[str]:
         lines = []
+        if res.is_skip:
+            return ["{}case {} 跳过{}".format(Fore.YELLOW, res.name, Fore.RESET)]
+
         if res.is_pass:
             lines.append("{}{} {} 通过，步骤成功 {}，断言成功 {}，耗时 {}{}".format(
                 Fore.GREEN, case_type, res.name, res.step_succ, res.assertion_succ,
