@@ -158,7 +158,6 @@ class Framework:
                 for hook in hooks:
                     hook.on_setup_end(result)
                 if not result.is_pass:
-                    test_result.case_fail += 1
                     return test_result
 
         # 执行 case
@@ -203,11 +202,10 @@ class Framework:
                 for hook in hooks:
                     hook.on_teardown_start(case_info)
                 result = self.run_case([], case_info, [], {}, dft_info, var=var, ctx=ctx, x=parent_x)
-                test_result.teardowns.append(result)
+                test_result.add_teardown_result(result)
                 for hook in hooks:
                     hook.on_teardown_end(case_info)
                 if not result.is_pass:
-                    test_result.case_fail += 1
                     return test_result
 
         test_result.elapse = datetime.now() - now

@@ -387,6 +387,7 @@ class TestResult:
         self.setups.append(case)
         if not case.is_pass:
             self.is_pass = False
+            self.case_fail += 1
 
     def add_case_result(self, case: CaseResult):
         self.cases.append(case)
@@ -410,6 +411,7 @@ class TestResult:
         self.teardowns.append(case)
         if not case.is_pass:
             self.is_pass = False
+            self.case_fail += 1
 
     def add_sub_test_result(self, sub_test):
         self.sub_tests.append(sub_test)
