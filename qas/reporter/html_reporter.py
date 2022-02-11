@@ -297,6 +297,20 @@ _case_tpl = """
             {% endfor %}
         </ul>
         
+        {# PostStep #}
+        {% if case.pre_steps %}
+        <div class="card-header">
+            PostStep
+        </div>
+        <ul class="list-group list-group-flush">
+            {% for step in case.post_steps %}
+            <li class="list-group-item">
+                {{ render_step(step, '{}-post-step-{}'.format(name, loop.index0)) }}
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
         {# AfterCaseStep #}
         {% if case.after_case_steps %}
         <div class="card-header">
