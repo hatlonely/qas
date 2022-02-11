@@ -130,6 +130,8 @@ class Framework:
         hooks,
         pool,
     ):
+        if configuration.case_directory and not re.search(configuration.case_directory, test_directory):
+            return TestResult(test_directory, test_directory, "", is_skip=True)
         for hook in hooks:
             hook.on_test_start(test_directory)
         try:
@@ -224,8 +226,6 @@ class Framework:
             for i in os.listdir(test_directory)
             if os.path.isdir(os.path.join(test_directory, i))
         ]:
-            if configuration.case_directory and not re.search(configuration.case_directory, directory):
-                continue
             sub_test_result = Framework.must_run_test(configuration, directory, var_info, ctx, dft_info, common_step_info, before_case_info, after_case_info, parent_drivers, parent_x, hooks, pool)
             test_result.add_sub_test_result(sub_test_result)
 

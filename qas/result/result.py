@@ -275,6 +275,7 @@ class TestResult:
     directory: str
     name: str
     description: str
+    is_skip: bool
     is_pass: bool
     is_err: bool
     err: str
@@ -352,10 +353,11 @@ class TestResult:
         res.elapse = timedelta(microseconds=obj["elapse"])
         return res
 
-    def __init__(self, directory, name, description, err_message=None):
+    def __init__(self, directory, name, description="", err_message=None, is_skip=False):
         self.directory = directory
         self.name = name
         self.description = description
+        self.is_skip = is_skip
         self.is_pass = True
         self.is_err = False
         self.err = ""
@@ -414,6 +416,8 @@ class TestResult:
             self.case_fail += 1
 
     def add_sub_test_result(self, sub_test):
+        if self.is_skip:
+            return
         self.sub_tests.append(sub_test)
         self.case_succ += sub_test.case_succ
         self.case_fail += sub_test.case_fail
