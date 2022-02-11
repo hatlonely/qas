@@ -97,7 +97,6 @@ class Framework:
             self.case_pool = concurrent.futures.ThreadPoolExecutor(max_workers=case_pool_size) if case_pool_size else concurrent.futures.ThreadPoolExecutor()
             self.test_pool = concurrent.futures.ThreadPoolExecutor(max_workers=test_pool_size) if test_pool_size else concurrent.futures.ThreadPoolExecutor()
 
-
     def format(self):
         res = TestResult.from_json(json.load(open(self.json_result)))
         print(self.reporter.report(res))
