@@ -1,5 +1,7 @@
 name: self-test
 
+parallel: 20
+
 ctx:
   shell:
     type: shell
