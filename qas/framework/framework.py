@@ -163,7 +163,6 @@ class Framework:
             self.reporter.report_case_end(result)
 
         # with Pool(self.worker_pool_size) as p:
-        #     __spec__ = None
         #     results = p.starmap(self.run_case_and_report, [
         #         (before_case_info, case_info, after_case_info, common_step_info, dft_info, var, ctx, parent_x)
         #         for case_info in self.cases(info, test_directory)
@@ -334,6 +333,16 @@ class Framework:
         return result
 
     def run_case(self, before_case_info, case_info, after_case_info, common_step_info, dft, var=None, ctx=None, x=None):
+        return Framework.s_run_case(
+            self.need_skip(case_info, var),
+            before_case_info, case_info, after_case_info, common_step_info, dft, var=var, ctx=ctx, x=x, reporter=self.reporter,
+        )
+
+    @staticmethod
+    def s_run_case(need_skip, before_case_info, case_info, after_case_info, common_step_info, dft, var=None, ctx=None, x=None, reporter=None):
+        if need_skip:
+            return CaseResult(case_info["name"], is_skip=True)
+
         case_info = merge(case_info, {
             "name": REQUIRED,
             "description": "",
@@ -362,13 +371,14 @@ class Framework:
                 "cond": "",
             })
 
-            self.reporter.report_step_start(step_info["name"])
+            if reporter:
+                reporter.report_step_start(step_info["name"])
             step = Framework.s_run_step(step_info, case, dft, var=var, ctx=ctx, x=x)
             case_add_step_func(step)
-            self.reporter.report_step_end(step)
+            if reporter:
+                reporter.report_step_end(step)
             if not step.is_pass:
                 break
-
         case.elapse = datetime.now() - now
         return case
 
