@@ -196,14 +196,6 @@ class Framework:
                     hooks=hooks, step_pool=case_pool, case_type="setup",
                 )
                 test_result.add_setup_result(result)
-                # for hook in hooks:
-                #     hook.on_setup_start(case_info)
-                # result = Framework.run_case(False, [], case_info, [], {}, dft_info, var=var, ctx=ctx, x=parent_x, hooks=hooks)
-                # test_result.add_setup_result(result)
-                # for hook in hooks:
-                #     hook.on_setup_end(result)
-                # if not result.is_pass:
-                #     return test_result
 
         # 执行 case
         if not configuration.parallel:
@@ -227,6 +219,7 @@ class Framework:
                 sub_test_result = Framework.must_run_test(configuration, directory, var_info, ctx, dft_info, common_step_info, before_case_info, after_case_info, parent_drivers, parent_x, hooks, case_pool, test_pool)
                 test_result.add_sub_test_result(sub_test_result)
         else:
+            # 并发执行，每次执行 ctx.yaml 中 parallel 定义的个数
             for i in grouper([os.path.join(test_directory, i) for i in os.listdir(test_directory) if os.path.isdir(os.path.join(test_directory, i))], info["parallel"]):
                 results = test_pool.map(
                     Framework.must_run_test,
@@ -244,14 +237,6 @@ class Framework:
             for case_info in Framework.teardowns(info, test_directory):
                 result = Framework.must_run_case(configuration, [], case_info, [], common_step_info, dft_info, var=var, ctx=ctx, x=parent_x, hooks=hooks, step_pool=case_pool, case_type="teardown")
                 test_result.add_teardown_result(result)
-                # for hook in hooks:
-                #     hook.on_teardown_start(case_info)
-                # result = Framework.run_case(False, [], case_info, [], {}, dft_info, var=var, ctx=ctx, x=parent_x, hooks=hooks)
-                # test_result.add_teardown_result(result)
-                # for hook in hooks:
-                #     hook.on_teardown_end(result)
-                # if not result.is_pass:
-                #     return test_result
 
         test_result.elapse = datetime.now() - now
         return test_result
@@ -458,20 +443,12 @@ class Framework:
         step = StepResult(step_info["name"], step_info["ctx"], step_info["description"])
         now = datetime.now()
 
-        # for i in grouper(Framework.cases(info, test_directory), info["parallel"]):
-        #     results = case_pool.map(
-        #         Framework.must_run_case,
-        #         repeat(configuration), repeat(before_case_info), i, repeat(after_case_info),
-        #         repeat(common_step_info), repeat(dft_info), repeat(var), repeat(ctx), repeat(parent_x), repeat(hooks),
-        #     )
-        #     for result in results:
-        #         test_result.add_case_result(result)
-
         if not parallel:
             for req, res in zip(generate_req(step_info["req"]), generate_res(step_info["res"], calculate_num(step_info["req"]))):
                 result = Framework.run_sub_step(req, res, step_info, case, dft, var, ctx, x)
                 step.add_sub_step_result(result)
         else:
+            # 并发执行，每次执行 case.step 中 parallel 定义的个数
             for reqs, ress in zip(
                     grouper(generate_req(step_info["req"]), step_info["parallel"]),
                     grouper(generate_res(step_info["res"], calculate_num(step_info["req"])), step_info["parallel"])
