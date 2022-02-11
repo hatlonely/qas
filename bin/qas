@@ -32,6 +32,8 @@ def main():
     parser.add_argument("-c", "--case", help="case directory regex match")
     parser.add_argument("--parallel", nargs="?", const=True, default=False, type=str2bool, help="run case parallel")
     parser.add_argument("--hook", help="hook")
+    parser.add_argument("--case-pool-size", type=int, help="case pool size")
+    parser.add_argument("--test-pool-size", type=int, help="test pool size")
     parser.add_argument("--case-name", help="case name")
     parser.add_argument("--case-regex", help="case name regex match")
     parser.add_argument("--json-result", help="json result file")
@@ -51,6 +53,8 @@ def main():
         json_result=args.json_result,
         parallel=args.parallel,
         hook=args.hook,
+        case_pool_size=args.case_pool_size,
+        test_pool_size=args.test_pool_size,
     )
     if args.json_result:
         fw.format()
