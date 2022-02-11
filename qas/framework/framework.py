@@ -67,10 +67,10 @@ class Framework:
         self.x = None
         if x:
             self.x = Framework.load_x(x)
-            if hasattr(self.x, "reporters"):
-                self.reporter_map = self.reporter_map | self.x.reporters
-            if hasattr(self.x, "drivers"):
-                self.driver_map = self.driver_map | self.x.drivers
+            if hasattr(self.x, "reporter_map"):
+                self.reporter_map = self.reporter_map | self.x.reporter_map
+            if hasattr(self.x, "driver_map"):
+                self.driver_map = self.driver_map | self.x.driver_map
             if hasattr(self.x, "hook_map"):
                 self.hook_map = self.hook_map | self.x.hook_map
         self.reporter = self.reporter_map[reporter]()
