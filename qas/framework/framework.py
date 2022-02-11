@@ -441,52 +441,53 @@ class Framework:
         step = StepResult(step_info["name"], step_info["ctx"], step_info["description"])
         now = datetime.now()
         for req, res in zip(generate_req(step_info["req"]), generate_res(step_info["res"], calculate_num(step_info["req"]))):
-            sub_step_start = datetime.now()
-            sub_step_result = SubStepResult()
-            try:
-                req = merge(req, dft[step_info["ctx"]]["req"])
-                req = render(json.loads(json.dumps(req)), case=case, var=var, x=x)  # use json translate tuple to list
-                step.req = req
-                sub_step_result.req = req
-                # auto name step
-                if not step.name:
-                    step.name = ctx[step_info["ctx"]].default_step_name(req)
-                    if not step.name:
-                        step.name = "anonymous-step"
-
-                retry = Retry(merge(step_info["retry"], dft[step_info["ctx"]]["retry"]))
-                until = Until(merge(step_info["until"], dft[step_info["ctx"]]["until"]))
-
-                for i in range(until.attempts):
-                    for j in range(retry.attempts):
-                        step_res = ctx[step_info["ctx"]].do(req)
-                        step.res = step_res
-                        sub_step_result.res = step_res
-                        if retry.condition == "" or not expect_val(None, retry.condition, case=case, step=step, var=var, x=x):
-                            break
-                        time.sleep(retry.delay.total_seconds())
-                    else:
-                        raise RetryError()
-                    if until.condition == "" or expect_val(None, until.condition, case=case, step=step, var=var, x=x):
-                        break
-                    time.sleep(until.delay.total_seconds())
-                else:
-                    raise UntilError()
-
-                result = expect(step_res, json.loads(json.dumps(res)), case=case, step=step, var=var, x=x)
-                sub_step_result.add_expect_result(result)
-
-                # ensure req can json serialize
-                step.req = json.loads(json.dumps(step.req, default=lambda y: str(y)))
-                sub_step_result.req = json.loads(json.dumps(sub_step_result.req, default=lambda y: str(y)))
-            except RetryError as e:
-                sub_step_result.set_error("RetryError [{}]".format(retry))
-            except UntilError as e:
-                sub_step_result.set_error("UntilError [{}], ".format(until))
-            except Exception as e:
-                sub_step_result.set_error("Exception {}".format(traceback.format_exc()))
-            sub_step_result.elapse = datetime.now() - sub_step_start
+            sub_step_result = Framework.run_sub_step(req, res, step_info, case, step, dft, var, ctx, x)
             step.add_sub_step_result(sub_step_result)
-
+        # auto name step
+        if not step.name:
+            step.name = ctx[step_info["ctx"]].default_step_name(step.req)
+            if not step.name:
+                step.name = "anonymous-step"
         step.elapse = datetime.now() - now
         return step
+
+    @staticmethod
+    def run_sub_step(req, res, step_info, case, step, dft, var, ctx, x):
+        sub_step_result = SubStepResult()
+        sub_step_start = datetime.now()
+        try:
+            req = merge(req, dft[step_info["ctx"]]["req"])
+            req = render(json.loads(json.dumps(req)), case=case, var=var, x=x)  # use json translate tuple to list
+            sub_step_result.req = req
+
+            retry = Retry(merge(step_info["retry"], dft[step_info["ctx"]]["retry"]))
+            until = Until(merge(step_info["until"], dft[step_info["ctx"]]["until"]))
+
+            for i in range(until.attempts):
+                for j in range(retry.attempts):
+                    step_res = ctx[step_info["ctx"]].do(req)
+                    sub_step_result.res = step_res
+                    if retry.condition == "" or not expect_val(None, retry.condition, case=case, step=step, var=var, x=x):
+                        break
+                    time.sleep(retry.delay.total_seconds())
+                else:
+                    raise RetryError()
+                if until.condition == "" or expect_val(None, until.condition, case=case, step=step, var=var, x=x):
+                    break
+                time.sleep(until.delay.total_seconds())
+            else:
+                raise UntilError()
+
+            result = expect(step_res, json.loads(json.dumps(res)), case=case, step=step, var=var, x=x)
+            sub_step_result.add_expect_result(result)
+
+            # ensure req can json serialize
+            sub_step_result.req = json.loads(json.dumps(sub_step_result.req, default=lambda y: str(y)))
+        except RetryError as e:
+            sub_step_result.set_error("RetryError [{}]".format(retry))
+        except UntilError as e:
+            sub_step_result.set_error("UntilError [{}], ".format(until))
+        except Exception as e:
+            sub_step_result.set_error("Exception {}".format(traceback.format_exc()))
+        sub_step_result.elapse = datetime.now() - sub_step_start
+        return sub_step_result

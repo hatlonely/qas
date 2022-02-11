@@ -152,6 +152,8 @@ class StepResult:
         self.elapse = timedelta(seconds=0)
 
     def add_sub_step_result(self, result: SubStepResult):
+        self.req = result.req
+        self.res = result.res
         self.sub_steps.append(result)
         self.assertion_succ += result.assertion_succ
         self.assertion_fail += result.assertion_fail

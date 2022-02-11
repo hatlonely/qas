@@ -11,19 +11,19 @@ case:
     step:
       - ctx: shell
         req:
-          command: date && sleep 5
+          command: date && sleep 2
   - name: ParallelExample2
     step:
       - ctx: shell
         req:
-          command: date && sleep 5
+          command: date && sleep 2
   - name: ParallelExample3
     step:
       - ctx: shell
         req:
-          command: date && sleep 5
+          command: date && sleep 2
   - name: ParallelExample4
     step:
       - ctx: shell
         req:
-          command: date && sleep 5
+          command: date && sleep 2
