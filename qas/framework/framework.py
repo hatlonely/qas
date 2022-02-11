@@ -443,7 +443,6 @@ class Framework:
         step = StepResult(step_info["name"], step_info["ctx"], step_info["description"])
         now = datetime.now()
 
-        # if not parallel:
         if not parallel:
             for req, res in zip(generate_req(step_info["req"]), generate_res(step_info["res"], calculate_num(step_info["req"]))):
                 result = Framework.run_sub_step(req, res, step_info, case, dft, var, ctx, x)
