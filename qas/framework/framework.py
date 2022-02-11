@@ -149,7 +149,7 @@ class Framework:
 
         # 执行 setup
         if not self.skip_setup:
-            for case_info in self.setups(info, test_directory):
+            for case_info in Framework.setups(info, test_directory):
                 for hook in hooks:
                     hook.on_setup_start(case_info)
                 result = Framework.run_case(False, [], case_info, [], {}, dft_info, var=var, ctx=ctx, x=parent_x, hooks=hooks)
@@ -161,7 +161,7 @@ class Framework:
 
         # 执行 case
         if not self.parallel:
-            for case_info in self.cases(info, test_directory):
+            for case_info in Framework.cases(info, test_directory):
                 for hook in hooks:
                     hook.on_case_start(case_info)
                 result = Framework.run_case(self.need_skip(case_info, var), before_case_info, case_info, after_case_info, common_step_info, dft_info, var=var, ctx=ctx, x=parent_x, hooks=hooks)
@@ -172,7 +172,7 @@ class Framework:
             # 并发执行，每次执行 ctx.yaml 中 parallel 定义的个数
             for i in grouper([
                 (self.need_skip(case_info, var), before_case_info, case_info, after_case_info, common_step_info, dft_info, var, ctx, parent_x, hooks)
-                for case_info in self.cases(info, test_directory)
+                for case_info in Framework.cases(info, test_directory)
             ], info["parallel"]):
                 results = self.worker_pool.starmap(Framework.run_case, i)
                 for result in results:
@@ -199,7 +199,7 @@ class Framework:
 
         # 执行 teardown
         if not self.skip_teardown:
-            for case_info in self.teardowns(info, test_directory):
+            for case_info in Framework.teardowns(info, test_directory):
                 for hook in hooks:
                     hook.on_teardown_start(case_info)
                 result = Framework.run_case(False, [], case_info, [], {}, dft_info, var=var, ctx=ctx, x=parent_x, hooks=hooks)
@@ -221,21 +221,24 @@ class Framework:
             return True
         return False
 
-    def setups(self, info, test_directory):
+    @staticmethod
+    def setups(info, test_directory):
         for case in info["setUp"]:
             yield case
         if os.path.isfile("{}/setup.yaml".format(test_directory)):
-            for case in self.load_case("{}/setup.yaml".format(test_directory)):
+            for case in Framework.load_case("{}/setup.yaml".format(test_directory)):
                 yield case
 
-    def teardowns(self, info, test_directory):
+    @staticmethod
+    def teardowns(info, test_directory):
         for case in info["tearDown"]:
             yield case
         if os.path.isfile("{}/teardown.yaml".format(test_directory)):
-            for case in self.load_case("{}/teardown.yaml".format(test_directory)):
+            for case in Framework.load_case("{}/teardown.yaml".format(test_directory)):
                 yield case
 
-    def cases(self, info, test_directory):
+    @staticmethod
+    def cases(info, test_directory):
         for case in info["case"]:
             yield case
 
@@ -247,7 +250,7 @@ class Framework:
         ]:
             if not filename.endswith(".yaml"):
                 continue
-            for case in self.load_case(filename):
+            for case in Framework.load_case(filename):
                 yield case
 
     @staticmethod
