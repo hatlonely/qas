@@ -116,6 +116,34 @@ class Framework:
         return res.is_pass
 
     @staticmethod
+    def must_run_test(
+        configuration: Configuration,
+        test_directory,
+        parent_var_info,
+        parent_ctx,
+        parent_dft_info,
+        parent_common_step_info,
+        parent_before_case_info,
+        parent_after_case_info,
+        parent_drivers,
+        parent_x,
+        hooks,
+        pool,
+    ):
+        for hook in hooks:
+            hook.on_test_start(test_directory)
+        try:
+            result = Framework.run_test(
+                configuration, test_directory, parent_var_info, parent_ctx, parent_dft_info, parent_common_step_info, parent_before_case_info,
+                parent_after_case_info, parent_drivers, parent_x, hooks, pool,
+            )
+        except Exception as e:
+            result = TestResult(test_directory, test_directory, "", "Exception {}".format(traceback.format_exc()))
+        for hook in hooks:
+            hook.on_test_end(result)
+        return result
+
+    @staticmethod
     def run_test(
             configuration: Configuration,
             test_directory,
@@ -198,16 +226,8 @@ class Framework:
         ]:
             if configuration.case_directory and not re.search(configuration.case_directory, directory):
                 continue
-            for hook in hooks:
-                hook.on_test_start(directory)
-            try:
-                sub_test_result = Framework.run_test(configuration, directory, var_info, ctx, dft_info, common_step_info, before_case_info, after_case_info, parent_drivers, parent_x, hooks, pool)
-            except Exception as e:
-                sub_test_result = TestResult(directory, directory, "", "Exception {}".format(traceback.format_exc()))
-
+            sub_test_result = Framework.must_run_test(configuration, directory, var_info, ctx, dft_info, common_step_info, before_case_info, after_case_info, parent_drivers, parent_x, hooks, pool)
             test_result.add_sub_test_result(sub_test_result)
-            for hook in hooks:
-                hook.on_test_end(sub_test_result)
 
         # 执行 teardown
         if not configuration.skip_teardown:
