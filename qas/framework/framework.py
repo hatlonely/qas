@@ -301,13 +301,13 @@ class Framework:
         with open(filename, "r", encoding="utf-8") as fp:
             info = yaml.safe_load(fp)
             if isinstance(info, dict):
-                yield Framework.format_case(filename, info)
+                yield Framework.format_case(info)
             if isinstance(info, list):
                 for item in info:
-                    yield Framework.format_case(filename, item)
+                    yield Framework.format_case(item)
 
     @staticmethod
-    def format_case(filename, info):
+    def format_case(info):
         info = merge(info, {
             "name": REQUIRED,
             "description": "",
