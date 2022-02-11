@@ -169,14 +169,13 @@ class Framework:
                 for hook in hooks:
                     hook.on_case_end(result)
         else:
-            # info["parallel"]
-
-            results = self.worker_pool.starmap(Framework.run_case, [
+            for i in grouper([
                 (self.need_skip(case_info, var), before_case_info, case_info, after_case_info, common_step_info, dft_info, var, ctx, parent_x, hooks)
                 for case_info in self.cases(info, test_directory)
-            ])
-            for result in results:
-                test_result.add_case_result(result)
+            ], info["parallel"]):
+                results = self.worker_pool.starmap(Framework.run_case, i)
+                for result in results:
+                    test_result.add_case_result(result)
 
         # 执行子目录
         for directory in [
@@ -239,7 +238,6 @@ class Framework:
         for case in info["case"]:
             yield case
 
-        # 执行文件中的 case
         for filename in [
             os.path.join(test_directory, i)
             for i in os.listdir(test_directory)
