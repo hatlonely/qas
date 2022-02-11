@@ -441,7 +441,7 @@ class Framework:
         step = StepResult(step_info["name"], step_info["ctx"], step_info["description"])
         now = datetime.now()
         for req, res in zip(generate_req(step_info["req"]), generate_res(step_info["res"], calculate_num(step_info["req"]))):
-            sub_step_result = Framework.run_sub_step(req, res, step_info, case, step, dft, var, ctx, x)
+            sub_step_result = Framework.run_sub_step(req, res, step_info, case, dft, var, ctx, x)
             step.add_sub_step_result(sub_step_result)
         # auto name step
         if not step.name:
@@ -452,7 +452,7 @@ class Framework:
         return step
 
     @staticmethod
-    def run_sub_step(req, res, step_info, case, step, dft, var, ctx, x):
+    def run_sub_step(req, res, step_info, case, dft, var, ctx, x):
         sub_step_result = SubStepResult()
         sub_step_start = datetime.now()
         try:
