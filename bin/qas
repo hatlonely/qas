@@ -31,6 +31,7 @@ def main():
     parser.add_argument("-t", "--test", help="test directory")
     parser.add_argument("-x", "--x", help="user custom directory")
     parser.add_argument("-c", "--case", help="case directory regex match")
+    parser.add_argument("--parallel", nargs="?", const=True, default=False, type=str2bool, help="run case parallel")
     parser.add_argument("--case-name", help="case name")
     parser.add_argument("--case-regex", help="case name regex match")
     parser.add_argument("--json-result", help="json result file")
@@ -49,6 +50,7 @@ def main():
         reporter=args.reporter,
         x=args.x,
         json_result=args.json_result,
+        parallel=args.parallel,
     )
     if args.json_result:
         fw.format()
