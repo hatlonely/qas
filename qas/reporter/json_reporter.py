@@ -8,5 +8,5 @@ from .reporter import Reporter
 
 
 class JsonReporter(Reporter):
-    def report_final_result(self, res: TestResult):
-        print(json.dumps(res, default=lambda x: x.to_json()))
+    def report(self, res: TestResult) -> str:
+        return json.dumps(res, default=lambda x: x.to_json())

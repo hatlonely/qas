@@ -450,8 +450,8 @@ class HtmlReporter(Reporter):
         self.step_tpl = env.from_string(_step_tpl)
         self.sub_step_tpl = env.from_string(_sub_step_tpl)
 
-    def report_final_result(self, res: TestResult):
-        print(self.report_tpl.render(res=res))
+    def report(self, res: TestResult) -> str:
+        return self.report_tpl.render(res=res)
 
     def render_test(self, res, name):
         return self.test_tpl.render(res=res, name=name)

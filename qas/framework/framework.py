@@ -87,7 +87,7 @@ class Framework:
 
     def format(self):
         res = TestResult.from_json(json.load(open(self.json_result)))
-        self.reporter.format(res)
+        print(self.reporter.report(res))
 
     def run(self):
         for hook in self.hooks:
@@ -99,7 +99,7 @@ class Framework:
         for hook in self.hooks:
             hook.on_test_end(res)
 
-        self.reporter.report_final_result(res)
+        print(self.reporter.report(res))
         return res.is_pass
 
     def run_test(

@@ -5,6 +5,9 @@ from ..result import TestResult, CaseResult, StepResult
 
 
 class Reporter:
+    def report(self, res: TestResult) -> str:
+        pass
+
     def _format(self, res: TestResult):
         self.report_test_start(res.directory)
         for case in res.setups:

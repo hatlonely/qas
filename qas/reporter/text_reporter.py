@@ -14,6 +14,22 @@ class TextReporter(Reporter):
     def __init__(self):
         self.padding = ""
 
+    def report(self, res: TestResult) -> str:
+        self.report_test_start(res.directory)
+        for case in res.setups:
+            self.report_setup_start(case.name)
+            self.report_setup_end(case)
+        for case in res.cases:
+            self.report_case_start(case.name)
+            self.report_case_end(case)
+        for case in res.teardowns:
+            self.report_teardown_start(case.name)
+            self.report_teardown_end(case)
+        for sub_test in res.sub_tests:
+            self._format(sub_test)
+        self.report_test_end(res)
+        return ""
+
     def report_test_start(self, directory):
         print("{}进入 {}".format(self.padding, directory))
         self.padding += "  "
