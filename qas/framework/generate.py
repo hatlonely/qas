@@ -48,3 +48,12 @@ def calculate_num(d):
     if isinstance(d, dict):
         return functools.reduce(lambda x, y: x * y, [len(v) if k.startswith("!") else calculate_num(v) for k, v in d.items()], 1)
     return 1
+
+
+def grouper(iterable, n):
+    it = iter(iterable)
+    while True:
+        chunk = list(itertools.islice(it, n))
+        if not chunk:
+            return
+        yield chunk

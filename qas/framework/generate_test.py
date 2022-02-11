@@ -2,7 +2,7 @@
 
 
 import unittest
-from .generate import generate_res, generate_req, calculate_num
+from .generate import generate_res, generate_req, calculate_num, grouper
 
 
 class TestGenerate(unittest.TestCase):
@@ -76,6 +76,14 @@ class TestGenerate(unittest.TestCase):
             {"key1": 2, "key2": {"key3": 4}, "key4": ({"key5": 6}, {"key6": "val6", "key7": 7})},
             {"key1": 2, "key2": {"key3": 4}, "key4": ({"key5": 6}, {"key6": "val6", "key7": 8})},
             {"key1": 2, "key2": {"key3": 4}, "key4": ({"key5": 6}, {"key6": "val6", "key7": 9})},
+        ])
+
+    def test_grouper(self):
+        res = list(grouper([1, 2, 3, 4, 5, 6, 7], 3))
+        self.assertListEqual(res, [
+            [1, 2, 3],
+            [4, 5, 6],
+            [7],
         ])
 
 

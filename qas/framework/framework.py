@@ -24,7 +24,7 @@ from ..assertion import expect, expect_val
 from ..util import render, merge, REQUIRED
 from ..result import TestResult, CaseResult, StepResult, SubStepResult
 from .retry_until import Retry, Until, RetryError, UntilError
-from .generate import generate_req, generate_res, calculate_num
+from .generate import generate_req, generate_res, calculate_num, grouper
 
 
 def dict_to_sns(d):
@@ -169,6 +169,8 @@ class Framework:
                 for hook in hooks:
                     hook.on_case_end(result)
         else:
+            # info["parallel"]
+
             results = self.worker_pool.starmap(Framework.run_case, [
                 (self.need_skip(case_info, var), before_case_info, case_info, after_case_info, common_step_info, dft_info, var, ctx, parent_x, hooks)
                 for case_info in self.cases(info, test_directory)
