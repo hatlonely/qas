@@ -53,6 +53,7 @@ class Framework:
         x=None,
         json_result=None,
         parallel=False,
+        worker_pool_size=None,
         hook=None,
     ):
         self.test_directory = test_directory
@@ -77,6 +78,11 @@ class Framework:
         self.hooks = [self.hook_map[i]() for i in hook.split(",")] if hook else []
         self.json_result = json_result
         self.parallel = parallel
+        if self.parallel:
+            if worker_pool_size:
+                self.worker_pool = Pool(worker_pool_size)
+            else:
+                self.worker_pool = Pool()
 
     def format(self):
         res = TestResult.from_json(json.load(open(self.json_result)))
@@ -163,13 +169,12 @@ class Framework:
                 for hook in hooks:
                     hook.on_case_end(result)
         else:
-            with Pool(info["parallel"]) as pool:
-                results = pool.starmap(Framework.run_case, [
-                    (self.need_skip(case_info, var), before_case_info, case_info, after_case_info, common_step_info, dft_info, var, ctx, parent_x, hooks)
-                    for case_info in self.cases(info, test_directory)
-                ])
-                for result in results:
-                    test_result.add_case_result(result)
+            results = self.worker_pool.starmap(Framework.run_case, [
+                (self.need_skip(case_info, var), before_case_info, case_info, after_case_info, common_step_info, dft_info, var, ctx, parent_x, hooks)
+                for case_info in self.cases(info, test_directory)
+            ])
+            for result in results:
+                test_result.add_case_result(result)
 
         # 执行子目录
         for directory in [
