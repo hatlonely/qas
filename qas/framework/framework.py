@@ -191,19 +191,24 @@ class Framework:
         # 执行 setup
         if not configuration.skip_setup:
             for case_info in Framework.setups(info, test_directory):
-                for hook in hooks:
-                    hook.on_setup_start(case_info)
-                result = Framework.run_case(False, [], case_info, [], {}, dft_info, var=var, ctx=ctx, x=parent_x, hooks=hooks)
+                result = Framework.must_run_case(
+                    configuration, [], case_info, [], common_step_info, dft_info, var=var, ctx=ctx, x=parent_x,
+                    hooks=hooks, step_pool=case_pool, case_type="setup",
+                )
                 test_result.add_setup_result(result)
-                for hook in hooks:
-                    hook.on_setup_end(result)
-                if not result.is_pass:
-                    return test_result
+                # for hook in hooks:
+                #     hook.on_setup_start(case_info)
+                # result = Framework.run_case(False, [], case_info, [], {}, dft_info, var=var, ctx=ctx, x=parent_x, hooks=hooks)
+                # test_result.add_setup_result(result)
+                # for hook in hooks:
+                #     hook.on_setup_end(result)
+                # if not result.is_pass:
+                #     return test_result
 
         # 执行 case
         if not configuration.parallel:
             for case_info in Framework.cases(info, test_directory):
-                result = Framework.must_run_case(configuration, before_case_info, case_info, after_case_info, common_step_info, dft_info, var=var, ctx=ctx, x=parent_x, hooks=hooks)
+                result = Framework.must_run_case(configuration, before_case_info, case_info, after_case_info, common_step_info, dft_info, var=var, ctx=ctx, x=parent_x, hooks=hooks, step_pool=case_pool)
                 test_result.add_case_result(result)
         else:
             # 并发执行，每次执行 ctx.yaml 中 parallel 定义的个数
@@ -211,7 +216,7 @@ class Framework:
                 results = case_pool.map(
                     Framework.must_run_case,
                     repeat(configuration), repeat(before_case_info), i, repeat(after_case_info),
-                    repeat(common_step_info), repeat(dft_info), repeat(var), repeat(ctx), repeat(parent_x), repeat(hooks),
+                    repeat(common_step_info), repeat(dft_info), repeat(var), repeat(ctx), repeat(parent_x), repeat(hooks), repeat(case_pool),
                 )
                 for result in results:
                     test_result.add_case_result(result)
@@ -237,14 +242,16 @@ class Framework:
         # 执行 teardown
         if not configuration.skip_teardown:
             for case_info in Framework.teardowns(info, test_directory):
-                for hook in hooks:
-                    hook.on_teardown_start(case_info)
-                result = Framework.run_case(False, [], case_info, [], {}, dft_info, var=var, ctx=ctx, x=parent_x, hooks=hooks)
+                result = Framework.must_run_case(configuration, [], case_info, [], common_step_info, dft_info, var=var, ctx=ctx, x=parent_x, hooks=hooks, step_pool=case_pool, case_type="teardown")
                 test_result.add_teardown_result(result)
-                for hook in hooks:
-                    hook.on_teardown_end(result)
-                if not result.is_pass:
-                    return test_result
+                # for hook in hooks:
+                #     hook.on_teardown_start(case_info)
+                # result = Framework.run_case(False, [], case_info, [], {}, dft_info, var=var, ctx=ctx, x=parent_x, hooks=hooks)
+                # test_result.add_teardown_result(result)
+                # for hook in hooks:
+                #     hook.on_teardown_end(result)
+                # if not result.is_pass:
+                #     return test_result
 
         test_result.elapse = datetime.now() - now
         return test_result
@@ -377,20 +384,29 @@ class Framework:
         return info
 
     @staticmethod
-    def must_run_case(configuration, before_case_info, case_info, after_case_info, common_step_info, dft, var=None, ctx=None, x=None, hooks=None):
+    def must_run_case(configuration, before_case_info, case_info, after_case_info, common_step_info, dft, var=None, ctx=None, x=None, hooks=None, step_pool=None, case_type="case"):
         for hook in hooks:
-            hook.on_case_start(case_info)
+            if case_type == "setup":
+                hook.on_setup_start(case_info)
+            elif case_type == "teardown":
+                hook.on_teardown_start(case_info)
+            else:
+                hook.on_case_start(case_info)
         result = Framework.run_case(
             Framework.need_skip(configuration, case_info, var), before_case_info, case_info, after_case_info,
-            common_step_info, dft, var=var, ctx=ctx, x=x, hooks=hooks,
+            common_step_info, dft, var=var, ctx=ctx, x=x, hooks=hooks, parallel=configuration.parallel, step_pool=step_pool,
         )
         for hook in hooks:
-            hook.on_case_end(result)
+            if case_type == "setup":
+                hook.on_setup_end(result)
+            elif case_type == "teardown":
+                hook.on_teardown_end(result)
+            else:
+                hook.on_case_end(result)
         return result
 
-
     @staticmethod
-    def run_case(need_skip, before_case_info, case_info, after_case_info, common_step_info, dft, var=None, ctx=None, x=None, hooks=None):
+    def run_case(need_skip, before_case_info, case_info, after_case_info, common_step_info, dft, var=None, ctx=None, x=None, hooks=None, parallel=False, step_pool=None):
         if need_skip:
             return CaseResult(case_info["name"], is_skip=True)
 
@@ -416,6 +432,7 @@ class Framework:
             step_info = merge(step_info, {
                 "name": "",
                 "description": "",
+                "parallel": 1,
                 "res": {},
                 "retry": {},
                 "until": {},
@@ -424,7 +441,7 @@ class Framework:
 
             for hook in hooks:
                 hook.on_step_start(step_info)
-            step = Framework.run_step(step_info, case, dft, var=var, ctx=ctx, x=x)
+            step = Framework.run_step(step_info, case, dft, var=var, ctx=ctx, x=x, parallel=parallel, step_pool=step_pool)
             case_add_step_func(step)
             for hook in hooks:
                 hook.on_step_end(step)
@@ -434,15 +451,38 @@ class Framework:
         return case
 
     @staticmethod
-    def run_step(step_info, case, dft, var=None, ctx=None, x=None):
+    def run_step(step_info, case, dft, var=None, ctx=None, x=None, parallel=False, step_pool=None):
         # 条件步骤
         if step_info["cond"] and not expect_val(None, step_info["cond"], case=case, var=var, x=x):
             return StepResult(step_info["name"], step_info["ctx"], is_skip=True)
         step = StepResult(step_info["name"], step_info["ctx"], step_info["description"])
         now = datetime.now()
-        for req, res in zip(generate_req(step_info["req"]), generate_res(step_info["res"], calculate_num(step_info["req"]))):
-            sub_step_result = Framework.run_sub_step(req, res, step_info, case, dft, var, ctx, x)
-            step.add_sub_step_result(sub_step_result)
+
+        # for i in grouper(Framework.cases(info, test_directory), info["parallel"]):
+        #     results = case_pool.map(
+        #         Framework.must_run_case,
+        #         repeat(configuration), repeat(before_case_info), i, repeat(after_case_info),
+        #         repeat(common_step_info), repeat(dft_info), repeat(var), repeat(ctx), repeat(parent_x), repeat(hooks),
+        #     )
+        #     for result in results:
+        #         test_result.add_case_result(result)
+
+        if not parallel:
+            for req, res in zip(generate_req(step_info["req"]), generate_res(step_info["res"], calculate_num(step_info["req"]))):
+                result = Framework.run_sub_step(req, res, step_info, case, dft, var, ctx, x)
+                step.add_sub_step_result(result)
+        else:
+            for reqs, ress in zip(
+                    grouper(generate_req(step_info["req"]), step_info["parallel"]),
+                    grouper(generate_res(step_info["res"], calculate_num(step_info["req"])), step_info["parallel"])
+            ):
+                results = step_pool.map(
+                    Framework.run_sub_step,
+                    reqs, ress, repeat(step_info), repeat(case), repeat(dft), repeat(var), repeat(ctx), repeat(x),
+                )
+                for result in results:
+                    step.add_sub_step_result(result)
+
         # auto name step
         if not step.name:
             step.name = ctx[step_info["ctx"]].default_step_name(step.req)
