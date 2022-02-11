@@ -20,6 +20,7 @@ from multiprocessing import Pool
 from ..driver import drivers
 from ..assertion import expect, expect_val
 from ..util import render, merge, REQUIRED
+from ..hook import hook_map
 from ..result import TestResult, CaseResult, StepResult, SubStepResult
 from ..reporter import reporters
 from .retry_until import Retry, Until, RetryError, UntilError
@@ -55,6 +56,7 @@ class Framework:
         json_result=None,
         worker_pool_size=5,
         parallel=False,
+        hook=None,
     ):
         self.test_directory = test_directory
         self.case_directory = case_directory
@@ -63,32 +65,39 @@ class Framework:
         self.skip_setup = skip_setup
         self.skip_teardown = skip_teardown
         self.debug_mode = debug
-        self.reporters = reporters
-        self.drivers = drivers
+        self.reporter_map = reporters
+        self.driver_map = drivers
+        self.hook_map = hook_map
         self.x = None
         if x:
             self.x = Framework.load_x(x)
             if hasattr(self.x, "reporters"):
-                self.reporters = self.reporters | self.x.reporters
+                self.reporter_map = self.reporter_map | self.x.reporters
             if hasattr(self.x, "drivers"):
-                self.drivers = self.drivers | self.x.drivers
-        self.reporter = self.reporters[reporter]()
+                self.driver_map = self.driver_map | self.x.drivers
+            if hasattr(self.x, "hook_map"):
+                self.hook_map = self.hook_map | self.x.hook_map
+        self.reporter = self.reporter_map[reporter]()
         self.json_result = json_result
         self.worker_pool_size = worker_pool_size
         self.worker_pool = Pool(self.worker_pool_size)
         self.parallel = parallel
+        self.hooks = [self.hook_map[i]() for i in hook.split(",")] if hook else []
 
     def format(self):
         res = TestResult.from_json(json.load(open(self.json_result)))
         self.reporter.format(res)
 
     def run(self):
-        self.reporter.report_test_start(self.test_directory)
+        for hook in self.hooks:
+            hook.on_test_start(self.test_directory)
         try:
-            res = self.run_test(self.test_directory, {}, {}, {}, {}, [], [], self.drivers, self.x)
+            res = self.run_test(self.test_directory, {}, {}, {}, {}, [], [], self.driver_map, self.x, self.hooks)
         except Exception as e:
             res = TestResult(self.test_directory, self.test_directory, "", "Exception {}".format(traceback.format_exc()))
-        self.reporter.report_test_end(res)
+        for hook in self.hooks:
+            hook.on_test_end(res)
+
         self.reporter.report_final_result(res)
         return res.is_pass
 
@@ -103,10 +112,9 @@ class Framework:
             parent_after_case_info,
             parent_drivers,
             parent_x,
+            hooks,
     ):
         now = datetime.now()
-        self.debug("enter {}".format(test_directory))
-
         info = Framework.load_ctx(os.path.basename(test_directory), "{}/ctx.yaml".format(test_directory))
         description = info["description"] + Framework.load_description("{}/README.md".format(test_directory))
         var_info = copy.deepcopy(parent_var_info) | info["var"] | Framework.load_var("{}/var.yaml".format(test_directory))
@@ -137,19 +145,17 @@ class Framework:
             ctx[key] = parent_drivers[val["type"]](val["args"])
             dft_info[key] = val["dft"]
 
-        self.debug("var: {}".format(var_info))
-        self.debug("ctx: {}".format(ctx))
-        self.debug("req: {}".format(dft_info))
-
         test_result = TestResult(test_directory, info["name"], description)
 
         # 执行 setup
         if not self.skip_setup:
             for case_info in self.setups(info, test_directory):
-                self.reporter.report_setup_start(case_info)
+                for hook in hooks:
+                    hook.on_setup_start(case_info)
                 result = self.run_case([], case_info, [], {}, dft_info, var=var, ctx=ctx, x=parent_x)
                 test_result.add_setup_result(result)
-                self.reporter.report_setup_end(result)
+                for hook in hooks:
+                    hook.on_setup_end(result)
                 if not result.is_pass:
                     test_result.case_fail += 1
                     return test_result
@@ -157,14 +163,12 @@ class Framework:
         # 执行 case
         if not self.parallel:
             for case_info in self.cases(info, test_directory):
-                if self.need_skip(case_info, var):
-                    test_result.add_case_result(CaseResult(case_info["name"], is_skip=True))
-                    self.reporter.report_skip_case(case_info["name"])
-                    continue
-                self.reporter.report_case_start(case_info)
+                for hook in hooks:
+                    hook.on_case_start(case_info)
                 result = self.run_case(before_case_info, case_info, after_case_info, common_step_info, dft_info, var=var, ctx=ctx, x=parent_x)
                 test_result.add_case_result(result)
-                self.reporter.report_case_end(result)
+                for hook in hooks:
+                    hook.on_case_end(result)
         else:
             results = self.worker_pool.starmap(Framework.s_run_case, [
                 (self.need_skip(case_info, var), before_case_info, case_info, after_case_info, common_step_info, dft_info, var, ctx, parent_x)
@@ -181,21 +185,26 @@ class Framework:
         ]:
             if self.case_directory and not re.search(self.case_directory, directory):
                 continue
-            self.reporter.report_test_start(directory)
+            for hook in hooks:
+                hook.on_test_start(directory)
             try:
-                sub_test_result = self.run_test(directory, var_info, ctx, dft_info, common_step_info, before_case_info, after_case_info, parent_drivers, parent_x)
+                sub_test_result = self.run_test(directory, var_info, ctx, dft_info, common_step_info, before_case_info, after_case_info, parent_drivers, parent_x, hooks)
             except Exception as e:
                 sub_test_result = TestResult(directory, directory, "", "Exception {}".format(traceback.format_exc()))
+
             test_result.add_sub_test_result(sub_test_result)
-            self.reporter.report_test_end(sub_test_result)
+            for hook in hooks:
+                hook.on_test_end(sub_test_result)
 
         # 执行 teardown
         if not self.skip_teardown:
             for case_info in self.teardowns(info, test_directory):
-                self.reporter.report_teardown_start(case_info)
+                for hook in hooks:
+                    hook.on_teardown_start(case_info)
                 result = self.run_case([], case_info, [], {}, dft_info, var=var, ctx=ctx, x=parent_x)
                 test_result.teardowns.append(result)
-                self.reporter.report_teardown_end(result)
+                for hook in hooks:
+                    hook.on_teardown_end(case_info)
                 if not result.is_pass:
                     test_result.case_fail += 1
                     return test_result
@@ -326,23 +335,14 @@ class Framework:
                 return {}
         return info
 
-    def run_case_and_report(self, before_case_info, case_info, after_case_info, common_step_info, dft_info, var, ctx, parent_x):
-        if self.need_skip(case_info, var):
-            self.reporter.report_skip_case(case_info["name"])
-            return CaseResult(case_info["name"], is_skip=True)
-        self.reporter.report_case_start(case_info)
-        result = self.run_case(before_case_info, case_info, after_case_info, common_step_info, dft_info, var=var, ctx=ctx, x=parent_x)
-        self.reporter.report_case_end(result)
-        return result
-
     def run_case(self, before_case_info, case_info, after_case_info, common_step_info, dft, var=None, ctx=None, x=None):
         return Framework.s_run_case(
             self.need_skip(case_info, var),
-            before_case_info, case_info, after_case_info, common_step_info, dft, var=var, ctx=ctx, x=x, reporter=self.reporter,
+            before_case_info, case_info, after_case_info, common_step_info, dft, var=var, ctx=ctx, x=x, hooks=self.hooks,
         )
 
     @staticmethod
-    def s_run_case(need_skip, before_case_info, case_info, after_case_info, common_step_info, dft, var=None, ctx=None, x=None, reporter=None):
+    def s_run_case(need_skip, before_case_info, case_info, after_case_info, common_step_info, dft, var=None, ctx=None, x=None, hooks=None):
         if need_skip:
             return CaseResult(case_info["name"], is_skip=True)
 
@@ -374,12 +374,12 @@ class Framework:
                 "cond": "",
             })
 
-            if reporter:
-                reporter.report_step_start(step_info["name"])
+            for hook in hooks:
+                hook.on_step_start(step_info)
             step = Framework.s_run_step(step_info, case, dft, var=var, ctx=ctx, x=x)
             case_add_step_func(step)
-            if reporter:
-                reporter.report_step_end(step)
+            for hook in hooks:
+                hook.on_step_end(step)
             if not step.is_pass:
                 break
         case.elapse = datetime.now() - now
