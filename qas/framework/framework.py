@@ -54,6 +54,7 @@ class Framework:
         x=None,
         json_result=None,
         worker_pool_size=5,
+        parallel=False,
     ):
         self.test_directory = test_directory
         self.case_directory = case_directory
@@ -75,6 +76,7 @@ class Framework:
         self.json_result = json_result
         self.worker_pool_size = worker_pool_size
         self.worker_pool = Pool(self.worker_pool_size)
+        self.parallel = parallel
 
     def format(self):
         res = TestResult.from_json(json.load(open(self.json_result)))
@@ -153,7 +155,7 @@ class Framework:
                     return test_result
 
         # 执行 case
-        if self.worker_pool_size == 1:
+        if not self.parallel:
             for case_info in self.cases(info, test_directory):
                 if self.need_skip(case_info, var):
                     test_result.add_case_result(CaseResult(case_info["name"], is_skip=True))
