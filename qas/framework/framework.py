@@ -58,8 +58,8 @@ class Framework:
         x=None,
         json_result=None,
         parallel=False,
-        worker_pool_size=None,
-        sub_test_pool_size=None,
+        case_pool_size=None,
+        test_pool_size=None,
         hook=None,
     ):
         self.configuration = Configuration(
@@ -89,22 +89,22 @@ class Framework:
         self.json_result = json_result
 
         if self.configuration.parallel:
-            if worker_pool_size:
-                self.worker_pool = concurrent.futures.ThreadPoolExecutor(max_workers=worker_pool_size)
-                self.sub_test_pool = concurrent.futures.ThreadPoolExecutor(max_workers=sub_test_pool_size)
+            if case_pool_size:
+                self.case_pool = concurrent.futures.ThreadPoolExecutor(max_workers=case_pool_size)
+                self.test_pool = concurrent.futures.ThreadPoolExecutor(max_workers=test_pool_size)
             else:
-                self.worker_pool = concurrent.futures.ThreadPoolExecutor()
-                self.sub_test_pool = concurrent.futures.ThreadPoolExecutor()
+                self.case_pool = concurrent.futures.ThreadPoolExecutor()
+                self.test_pool = concurrent.futures.ThreadPoolExecutor()
         else:
-            self.worker_pool = None
-            self.sub_test_pool = None
+            self.case_pool = None
+            self.test_pool = None
 
     def format(self):
         res = TestResult.from_json(json.load(open(self.json_result)))
         print(self.reporter.report(res))
 
     def run(self):
-        res = self.must_run_test(self.configuration, self.configuration.test_directory, {}, {}, {}, {}, [], [], self.driver_map, self.x, self.hooks, self.worker_pool, self.sub_test_pool)
+        res = self.must_run_test(self.configuration, self.configuration.test_directory, {}, {}, {}, {}, [], [], self.driver_map, self.x, self.hooks, self.case_pool, self.test_pool)
         print(self.reporter.report(res))
         return res.is_pass
 
@@ -121,8 +121,8 @@ class Framework:
         parent_drivers,
         parent_x,
         hooks,
-        worker_pool,
-        sub_test_pool,
+        case_pool,
+        test_pool,
     ):
         if configuration.case_directory and not re.search(configuration.case_directory, test_directory):
             return TestResult(test_directory, test_directory, "", is_skip=True)
@@ -131,7 +131,7 @@ class Framework:
         try:
             result = Framework.run_test(
                 configuration, test_directory, parent_var_info, parent_ctx, parent_dft_info, parent_common_step_info, parent_before_case_info,
-                parent_after_case_info, parent_drivers, parent_x, hooks, worker_pool, sub_test_pool,
+                parent_after_case_info, parent_drivers, parent_x, hooks, case_pool, test_pool,
             )
         except Exception as e:
             result = TestResult(test_directory, test_directory, "", "Exception {}".format(traceback.format_exc()))
@@ -152,8 +152,8 @@ class Framework:
             parent_drivers,
             parent_x,
             hooks,
-            worker_pool,
-            sub_test_pool,
+            case_pool,
+            test_pool,
     ):
         now = datetime.now()
         info = Framework.load_ctx(os.path.basename(test_directory), "{}/ctx.yaml".format(test_directory))
@@ -208,7 +208,7 @@ class Framework:
         else:
             # 并发执行，每次执行 ctx.yaml 中 parallel 定义的个数
             for i in grouper(Framework.cases(info, test_directory), info["parallel"]):
-                results = worker_pool.map(
+                results = case_pool.map(
                     Framework.must_run_case,
                     repeat(configuration), repeat(before_case_info), i, repeat(after_case_info),
                     repeat(common_step_info), repeat(dft_info), repeat(var), repeat(ctx), repeat(parent_x), repeat(hooks),
@@ -219,17 +219,17 @@ class Framework:
         # 执行子目录
         if not configuration.parallel:
             for directory in [os.path.join(test_directory, i) for i in os.listdir(test_directory) if os.path.isdir(os.path.join(test_directory, i))]:
-                sub_test_result = Framework.must_run_test(configuration, directory, var_info, ctx, dft_info, common_step_info, before_case_info, after_case_info, parent_drivers, parent_x, hooks, worker_pool, sub_test_pool)
+                sub_test_result = Framework.must_run_test(configuration, directory, var_info, ctx, dft_info, common_step_info, before_case_info, after_case_info, parent_drivers, parent_x, hooks, case_pool, test_pool)
                 test_result.add_sub_test_result(sub_test_result)
         else:
             for i in grouper([os.path.join(test_directory, i) for i in os.listdir(test_directory) if os.path.isdir(os.path.join(test_directory, i))], info["parallel"]):
-                results = sub_test_pool.map(
+                results = test_pool.map(
                     Framework.must_run_test,
                     repeat(configuration),
                     i,
                     repeat(var_info), repeat(ctx), repeat(dft_info), repeat(common_step_info), repeat(before_case_info),
                     repeat(after_case_info),
-                    repeat(parent_drivers), repeat(parent_x), repeat(hooks), repeat(worker_pool), repeat(sub_test_pool),
+                    repeat(parent_drivers), repeat(parent_x), repeat(hooks), repeat(case_pool), repeat(test_pool),
                 )
                 for result in results:
                     test_result.add_sub_test_result(result)
