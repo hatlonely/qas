@@ -1,0 +1,29 @@
+name: parallel-example
+
+ctx:
+  shell:
+    type: shell
+
+parallel: 4
+
+case:
+  - name: ParallelExample1
+    step:
+      - ctx: shell
+        req:
+          command: date && sleep 5
+  - name: ParallelExample2
+    step:
+      - ctx: shell
+        req:
+          command: date && sleep 5
+  - name: ParallelExample3
+    step:
+      - ctx: shell
+        req:
+          command: date && sleep 5
+  - name: ParallelExample4
+    step:
+      - ctx: shell
+        req:
+          command: date && sleep 5
