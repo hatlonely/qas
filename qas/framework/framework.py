@@ -166,13 +166,13 @@ class Framework:
             for case_info in self.cases(info, test_directory):
                 for hook in hooks:
                     hook.on_case_start(case_info)
-                result = Framework.s_run_case(self.need_skip(case_info, var), before_case_info, case_info, after_case_info, common_step_info, dft_info, var=var, ctx=ctx, x=parent_x, hooks=self.hooks)
+                result = Framework.s_run_case(self.need_skip(case_info, var), before_case_info, case_info, after_case_info, common_step_info, dft_info, var=var, ctx=ctx, x=parent_x, hooks=hooks)
                 test_result.add_case_result(result)
                 for hook in hooks:
                     hook.on_case_end(result)
         else:
             results = self.worker_pool.starmap(Framework.s_run_case, [
-                (self.need_skip(case_info, var), before_case_info, case_info, after_case_info, common_step_info, dft_info, var, ctx, parent_x, [])
+                (self.need_skip(case_info, var), before_case_info, case_info, after_case_info, common_step_info, dft_info, var, ctx, parent_x, hooks)
                 for case_info in self.cases(info, test_directory)
             ])
             for result in results:
