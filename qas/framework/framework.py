@@ -18,11 +18,11 @@ from multiprocessing import Pool
 
 
 from ..driver import driver_map
+from ..reporter import reporter_map
+from ..hook import hook_map
 from ..assertion import expect, expect_val
 from ..util import render, merge, REQUIRED
-from ..hook import hook_map
 from ..result import TestResult, CaseResult, StepResult, SubStepResult
-from ..reporter import reporter_map
 from .retry_until import Retry, Until, RetryError, UntilError
 from .generate import generate_req, generate_res, calculate_num
 
