@@ -78,11 +78,12 @@ class Framework:
             if hasattr(self.x, "hook_map"):
                 self.hook_map = self.hook_map | self.x.hook_map
         self.reporter = self.reporter_map[reporter]()
-        self.json_result = json_result
-        self.worker_pool_size = worker_pool_size
-        self.worker_pool = Pool(self.worker_pool_size)
-        self.parallel = parallel
         self.hooks = [self.hook_map[i]() for i in hook.split(",")] if hook else []
+        self.json_result = json_result
+        self.parallel = parallel
+        if self.parallel:
+            self.worker_pool_size = worker_pool_size
+            self.worker_pool = Pool(self.worker_pool_size)
 
     def format(self):
         res = TestResult.from_json(json.load(open(self.json_result)))
