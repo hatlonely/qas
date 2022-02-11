@@ -23,7 +23,9 @@ def _expect_recursive(root: str, vals, rules, is_dict: bool, expect_results: lis
         to_enumerate = enumerate(rules)
     for key, rule in to_enumerate:
         root_dot_key = "{}.{}".format(root, str(key).lstrip("#")).lstrip(".")
-        if isinstance(rule, dict):
+        if key.lstrip("#") not in vals:
+            expect_results.append(ExpectResult(is_pass=False, message="NoSuchKey", node=root_dot_key, val=None, expect=rule))
+        elif isinstance(rule, dict):
             _expect_recursive(root_dot_key, vals[key], rule, True, expect_results, case=case, step=step, var=var, x=x)
         elif isinstance(rule, list):
             _expect_recursive(root_dot_key, vals[key], rule, False, expect_results, case=case, step=step, var=var, x=x)
