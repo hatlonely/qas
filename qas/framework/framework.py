@@ -49,7 +49,6 @@ class Framework:
         case_regex=None,
         skip_setup=False,
         skip_teardown=False,
-        debug=False,
         reporter="text",
         x=None,
         json_result=None,
@@ -62,7 +61,6 @@ class Framework:
         self.case_name = case_name
         self.skip_setup = skip_setup
         self.skip_teardown = skip_teardown
-        self.debug_mode = debug
         self.reporter_map = reporters
         self.driver_map = drivers
         self.hook_map = hook_map
@@ -375,10 +373,6 @@ class Framework:
         case.elapse = datetime.now() - now
         return case
 
-    def run_step(self, step_info, case, dft, var=None, ctx=None, x=None):
-        self.debug("step {}".format(json.dumps(step_info, indent=True)))
-        return Framework.s_run_step(step_info, case, dft, var=var, ctx=ctx, x=x)
-
     @staticmethod
     def s_run_step(step_info, case, dft, var=None, ctx=None, x=None):
         # 条件步骤
@@ -436,7 +430,3 @@ class Framework:
 
         step.elapse = datetime.now() - now
         return step
-
-    def debug(self, message):
-        if self.debug_mode:
-            print("### ", message)

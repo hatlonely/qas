@@ -26,12 +26,12 @@ def main():
     qas --test example-docs --case-name EchoHelloWorld --setup --teardown
     qas --json-result test.json --reporter text
 """)
-    parser.add_argument("--debug", nargs="?", const=True, default=False, help="debug mod")
     parser.add_argument("-r", "--reporter", default="text", help="reporter result")
     parser.add_argument("-t", "--test", help="test directory")
     parser.add_argument("-x", "--x", help="user custom directory")
     parser.add_argument("-c", "--case", help="case directory regex match")
     parser.add_argument("--parallel", nargs="?", const=True, default=False, type=str2bool, help="run case parallel")
+    parser.add_argument("--hook", help="hook")
     parser.add_argument("--case-name", help="case name")
     parser.add_argument("--case-regex", help="case name regex match")
     parser.add_argument("--json-result", help="json result file")
@@ -46,11 +46,11 @@ def main():
         case_regex=args.case_regex,
         skip_setup=args.skip_setup,
         skip_teardown=args.skip_teardown,
-        debug=args.debug,
         reporter=args.reporter,
         x=args.x,
         json_result=args.json_result,
         parallel=args.parallel,
+        hook=args.hook,
     )
     if args.json_result:
         fw.format()
