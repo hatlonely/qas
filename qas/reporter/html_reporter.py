@@ -180,9 +180,11 @@ _test_tpl = """
         <div class="card-header justify-content-between d-flex">
             SetUp
             <span>
-                <span class="badge bg-success rounded-pill" onclick="$('#{{name}}-setup .pass').toggle()">{{ res.setup_succ }}</span>
+                {% if res.setup_succ %}
+                <span class="badge bg-success rounded-pill" onclick="showCaseSucc('{{ name }}-setup')">{{ res.setup_succ }}</span>
+                {% endif %}
                 {% if res.setup_fail %}
-                <span class="badge bg-danger rounded-pill" onclick="$('#{{name}}-setup .fail').toggle()">{{ res.setup_fail }}</span>
+                <span class="badge bg-danger rounded-pill" onclick="showCaseFail('{{ name }}-setup">{{ res.setup_fail }}</span>
                 {% endif %}
             </span>
         </div>
@@ -201,13 +203,13 @@ _test_tpl = """
             Case
             <span>
                 {% if res.curr_case_succ %}
-                <span class="badge bg-success rounded-pill" onclick="$('#{{name}}-case .pass').toggle()">{{ res.curr_case_succ }}</span>
+                <span class="badge bg-success rounded-pill" onclick="showCaseSucc('{{ name }}-case')">{{ res.curr_case_succ }}</span>
                 {% endif %}
                 {% if res.curr_case_skip %}
-                <span class="badge bg-warning rounded-pill" onclick="$('#{{name}}-case .skip').toggle()">{{ res.curr_case_skip }}</span>
+                <span class="badge bg-warning rounded-pill" onclick="showCaseSkip('{{ name }}-case')">{{ res.curr_case_skip }}</span>
                 {% endif %}
                 {% if res.curr_case_fail %}
-                <span class="badge bg-danger rounded-pill" onclick="$('#{{name}}-case .fail').toggle()">{{ res.curr_case_fail }}</span>
+                <span class="badge bg-danger rounded-pill" onclick="showCaseFail('{{ name }}-case')">{{ res.curr_case_fail }}</span>
                 {% endif %}
             </span>
         </div>
@@ -247,9 +249,9 @@ _test_tpl = """
         <div class="card-header justify-content-between d-flex">
             TearDown
             <span>
-                <span class="badge bg-success rounded-pill" onclick="$('#{{name}}-teardown .pass').toggle()">{{ res.teardown_succ }}</span>
+                <span class="badge bg-success rounded-pill" onclick="showCaseSucc('{{ name }}-teardown')">{{ res.teardown_succ }}</span>
                 {% if res.teardown_fail %}
-                <span class="badge bg-danger rounded-pill" onclick="$('#{{name}}-teardown .fail').toggle()">{{ res.teardown_fail }}</span>
+                <span class="badge bg-danger rounded-pill" onclick="showCaseFail('{{ name }}-teardown')">{{ res.teardown_fail }}</span>
                 {% endif %}
             </span>
         </div>
