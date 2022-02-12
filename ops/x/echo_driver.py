@@ -1,4 +1,7 @@
-class EchoDriver:
+from qas.driver import Driver
+
+
+class EchoDriver(Driver):
     def __init__(self, args):
         pass
 

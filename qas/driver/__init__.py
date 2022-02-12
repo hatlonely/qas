@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 
+from .driver import Driver
 from .shell_driver import ShellDriver
 from .mysql_driver import MysqlDriver
 from .redis_driver import RedisDriver
@@ -26,6 +27,7 @@ driver_map = {
 
 
 __all__ = [
+    "Driver",
     "HttpDriver",
     "ShellDriver",
     "MysqlDriver",

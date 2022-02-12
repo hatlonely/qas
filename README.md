@@ -9,7 +9,8 @@
 ```shell
 git fetch --depth 1 --branch master https://github.com/hatlonely/qas.git && \
 cd qas && \
-python3 setup.py install
+python3 setup.py install && \
+python3 -m pip install -r requirements.txt
 ```
 
 ### docker 运行
