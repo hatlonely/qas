@@ -162,13 +162,13 @@ _test_tpl = """
         <div class="card-header justify-content-between d-flex">
             SetUp
             <span>
-                <span class="badge bg-success rounded-pill">{{ res.setup_succ }}</span>
+                <span class="badge bg-success rounded-pill" onclick="$('#{{name}}-setup .pass').toggle()">{{ res.setup_succ }}</span>
                 {% if res.setup_fail %}
-                <span class="badge bg-danger rounded-pill">{{ res.setup_fail }}</span>
+                <span class="badge bg-danger rounded-pill" onclick="$('#{{name}}-setup .fail').toggle()">{{ res.setup_fail }}</span>
                 {% endif %}
             </span>
         </div>
-        <ul class="list-group list-group-flush {{ "pass" if res.setup_fail == 0 else "fail" }}">
+        <ul class="list-group list-group-flush {{ "pass" if res.setup_fail == 0 else "fail" }}" id="{{ name }}-setup">
             {% for case in res.setups %}
             <li class="list-group-item {{ "pass" if case.is_pass else "fail" }}">
                 {{ render_case(case, '{}-setup-{}'.format(name, loop.index0)) }}
@@ -182,16 +182,16 @@ _test_tpl = """
         <div class="card-header justify-content-between d-flex {{ "pass" if res.case_fail == 0 else "fail" }}">
             Case
             <span>
-                <span class="badge bg-success rounded-pill">{{ res.curr_case_succ }}</span>
+                <span class="badge bg-success rounded-pill" onclick="$('#{{name}}-case .pass').toggle()">{{ res.curr_case_succ }}</span>
                 {% if res.curr_case_skip %}
-                <span class="badge bg-warning rounded-pill">{{ res.curr_case_skip }}</span>
+                <span class="badge bg-warning rounded-pill" onclick="$('#{{name}}-case .skip').toggle()">{{ res.curr_case_skip }}</span>
                 {% endif %}
                 {% if res.curr_case_fail %}
-                <span class="badge bg-danger rounded-pill">{{ res.curr_case_fail }}</span>
+                <span class="badge bg-danger rounded-pill" onclick="$('#{{name}}-case .fail').toggle()">{{ res.curr_case_fail }}</span>
                 {% endif %}
             </span>
         </div>
-        <ul class="list-group list-group-flush">
+        <ul class="list-group list-group-flush {{ "pass" if res.case_fail == 0 else "fail" }}" id="{{ name }}-case">
             {% for case in res.cases %}
             <li class="list-group-item {{ "pass" if case.is_pass else "fail" }}">
                 {{ render_case(case, '{}-case-{}'.format(name, loop.index0)) }}
