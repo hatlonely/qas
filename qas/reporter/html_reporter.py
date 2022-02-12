@@ -221,6 +221,7 @@ _test_tpl = """
         <div class="card-header justify-content-between d-flex">
             SetUp
             <span>
+                <span class="badge bg-primary rounded-pill" onclick="showAllCase('{{ name }}-setup')">{{ res.setup_succ + res.setup_fail }}</span>
                 {% if res.setup_succ %}
                 <span class="badge bg-success rounded-pill" onclick="showCaseSucc('{{ name }}-setup')">{{ res.setup_succ }}</span>
                 {% endif %}
@@ -243,6 +244,7 @@ _test_tpl = """
         <div class="card-header justify-content-between d-flex {{ "pass" if res.case_fail == 0 else "fail" }}">
             Case
             <span>
+                <span class="badge bg-primary rounded-pill" onclick="showAllCase('{{ name }}-case')">{{ res.curr_case_succ + res.curr_case_skip + res.curr_case_fail }}</span>
                 {% if res.curr_case_succ %}
                 <span class="badge bg-success rounded-pill" onclick="showCaseSucc('{{ name }}-case')">{{ res.curr_case_succ }}</span>
                 {% endif %}
@@ -268,12 +270,13 @@ _test_tpl = """
         <div class="card-header justify-content-between d-flex">
             SubTest
             <span>
-            {% if res.sub_test_succ %}
-            <span class="badge bg-success rounded-pill" onclick="showTestSucc('{{ name }}-subtest')">{{ res.sub_test_succ }}</span>
-            {% endif %}
-            {% if res.sub_test_fail %}
-            <span class="badge bg-danger rounded-pill" onclick="showTestFail('{{ name }}-subtest')">{{ res.sub_test_fail }}</span>
-            {% endif %}
+                <span class="badge bg-primary rounded-pill" onclick="showAllTest('{{ name }}-subtest')">{{ res.sub_test_succ + res.sub_test_fail }}</span>
+                {% if res.sub_test_succ %}
+                <span class="badge bg-success rounded-pill" onclick="showTestSucc('{{ name }}-subtest')">{{ res.sub_test_succ }}</span>
+                {% endif %}
+                {% if res.sub_test_fail %}
+                <span class="badge bg-danger rounded-pill" onclick="showTestFail('{{ name }}-subtest')">{{ res.sub_test_fail }}</span>
+                {% endif %}
             </span>
         </div>
         <ul class="list-group list-group-flush" id="{{ name }}-subtest">
@@ -290,7 +293,10 @@ _test_tpl = """
         <div class="card-header justify-content-between d-flex">
             TearDown
             <span>
+                <span class="badge bg-primary rounded-pill" onclick="showAllCase('{{ name }}-teardown')">{{ res.teardown_succ + res.teardown_fail }}</span>
+                {% if res.teardown_succ %}
                 <span class="badge bg-success rounded-pill" onclick="showCaseSucc('{{ name }}-teardown')">{{ res.teardown_succ }}</span>
+                {% endif %}
                 {% if res.teardown_fail %}
                 <span class="badge bg-danger rounded-pill" onclick="showCaseFail('{{ name }}-teardown')">{{ res.teardown_fail }}</span>
                 {% endif %}
