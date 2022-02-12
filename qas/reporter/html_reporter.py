@@ -23,6 +23,7 @@ _report_tpl = """<!DOCTYPE html>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;700&family=Ubuntu+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
     <style>
         body {
             font-family: 'Oswald', sans-serif !important;
@@ -66,7 +67,12 @@ _report_tpl = """<!DOCTYPE html>
 """
 
 _test_tpl = """
-<div class="col-md-12">
+{% if res.is_pass%}
+<div class="col-md-12 pass" id={{ name }}>
+{% else %}
+<div class="col-md-12 fail" id={{ name }}>
+{% endif %}
+
     {% if res.is_pass %}
     <div class="card my-3 border-success">
     {% else %}
@@ -96,7 +102,7 @@ _test_tpl = """
                 </thead>
                 <tbody>
                     <tr>
-                        <td><span class="badge bg-success rounded-pill">{{ res.case_succ }}</span></td>
+                        <td><span class="badge bg-success rounded-pill" onclick="$('#{{name}} .pass').toggle()">{{ res.case_succ }}</span></td>
 
                         {% if res.case_skip %}
                         <td><span class="badge bg-warning rounded-pill">{{ res.case_skip }}</span></td>
@@ -162,9 +168,9 @@ _test_tpl = """
                 {% endif %}
             </span>
         </div>
-        <ul class="list-group list-group-flush">
+        <ul class="list-group list-group-flush {{ "pass" if res.setup_fail == 0 else "fail" }}">
             {% for case in res.setups %}
-            <li class="list-group-item">
+            <li class="list-group-item {{ "pass" if case.is_pass else "fail" }}">
                 {{ render_case(case, '{}-setup-{}'.format(name, loop.index0)) }}
             </li>
             {% endfor %}
@@ -173,7 +179,7 @@ _test_tpl = """
 
         {# 渲染 case #}
         {% if res.cases %}
-        <div class="card-header justify-content-between d-flex">
+        <div class="card-header justify-content-between d-flex {{ "pass" if res.case_fail == 0 else "fail" }}">
             Case
             <span>
                 <span class="badge bg-success rounded-pill">{{ res.curr_case_succ }}</span>
@@ -187,7 +193,7 @@ _test_tpl = """
         </div>
         <ul class="list-group list-group-flush">
             {% for case in res.cases %}
-            <li class="list-group-item">
+            <li class="list-group-item {{ "pass" if case.is_pass else "fail" }}">
                 {{ render_case(case, '{}-case-{}'.format(name, loop.index0)) }}
             </li>
             {% endfor %}
@@ -205,9 +211,9 @@ _test_tpl = """
                 {% endif %}
             </span>
         </div>
-        <ul class="list-group list-group-flush">
+        <ul class="list-group list-group-flush {{ "pass" if res.teardown_fail == 0 else "fail" }}">
             {% for case in res.teardowns %}
-            <li class="list-group-item">
+            <li class="list-group-item {{ "pass" if case.is_pass else "fail" }}">
                 {{ render_case(case, '{}-teardown-{}'.format(name, loop.index0)) }}
             </li>
             {% endfor %}
@@ -227,13 +233,12 @@ _test_tpl = """
         </div>
         <ul class="list-group list-group-flush">
             {% for sub_test in res.sub_tests %}
-            <li class="list-group-item">
+            <li class="list-group-item {{ "pass" if sub_test.is_pass else "fail" }}">
                 {{ render_test(sub_test, '{}-subtest-{}'.format(name, loop.index0)) }}
             </li>
             {% endfor %}
         </ul>
         {% endif %}
-
     </div>
 </div>
 """
