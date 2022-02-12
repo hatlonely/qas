@@ -190,12 +190,23 @@ class Framework:
 
         # 执行 setup
         if not configuration.skip_setup:
-            for case_info in Framework.setups(info, test_directory):
-                result = Framework.must_run_case(
-                    configuration, [], case_info, [], common_step_info, dft_info, var=var, ctx=ctx, x=parent_x,
-                    hooks=hooks, step_pool=step_pool, case_type="setup",
-                )
-                test_result.add_setup_result(result)
+            if not configuration.parallel:
+                for case_info in Framework.setups(info, test_directory):
+                    result = Framework.must_run_case(
+                        configuration, [], case_info, [], common_step_info, dft_info, var=var, ctx=ctx, x=parent_x,
+                        hooks=hooks, step_pool=step_pool, case_type="setup",
+                    )
+                    test_result.add_setup_result(result)
+            else:
+                for i in grouper(Framework.setups(info, test_directory), info["parallel"]["setUp"]):
+                    results = case_pool.map(
+                        Framework.must_run_case,
+                        repeat(configuration), repeat(before_case_info), i, repeat(after_case_info),
+                        repeat(common_step_info), repeat(dft_info), repeat(var), repeat(ctx), repeat(parent_x), repeat(hooks),
+                        repeat(step_pool), repeat("setup")
+                    )
+                    for result in results:
+                        test_result.add_setup_result(result)
 
         # 执行 case
         if not configuration.parallel:
@@ -203,8 +214,8 @@ class Framework:
                 result = Framework.must_run_case(configuration, before_case_info, case_info, after_case_info, common_step_info, dft_info, var=var, ctx=ctx, x=parent_x, hooks=hooks, step_pool=step_pool)
                 test_result.add_case_result(result)
         else:
-            # 并发执行，每次执行 ctx.yaml 中 parallel 定义的个数
-            for i in grouper(Framework.cases(info, test_directory), info["parallel"]):
+            # 并发执行，每次执行 ctx.yaml 中 parallel.case 定义的个数
+            for i in grouper(Framework.cases(info, test_directory), info["parallel"]["case"]):
                 results = case_pool.map(
                     Framework.must_run_case,
                     repeat(configuration), repeat(before_case_info), i, repeat(after_case_info),
@@ -220,7 +231,7 @@ class Framework:
                 test_result.add_sub_test_result(sub_test_result)
         else:
             # 并发执行，每次执行 ctx.yaml 中 parallel 定义的个数
-            for i in grouper([os.path.join(test_directory, i) for i in os.listdir(test_directory) if os.path.isdir(os.path.join(test_directory, i))], info["parallel"]):
+            for i in grouper([os.path.join(test_directory, i) for i in os.listdir(test_directory) if os.path.isdir(os.path.join(test_directory, i))], info["parallel"]["subTest"]):
                 results = test_pool.map(
                     Framework.must_run_test,
                     repeat(configuration),
@@ -234,9 +245,20 @@ class Framework:
 
         # 执行 teardown
         if not configuration.skip_teardown:
-            for case_info in Framework.teardowns(info, test_directory):
-                result = Framework.must_run_case(configuration, [], case_info, [], common_step_info, dft_info, var=var, ctx=ctx, x=parent_x, hooks=hooks, step_pool=step_pool, case_type="teardown")
-                test_result.add_teardown_result(result)
+            if not configuration.parallel:
+                for case_info in Framework.teardowns(info, test_directory):
+                    result = Framework.must_run_case(configuration, [], case_info, [], common_step_info, dft_info, var=var, ctx=ctx, x=parent_x, hooks=hooks, step_pool=step_pool, case_type="teardown")
+                    test_result.add_teardown_result(result)
+            else:
+                for i in grouper(Framework.teardowns(info, test_directory), info["parallel"]["tearDown"]):
+                    results = case_pool.map(
+                        Framework.must_run_case,
+                        repeat(configuration), repeat(before_case_info), i, repeat(after_case_info),
+                        repeat(common_step_info), repeat(dft_info), repeat(var), repeat(ctx), repeat(parent_x), repeat(hooks),
+                        repeat(step_pool), repeat("teardown")
+                    )
+                    for result in results:
+                        test_result.add_teardown_result(result)
 
         test_result.elapse = datetime.now() - now
         return test_result
@@ -312,7 +334,12 @@ class Framework:
         dft = {
             "name": name,
             "description": "",
-            "parallel": 0,
+            "parallel": {
+                "case": 0,
+                "subTest": 0,
+                "setUp": 0,
+                "tearDown": 0,
+            },
             "ctx": {},
             "var": {},
             "case": [],

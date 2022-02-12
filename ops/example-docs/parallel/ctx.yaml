@@ -4,7 +4,11 @@ ctx:
   shell:
     type: shell
 
-parallel: 3
+parallel:
+  case: 3
+  setUp: 3
+  tearDown: 3
+  subTest: 3
 
 case:
   - name: ParallelExample1
