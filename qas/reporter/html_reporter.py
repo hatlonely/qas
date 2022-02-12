@@ -225,13 +225,13 @@ _test_tpl = """
         <div class="card-header justify-content-between d-flex">
             SubTest
             <span>
-            <span class="badge bg-success rounded-pill">{{ res.sub_test_succ }}</span>
+            <span class="badge bg-success rounded-pill" onclick="$('#{{name}}-subtest .pass').toggle()">{{ res.sub_test_succ }}</span>
             {% if res.sub_test_fail %}
-            <span class="badge bg-danger rounded-pill">{{ res.sub_test_fail }}</span>
+            <span class="badge bg-danger rounded-pill" onclick="$('#{{name}}-subtest .fail').toggle()">{{ res.sub_test_fail }}</span>
             {% endif %}
             </span>
         </div>
-        <ul class="list-group list-group-flush {{ "pass" if res.sub_test_fail == 0 else "fail" }}">
+        <ul class="list-group list-group-flush {{ "pass" if res.sub_test_fail == 0 else "fail" }}" id="{{ name }}-subtest">
             {% for sub_test in res.sub_tests %}
             <li class="list-group-item {{ "pass" if sub_test.is_pass else "fail" }}">
                 {{ render_test(sub_test, '{}-subtest-{}'.format(name, loop.index0)) }}
