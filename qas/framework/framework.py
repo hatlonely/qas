@@ -198,6 +198,7 @@ class Framework:
                     )
                     test_result.add_setup_result(result)
             else:
+                # 并发执行，每次执行 ctx.yaml 中 parallel.setUp 定义的个数
                 for i in grouper(Framework.setups(info, test_directory), info["parallel"]["setUp"]):
                     results = case_pool.map(
                         Framework.must_run_case,
@@ -230,7 +231,9 @@ class Framework:
                 sub_test_result = Framework.must_run_test(configuration, directory, var_info, ctx, dft_info, common_step_info, before_case_info, after_case_info, parent_drivers, parent_x, hooks, step_pool, case_pool, test_pool)
                 test_result.add_sub_test_result(sub_test_result)
         else:
-            # 并发执行，每次执行 ctx.yaml 中 parallel 定义的个数
+            # 并发执行，每次执行 ctx.yaml 中 parallel.subTest 定义的个数
+            # 每次执行会递归地使用 test_pool，每层目录需要占用一个线程，当 pool size 小于目录嵌套层数时会导致死锁
+            # 不设置 test-pool-size或者设置 test-pool-size 大于最大嵌套层数可解决这个问题
             for i in grouper([os.path.join(test_directory, i) for i in os.listdir(test_directory) if os.path.isdir(os.path.join(test_directory, i))], info["parallel"]["subTest"]):
                 results = test_pool.map(
                     Framework.must_run_test,
@@ -250,6 +253,7 @@ class Framework:
                     result = Framework.must_run_case(configuration, [], case_info, [], common_step_info, dft_info, var=var, ctx=ctx, x=parent_x, hooks=hooks, step_pool=step_pool, case_type="teardown")
                     test_result.add_teardown_result(result)
             else:
+                # 并发执行，每次执行 ctx.yaml 中 parallel.tearDown 定义的个数
                 for i in grouper(Framework.teardowns(info, test_directory), info["parallel"]["tearDown"]):
                     results = case_pool.map(
                         Framework.must_run_case,
