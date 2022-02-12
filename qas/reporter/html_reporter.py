@@ -68,9 +68,9 @@ _report_tpl = """<!DOCTYPE html>
 
 _test_tpl = """
 {% if res.is_pass%}
-<div class="col-md-12 pass" id={{ name }}>
+<div class="col-md-12" id={{ name }}>
 {% else %}
-<div class="col-md-12 fail" id={{ name }}>
+<div class="col-md-12" id={{ name }}>
 {% endif %}
 
     {% if res.is_pass %}
@@ -182,7 +182,9 @@ _test_tpl = """
         <div class="card-header justify-content-between d-flex {{ "pass" if res.case_fail == 0 else "fail" }}">
             Case
             <span>
+                {% if res.curr_case_succ %}
                 <span class="badge bg-success rounded-pill" onclick="$('#{{name}}-case .pass').toggle()">{{ res.curr_case_succ }}</span>
+                {% endif %}
                 {% if res.curr_case_skip %}
                 <span class="badge bg-warning rounded-pill" onclick="$('#{{name}}-case .skip').toggle()">{{ res.curr_case_skip }}</span>
                 {% endif %}
@@ -205,15 +207,17 @@ _test_tpl = """
         <div class="card-header justify-content-between d-flex">
             SubTest
             <span>
-            <span class="badge bg-success rounded-pill" onclick="$('#{{name}}-subtest .pass').toggle()">{{ res.sub_test_succ }}</span>
+            {% if res.sub_test_succ %}
+            <span class="badge bg-success rounded-pill" onclick="$('#{{name}}-subtest .test.pass').toggle()">{{ res.sub_test_succ }}</span>
+            {% endif %}
             {% if res.sub_test_fail %}
-            <span class="badge bg-danger rounded-pill" onclick="$('#{{name}}-subtest .fail').toggle()">{{ res.sub_test_fail }}</span>
+            <span class="badge bg-danger rounded-pill" onclick="$('#{{name}}-subtest .test.fail').toggle()">{{ res.sub_test_fail }}</span>
             {% endif %}
             </span>
         </div>
         <ul class="list-group list-group-flush" id="{{ name }}-subtest">
             {% for sub_test in res.sub_tests %}
-            <li class="list-group-item {{ "pass" if sub_test.is_pass else "fail" }}">
+            <li class="list-group-item test {{ "pass" if sub_test.is_pass else "fail" }}">
                 {{ render_test(sub_test, '{}-subtest-{}'.format(name, loop.index0)) }}
             </li>
             {% endfor %}
