@@ -208,6 +208,8 @@ class Framework:
                     )
                     for result in results:
                         test_result.add_setup_result(result)
+            if not test_result.is_pass:
+                return test_result
 
         # 执行 case
         if not configuration.parallel:
