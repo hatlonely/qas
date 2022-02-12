@@ -383,6 +383,10 @@ class TestResult:
         self.case_succ = 0
         self.case_fail = 0
         self.case_skip = 0
+        self.setup_succ = 0
+        self.setup_fail = 0
+        self.teardown_succ = 0
+        self.teardown_fail = 0
         self.curr_case_succ = 0
         self.curr_case_fail = 0
         self.curr_case_skip = 0
