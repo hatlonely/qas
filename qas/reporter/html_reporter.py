@@ -55,11 +55,6 @@ _report_tpl = """<!DOCTYPE html>
             $('#' + parentID + ' .test.fail').show()
         }
 
-        function showAllTest(parentID) {
-            $('#' + parentID + ' .test.pass').show()
-            $('#' + parentID + ' .test.fail').show()
-        }
-
         function showCaseSucc(parentID) {
             $('#' + parentID + ' .case.pass').show()
             $('#' + parentID + ' .case.skip').hide()
@@ -78,11 +73,37 @@ _report_tpl = """<!DOCTYPE html>
             $('#' + parentID + ' .case.fail').show()
         }
 
+        var testToggleStatus = {}
+        var caseToggleStatus = {}
+
+        function showAllTest(parentID) {
+            if (testToggleStatus[parentID]) {
+                $('#' + parentID + ' .test.pass').show()
+                $('#' + parentID + ' .test.fail').show()
+                testToggleStatus[parentID] = false
+            } else {
+                $('#' + parentID + ' .test.pass').hide()
+                $('#' + parentID + ' .test.fail').hide()
+                testToggleStatus[parentID] = true
+            }
+        }
+
         function showAllCase(parentID) {
-            showAllTest(parentID)
-            $('#' + parentID + ' .case.pass').show()
-            $('#' + parentID + ' .case.skip').show()
-            $('#' + parentID + ' .case.fail').show()
+            if (caseToggleStatus[parentID]) {
+                $('#' + parentID + ' .test.pass').show()
+                $('#' + parentID + ' .test.fail').show()
+                $('#' + parentID + ' .case.pass').show()
+                $('#' + parentID + ' .case.skip').show()
+                $('#' + parentID + ' .case.fail').show()
+                caseToggleStatus[parentID] = false
+            } else {
+                $('#' + parentID + ' .test.pass').hide()
+                $('#' + parentID + ' .test.fail').hide()
+                $('#' + parentID + ' .case.pass').hide()
+                $('#' + parentID + ' .case.skip').hide()
+                $('#' + parentID + ' .case.fail').hide()
+                caseToggleStatus[parentID] = true
+            }
         }
     </script>
 </head>
