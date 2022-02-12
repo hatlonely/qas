@@ -88,7 +88,7 @@ _test_tpl = """
         <div class="card-body">
             <table class="table table-striped">
                 <thead>
-                    <tr>
+                    <tr class="text-center">
                         <th>测试通过</th>
                         <th>测试跳过</th>
                         <th>测试失败</th>
@@ -101,7 +101,7 @@ _test_tpl = """
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
+                    <tr class="text-center">
                         <td><span class="badge bg-success rounded-pill" onclick="$('#{{name}} .pass').toggle()">{{ res.case_succ }}</span></td>
 
                         {% if res.case_skip %}
