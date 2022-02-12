@@ -44,6 +44,24 @@ _report_tpl = """<!DOCTYPE html>
             document.execCommand("copy");
             document.body.removeChild(aux);
         }
+
+        function showCaseSucc(parentID) {
+            $('#' + parentID + ' .case.pass').show()
+            $('#' + parentID + ' .case.skip').hide()
+            $('#' + parentID + ' .case.fail').hide()
+        }
+
+        function showCaseSkip(parentID) {
+            $('#' + parentID + ' .case.skip').show()
+            $('#' + parentID + ' .case.pass').hide()
+            $('#' + parentID + ' .case.fail').hide()
+        }
+
+        function showCaseFail(parentID) {
+            $('#' + parentID + ' .case.pass').hide()
+            $('#' + parentID + ' .case.skip').hide()
+            $('#' + parentID + ' .case.fail').show()
+        }
     </script>
 </head>
 
@@ -102,38 +120,38 @@ _test_tpl = """
                 </thead>
                 <tbody>
                     <tr class="text-center">
-                        <td><span class="badge bg-success rounded-pill" onclick="$('#{{name}} .case.pass').toggle()">{{ res.case_succ }}</span></td>
+                        <td><span class="badge bg-success rounded-pill" onclick="showCaseSucc('{{ name }}')">{{ res.case_succ }}</span></td>
 
                         {% if res.case_skip %}
-                        <td><span class="badge bg-warning rounded-pill" onclick="$('#{{name}} .case.skip').toggle()">{{ res.case_skip }}</span></td>
+                        <td><span class="badge bg-warning rounded-pill" onclick="showCaseSkip('{{ name }}')">{{ res.case_skip }}</span></td>
                         {% else %}
                         <td><span class="badge bg-secondary rounded-pill">{{ res.case_skip }}</span></td>
                         {% endif %}
 
                         {% if res.case_fail %}
-                        <td><span class="badge bg-danger rounded-pill" onclick="$('#{{name}} .case.fail').toggle()">{{ res.case_fail }}</span></td>
+                        <td><span class="badge bg-danger rounded-pill" onclick="showCaseFail('{{ name }}')">{{ res.case_fail }}</span></td>
                         {% else %}
                         <td><span class="badge bg-secondary rounded-pill">{{ res.case_fail }}</span></td>
                         {% endif %}
 
-                        <td><span class="badge bg-success rounded-pill" onclick="$('#{{name}} .case.pass').toggle()">{{ res.step_succ }}</span></td>
+                        <td><span class="badge bg-success rounded-pill" onclick="showCasePass('{{ name }}')">{{ res.step_succ }}</span></td>
 
                         {% if res.step_skip %}
-                        <td><span class="badge bg-warning rounded-pill" onclick="$('#{{name}} .case.skip').toggle()">{{ res.step_skip }}</span></td>
+                        <td><span class="badge bg-warning rounded-pill" onclick="showCaseSkip('{{ name }}')">{{ res.step_skip }}</span></td>
                         {% else %}
                         <td><span class="badge bg-secondary rounded-pill">{{ res.step_skip }}</span></td>
                         {% endif %}
 
                         {% if res.step_fail %}
-                        <td><span class="badge bg-danger rounded-pill" onclick="$('#{{name}} .case.fail').toggle()">{{ res.step_fail }}</span></td>
+                        <td><span class="badge bg-danger rounded-pill" onclick="showCaseFail('{{ name }}')">{{ res.step_fail }}</span></td>
                         {% else %}
                         <td><span class="badge bg-secondary rounded-pill">{{ res.step_fail }}</span></td>
                         {% endif %}
 
-                        <td><span class="badge bg-success rounded-pill" onclick="$('#{{name}} .case.pass').toggle()">{{ res.assertion_succ }}</span></td>
+                        <td><span class="badge bg-success rounded-pill" onclick="showCaseSucc('{{ name }}')">{{ res.assertion_succ }}</span></td>
 
                         {% if res.assertion_fail %}
-                        <td><span class="badge bg-danger rounded-pill" onclick="$('#{{name}} .case.fail').toggle()">{{ res.assertion_fail }}</span></td>
+                        <td><span class="badge bg-danger rounded-pill" onclick="showCaseFail('{{ name }}')">{{ res.assertion_fail }}</span></td>
                         {% else %}
                         <td><span class="badge bg-secondary rounded-pill">{{ res.assertion_fail }}</span></td>
                         {% endif %}
