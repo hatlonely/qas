@@ -170,7 +170,7 @@ _test_tpl = """
         </div>
         <ul class="list-group list-group-flush" id="{{ name }}-setup">
             {% for case in res.setups %}
-            <li class="list-group-item {{ "pass" if case.is_pass else "fail" }}">
+            <li class="list-group-item {{ case.status }}">
                 {{ render_case(case, '{}-setup-{}'.format(name, loop.index0)) }}
             </li>
             {% endfor %}
@@ -193,7 +193,7 @@ _test_tpl = """
         </div>
         <ul class="list-group list-group-flush" id="{{ name }}-case">
             {% for case in res.cases %}
-            <li class="list-group-item {{ "pass" if case.is_pass else "fail" }}">
+            <li class="list-group-item {{ case.status }}">
                 {{ render_case(case, '{}-case-{}'.format(name, loop.index0)) }}
             </li>
             {% endfor %}
@@ -213,7 +213,7 @@ _test_tpl = """
         </div>
         <ul class="list-group list-group-flush" id="{{ name }}-teardown">
             {% for case in res.teardowns %}
-            <li class="list-group-item {{ "pass" if case.is_pass else "fail" }}">
+            <li class="list-group-item {{ case.status }}">
                 {{ render_case(case, '{}-teardown-{}'.format(name, loop.index0)) }}
             </li>
             {% endfor %}

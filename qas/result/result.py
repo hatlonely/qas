@@ -164,6 +164,7 @@ class StepResult:
 class CaseResult:
     name: str
     description: str
+    status: str
     before_case_steps: list[StepResult]
     pre_steps: list[StepResult]
     steps: list[StepResult]
@@ -182,6 +183,7 @@ class CaseResult:
         return {
             "name": self.name,
             "description": self.description,
+            "status": self.status,
             "elapse": int(self.elapse.microseconds),
             "isPass": self.is_pass,
             "isSkip": self.is_skip,
@@ -197,6 +199,7 @@ class CaseResult:
     @staticmethod
     def from_json(obj):
         res = CaseResult(name=obj["name"], description=obj["description"])
+        res.status = obj["status"]
         res.is_skip = obj["isSkip"]
         res.is_pass = obj["isPass"]
         res.before_case_steps = [StepResult.from_json(i) for i in obj["beforeCaseSteps"]]
@@ -212,6 +215,7 @@ class CaseResult:
     def __init__(self, name, description="", is_skip=False):
         self.name = name
         self.description = description
+        self.status = "pass"
         self.is_skip = is_skip
         self.before_case_steps = list[StepResult]()
         self.pre_steps = list[StepResult]()
@@ -225,6 +229,8 @@ class CaseResult:
         self.step_succ = 0
         self.step_fail = 0
         self.step_skip = 0
+        if is_skip:
+            self.status = "skip"
 
     def add_case_step_result(self, step: StepResult):
         self.steps.append(step)
@@ -232,6 +238,7 @@ class CaseResult:
             self.step_skip += 1
         elif not step.is_pass:
             self.is_pass = False
+            self.status = "fail"
             self.step_fail += 1
         else:
             self.step_succ += 1
@@ -244,6 +251,7 @@ class CaseResult:
             self.step_skip += 1
         elif not step.is_pass:
             self.is_pass = False
+            self.status = "fail"
             self.step_fail += 1
         else:
             self.step_succ += 1
@@ -256,6 +264,7 @@ class CaseResult:
             self.step_skip += 1
         elif not step.is_pass:
             self.is_pass = False
+            self.status = "fail"
             self.step_fail += 1
         else:
             self.step_succ += 1
@@ -266,11 +275,13 @@ class CaseResult:
         self.before_case_steps.append(step)
         if not step.is_pass:
             self.is_pass = False
+            self.status = "fail"
 
     def add_after_case_step_result(self, step: StepResult):
         self.after_case_steps.append(step)
         if not step.is_pass:
             self.is_pass = False
+            self.status = "fail"
 
 @dataclass
 class TestResult:
