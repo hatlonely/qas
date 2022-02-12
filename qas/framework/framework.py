@@ -447,26 +447,31 @@ class Framework:
             [list(i) + [case.add_case_post_step_result] for i in enumerate([common_step_info[i] for i in case_info["postStep"]])],
             [list(i) + [case.add_after_case_step_result] for i in enumerate(after_case_info)],
         ):
-            step_info = merge(step_info, {
-                "name": "",
-                "description": "",
-                "parallel": 0,
-                "res": {},
-                "retry": {},
-                "until": {},
-                "cond": "",
-            })
-
-            for hook in hooks:
-                hook.on_step_start(step_info)
-            step = Framework.run_step(step_info, case, dft, var=var, ctx=ctx, x=x, parallel=parallel, step_pool=step_pool)
+            step = Framework.must_run_step(step_info, case, dft, var=var, ctx=ctx, x=x, hooks=hooks, parallel=parallel, step_pool=step_pool)
             case_add_step_func(step)
-            for hook in hooks:
-                hook.on_step_end(step)
             if not step.is_pass:
                 break
         case.elapse = datetime.now() - now
         return case
+
+    @staticmethod
+    def must_run_step(step_info, case, dft, var=None, ctx=None, x=None, hooks=None, parallel=False, step_pool=None):
+        step_info = merge(step_info, {
+            "name": "",
+            "description": "",
+            "parallel": 0,
+            "res": {},
+            "retry": {},
+            "until": {},
+            "cond": "",
+        })
+
+        for hook in hooks:
+            hook.on_step_start(step_info)
+        step = Framework.run_step(step_info, case, dft, var=var, ctx=ctx, x=x, parallel=parallel, step_pool=step_pool)
+        for hook in hooks:
+            hook.on_step_end(step)
+        return step
 
     @staticmethod
     def run_step(step_info, case, dft, var=None, ctx=None, x=None, parallel=False, step_pool=None):
