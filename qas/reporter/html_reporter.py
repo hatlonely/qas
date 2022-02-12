@@ -105,37 +105,37 @@ _test_tpl = """
                         <td><span class="badge bg-success rounded-pill" onclick="$('#{{name}} .pass').toggle()">{{ res.case_succ }}</span></td>
 
                         {% if res.case_skip %}
-                        <td><span class="badge bg-warning rounded-pill">{{ res.case_skip }}</span></td>
+                        <td><span class="badge bg-warning rounded-pill" onclick="$('#{{name}} .skip').toggle()">{{ res.case_skip }}</span></td>
                         {% else %}
-                        <td><span class="badge bg-secondary rounded-pill">{{ res.case_skip }}</span></td>
+                        <td><span class="badge bg-secondary rounded-pill" onclick="$('#{{name}} .skip').toggle()">{{ res.case_skip }}</span></td>
                         {% endif %}
 
                         {% if res.case_fail %}
-                        <td><span class="badge bg-danger rounded-pill">{{ res.case_fail }}</span></td>
+                        <td><span class="badge bg-danger rounded-pill" onclick="$('#{{name}} .fail').toggle()">{{ res.case_fail }}</span></td>
                         {% else %}
-                        <td><span class="badge bg-secondary rounded-pill">{{ res.case_fail }}</span></td>
+                        <td><span class="badge bg-secondary rounded-pill" onclick="$('#{{name}} .fail').toggle()">{{ res.case_fail }}</span></td>
                         {% endif %}
 
-                        <td><span class="badge bg-success rounded-pill">{{ res.step_succ }}</span></td>
+                        <td><span class="badge bg-success rounded-pill" onclick="$('#{{name}} .pass').toggle()">{{ res.step_succ }}</span></td>
 
                         {% if res.step_skip %}
-                        <td><span class="badge bg-warning rounded-pill">{{ res.step_skip }}</span></td>
+                        <td><span class="badge bg-warning rounded-pill" onclick="$('#{{name}} .skip').toggle()">{{ res.step_skip }}</span></td>
                         {% else %}
-                        <td><span class="badge bg-secondary rounded-pill">{{ res.step_skip }}</span></td>
+                        <td><span class="badge bg-secondary rounded-pill" onclick="$('#{{name}} .skip').toggle()">{{ res.step_skip }}</span></td>
                         {% endif %}
 
                         {% if res.step_fail %}
-                        <td><span class="badge bg-danger rounded-pill">{{ res.step_fail }}</span></td>
+                        <td><span class="badge bg-danger rounded-pill" onclick="$('#{{name}} .fail').toggle()">{{ res.step_fail }}</span></td>
                         {% else %}
-                        <td><span class="badge bg-secondary rounded-pill">{{ res.step_fail }}</span></td>
+                        <td><span class="badge bg-secondary rounded-pill" onclick="$('#{{name}} .fail').toggle()">{{ res.step_fail }}</span></td>
                         {% endif %}
 
-                        <td><span class="badge bg-success rounded-pill">{{ res.assertion_succ }}</span></td>
+                        <td><span class="badge bg-success rounded-pill" onclick="$('#{{name}} .pass').toggle()">{{ res.assertion_succ }}</span></td>
 
                         {% if res.assertion_fail %}
-                        <td><span class="badge bg-danger rounded-pill">{{ res.assertion_fail }}</span></td>
+                        <td><span class="badge bg-danger rounded-pill" onclick="$('#{{name}} .fail').toggle()">{{ res.assertion_fail }}</span></td>
                         {% else %}
-                        <td><span class="badge bg-secondary rounded-pill">{{ res.assertion_fail }}</span></td>
+                        <td><span class="badge bg-secondary rounded-pill" onclick="$('#{{name}} .fail').toggle()">{{ res.assertion_fail }}</span></td>
                         {% endif %}
 
                         <td>{{ format_timedelta(res.elapse) }}</td>
@@ -231,7 +231,7 @@ _test_tpl = """
             {% endif %}
             </span>
         </div>
-        <ul class="list-group list-group-flush">
+        <ul class="list-group list-group-flush {{ "pass" if res.sub_test_fail == 0 else "fail" }}">
             {% for sub_test in res.sub_tests %}
             <li class="list-group-item {{ "pass" if sub_test.is_pass else "fail" }}">
                 {{ render_test(sub_test, '{}-subtest-{}'.format(name, loop.index0)) }}
