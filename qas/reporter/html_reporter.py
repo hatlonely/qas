@@ -129,6 +129,7 @@ _test_tpl = """
             <table class="table table-striped">
                 <thead>
                     <tr class="text-center">
+                        <th>测试总数</th>
                         <th>测试通过</th>
                         <th>测试跳过</th>
                         <th>测试失败</th>
@@ -142,7 +143,17 @@ _test_tpl = """
                 </thead>
                 <tbody>
                     <tr class="text-center">
+                        {% if res.case_succ %}
+                        <td><span class="badge bg-primary rounded-pill" onclick="showAllCase('{{ name }}')">{{ res.case_succ + res.case_skip + res.case_fail }}</span></td>
+                        {% else %}
+                        <td><span class="badge bg-secondary rounded-pill">{{ res.case_succ }}</span></td>
+                        {% endif %}
+
+                        {% if res.case_succ %}
                         <td><span class="badge bg-success rounded-pill" onclick="showCaseSucc('{{ name }}')">{{ res.case_succ }}</span></td>
+                        {% else %}
+                        <td><span class="badge bg-secondary rounded-pill">{{ res.case_succ }}</span></td>
+                        {% endif %}
 
                         {% if res.case_skip %}
                         <td><span class="badge bg-warning rounded-pill" onclick="showCaseSkip('{{ name }}')">{{ res.case_skip }}</span></td>
