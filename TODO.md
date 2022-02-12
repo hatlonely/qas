@@ -8,7 +8,8 @@
 7. driver 支持 thrift
 9. driver 支持 elasticsearch
 10. 参数支持 validator
-11. 断言 import 拓展
 12. http 支持文件上传
-13. description 支持
 14. config 支持，html css 以及字体配置
+16. expect 在结果不匹配情况下的优化
+17. 支持 pip install
+18. case 选择优化

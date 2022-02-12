@@ -440,17 +440,30 @@ class Framework:
         case = CaseResult(case_info["name"], case_info["description"])
 
         now = datetime.now()
+        for idx, step_info, case_add_step_func in itertools.chain([list(i) + [case.add_before_case_step_result] for i in enumerate(before_case_info)]):
+            step = Framework.must_run_step(step_info, case, dft, var=var, ctx=ctx, x=x, hooks=hooks, parallel=parallel, step_pool=step_pool)
+            case_add_step_func(step)
+            if not step.is_pass:
+                break
+        if not case.is_pass:
+            return case
+
         for idx, step_info, case_add_step_func in itertools.chain(
-            [list(i) + [case.add_before_case_step_result] for i in enumerate(before_case_info)],
             [list(i) + [case.add_case_pre_step_result] for i in enumerate([common_step_info[i] for i in case_info["preStep"]])],
             [list(i) + [case.add_case_step_result] for i in enumerate(case_info["step"])],
             [list(i) + [case.add_case_post_step_result] for i in enumerate([common_step_info[i] for i in case_info["postStep"]])],
-            [list(i) + [case.add_after_case_step_result] for i in enumerate(after_case_info)],
         ):
             step = Framework.must_run_step(step_info, case, dft, var=var, ctx=ctx, x=x, hooks=hooks, parallel=parallel, step_pool=step_pool)
             case_add_step_func(step)
             if not step.is_pass:
                 break
+
+        for idx, step_info, case_add_step_func in itertools.chain([list(i) + [case.add_after_case_step_result] for i in enumerate(after_case_info)]):
+            step = Framework.must_run_step(step_info, case, dft, var=var, ctx=ctx, x=x, hooks=hooks, parallel=parallel, step_pool=step_pool)
+            case_add_step_func(step)
+            if not step.is_pass:
+                break
+
         case.elapse = datetime.now() - now
         return case
 
