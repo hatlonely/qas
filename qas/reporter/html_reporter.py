@@ -168,7 +168,7 @@ _test_tpl = """
                 {% endif %}
             </span>
         </div>
-        <ul class="list-group list-group-flush {{ "pass" if res.setup_fail == 0 else "fail" }}" id="{{ name }}-setup">
+        <ul class="list-group list-group-flush" id="{{ name }}-setup">
             {% for case in res.setups %}
             <li class="list-group-item {{ "pass" if case.is_pass else "fail" }}">
                 {{ render_case(case, '{}-setup-{}'.format(name, loop.index0)) }}
@@ -191,7 +191,7 @@ _test_tpl = """
                 {% endif %}
             </span>
         </div>
-        <ul class="list-group list-group-flush {{ "pass" if res.case_fail == 0 else "fail" }}" id="{{ name }}-case">
+        <ul class="list-group list-group-flush" id="{{ name }}-case">
             {% for case in res.cases %}
             <li class="list-group-item {{ "pass" if case.is_pass else "fail" }}">
                 {{ render_case(case, '{}-case-{}'.format(name, loop.index0)) }}
@@ -211,7 +211,7 @@ _test_tpl = """
                 {% endif %}
             </span>
         </div>
-        <ul class="list-group list-group-flush {{ "pass" if res.teardown_fail == 0 else "fail" }}" id="{{ name }}-teardown">
+        <ul class="list-group list-group-flush" id="{{ name }}-teardown">
             {% for case in res.teardowns %}
             <li class="list-group-item {{ "pass" if case.is_pass else "fail" }}">
                 {{ render_case(case, '{}-teardown-{}'.format(name, loop.index0)) }}
@@ -231,7 +231,7 @@ _test_tpl = """
             {% endif %}
             </span>
         </div>
-        <ul class="list-group list-group-flush {{ "pass" if res.sub_test_fail == 0 else "fail" }}" id="{{ name }}-subtest">
+        <ul class="list-group list-group-flush" id="{{ name }}-subtest">
             {% for sub_test in res.sub_tests %}
             <li class="list-group-item {{ "pass" if sub_test.is_pass else "fail" }}">
                 {{ render_test(sub_test, '{}-subtest-{}'.format(name, loop.index0)) }}
