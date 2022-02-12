@@ -167,7 +167,11 @@ _test_tpl = """
                         <td><span class="badge bg-secondary rounded-pill">{{ res.case_fail }}</span></td>
                         {% endif %}
 
+                        {% if res.step_succ %}
                         <td><span class="badge bg-success rounded-pill" onclick="showCasePass('{{ name }}')">{{ res.step_succ }}</span></td>
+                        {% else %}
+                        <td><span class="badge bg-secondary rounded-pill">{{ res.step_succ }}</span></td>
+                        {% endif %}
 
                         {% if res.step_skip %}
                         <td><span class="badge bg-warning rounded-pill" onclick="showCaseSkip('{{ name }}')">{{ res.step_skip }}</span></td>
@@ -181,7 +185,11 @@ _test_tpl = """
                         <td><span class="badge bg-secondary rounded-pill">{{ res.step_fail }}</span></td>
                         {% endif %}
 
+                        {% if res.assertion_succ %}
                         <td><span class="badge bg-success rounded-pill" onclick="showCaseSucc('{{ name }}')">{{ res.assertion_succ }}</span></td>
+                        {% else %}
+                        <td><span class="badge bg-secondary rounded-pill">{{ res.assertion_succ }}</span></td>
+                        {% endif %}
 
                         {% if res.assertion_fail %}
                         <td><span class="badge bg-danger rounded-pill" onclick="showCaseFail('{{ name }}')">{{ res.assertion_fail }}</span></td>
