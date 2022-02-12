@@ -155,7 +155,12 @@ _test_tpl = """
         {% if res.setups %}
         <div class="card-header justify-content-between d-flex">
             SetUp
-            <span class="badge bg-primary rounded-pill">{{ len(res.setups) }}</span>
+            <span>
+                <span class="badge bg-success rounded-pill">{{ res.setup_succ }}</span>
+                {% if res.setup_fail %}
+                <span class="badge bg-danger rounded-pill">{{ res.setup_fail }}</span>
+                {% endif %}
+            </span>
         </div>
         <ul class="list-group list-group-flush">
             {% for case in res.setups %}
@@ -193,7 +198,12 @@ _test_tpl = """
         {% if res.teardowns %}
         <div class="card-header justify-content-between d-flex">
             TearDown
-            <span class="badge bg-primary rounded-pill">{{ len(res.teardowns) }}</span>
+            <span>
+                <span class="badge bg-success rounded-pill">{{ res.teardown_succ }}</span>
+                {% if res.teardown_fail %}
+                <span class="badge bg-danger rounded-pill">{{ res.teardown_fail }}</span>
+                {% endif %}
+            </span>
         </div>
         <ul class="list-group list-group-flush">
             {% for case in res.teardowns %}
