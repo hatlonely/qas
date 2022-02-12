@@ -102,38 +102,38 @@ _test_tpl = """
                 </thead>
                 <tbody>
                     <tr class="text-center">
-                        <td><span class="badge bg-success rounded-pill" onclick="$('#{{name}} .pass').toggle()">{{ res.case_succ }}</span></td>
+                        <td><span class="badge bg-success rounded-pill" onclick="$('#{{name}} .case.pass').toggle()">{{ res.case_succ }}</span></td>
 
                         {% if res.case_skip %}
-                        <td><span class="badge bg-warning rounded-pill" onclick="$('#{{name}} .skip').toggle()">{{ res.case_skip }}</span></td>
+                        <td><span class="badge bg-warning rounded-pill" onclick="$('#{{name}} .case.skip').toggle()">{{ res.case_skip }}</span></td>
                         {% else %}
                         <td><span class="badge bg-secondary rounded-pill">{{ res.case_skip }}</span></td>
                         {% endif %}
 
                         {% if res.case_fail %}
-                        <td><span class="badge bg-danger rounded-pill" onclick="$('#{{name}} .fail').toggle()">{{ res.case_fail }}</span></td>
+                        <td><span class="badge bg-danger rounded-pill" onclick="$('#{{name}} .case.fail').toggle()">{{ res.case_fail }}</span></td>
                         {% else %}
                         <td><span class="badge bg-secondary rounded-pill">{{ res.case_fail }}</span></td>
                         {% endif %}
 
-                        <td><span class="badge bg-success rounded-pill" onclick="$('#{{name}} .pass').toggle()">{{ res.step_succ }}</span></td>
+                        <td><span class="badge bg-success rounded-pill" onclick="$('#{{name}} .case.pass').toggle()">{{ res.step_succ }}</span></td>
 
                         {% if res.step_skip %}
-                        <td><span class="badge bg-warning rounded-pill" onclick="$('#{{name}} .skip').toggle()">{{ res.step_skip }}</span></td>
+                        <td><span class="badge bg-warning rounded-pill" onclick="$('#{{name}} .case.skip').toggle()">{{ res.step_skip }}</span></td>
                         {% else %}
                         <td><span class="badge bg-secondary rounded-pill">{{ res.step_skip }}</span></td>
                         {% endif %}
 
                         {% if res.step_fail %}
-                        <td><span class="badge bg-danger rounded-pill" onclick="$('#{{name}} .fail').toggle()">{{ res.step_fail }}</span></td>
+                        <td><span class="badge bg-danger rounded-pill" onclick="$('#{{name}} .case.fail').toggle()">{{ res.step_fail }}</span></td>
                         {% else %}
                         <td><span class="badge bg-secondary rounded-pill">{{ res.step_fail }}</span></td>
                         {% endif %}
 
-                        <td><span class="badge bg-success rounded-pill" onclick="$('#{{name}} .pass').toggle()">{{ res.assertion_succ }}</span></td>
+                        <td><span class="badge bg-success rounded-pill" onclick="$('#{{name}} .case.pass').toggle()">{{ res.assertion_succ }}</span></td>
 
                         {% if res.assertion_fail %}
-                        <td><span class="badge bg-danger rounded-pill" onclick="$('#{{name}} .fail').toggle()">{{ res.assertion_fail }}</span></td>
+                        <td><span class="badge bg-danger rounded-pill" onclick="$('#{{name}} .case.fail').toggle()">{{ res.assertion_fail }}</span></td>
                         {% else %}
                         <td><span class="badge bg-secondary rounded-pill">{{ res.assertion_fail }}</span></td>
                         {% endif %}
@@ -170,7 +170,7 @@ _test_tpl = """
         </div>
         <ul class="list-group list-group-flush" id="{{ name }}-setup">
             {% for case in res.setups %}
-            <li class="list-group-item {{ case.status }}">
+            <li class="list-group-item case {{ case.status }}">
                 {{ render_case(case, '{}-setup-{}'.format(name, loop.index0)) }}
             </li>
             {% endfor %}
@@ -195,7 +195,7 @@ _test_tpl = """
         </div>
         <ul class="list-group list-group-flush" id="{{ name }}-case">
             {% for case in res.cases %}
-            <li class="list-group-item {{ case.status }}">
+            <li class="list-group-item case {{ case.status }}">
                 {{ render_case(case, '{}-case-{}'.format(name, loop.index0)) }}
             </li>
             {% endfor %}
@@ -237,7 +237,7 @@ _test_tpl = """
         </div>
         <ul class="list-group list-group-flush" id="{{ name }}-teardown">
             {% for case in res.teardowns %}
-            <li class="list-group-item {{ case.status }}">
+            <li class="list-group-item case {{ case.status }}">
                 {{ render_case(case, '{}-teardown-{}'.format(name, loop.index0)) }}
             </li>
             {% endfor %}
