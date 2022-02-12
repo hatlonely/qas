@@ -205,13 +205,13 @@ _test_tpl = """
         <div class="card-header justify-content-between d-flex">
             TearDown
             <span>
-                <span class="badge bg-success rounded-pill">{{ res.teardown_succ }}</span>
+                <span class="badge bg-success rounded-pill" onclick="$('#{{name}}-teardown .pass').toggle()">{{ res.teardown_succ }}</span>
                 {% if res.teardown_fail %}
-                <span class="badge bg-danger rounded-pill">{{ res.teardown_fail }}</span>
+                <span class="badge bg-danger rounded-pill" onclick="$('#{{name}}-teardown .fail').toggle()">{{ res.teardown_fail }}</span>
                 {% endif %}
             </span>
         </div>
-        <ul class="list-group list-group-flush {{ "pass" if res.teardown_fail == 0 else "fail" }}">
+        <ul class="list-group list-group-flush {{ "pass" if res.teardown_fail == 0 else "fail" }}" id="{{ name }}-teardown">
             {% for case in res.teardowns %}
             <li class="list-group-item {{ "pass" if case.is_pass else "fail" }}">
                 {{ render_case(case, '{}-teardown-{}'.format(name, loop.index0)) }}
