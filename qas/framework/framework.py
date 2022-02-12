@@ -270,7 +270,9 @@ class Framework:
         return test_result
 
     @staticmethod
-    def need_skip(configuration, case, var):
+    def need_skip(configuration, case, var, case_type):
+        if case_type == "setup" or case_type == "teardown":
+            return False
         if configuration.case_name and configuration.case_name != case["name"]:
             return True
         if configuration.case_regex and not re.search(configuration.case_regex, case["name"]):
@@ -411,7 +413,7 @@ class Framework:
             else:
                 hook.on_case_start(case_info)
         result = Framework.run_case(
-            Framework.need_skip(configuration, case_info, var), before_case_info, case_info, after_case_info,
+            Framework.need_skip(configuration, case_info, var, case_type), before_case_info, case_info, after_case_info,
             common_step_info, dft, var=var, ctx=ctx, x=x, hooks=hooks, parallel=configuration.parallel, step_pool=step_pool,
         )
         for hook in hooks:
