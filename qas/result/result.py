@@ -290,6 +290,10 @@ class TestResult:
     case_succ: int
     case_fail: int
     case_skip: int
+    setup_succ: int
+    setup_fail: int
+    teardown_succ: int
+    teardown_fail: int
     step_succ: int
     step_fail: int
     step_skip: int
@@ -313,6 +317,10 @@ class TestResult:
             "caseSucc": self.case_succ,
             "caseFail": self.case_fail,
             "caseSkip": self.case_skip,
+            "setupSucc": self.setup_succ,
+            "setupFail": self.setup_fail,
+            "teardownSucc": self.teardown_succ,
+            "teardownFail": self.teardown_fail,
             "currCaseSucc": self.curr_case_succ,
             "currCaseFail": self.curr_case_fail,
             "currCaseSkip": self.curr_case_skip,
@@ -342,6 +350,10 @@ class TestResult:
         res.case_succ = obj["caseSucc"]
         res.case_fail = obj["caseFail"]
         res.case_skip = obj["caseSkip"]
+        res.setup_succ = obj["setupSucc"]
+        res.setup_fail = obj["setupFail"]
+        res.teardown_succ = obj["teardownSucc"]
+        res.teardown_fail = obj["teardownFail"]
         res.curr_case_succ = obj["currCaseSucc"]
         res.curr_case_fail = obj["currCaseFail"]
         res.curr_case_skip = obj["currCaseSkip"]
@@ -391,7 +403,9 @@ class TestResult:
         self.setups.append(case)
         if not case.is_pass:
             self.is_pass = False
-            self.case_fail += 1
+            self.setup_fail += 1
+        else:
+            self.setup_succ += 1
 
     def add_case_result(self, case: CaseResult):
         self.cases.append(case)
@@ -415,7 +429,9 @@ class TestResult:
         self.teardowns.append(case)
         if not case.is_pass:
             self.is_pass = False
-            self.case_fail += 1
+            self.teardown_fail += 1
+        else:
+            self.teardown_succ += 1
 
     def add_sub_test_result(self, sub_test):
         if self.is_skip:
