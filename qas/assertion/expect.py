@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 
-from ..result import *
+from ..result import ExpectResult
 from ..util.include import *
 
 
