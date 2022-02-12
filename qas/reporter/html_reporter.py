@@ -107,13 +107,13 @@ _test_tpl = """
                         {% if res.case_skip %}
                         <td><span class="badge bg-warning rounded-pill" onclick="$('#{{name}} .skip').toggle()">{{ res.case_skip }}</span></td>
                         {% else %}
-                        <td><span class="badge bg-secondary rounded-pill" onclick="$('#{{name}} .skip').toggle()">{{ res.case_skip }}</span></td>
+                        <td><span class="badge bg-secondary rounded-pill">{{ res.case_skip }}</span></td>
                         {% endif %}
 
                         {% if res.case_fail %}
                         <td><span class="badge bg-danger rounded-pill" onclick="$('#{{name}} .fail').toggle()">{{ res.case_fail }}</span></td>
                         {% else %}
-                        <td><span class="badge bg-secondary rounded-pill" onclick="$('#{{name}} .fail').toggle()">{{ res.case_fail }}</span></td>
+                        <td><span class="badge bg-secondary rounded-pill">{{ res.case_fail }}</span></td>
                         {% endif %}
 
                         <td><span class="badge bg-success rounded-pill" onclick="$('#{{name}} .pass').toggle()">{{ res.step_succ }}</span></td>
@@ -121,13 +121,13 @@ _test_tpl = """
                         {% if res.step_skip %}
                         <td><span class="badge bg-warning rounded-pill" onclick="$('#{{name}} .skip').toggle()">{{ res.step_skip }}</span></td>
                         {% else %}
-                        <td><span class="badge bg-secondary rounded-pill" onclick="$('#{{name}} .skip').toggle()">{{ res.step_skip }}</span></td>
+                        <td><span class="badge bg-secondary rounded-pill">{{ res.step_skip }}</span></td>
                         {% endif %}
 
                         {% if res.step_fail %}
                         <td><span class="badge bg-danger rounded-pill" onclick="$('#{{name}} .fail').toggle()">{{ res.step_fail }}</span></td>
                         {% else %}
-                        <td><span class="badge bg-secondary rounded-pill" onclick="$('#{{name}} .fail').toggle()">{{ res.step_fail }}</span></td>
+                        <td><span class="badge bg-secondary rounded-pill">{{ res.step_fail }}</span></td>
                         {% endif %}
 
                         <td><span class="badge bg-success rounded-pill" onclick="$('#{{name}} .pass').toggle()">{{ res.assertion_succ }}</span></td>
@@ -135,7 +135,7 @@ _test_tpl = """
                         {% if res.assertion_fail %}
                         <td><span class="badge bg-danger rounded-pill" onclick="$('#{{name}} .fail').toggle()">{{ res.assertion_fail }}</span></td>
                         {% else %}
-                        <td><span class="badge bg-secondary rounded-pill" onclick="$('#{{name}} .fail').toggle()">{{ res.assertion_fail }}</span></td>
+                        <td><span class="badge bg-secondary rounded-pill">{{ res.assertion_fail }}</span></td>
                         {% endif %}
 
                         <td>{{ format_timedelta(res.elapse) }}</td>
