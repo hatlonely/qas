@@ -45,6 +45,21 @@ _report_tpl = """<!DOCTYPE html>
             document.body.removeChild(aux);
         }
 
+        function showTestSucc(parentID) {
+            $('#' + parentID + ' .test.pass').show()
+            $('#' + parentID + ' .test.fail').hide()
+        }
+
+        function showTestFail(parentID) {
+            $('#' + parentID + ' .test.pass').hide()
+            $('#' + parentID + ' .test.fail').show()
+        }
+
+        function showAllTest(parentID) {
+            $('#' + parentID + ' .test.pass').show()
+            $('#' + parentID + ' .test.fail').show()
+        }
+
         function showCaseSucc(parentID) {
             $('#' + parentID + ' .case.pass').show()
             $('#' + parentID + ' .case.skip').hide()
@@ -60,6 +75,13 @@ _report_tpl = """<!DOCTYPE html>
         function showCaseFail(parentID) {
             $('#' + parentID + ' .case.pass').hide()
             $('#' + parentID + ' .case.skip').hide()
+            $('#' + parentID + ' .case.fail').show()
+        }
+
+        function showAllCase(parentID) {
+            showAllTest(parentID)
+            $('#' + parentID + ' .case.pass').show()
+            $('#' + parentID + ' .case.skip').show()
             $('#' + parentID + ' .case.fail').show()
         }
     </script>
@@ -228,10 +250,10 @@ _test_tpl = """
             SubTest
             <span>
             {% if res.sub_test_succ %}
-            <span class="badge bg-success rounded-pill" onclick="$('#{{name}}-subtest .test.pass').toggle()">{{ res.sub_test_succ }}</span>
+            <span class="badge bg-success rounded-pill" onclick="showTestSucc('{{ name }}-subtest')">{{ res.sub_test_succ }}</span>
             {% endif %}
             {% if res.sub_test_fail %}
-            <span class="badge bg-danger rounded-pill" onclick="$('#{{name}}-subtest .test.fail').toggle()">{{ res.sub_test_fail }}</span>
+            <span class="badge bg-danger rounded-pill" onclick="showTestFail('{{ name }}-subtest')">{{ res.sub_test_fail }}</span>
             {% endif %}
             </span>
         </div>
