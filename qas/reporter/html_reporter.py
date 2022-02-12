@@ -200,26 +200,6 @@ _test_tpl = """
         </ul>
         {% endif %}
 
-        {# 渲染 teardown #}
-        {% if res.teardowns %}
-        <div class="card-header justify-content-between d-flex">
-            TearDown
-            <span>
-                <span class="badge bg-success rounded-pill" onclick="$('#{{name}}-teardown .pass').toggle()">{{ res.teardown_succ }}</span>
-                {% if res.teardown_fail %}
-                <span class="badge bg-danger rounded-pill" onclick="$('#{{name}}-teardown .fail').toggle()">{{ res.teardown_fail }}</span>
-                {% endif %}
-            </span>
-        </div>
-        <ul class="list-group list-group-flush" id="{{ name }}-teardown">
-            {% for case in res.teardowns %}
-            <li class="list-group-item {{ case.status }}">
-                {{ render_case(case, '{}-teardown-{}'.format(name, loop.index0)) }}
-            </li>
-            {% endfor %}
-        </ul>
-        {% endif %}
-
         {# 渲染 subtest #}
         {% if res.sub_tests %}
         <div class="card-header justify-content-between d-flex">
@@ -235,6 +215,26 @@ _test_tpl = """
             {% for sub_test in res.sub_tests %}
             <li class="list-group-item {{ "pass" if sub_test.is_pass else "fail" }}">
                 {{ render_test(sub_test, '{}-subtest-{}'.format(name, loop.index0)) }}
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        {# 渲染 teardown #}
+        {% if res.teardowns %}
+        <div class="card-header justify-content-between d-flex">
+            TearDown
+            <span>
+                <span class="badge bg-success rounded-pill" onclick="$('#{{name}}-teardown .pass').toggle()">{{ res.teardown_succ }}</span>
+                {% if res.teardown_fail %}
+                <span class="badge bg-danger rounded-pill" onclick="$('#{{name}}-teardown .fail').toggle()">{{ res.teardown_fail }}</span>
+                {% endif %}
+            </span>
+        </div>
+        <ul class="list-group list-group-flush" id="{{ name }}-teardown">
+            {% for case in res.teardowns %}
+            <li class="list-group-item {{ case.status }}">
+                {{ render_case(case, '{}-teardown-{}'.format(name, loop.index0)) }}
             </li>
             {% endfor %}
         </ul>
