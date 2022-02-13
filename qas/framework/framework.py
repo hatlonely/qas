@@ -33,7 +33,7 @@ def dict_to_sns(d):
 
 
 @dataclass
-class Configuration:
+class RuntimeConstant:
     test_directory: str
     case_directory: str
     case_regex: str
@@ -44,7 +44,7 @@ class Configuration:
 
 
 class Framework:
-    configuration: Configuration
+    runtime_constant: RuntimeConstant
 
     def __init__(
         self,
@@ -62,8 +62,9 @@ class Framework:
         case_pool_size=None,
         test_pool_size=None,
         hook=None,
+        config=None,
     ):
-        self.configuration = Configuration(
+        self.runtime_constant = RuntimeConstant(
             test_directory=test_directory.rstrip("/"),
             case_directory=test_directory if not case_directory else os.path.join(test_directory, case_directory.rstrip("/")),
             case_regex=case_regex,
@@ -84,6 +85,10 @@ class Framework:
                 self.driver_map = self.driver_map | self.x.driver_map
             if hasattr(self.x, "hook_map"):
                 self.hook_map = self.hook_map | self.x.hook_map
+
+        # if config:
+        #     
+
         self.reporter = self.reporter_map[reporter]()
         self.hooks = [self.hook_map[i]() for i in hook.split(",")] if hook else []
 
@@ -92,7 +97,7 @@ class Framework:
         self.step_pool = None
         self.case_pool = None
         self.test_pool = None
-        if self.configuration.parallel:
+        if self.runtime_constant.parallel:
             self.step_pool = concurrent.futures.ThreadPoolExecutor(max_workers=step_pool_size) if step_pool_size else concurrent.futures.ThreadPoolExecutor()
             self.case_pool = concurrent.futures.ThreadPoolExecutor(max_workers=case_pool_size) if case_pool_size else concurrent.futures.ThreadPoolExecutor()
             self.test_pool = concurrent.futures.ThreadPoolExecutor(max_workers=test_pool_size) if test_pool_size else concurrent.futures.ThreadPoolExecutor()
@@ -102,13 +107,13 @@ class Framework:
         print(self.reporter.report(res))
 
     def run(self):
-        res = self.must_run_test(self.configuration, self.configuration.test_directory, {}, {}, {}, {}, [], [], self.driver_map, self.x, self.hooks, self.step_pool, self.case_pool, self.test_pool)
+        res = self.must_run_test(self.runtime_constant, self.runtime_constant.test_directory, {}, {}, {}, {}, [], [], self.driver_map, self.x, self.hooks, self.step_pool, self.case_pool, self.test_pool)
         print(self.reporter.report(res))
         return res.is_pass
 
     @staticmethod
     def must_run_test(
-        configuration: Configuration,
+        runtime_constant: RuntimeConstant,
         test_directory,
         parent_var_info,
         parent_ctx,
@@ -123,13 +128,13 @@ class Framework:
         case_pool,
         test_pool,
     ):
-        if not (configuration.case_directory + "/").startswith(test_directory + "/") and not (test_directory + "/").startswith(configuration.case_directory + "/"):
+        if not (runtime_constant.case_directory + "/").startswith(test_directory + "/") and not (test_directory + "/").startswith(runtime_constant.case_directory + "/"):
             return TestResult(test_directory, test_directory, "", is_skip=True)
         for hook in hooks:
             hook.on_test_start(test_directory)
         try:
             result = Framework.run_test(
-                configuration, test_directory, parent_var_info, parent_ctx, parent_dft_info, parent_common_step_info, parent_before_case_info,
+                runtime_constant, test_directory, parent_var_info, parent_ctx, parent_dft_info, parent_common_step_info, parent_before_case_info,
                 parent_after_case_info, parent_drivers, parent_x, hooks, step_pool, case_pool, test_pool,
             )
         except Exception as e:
@@ -140,7 +145,7 @@ class Framework:
 
     @staticmethod
     def run_test(
-            configuration: Configuration,
+            runtime_constant: RuntimeConstant,
             test_directory,
             parent_var_info,
             parent_ctx,
@@ -189,11 +194,11 @@ class Framework:
         test_result = TestResult(test_directory, info["name"], description)
 
         # 执行 setup
-        if not configuration.skip_setup:
-            if not configuration.parallel:
+        if not runtime_constant.skip_setup:
+            if not runtime_constant.parallel:
                 for case_info in Framework.setups(info, test_directory):
                     result = Framework.must_run_case(
-                        test_directory, configuration, [], case_info, [], common_step_info, dft_info, var=var, ctx=ctx, x=parent_x,
+                        test_directory, runtime_constant, [], case_info, [], common_step_info, dft_info, var=var, ctx=ctx, x=parent_x,
                         hooks=hooks, step_pool=step_pool, case_type="setup",
                     )
                     test_result.add_setup_result(result)
@@ -202,7 +207,7 @@ class Framework:
                 for i in grouper(Framework.setups(info, test_directory), info["parallel"]["setUp"]):
                     results = case_pool.map(
                         Framework.must_run_case,
-                        repeat(test_directory), repeat(configuration), repeat(before_case_info), i, repeat(after_case_info),
+                        repeat(test_directory), repeat(runtime_constant), repeat(before_case_info), i, repeat(after_case_info),
                         repeat(common_step_info), repeat(dft_info), repeat(var), repeat(ctx), repeat(parent_x), repeat(hooks),
                         repeat(step_pool), repeat("setup")
                     )
@@ -212,26 +217,26 @@ class Framework:
                 return test_result
 
         # 执行 case
-        if test_directory.startswith(configuration.case_directory):
-            if not configuration.parallel:
+        if test_directory.startswith(runtime_constant.case_directory):
+            if not runtime_constant.parallel:
                 for case_info in Framework.cases(info, test_directory):
-                    result = Framework.must_run_case(test_directory, configuration, before_case_info, case_info, after_case_info, common_step_info, dft_info, var=var, ctx=ctx, x=parent_x, hooks=hooks, step_pool=step_pool)
+                    result = Framework.must_run_case(test_directory, runtime_constant, before_case_info, case_info, after_case_info, common_step_info, dft_info, var=var, ctx=ctx, x=parent_x, hooks=hooks, step_pool=step_pool)
                     test_result.add_case_result(result)
             else:
                 # 并发执行，每次执行 ctx.yaml 中 parallel.case 定义的个数
                 for i in grouper(Framework.cases(info, test_directory), info["parallel"]["case"]):
                     results = case_pool.map(
                         Framework.must_run_case,
-                        repeat(test_directory), repeat(configuration), repeat(before_case_info), i, repeat(after_case_info),
+                        repeat(test_directory), repeat(runtime_constant), repeat(before_case_info), i, repeat(after_case_info),
                         repeat(common_step_info), repeat(dft_info), repeat(var), repeat(ctx), repeat(parent_x), repeat(hooks), repeat(step_pool),
                     )
                     for result in results:
                         test_result.add_case_result(result)
 
         # 执行子目录
-        if not configuration.parallel:
+        if not runtime_constant.parallel:
             for directory in [os.path.join(test_directory, i) for i in os.listdir(test_directory) if os.path.isdir(os.path.join(test_directory, i))]:
-                result = Framework.must_run_test(configuration, directory, var_info, ctx, dft_info, common_step_info, before_case_info, after_case_info, parent_drivers, parent_x, hooks, step_pool, case_pool, test_pool)
+                result = Framework.must_run_test(runtime_constant, directory, var_info, ctx, dft_info, common_step_info, before_case_info, after_case_info, parent_drivers, parent_x, hooks, step_pool, case_pool, test_pool)
                 test_result.add_sub_test_result(result)
         else:
             # 并发执行，每次执行 ctx.yaml 中 parallel.subTest 定义的个数
@@ -240,7 +245,7 @@ class Framework:
             for i in grouper([os.path.join(test_directory, i) for i in os.listdir(test_directory) if os.path.isdir(os.path.join(test_directory, i))], info["parallel"]["subTest"]):
                 results = test_pool.map(
                     Framework.must_run_test,
-                    repeat(configuration),
+                    repeat(runtime_constant),
                     i,
                     repeat(var_info), repeat(ctx), repeat(dft_info), repeat(common_step_info), repeat(before_case_info),
                     repeat(after_case_info),
@@ -250,17 +255,17 @@ class Framework:
                     test_result.add_sub_test_result(result)
 
         # 执行 teardown
-        if not configuration.skip_teardown:
-            if not configuration.parallel:
+        if not runtime_constant.skip_teardown:
+            if not runtime_constant.parallel:
                 for case_info in Framework.teardowns(info, test_directory):
-                    result = Framework.must_run_case(test_directory, configuration, [], case_info, [], common_step_info, dft_info, var=var, ctx=ctx, x=parent_x, hooks=hooks, step_pool=step_pool, case_type="teardown")
+                    result = Framework.must_run_case(test_directory, runtime_constant, [], case_info, [], common_step_info, dft_info, var=var, ctx=ctx, x=parent_x, hooks=hooks, step_pool=step_pool, case_type="teardown")
                     test_result.add_teardown_result(result)
             else:
                 # 并发执行，每次执行 ctx.yaml 中 parallel.tearDown 定义的个数
                 for i in grouper(Framework.teardowns(info, test_directory), info["parallel"]["tearDown"]):
                     results = case_pool.map(
                         Framework.must_run_case,
-                        repeat(test_directory), repeat(configuration), repeat(before_case_info), i, repeat(after_case_info),
+                        repeat(test_directory), repeat(runtime_constant), repeat(before_case_info), i, repeat(after_case_info),
                         repeat(common_step_info), repeat(dft_info), repeat(var), repeat(ctx), repeat(parent_x), repeat(hooks),
                         repeat(step_pool), repeat("teardown")
                     )
@@ -271,12 +276,12 @@ class Framework:
         return test_result
 
     @staticmethod
-    def need_skip(configuration, case, var, case_type):
+    def need_skip(runtime_constant, case, var, case_type):
         if case_type == "setup" or case_type == "teardown":
             return False
-        if configuration.case_name and configuration.case_name != case["name"]:
+        if runtime_constant.case_name and runtime_constant.case_name != case["name"]:
             return True
-        if configuration.case_regex and not re.search(configuration.case_regex, case["name"]):
+        if runtime_constant.case_regex and not re.search(runtime_constant.case_regex, case["name"]):
             return True
         if "cond" in case and case["cond"] and not expect_val(case["cond"], var=var):
             return True
@@ -405,7 +410,7 @@ class Framework:
         return info
 
     @staticmethod
-    def must_run_case(directory, configuration, before_case_info, case_info, after_case_info, common_step_info, dft, var=None, ctx=None, x=None, hooks=None, step_pool=None, case_type="case"):
+    def must_run_case(directory, runtime_constant, before_case_info, case_info, after_case_info, common_step_info, dft, var=None, ctx=None, x=None, hooks=None, step_pool=None, case_type="case"):
         for hook in hooks:
             if case_type == "setup":
                 hook.on_setup_start(case_info)
@@ -414,9 +419,9 @@ class Framework:
             else:
                 hook.on_case_start(case_info)
         result = Framework.run_case(
-            configuration, directory,
-            Framework.need_skip(configuration, case_info, var, case_type), before_case_info, case_info, after_case_info,
-            common_step_info, dft, var=var, ctx=ctx, x=x, hooks=hooks, parallel=configuration.parallel, step_pool=step_pool,
+            runtime_constant, directory,
+            Framework.need_skip(runtime_constant, case_info, var, case_type), before_case_info, case_info, after_case_info,
+            common_step_info, dft, var=var, ctx=ctx, x=x, hooks=hooks, parallel=runtime_constant.parallel, step_pool=step_pool,
         )
         for hook in hooks:
             if case_type == "setup":
@@ -428,7 +433,7 @@ class Framework:
         return result
 
     @staticmethod
-    def run_case(configuration, directory, need_skip, before_case_info, case_info, after_case_info, common_step_info, dft, var=None, ctx=None, x=None, hooks=None, parallel=False, step_pool=None):
+    def run_case(runtime_constant, directory, need_skip, before_case_info, case_info, after_case_info, common_step_info, dft, var=None, ctx=None, x=None, hooks=None, parallel=False, step_pool=None):
         if need_skip:
             return CaseResult(directory=directory, name=case_info["name"], is_skip=True)
 
@@ -443,7 +448,7 @@ class Framework:
 
         case = CaseResult(
             directory=directory, name=case_info["name"], description=case_info["description"],
-            command='qas -t "{}" -c "{}" --case-name "{}"'.format(configuration.test_directory, directory[len(configuration.test_directory):], case_info["name"]),
+            command='qas -t "{}" -c "{}" --case-name "{}"'.format(runtime_constant.test_directory, directory[len(runtime_constant.test_directory):], case_info["name"]),
         )
 
         now = datetime.now()
