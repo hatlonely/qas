@@ -7,8 +7,8 @@ import unittest
 
 class TestExpectVal(unittest.TestCase):
     def test_expect_val(self):
-        self.assertTrue(expect_val(1, "val % 2 == 1"))
-        self.assertTrue(expect_val("eeb848f8611a4ff980d2e56a2760b4fcv3", "val.endswith('v3')"))
+        self.assertTrue(expect_val("val % 2 == 1", val=1))
+        self.assertTrue(expect_val("val.endswith('v3')", val="eeb848f8611a4ff980d2e56a2760b4fcv3"))
 
 
 class TestExpectObj(unittest.TestCase):

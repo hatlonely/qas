@@ -32,7 +32,7 @@ def _expect_recursive(root: str, vals, rules, is_dict: bool, expect_results: lis
         else:
             if isinstance(key, str) and key.startswith("#"):
                 val = vals[key[1:]]
-                ok = expect_val(val, rule, case=case, step=step, var=var, x=x)
+                ok = expect_val(rule, val=val, case=case, step=step, var=var, x=x)
                 if not ok:
                     expect_results.append(ExpectResult(is_pass=False, message="NotMatch", node=root_dot_key, val=val, expect=rule))
                 else:
@@ -45,7 +45,7 @@ def _expect_recursive(root: str, vals, rules, is_dict: bool, expect_results: lis
                     expect_results.append(ExpectResult(is_pass=True, message="OK", node=root_dot_key, val=val, expect=rule))
 
 
-def expect_val(val, rule, case=None, step=None, var=None, x=None):
+def expect_val(rule, val=None, case=None, step=None, var=None, x=None):
     res = eval(rule)
     if not isinstance(res, bool):
         return res == val
