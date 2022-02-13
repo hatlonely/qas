@@ -1,0 +1,27 @@
+reporter:
+  html:
+    stepSeparator: "//"
+    lang: "en"
+    i18n:
+      summary:
+        caseTotal: All Case
+        casePass: Case Pass
+        caseSkip: Case Skip
+        caseFail: Case Fail
+        stepPass: Step Pass
+        stepSkip: Step Skip
+        stepFail: Step Fail
+        assertionPass: Assertion Pass
+        assertionFail: Assertion Fail
+        elapse: Elapse
+    font:
+      style: |
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300&family=Roboto:wght@100;300;500;700&display=swap" rel="stylesheet">
+      body: "'Roboto', sans-serif !important"
+      code: "'Roboto Mono', monospace !important"
+    extra:
+      bodyFooter: |
+        <div class="text-center"> awesome footer </div>
+  json:
