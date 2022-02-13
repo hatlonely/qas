@@ -101,16 +101,3 @@ class TextReporter(Reporter):
                 sub_step, pass_open=Fore.GREEN, pass_close=Fore.RESET, fail_open=Fore.RED, fail_close=Fore.RESET,
             ).split("\n"))
         return lines
-
-    @staticmethod
-    def append_val_to_key(vals: dict, key, val):
-        keys = key.split(".")
-        for k in keys[:-1]:
-            if isinstance(vals, dict):
-                vals = vals[k]
-            else:
-                vals = vals[int(k)]
-        if isinstance(vals, dict):
-            vals[keys[-1]] = "{}{}".format(json.dumps(vals[keys[-1]]), val)
-        else:
-            vals[int(keys[-1])] = "{}{}".format(json.dumps(vals[int(keys[-1])]), val)
