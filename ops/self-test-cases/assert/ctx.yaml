@@ -1,0 +1,91 @@
+name: test-assert
+
+ctx:
+  shell:
+    type: shell
+
+case:
+  - name: TestAssertPass
+    step:
+      - ctx: shell
+        req:
+          command: |
+            echo '{
+              "key1": "val1",
+              "key2": 123,
+              "key3": {
+                "key4": "val4",
+                "key5": [{
+                  "key6": "val6",
+                  "key7": [
+                    456,
+                    "val7"
+                  ],
+                  "key8": 333
+                }]
+              }
+            }'
+          decoder: json
+        res:
+          exitCode: 0
+          json: {
+            "key1": "val1",
+            "#key2": "val % 3 == 0",
+            "key3": {
+              "#key4": "len(val) == 4",
+              "key5": [{
+                "#key6": "val.endswith('6')",
+                "key7": [
+                  456,
+                  "val7"
+                ],
+                "#key8": "111 * 3"
+              }]
+            }
+          }
+  - name: TestAssertFailDictNoSuchKey
+    step:
+      - ctx: shell
+        req:
+          command: |
+            echo '{
+              "key1": "val1"
+            }'
+          decoder: json
+        res:
+          exitCode: 0
+          json: {
+            "key2": "val2"
+          }
+  - name: TestAssertFailListNoSuchKey
+    step:
+      - ctx: shell
+        req:
+          command: |
+            echo '[1, 2]'
+          decoder: json
+        res:
+          exitCode: 0
+          json: [1, 2, 3]
+  - name: TestAssertFailTypeDiff
+    step:
+      - ctx: shell
+        req:
+          command: |
+            echo '{
+              "key1": [1, 2],
+              "key2": {"key": "val"},
+              "key3": 3,
+              "key4": [1, 2],
+              "key5": {"key": "val"}
+            }'
+          decoder: json
+        res:
+          exitCode: 0
+          json: {
+            "key1": {"key": "val"},
+            "key2": [1, 2],
+            "key3": [1, 2],
+            "key4": [1, {"key": "val"}],
+            "key5": 3
+          }
