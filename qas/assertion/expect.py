@@ -85,3 +85,8 @@ def expect_exec(rule, val=None, case=None, step=None, var=None, x=None):
     if not isinstance(res, bool):
         return res == val, res
     return res, res
+
+
+def check(rule, val=None, case=None, step=None, var=None, x=None):
+    ok, res = expect_eval(rule, val=val, case=case, step=step, var=var, x=x)
+    return ok
