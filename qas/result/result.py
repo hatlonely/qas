@@ -165,6 +165,7 @@ class CaseResult:
     name: str
     directory: str
     description: str
+    command: str
     status: str
     before_case_steps: list[StepResult]
     pre_steps: list[StepResult]
@@ -185,6 +186,7 @@ class CaseResult:
             "name": self.name,
             "directory": self.directory,
             "description": self.description,
+            "command": self.command,
             "status": self.status,
             "elapse": int(self.elapse.microseconds),
             "isPass": self.is_pass,
@@ -201,6 +203,7 @@ class CaseResult:
     @staticmethod
     def from_json(obj):
         res = CaseResult(directory=obj["directory"], name=obj["name"], description=obj["description"])
+        res.command = obj["command"]
         res.status = obj["status"]
         res.is_skip = obj["isSkip"]
         res.is_pass = obj["isPass"]
@@ -214,10 +217,11 @@ class CaseResult:
         res.elapse = timedelta(microseconds=obj["elapse"])
         return res
 
-    def __init__(self, directory, name, description="", is_skip=False):
+    def __init__(self, directory, name, description="", command="", is_skip=False):
         self.name = name
         self.directory = directory
         self.description = description
+        self.command = command
         self.status = "pass"
         self.is_skip = is_skip
         self.before_case_steps = list[StepResult]()

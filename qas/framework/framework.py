@@ -441,7 +441,10 @@ class Framework:
             "postStep": [],
         })
 
-        case = CaseResult(directory=directory, name=case_info["name"], description=case_info["description"])
+        case = CaseResult(
+            directory=directory, name=case_info["name"], description=case_info["description"],
+            command="qas -t {} -c {} --case-name {}".format(configuration.test_directory, directory, case_info["name"]),
+        )
 
         now = datetime.now()
         for idx, step_info, case_add_step_func in itertools.chain([list(i) + [case.add_before_case_step_result] for i in enumerate(before_case_info)]):

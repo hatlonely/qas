@@ -380,12 +380,17 @@ _case_tpl = """
         <div class="card-header">Description</div>
         <div class="card-body">{{ markdown(case.description) }}</div>
         {% endif %}
+        
+        {% if case.command %}
+        <div class="card-header">Command</div>
+        <div class="card-body">
+            {{ case.command }}
+        </div>        
+        {% endif %}
 
         {# BeforeCaseStep #}
         {% if case.before_case_steps %}
-        <div class="card-header">
-            BeforeCaseStep
-        </div>
+        <div class="card-header">BeforeCaseStep</div>
         <ul class="list-group list-group-flush">
             {% for step in case.before_case_steps %}
             <li class="list-group-item">
