@@ -14,14 +14,18 @@ def expect(vals, rules, case=None, step=None, var=None, x=None):
 def _expect_recursive(root: str, results: list[ExpectResult], vals, rules, case=None, step=None, var=None, x=None):
     if isinstance(rules, dict):
         for key, rule in rules.items():
-            root_dot_key = "{}.{}".format(root, str(key).lstrip("#")).lstrip(".")
-            if isinstance(rule, dict) or isinstance(rule, list):
+            root_dot_key = "{}.{}".format(root, key.lstrip("#")).lstrip(".")
+            if key.startswith("#"):
+                if key[1:] not in vals:
+                    results.append(ExpectResult(is_pass=False, message="NoSuchKey", node=root_dot_key, val=None, expect=rule))
+                else:
+                    results.append(run_expect(root_dot_key, rule, "match", val=vals[key[1:]], case=case, step=step, var=var, x=x))
+            elif key not in vals:
+                results.append(ExpectResult(is_pass=False, message="NoSuchKey", node=root_dot_key, val=None, expect=rule))
+            elif isinstance(rule, dict) or isinstance(rule, list):
                 _expect_recursive(root_dot_key, results, vals[key], rule, case=case, step=step, var=var, x=x)
             else:
-                if key.startswith("#"):
-                    results.append(run_expect(root_dot_key, rule, "match", val=vals[key[1:]], case=case, step=step, var=var, x=x))
-                else:
-                    results.append(run_expect(root_dot_key, rule, "equal", val=vals[key], case=case, step=step, var=var, x=x))
+                results.append(run_expect(root_dot_key, rule, "equal", val=vals[key], case=case, step=step, var=var, x=x))
     if isinstance(rules, list):
         for idx, rule in enumerate(rules):
             root_dot_key = "{}.{}".format(root, idx).lstrip(".")
