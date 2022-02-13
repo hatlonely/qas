@@ -14,8 +14,13 @@ def expect(vals, rules, case=None, step=None, var=None, x=None):
 def _expect_recursive(root: str, results: list[ExpectResult], vals, rules, case=None, step=None, var=None, x=None):
     if isinstance(rules, dict):
         for key, rule in rules.items():
-            root_dot_key = "{}.{}".format(root, key.lstrip("#")).lstrip(".")
-            if key.startswith("#"):
+            root_dot_key = "{}.{}".format(root, key.lstrip("#").lstrip("%")).lstrip(".")
+            if key.startswith("%"):
+                if key[1:] not in vals:
+                    results.append(ExpectResult(is_pass=False, message="NoSuchKey", node=root_dot_key, val=None, expect=rule))
+                else:
+                    results.append(run_expect(root_dot_key, rule, "exec", val=vals[key[1:]], case=case, step=step, var=var, x=x))
+            elif key.startswith("#"):
                 if key[1:] not in vals:
                     results.append(ExpectResult(is_pass=False, message="NoSuchKey", node=root_dot_key, val=None, expect=rule))
                 else:
@@ -45,9 +50,14 @@ def _expect_recursive(root: str, results: list[ExpectResult], vals, rules, case=
 
 def run_expect(root, rule, func, val=None, case=None, step=None, var=None, x=None):
     if func == "match":
-        ok = expect_val(rule, val=val, case=case, step=step, var=var, x=x)
+        ok, res = expect_val(rule, val=val, case=case, step=step, var=var, x=x)
         if not ok:
-            return ExpectResult(is_pass=False, message="NotMatch", node=root, val=val, expect="{} = {}".format(eval(rule), rule))
+            return ExpectResult(is_pass=False, message="NotMatch", node=root, val=val, expect="{} = {}".format(res, rule))
+        return ExpectResult(is_pass=True, message="OK", node=root, val=val, expect=rule)
+    elif func == "exec":
+        ok, res = expect_val_exec(rule, val=val, case=case, step=step, var=var, x=x)
+        if not ok:
+            return ExpectResult(is_pass=False, message="ExecFail", node=root, val=val, expect="{} = {}".format(res, rule))
         return ExpectResult(is_pass=True, message="OK", node=root, val=val, expect=rule)
     else:
         if val != rule:
@@ -58,5 +68,20 @@ def run_expect(root, rule, func, val=None, case=None, step=None, var=None, x=Non
 def expect_val(rule, val=None, case=None, step=None, var=None, x=None):
     res = eval(rule)
     if not isinstance(res, bool):
-        return res == val
-    return res
+        return res == val, res
+    return res, res
+
+
+def expect_val_exec(rule, val=None, case=None, step=None, var=None, x=None):
+    loc = {}
+    env = globals()
+    env.update(val=val)
+    env.update(case=case)
+    env.update(step=step)
+    env.update(var=var)
+    env.update(x=x)
+    exec(rule, env, loc)
+    res = loc["res"]
+    if not isinstance(res, bool):
+        return res == val, res
+    return res, res

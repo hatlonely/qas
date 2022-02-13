@@ -53,7 +53,7 @@ case:
               },
             }[step.req['envs']['KEY1']][step.req['envs']['KEY2']]
 
-  - name: LoopExample2
+  - name: LoopExample4
     step:
       - ctx: shell
         req:
@@ -65,3 +65,20 @@ case:
           exitCode: 0
           "#stdout": |
             str((lambda x, y: 10 + int(y) if x=="1" else 20 + int(y))(step.req['envs']['KEY1'], step.req['envs']['KEY2']))
+  - name: LoopExample4
+    step:
+      - ctx: shell
+        req:
+          command: echo -n $(($KEY1 * 10 + $KEY2))
+          envs:
+            "!KEY1": [ "1", "2" ]
+            "!KEY2": [ "3", "4" ]
+        res:
+          exitCode: 0
+          "%stdout": |
+            def calculate(x, y):
+              if x == "1":
+                return 10 + int(y)
+              if x == "2":
+                return 20 + int(y)
+            res = str(calculate(step.req['envs']['KEY1'], step.req['envs']['KEY2']))
