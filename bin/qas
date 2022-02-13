@@ -19,18 +19,18 @@ def str2bool(v):
 
 def main():
     parser = argparse.ArgumentParser(formatter_class=lambda prog: argparse.RawTextHelpFormatter(prog, width=200), description="""example:
-    qas -t ops/example-docs/helloworld
-    qas -t ops/example-docs -c helloworld
-    qas -t ops/example-docs --case-name HelloWorld
-    qas -t ops/example-docs --case-regex HelloWorld
-    qas -t ops/example-docs -c setup_teardown --skip-setup --skip-teardown
-    qas -t ops/example-docs/custom -x ops/x
-    qas -t ops/example-docs/parallel --parallel
-    qas -t ops/example-docs/parallel --parallel --test-pool-size 10 --case-pool-size 10 --step-pool-size 10
-    qas -t ops/example-docs/helloworld --reporter html > 1.html
-    qas -t ops/example-docs/helloworld --hook trace
-    qas -t ops/example-docs/helloworld --reporter json > 1.json
-qas --json-result 1.json --reporter html > 1.html
+  qas -t ops/example-docs/helloworld
+  qas -t ops/example-docs -c helloworld
+  qas -t ops/example-docs --case-name HelloWorld
+  qas -t ops/example-docs --case-regex HelloWorld
+  qas -t ops/example-docs -c setup_teardown --skip-setup --skip-teardown
+  qas -t ops/example-docs/custom -x ops/x
+  qas -t ops/example-docs/parallel --parallel
+  qas -t ops/example-docs/parallel --parallel --test-pool-size 10 --case-pool-size 10 --step-pool-size 10
+  qas -t ops/example-docs/helloworld --reporter html > 1.html
+  qas -t ops/example-docs/helloworld --hook trace
+  qas -t ops/example-docs/helloworld --reporter json > 1.json
+  qas --json-result 1.json --reporter html > 1.html
 """)
     parser.add_argument("-r", "--reporter", default="text", help="test report format. Built in support of `html/json/text`. Support user defined extension in `x`")
     parser.add_argument("-t", "--test", help="test root directory")
