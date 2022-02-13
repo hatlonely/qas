@@ -47,11 +47,19 @@ _report_tpl = """<!DOCTYPE html>
 
         function showTestSucc(parentID) {
             $('#' + parentID + ' .test.pass').show()
+            $('#' + parentID + ' .test.skip').hide()
+            $('#' + parentID + ' .test.fail').hide()
+        }
+
+        function showTestSkip(parentID) {
+            $('#' + parentID + ' .test.pass').hide()
+            $('#' + parentID + ' .test.skip').show()
             $('#' + parentID + ' .test.fail').hide()
         }
 
         function showTestFail(parentID) {
             $('#' + parentID + ' .test.pass').hide()
+            $('#' + parentID + ' .test.skip').hide()
             $('#' + parentID + ' .test.fail').show()
         }
 
@@ -144,7 +152,7 @@ _test_tpl = """
     <div class="card my-3 border-danger">
         <div class="card-header text-white bg-danger"><h5>{{ res.name }} 测试失败<h5></div>
     {% endif %}
-        
+
         <div class="card-body">
             <table class="table table-striped">
                 <thead>
