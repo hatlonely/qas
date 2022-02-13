@@ -65,7 +65,7 @@ class Framework:
     ):
         self.configuration = Configuration(
             test_directory=test_directory,
-            case_directory=case_directory,
+            case_directory=os.path.join(test_directory, case_directory.rstrip("/")),
             case_regex=case_regex,
             case_name=case_name,
             skip_setup=skip_setup,
@@ -123,7 +123,7 @@ class Framework:
         case_pool,
         test_pool,
     ):
-        if configuration.case_directory and not re.search(configuration.case_directory, test_directory):
+        if not configuration.case_directory.startswith(test_directory):
             return TestResult(test_directory, test_directory, "", is_skip=True)
         for hook in hooks:
             hook.on_test_start(test_directory)
@@ -212,20 +212,21 @@ class Framework:
                 return test_result
 
         # 执行 case
-        if not configuration.parallel:
-            for case_info in Framework.cases(info, test_directory):
-                result = Framework.must_run_case(configuration, before_case_info, case_info, after_case_info, common_step_info, dft_info, var=var, ctx=ctx, x=parent_x, hooks=hooks, step_pool=step_pool)
-                test_result.add_case_result(result)
-        else:
-            # 并发执行，每次执行 ctx.yaml 中 parallel.case 定义的个数
-            for i in grouper(Framework.cases(info, test_directory), info["parallel"]["case"]):
-                results = case_pool.map(
-                    Framework.must_run_case,
-                    repeat(configuration), repeat(before_case_info), i, repeat(after_case_info),
-                    repeat(common_step_info), repeat(dft_info), repeat(var), repeat(ctx), repeat(parent_x), repeat(hooks), repeat(step_pool),
-                )
-                for result in results:
+        if test_directory.startswith(configuration.case_directory):
+            if not configuration.parallel:
+                for case_info in Framework.cases(info, test_directory):
+                    result = Framework.must_run_case(configuration, before_case_info, case_info, after_case_info, common_step_info, dft_info, var=var, ctx=ctx, x=parent_x, hooks=hooks, step_pool=step_pool)
                     test_result.add_case_result(result)
+            else:
+                # 并发执行，每次执行 ctx.yaml 中 parallel.case 定义的个数
+                for i in grouper(Framework.cases(info, test_directory), info["parallel"]["case"]):
+                    results = case_pool.map(
+                        Framework.must_run_case,
+                        repeat(configuration), repeat(before_case_info), i, repeat(after_case_info),
+                        repeat(common_step_info), repeat(dft_info), repeat(var), repeat(ctx), repeat(parent_x), repeat(hooks), repeat(step_pool),
+                    )
+                    for result in results:
+                        test_result.add_case_result(result)
 
         # 执行子目录
         if not configuration.parallel:

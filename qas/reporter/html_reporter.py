@@ -134,17 +134,16 @@ _test_tpl = """
 <div class="col-md-12" id={{ name }}>
 {% endif %}
 
-    {% if res.is_pass %}
+    {% if res.is_skip %}
+    <div class="card my-3 border-warning">
+        <div class="card-header text-white bg-warning"><h5>{{ res.name }} 测试跳过</h5></div>
+    {% elif res.is_pass %}
     <div class="card my-3 border-success">
+        <div class="card-header text-white bg-success"><h5>{{ res.name }} 测试通过</h5></div>
     {% else %}
     <div class="card my-3 border-danger">
-    {% endif %}
-
-        {% if res.is_pass %}
-        <div class="card-header text-white bg-success"><h5>{{ res.name }} 测试通过</h5></div>
-        {% else %}
         <div class="card-header text-white bg-danger"><h5>{{ res.name }} 测试失败<h5></div>
-        {% endif %}
+    {% endif %}
         
         <div class="card-body">
             <table class="table table-striped">
