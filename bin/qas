@@ -36,6 +36,7 @@ def main():
     parser.add_argument("-t", "--test", help="test root directory")
     parser.add_argument("-c", "--case", help="test subdirectory")
     parser.add_argument("-x", "--x", help="user defined extension directory. Support to expand drivers/reporters/hooks/util-functions")
+    parser.add_argument("--config", help="config filename")
     parser.add_argument("--parallel", nargs="?", const=True, default=False, type=str2bool, help="run parallel")
     parser.add_argument("--hook", help="runtime hook. Separated by comma. Built in support of `debug/trace`. Support user defined extension in `x`")
     parser.add_argument("--step-pool-size", type=int, help="step thread pool size")
@@ -63,6 +64,7 @@ def main():
         step_pool_size=args.step_pool_size,
         case_pool_size=args.case_pool_size,
         test_pool_size=args.test_pool_size,
+        config=args.config,
     )
     if args.json_result:
         fw.format()
