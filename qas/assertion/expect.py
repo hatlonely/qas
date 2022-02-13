@@ -52,10 +52,10 @@ def run_expect(root, rule, func, val=None, case=None, step=None, var=None, x=Non
     if func == "eval":
         ok, res = expect_eval(rule, val=val, case=case, step=step, var=var, x=x)
         if not ok:
-            return ExpectResult(is_pass=False, message="NotMatch", node=root, val=val, expect="{} = {}".format(res, rule))
+            return ExpectResult(is_pass=False, message="EvalFail", node=root, val=val, expect="{} = {}".format(res, rule))
         return ExpectResult(is_pass=True, message="OK", node=root, val=val, expect=rule)
     elif func == "exec":
-        ok, res = expect_val_exec(rule, val=val, case=case, step=step, var=var, x=x)
+        ok, res = expect_exec(rule, val=val, case=case, step=step, var=var, x=x)
         if not ok:
             return ExpectResult(is_pass=False, message="ExecFail", node=root, val=val, expect="{} = {}".format(res, rule))
         return ExpectResult(is_pass=True, message="OK", node=root, val=val, expect=rule)
@@ -72,7 +72,7 @@ def expect_eval(rule, val=None, case=None, step=None, var=None, x=None):
     return res, res
 
 
-def expect_val_exec(rule, val=None, case=None, step=None, var=None, x=None):
+def expect_exec(rule, val=None, case=None, step=None, var=None, x=None):
     loc = {}
     env = globals()
     env.update(val=val)
