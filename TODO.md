@@ -10,6 +10,4 @@
 10. 参数支持 validator
 12. http 支持文件上传
 14. config 支持，html css 以及字体配置
-16. expect 在结果不匹配情况下的优化
 17. 支持 pip install
-18. case 选择优化
