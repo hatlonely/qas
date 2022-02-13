@@ -21,7 +21,7 @@ from itertools import repeat
 from ..driver import driver_map
 from ..reporter import reporter_map
 from ..hook import hook_map
-from ..assertion import expect, expect_val
+from ..assertion import expect, expect_eval
 from ..util import render, merge, REQUIRED
 from ..result import TestResult, CaseResult, StepResult, SubStepResult
 from .retry_until import Retry, Until, RetryError, UntilError
@@ -292,7 +292,7 @@ class Framework:
             return True
         if runtime_constant.case_regex and not re.search(runtime_constant.case_regex, case["name"]):
             return True
-        if "cond" in case and case["cond"] and not expect_val(case["cond"], var=var):
+        if "cond" in case and case["cond"] and not expect_eval(case["cond"], var=var):
             return True
         return False
 
@@ -510,7 +510,7 @@ class Framework:
     @staticmethod
     def run_step(step_info, case, dft, var=None, ctx=None, x=None, parallel=False, step_pool=None):
         # 条件步骤
-        if step_info["cond"] and not expect_val(step_info["cond"], case=case, var=var, x=x):
+        if step_info["cond"] and not expect_eval(step_info["cond"], case=case, var=var, x=x):
             return StepResult(step_info["name"], step_info["ctx"], is_skip=True)
         step = StepResult(step_info["name"], step_info["ctx"], step_info["description"])
         now = datetime.now()
@@ -556,12 +556,12 @@ class Framework:
                 for j in range(retry.attempts):
                     step_res = ctx[step_info["ctx"]].do(req)
                     sub_step_result.res = step_res
-                    if retry.condition == "" or not expect_val(retry.condition, case=case, step=sub_step_result, var=var, x=x):
+                    if retry.condition == "" or not expect_eval(retry.condition, case=case, step=sub_step_result, var=var, x=x):
                         break
                     time.sleep(retry.delay.total_seconds())
                 else:
                     raise RetryError()
-                if until.condition == "" or expect_val(until.condition, case=case, step=sub_step_result, var=var, x=x):
+                if until.condition == "" or expect_eval(until.condition, case=case, step=sub_step_result, var=var, x=x):
                     break
                 time.sleep(until.delay.total_seconds())
             else:

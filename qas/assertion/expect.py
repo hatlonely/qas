@@ -24,7 +24,7 @@ def _expect_recursive(root: str, results: list[ExpectResult], vals, rules, case=
                 if key[1:] not in vals:
                     results.append(ExpectResult(is_pass=False, message="NoSuchKey", node=root_dot_key, val=None, expect=rule))
                 else:
-                    results.append(run_expect(root_dot_key, rule, "match", val=vals[key[1:]], case=case, step=step, var=var, x=x))
+                    results.append(run_expect(root_dot_key, rule, "eval", val=vals[key[1:]], case=case, step=step, var=var, x=x))
             elif key not in vals:
                 results.append(ExpectResult(is_pass=False, message="NoSuchKey", node=root_dot_key, val=None, expect=rule))
             elif isinstance(rule, dict) or isinstance(rule, list):
@@ -49,8 +49,8 @@ def _expect_recursive(root: str, results: list[ExpectResult], vals, rules, case=
 
 
 def run_expect(root, rule, func, val=None, case=None, step=None, var=None, x=None):
-    if func == "match":
-        ok, res = expect_val(rule, val=val, case=case, step=step, var=var, x=x)
+    if func == "eval":
+        ok, res = expect_eval(rule, val=val, case=case, step=step, var=var, x=x)
         if not ok:
             return ExpectResult(is_pass=False, message="NotMatch", node=root, val=val, expect="{} = {}".format(res, rule))
         return ExpectResult(is_pass=True, message="OK", node=root, val=val, expect=rule)
@@ -65,7 +65,7 @@ def run_expect(root, rule, func, val=None, case=None, step=None, var=None, x=Non
         return ExpectResult(is_pass=True, message="OK", node=root, val=val, expect=rule)
 
 
-def expect_val(rule, val=None, case=None, step=None, var=None, x=None):
+def expect_eval(rule, val=None, case=None, step=None, var=None, x=None):
     res = eval(rule)
     if not isinstance(res, bool):
         return res == val, res
