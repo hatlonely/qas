@@ -4,11 +4,11 @@
 import datetime
 import hashlib
 import json
-import re
 from jinja2 import Environment, BaseLoader
 import markdown
 
 from ..result import TestResult, SubStepResult
+from ..util import merge, REQUIRED
 from .reporter import Reporter
 from .format_step_res import format_step_res
 
@@ -572,7 +572,12 @@ _sub_step_tpl = """
 
 
 class HtmlReporter(Reporter):
-    def __init__(self):
+    def __init__(self, args=None):
+        args = merge(args, {
+            "stepSeparator": "#",
+        })
+        self.step_separator = args["stepSeparator"]
+
         env = Environment(loader=BaseLoader)
         env.globals.update(format_timedelta=HtmlReporter.format_timedelta)
         env.globals.update(hashlib=hashlib)
@@ -581,7 +586,7 @@ class HtmlReporter(Reporter):
         env.globals.update(render_case=self.render_case)
         env.globals.update(render_step=self.render_step)
         env.globals.update(render_sub_step=self.render_sub_step)
-        env.globals.update(format_sub_step_res=HtmlReporter.format_sub_step_res)
+        env.globals.update(format_sub_step_res=self.format_sub_step_res)
         env.globals.update(len=len)
         env.globals.update(brief_mode=True)
         env.globals.update(markdown=markdown.markdown)
@@ -606,10 +611,9 @@ class HtmlReporter(Reporter):
     def render_sub_step(self, sub_step, name, index):
         return self.sub_step_tpl.render(sub_step=sub_step, name=name, index=index)
 
-    @staticmethod
-    def format_sub_step_res(sub_step: SubStepResult) -> str:
+    def format_sub_step_res(self, sub_step: SubStepResult) -> str:
         return format_step_res(
-            sub_step,
+            sub_step, separator=self.step_separator,
             pass_open="<span class='text-success'>", pass_close="</span>",
             fail_open="<span class='text-danger'>", fail_close="</span>",
         )
