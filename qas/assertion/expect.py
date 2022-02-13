@@ -6,43 +6,41 @@ from ..util.include import *
 
 
 def expect(vals, rules, case=None, step=None, var=None, x=None):
-    expect_results = []
+    results = []
+    _expect("", results, vals, rules, case=case, step=step, var=var, x=x)
+    return results
+
+
+def _expect(root: str, results: list[ExpectResult], vals, rules, case=None, step=None, var=None, x=None):
     if isinstance(rules, dict):
-        _expect_recursive("", vals, rules, True, expect_results, case=case, step=step, var=var, x=x)
-    elif isinstance(rules, list):
-        _expect_recursive("", vals, rules, False, expect_results, case=case, step=step, var=var, x=x)
-    else:
-        pass
-    return expect_results
-
-
-def _expect_recursive(root: str, vals, rules, is_dict: bool, expect_results: list, case=None, step=None, var=None, x=None):
-    if is_dict:
-        to_enumerate = rules.items()
-    else:
-        to_enumerate = enumerate(rules)
-    for key, rule in to_enumerate:
-        root_dot_key = "{}.{}".format(root, str(key).lstrip("#")).lstrip(".")
-        if isinstance(key, str) and key.lstrip("#") not in vals:
-            expect_results.append(ExpectResult(is_pass=False, message="NoSuchKey", node=root_dot_key, val=None, expect=rule))
-        elif isinstance(rule, dict):
-            _expect_recursive(root_dot_key, vals[key], rule, True, expect_results, case=case, step=step, var=var, x=x)
-        elif isinstance(rule, list):
-            _expect_recursive(root_dot_key, vals[key], rule, False, expect_results, case=case, step=step, var=var, x=x)
-        else:
-            if isinstance(key, str) and key.startswith("#"):
-                val = vals[key[1:]]
-                ok = expect_val(rule, val=val, case=case, step=step, var=var, x=x)
-                if not ok:
-                    expect_results.append(ExpectResult(is_pass=False, message="NotMatch", node=root_dot_key, val=val, expect=rule))
-                else:
-                    expect_results.append(ExpectResult(is_pass=True, message="OK", node=root_dot_key, val=val, expect=rule))
+        for key, rule in rules.items():
+            root_dot_key = "{}.{}".format(root, str(key).lstrip("#")).lstrip(".")
+            if isinstance(rule, dict) or isinstance(rule, list):
+                _expect(root_dot_key, results, vals[key], rule, case=case, step=step, var=var, x=x)
             else:
-                val = vals[key]
-                if val != rule:
-                    expect_results.append(ExpectResult(is_pass=False, message="NotEqual", node=root_dot_key, val=val, expect=rule))
+                if key.startswith("#"):
+                    results.append(run_expect(root_dot_key, rule, "match", val=vals[key[1:]], case=case, step=step, var=var, x=x))
                 else:
-                    expect_results.append(ExpectResult(is_pass=True, message="OK", node=root_dot_key, val=val, expect=rule))
+                    results.append(run_expect(root_dot_key, rule, "equal", val=vals[key], case=case, step=step, var=var, x=x))
+    if isinstance(rules, list):
+        for idx, rule in enumerate(rules):
+            root_dot_key = "{}.{}".format(root, idx).lstrip(".")
+            if isinstance(rule, dict) or isinstance(rule, list):
+                _expect(root_dot_key, results, vals[idx], rule, case=case, step=step, var=var, x=x)
+            else:
+                results.append(run_expect(root_dot_key, rule, "equal", val=vals[idx], case=case, step=step, var=var, x=x))
+
+
+def run_expect(root, rule, func, val=None, case=None, step=None, var=None, x=None):
+    if func == "match":
+        ok = expect_val(rule, val=val, case=case, step=step, var=var, x=x)
+        if not ok:
+            return ExpectResult(is_pass=False, message="NotMatch", node=root, val=val, expect=rule)
+        return ExpectResult(is_pass=True, message="OK", node=root, val=val, expect=rule)
+    else:
+        if val != rule:
+            return ExpectResult(is_pass=False, message="NotEqual", node=root, val=val, expect=rule)
+        return ExpectResult(is_pass=True, message="OK", node=root, val=val, expect=rule)
 
 
 def expect_val(rule, val=None, case=None, step=None, var=None, x=None):
