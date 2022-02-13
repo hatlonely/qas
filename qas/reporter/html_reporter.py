@@ -87,10 +87,12 @@ _report_tpl = """<!DOCTYPE html>
         function showAllTest(parentID) {
             if (testToggleStatus[parentID]) {
                 $('#' + parentID + ' .test.pass').show()
+                $('#' + parentID + ' .test.skip').show()
                 $('#' + parentID + ' .test.fail').show()
                 testToggleStatus[parentID] = false
             } else {
                 $('#' + parentID + ' .test.pass').hide()
+                $('#' + parentID + ' .test.skip').hide()
                 $('#' + parentID + ' .test.fail').hide()
                 testToggleStatus[parentID] = true
             }
@@ -99,6 +101,7 @@ _report_tpl = """<!DOCTYPE html>
         function showAllCase(parentID) {
             if (caseToggleStatus[parentID]) {
                 $('#' + parentID + ' .test.pass').show()
+                $('#' + parentID + ' .test.skip').show()
                 $('#' + parentID + ' .test.fail').show()
                 $('#' + parentID + ' .case.pass').show()
                 $('#' + parentID + ' .case.skip').show()
@@ -106,6 +109,7 @@ _report_tpl = """<!DOCTYPE html>
                 caseToggleStatus[parentID] = false
             } else {
                 $('#' + parentID + ' .test.pass').hide()
+                $('#' + parentID + ' .test.skip').hide()
                 $('#' + parentID + ' .test.fail').hide()
                 $('#' + parentID + ' .case.pass').hide()
                 $('#' + parentID + ' .case.skip').hide()
@@ -312,7 +316,7 @@ _test_tpl = """
         </div>
         <ul class="list-group list-group-flush" id="{{ name }}-subtest">
             {% for sub_test in res.sub_tests %}
-            <li class="list-group-item test {{ "pass" if sub_test.is_pass else "fail" }}">
+            <li class="list-group-item test {{ sub_test.status }}">
                 {{ render_test(sub_test, '{}-subtest-{}'.format(name, loop.index0)) }}
             </li>
             {% endfor %}

@@ -288,6 +288,7 @@ class TestResult:
     directory: str
     name: str
     description: str
+    status: str
     is_skip: bool
     is_pass: bool
     is_err: bool
@@ -321,6 +322,7 @@ class TestResult:
         return {
             "directory": self.directory,
             "name": self.name,
+            "status": self.status,
             "description": self.description,
             "isSkip": self.is_skip,
             "isPass": self.is_pass,
@@ -355,6 +357,7 @@ class TestResult:
     def from_json(obj):
         res = TestResult(directory=obj["directory"], name=obj["name"], description=obj["description"], err_message=obj["err"], is_skip=obj["isSkip"])
         res.is_pass = obj["isPass"]
+        res.status = obj["status"]
         res.setups = [CaseResult.from_json(i) for i in obj["setups"]]
         res.cases = [CaseResult.from_json(i) for i in obj["cases"]]
         res.teardowns = [CaseResult.from_json(i) for i in obj["teardowns"]]
@@ -416,11 +419,18 @@ class TestResult:
             self.is_err = True
             self.err = err_message
             self.case_fail += 1
+        if self.is_skip:
+            self.status = "skip"
+        elif self.is_pass:
+            self.status = "pass"
+        else:
+            self.status = "fail"
 
     def add_setup_result(self, case: CaseResult):
         self.setups.append(case)
         if not case.is_pass:
             self.is_pass = False
+            self.status = "fail"
             self.setup_fail += 1
         else:
             self.setup_succ += 1
@@ -433,6 +443,7 @@ class TestResult:
         elif not case.is_pass:
             self.case_fail += 1
             self.is_pass = False
+            self.status = "fail"
             self.curr_case_fail += 1
         else:
             self.case_succ += 1
@@ -447,6 +458,7 @@ class TestResult:
         self.teardowns.append(case)
         if not case.is_pass:
             self.is_pass = False
+            self.status = "fail"
             self.teardown_fail += 1
         else:
             self.teardown_succ += 1
@@ -466,6 +478,7 @@ class TestResult:
         self.assertion_fail += sub_test.assertion_fail
         if not sub_test.is_pass:
             self.is_pass = False
+            self.status = "fail"
             self.sub_test_fail += 1
         else:
             self.sub_test_succ += 1
