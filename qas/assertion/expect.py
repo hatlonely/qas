@@ -23,7 +23,10 @@ def _expect_recursive(root: str, results: list[ExpectResult], vals, rules, case=
             elif key not in vals:
                 results.append(ExpectResult(is_pass=False, message="NoSuchKey", node=root_dot_key, val=None, expect=rule))
             elif isinstance(rule, dict) or isinstance(rule, list):
-                _expect_recursive(root_dot_key, results, vals[key], rule, case=case, step=step, var=var, x=x)
+                if not isinstance(vals[key], type(rule)):
+                    results.append(ExpectResult(is_pass=False, message="TypeDiff", node=root_dot_key, val=vals[key], expect=rule))
+                else:
+                    _expect_recursive(root_dot_key, results, vals[key], rule, case=case, step=step, var=var, x=x)
             else:
                 results.append(run_expect(root_dot_key, rule, "equal", val=vals[key], case=case, step=step, var=var, x=x))
     if isinstance(rules, list):
@@ -32,7 +35,10 @@ def _expect_recursive(root: str, results: list[ExpectResult], vals, rules, case=
             if idx >= len(vals):
                 results.append(ExpectResult(is_pass=False, message="NoSuchKey", node=root_dot_key, val=None, expect=rule))
             elif isinstance(rule, dict) or isinstance(rule, list):
-                _expect_recursive(root_dot_key, results, vals[idx], rule, case=case, step=step, var=var, x=x)
+                if not isinstance(vals[idx], type(rule)):
+                    results.append(ExpectResult(is_pass=False, message="TypeDiff", node=root_dot_key, val=vals[idx], expect=rule))
+                else:
+                    _expect_recursive(root_dot_key, results, vals[idx], rule, case=case, step=step, var=var, x=x)
             else:
                 results.append(run_expect(root_dot_key, rule, "equal", val=vals[idx], case=case, step=step, var=var, x=x))
 

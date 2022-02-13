@@ -195,6 +195,28 @@ class TestExpectObj(unittest.TestCase):
         self.assertEqual(res[1], ExpectResult(is_pass=True, message='OK', node='1', val=2, expect=2))
         self.assertEqual(res[2], ExpectResult(is_pass=False, message='NoSuchKey', node='2', val=None, expect=3))
 
+    def test_expect_type_diff_1(self):
+        res = expect({
+            "key1": [1, 2]
+        }, {
+            "key1": {"key2": "val2"}
+        })
+        self.assertTrue(res)
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0], ExpectResult(is_pass=False, message='TypeDiff', node='key1', val=[1, 2], expect={"key2": "val2"}))
+
+    def test_expect_type_diff_2(self):
+        res = expect({
+            "json": [1, 2, 3]
+        }, {
+            "json": [1, {"key1": "val1"}, 3]
+        })
+        self.assertTrue(res)
+        self.assertEqual(len(res), 3)
+        self.assertEqual(res[0], ExpectResult(is_pass=True, message='OK', node='json.0', val=1, expect=1))
+        self.assertEqual(res[1], ExpectResult(is_pass=False, message='TypeDiff', node='json.1', val=2, expect={"key1": "val1"}))
+        self.assertEqual(res[2], ExpectResult(is_pass=True, message='OK', node='json.2', val=3, expect=3))
+
 
 if __name__ == '__main__':
     unittest.main()
