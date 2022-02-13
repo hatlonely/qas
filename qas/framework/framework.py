@@ -448,7 +448,7 @@ class Framework:
 
         case = CaseResult(
             directory=directory, name=case_info["name"], description=case_info["description"],
-            command='qas -t "{}" -c "{}" --case-name "{}"'.format(runtime_constant.test_directory, directory[len(runtime_constant.test_directory):], case_info["name"]),
+            command='qas -t "{}" -c "{}" --case-name "{}"'.format(runtime_constant.test_directory, directory[len(runtime_constant.test_directory)+1:], case_info["name"]),
         )
 
         now = datetime.now()
