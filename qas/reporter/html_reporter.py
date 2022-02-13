@@ -157,6 +157,7 @@ _test_tpl = """
         <div class="card-header text-white bg-danger"><h5>{{ res.name }} 测试失败<h5></div>
     {% endif %}
 
+        {% if not res.is_skip %}
         <div class="card-body">
             <table class="table table-striped">
                 <thead>
@@ -234,6 +235,7 @@ _test_tpl = """
                 </tbody>
             </table>
         </div>
+        {% endif %}
         
         {# 渲染 Err #}
         {% if res.is_err %}
