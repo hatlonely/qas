@@ -402,9 +402,7 @@ _case_tpl = """
         
         {# PreStep #}
         {% if case.pre_steps %}
-        <div class="card-header">
-            PreStep
-        </div>
+        <div class="card-header">PreStep</div>
         <ul class="list-group list-group-flush">
             {% for step in case.pre_steps %}
             <li class="list-group-item">
@@ -415,9 +413,7 @@ _case_tpl = """
         {% endif %}
         
         {# Step #}
-        <div class="card-header">
-            Step
-        </div>
+        <div class="card-header">Step</div>
         <ul class="list-group list-group-flush">
             {% for step in case.steps %}
             <li class="list-group-item">
@@ -428,9 +424,7 @@ _case_tpl = """
         
         {# PostStep #}
         {% if case.pre_steps %}
-        <div class="card-header">
-            PostStep
-        </div>
+        <div class="card-header">PostStep</div>
         <ul class="list-group list-group-flush">
             {% for step in case.post_steps %}
             <li class="list-group-item">
@@ -442,9 +436,7 @@ _case_tpl = """
 
         {# AfterCaseStep #}
         {% if case.after_case_steps %}
-        <div class="card-header">
-            AfterCaseStep
-        </div>
+        <div class="card-header">AfterCaseStep</div>
         <ul class="list-group list-group-flush">
             {% for step in case.after_case_steps %}
             <li class="list-group-item">
