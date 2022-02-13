@@ -123,7 +123,7 @@ class Framework:
         case_pool,
         test_pool,
     ):
-        if not (configuration.case_directory + "/").startswith(test_directory + "/"):
+        if not (configuration.case_directory + "/").startswith(test_directory + "/") and not (test_directory + "/").startswith(configuration.case_directory + "/"):
             return TestResult(test_directory, test_directory, "", is_skip=True)
         for hook in hooks:
             hook.on_test_start(test_directory)

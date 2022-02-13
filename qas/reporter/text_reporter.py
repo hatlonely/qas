@@ -37,7 +37,7 @@ class TextReporter(Reporter):
             ))
         else:
             if res.is_err:
-                lines.append(["  {}  {}".format(self.padding, line) for line in res.err.split("\n")])
+                lines.extend(["  {}  {}".format(self.padding, line) for line in res.err.split("\n")])
             lines.append("{}{}测试 {} 失败，成功 {}，失败 {}，跳过 {}，步骤成功 {}，失败 {}，断言成功 {}，失败 {}，耗时 {}{}".format(
                 self.padding, Fore.RED, res.name, res.case_succ, res.case_fail, res.case_skip,
                 res.step_succ, res.step_fail, res.assertion_succ, res.assertion_fail,
