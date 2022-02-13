@@ -290,9 +290,12 @@ _test_tpl = """
         <div class="card-header justify-content-between d-flex">
             SubTest
             <span>
-                <span class="badge bg-primary rounded-pill" onclick="showAllTest('{{ name }}-subtest')">{{ res.sub_test_succ + res.sub_test_fail }}</span>
+                <span class="badge bg-primary rounded-pill" onclick="showAllTest('{{ name }}-subtest')">{{ res.sub_test_succ + res.sub_test_skip + res.sub_test_fail }}</span>
                 {% if res.sub_test_succ %}
                 <span class="badge bg-success rounded-pill" onclick="showTestSucc('{{ name }}-subtest')">{{ res.sub_test_succ }}</span>
+                {% endif %}
+                {% if res.sub_test_skip %}
+                <span class="badge bg-warning rounded-pill" onclick="showTestSkip('{{ name }}-subtest')">{{ res.sub_test_skip }}</span>
                 {% endif %}
                 {% if res.sub_test_fail %}
                 <span class="badge bg-danger rounded-pill" onclick="showTestFail('{{ name }}-subtest')">{{ res.sub_test_fail }}</span>

@@ -65,7 +65,7 @@ class Framework:
     ):
         self.configuration = Configuration(
             test_directory=test_directory,
-            case_directory=os.path.join(test_directory, case_directory.rstrip("/")),
+            case_directory=test_directory if not case_directory else os.path.join(test_directory, case_directory.rstrip("/")),
             case_regex=case_regex,
             case_name=case_name,
             skip_setup=skip_setup,
@@ -231,8 +231,8 @@ class Framework:
         # 执行子目录
         if not configuration.parallel:
             for directory in [os.path.join(test_directory, i) for i in os.listdir(test_directory) if os.path.isdir(os.path.join(test_directory, i))]:
-                sub_test_result = Framework.must_run_test(configuration, directory, var_info, ctx, dft_info, common_step_info, before_case_info, after_case_info, parent_drivers, parent_x, hooks, step_pool, case_pool, test_pool)
-                test_result.add_sub_test_result(sub_test_result)
+                result = Framework.must_run_test(configuration, directory, var_info, ctx, dft_info, common_step_info, before_case_info, after_case_info, parent_drivers, parent_x, hooks, step_pool, case_pool, test_pool)
+                test_result.add_sub_test_result(result)
         else:
             # 并发执行，每次执行 ctx.yaml 中 parallel.subTest 定义的个数
             # 每次执行会递归地使用 test_pool，每层目录需要占用一个线程，当 pool size 小于目录嵌套层数时会导致死锁

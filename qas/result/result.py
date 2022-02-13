@@ -314,6 +314,7 @@ class TestResult:
     curr_case_fail: int
     curr_case_skip: int
     sub_test_succ: int
+    sub_test_skip: int
     sub_test_fail: int
 
     def to_json(self):
@@ -321,6 +322,7 @@ class TestResult:
             "directory": self.directory,
             "name": self.name,
             "description": self.description,
+            "isSkip": self.is_skip,
             "isPass": self.is_pass,
             "isErr": self.is_err,
             "err": self.err,
@@ -341,6 +343,7 @@ class TestResult:
             "assertionSucc": self.assertion_succ,
             "assertionFail": self.assertion_fail,
             "subTestSucc": self.sub_test_succ,
+            "subTestSkip": self.sub_test_skip,
             "subTestFail": self.sub_test_fail,
             "cases": self.cases,
             "setups": self.setups,
@@ -350,10 +353,8 @@ class TestResult:
 
     @staticmethod
     def from_json(obj):
-        res = TestResult(directory=obj["directory"], name=obj["name"], description=obj["description"])
+        res = TestResult(directory=obj["directory"], name=obj["name"], description=obj["description"], err_message=obj["err"], is_skip=obj["isSkip"])
         res.is_pass = obj["isPass"]
-        res.is_err = obj["isErr"]
-        res.err = obj["err"]
         res.setups = [CaseResult.from_json(i) for i in obj["setups"]]
         res.cases = [CaseResult.from_json(i) for i in obj["cases"]]
         res.teardowns = [CaseResult.from_json(i) for i in obj["teardowns"]]
@@ -374,6 +375,7 @@ class TestResult:
         res.assertion_succ = obj["assertionSucc"]
         res.assertion_fail = obj["assertionFail"]
         res.sub_test_succ = obj["subTestSucc"]
+        res.sub_test_skip = obj["subTestSkip"]
         res.sub_test_fail = obj["subTestFail"]
         res.elapse = timedelta(microseconds=obj["elapse"])
         return res
@@ -407,6 +409,7 @@ class TestResult:
         self.step_fail = 0
         self.step_skip = 0
         self.sub_test_succ = 0
+        self.sub_test_skip = 0
         self.sub_test_fail = 0
         if err_message:
             self.is_pass = False
@@ -449,9 +452,10 @@ class TestResult:
             self.teardown_succ += 1
 
     def add_sub_test_result(self, sub_test):
-        if self.is_skip:
-            return
         self.sub_tests.append(sub_test)
+        if sub_test.is_skip:
+            self.sub_test_skip += 1
+            return
         self.case_succ += sub_test.case_succ
         self.case_fail += sub_test.case_fail
         self.case_skip += sub_test.case_skip
