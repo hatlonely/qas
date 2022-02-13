@@ -8,7 +8,7 @@ from ..result import TestResult, CaseResult, StepResult
 
 
 class DebugHook(Hook):
-    def __init__(self):
+    def __init__(self, args=None):
         self.padding = ""
 
     def on_test_start(self, test):

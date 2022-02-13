@@ -11,7 +11,7 @@ from ..reporter import format_step_res
 
 
 class TraceHook(Hook):
-    def __init__(self):
+    def __init__(self, args=None):
         self.padding = ""
 
     def on_test_start(self, directory):

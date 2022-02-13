@@ -86,11 +86,20 @@ class Framework:
             if hasattr(self.x, "hook_map"):
                 self.hook_map = self.hook_map | self.x.hook_map
 
-        # if config:
-        #     
+        hooks = hook.split(",") if hook else []
+        cfg = {}
+        if config:
+            with open(config, "r", encoding="utf-8") as fp:
+                cfg = yaml.safe_load(fp)
+        cfg = merge(cfg, {
+            "reporter": {
+                reporter: {},
+            },
+            "hook": dict([(i, {}) for i in hooks]),
+        })
 
-        self.reporter = self.reporter_map[reporter]()
-        self.hooks = [self.hook_map[i]() for i in hook.split(",")] if hook else []
+        self.reporter = self.reporter_map[reporter](cfg["reporter"][reporter])
+        self.hooks = [self.hook_map[i](cfg["hook"][i]) for i in hooks]
 
         self.json_result = json_result
 
