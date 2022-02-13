@@ -1,4 +1,4 @@
 from .render import render
-from .default import merge, REQUIRED
+from .merge import merge, REQUIRED
 
 __all__ = ["render", "merge", "REQUIRED"]

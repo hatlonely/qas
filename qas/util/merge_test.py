@@ -2,7 +2,7 @@
 
 
 import unittest
-from qas.util.default import *
+from .merge import *
 
 
 class TestMerge(unittest.TestCase):

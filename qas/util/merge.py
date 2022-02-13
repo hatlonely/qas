@@ -5,8 +5,6 @@ REQUIRED = "__DEFAULT__REQUIRED__"
 
 
 def merge(req, dft):
-    if not req:
-        return dft
     return _merge_recursive("", req, dft)
 
 
