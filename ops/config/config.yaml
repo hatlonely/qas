@@ -23,6 +23,6 @@ reporter:
       code: "'Roboto Mono', monospace !important"
     extra:
       bodyFooter: |
-        <div class="text-center"> awesome footer </div>
+        <div class="text-center"> @Copyright 2022, hatlonely </div>
   json:
     indent: 2
