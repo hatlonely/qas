@@ -19,27 +19,33 @@ def str2bool(v):
 
 def main():
     parser = argparse.ArgumentParser(formatter_class=lambda prog: argparse.RawTextHelpFormatter(prog, width=200), description="""example:
-    qas --test example-docs
-    qas --test example-docs --case helloworld
-    qas --test example-docs --case-regex helloworld
-    qas --test example-docs --case-name EchoHelloWorld
-    qas --test example-docs --case-name EchoHelloWorld --setup --teardown
-    qas --json-result test.json --reporter text
+    qas -t ops/example-docs/helloworld
+    qas -t ops/example-docs -c helloworld
+    qas -t ops/example-docs --case-name HelloWorld
+    qas -t ops/example-docs --case-regex HelloWorld
+    qas -t ops/example-docs -c setup_teardown --skip-setup --skip-teardown
+    qas -t ops/example-docs/custom -x ops/x
+    qas -t ops/example-docs/parallel --parallel
+    qas -t ops/example-docs/parallel --parallel --test-pool-size 10 --case-pool-size 10 --step-pool-size 10
+    qas -t ops/example-docs/helloworld --reporter html > 1.html
+    qas -t ops/example-docs/helloworld --hook trace
+    qas -t ops/example-docs/helloworld --reporter json > 1.json
+qas --json-result 1.json --reporter html > 1.html
 """)
-    parser.add_argument("-r", "--reporter", default="text", help="reporter result")
-    parser.add_argument("-t", "--test", help="test directory")
-    parser.add_argument("-x", "--x", help="user custom directory")
-    parser.add_argument("-c", "--case", help="case directory regex match")
-    parser.add_argument("--parallel", nargs="?", const=True, default=False, type=str2bool, help="run case parallel")
-    parser.add_argument("--hook", help="hook")
-    parser.add_argument("--step-pool-size", type=int, help="step pool size")
-    parser.add_argument("--case-pool-size", type=int, help="case pool size")
-    parser.add_argument("--test-pool-size", type=int, help="test pool size")
-    parser.add_argument("--case-name", help="case name")
-    parser.add_argument("--case-regex", help="case name regex match")
-    parser.add_argument("--json-result", help="json result file")
-    parser.add_argument("--skip-setup", nargs="?", const=True, default=False, type=str2bool, help="skip setup case")
-    parser.add_argument("--skip-teardown", nargs="?", const=True, default=False, type=str2bool, help="skip teardown")
+    parser.add_argument("-r", "--reporter", default="text", help="test report format. Built in support of `html/json/text`. Support user defined extension in `x`")
+    parser.add_argument("-t", "--test", help="test root directory")
+    parser.add_argument("-c", "--case", help="test subdirectory")
+    parser.add_argument("-x", "--x", help="user defined extension directory. Support to expand drivers/reporters/hooks/util-functions")
+    parser.add_argument("--parallel", nargs="?", const=True, default=False, type=str2bool, help="run parallel")
+    parser.add_argument("--hook", help="runtime hook. Separated by comma. Built in support of `debug/trace`. Support user defined extension in `x`")
+    parser.add_argument("--step-pool-size", type=int, help="step thread pool size")
+    parser.add_argument("--case-pool-size", type=int, help="case thread pool size")
+    parser.add_argument("--test-pool-size", type=int, help="test thread pool size")
+    parser.add_argument("--case-name", help="filter case by name")
+    parser.add_argument("--case-regex", help="filter case by regex")
+    parser.add_argument("--json-result", help="json result report. If you specify this field, you can convert the JSON report to another format report")
+    parser.add_argument("--skip-setup", nargs="?", const=True, default=False, type=str2bool, help="skip setup cases")
+    parser.add_argument("--skip-teardown", nargs="?", const=True, default=False, type=str2bool, help="skip teardown cases")
     args = parser.parse_args()
 
     fw = Framework(
