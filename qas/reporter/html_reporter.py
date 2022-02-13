@@ -384,7 +384,13 @@ _case_tpl = """
         {% if case.command %}
         <div class="card-header">Command</div>
         <div class="card-body">
-            {{ case.command }}
+            <div class="float-end">
+                <button type="button" class="btn btn-sm py-0" onclick="copyToClipboard('{{ name }}-command')"
+                    data-bs-toggle="tooltip" data-bs-placement="top" title="复制">
+                    <i class="bi-clipboard"></i>
+                </button>
+            </div>
+            <span id="{{ name }}-command">{{ case.command }}</span>
         </div>        
         {% endif %}
 
