@@ -25,3 +25,4 @@ reporter:
       bodyFooter: |
         <div class="text-center"> awesome footer </div>
   json:
+    indent: 2
