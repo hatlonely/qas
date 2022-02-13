@@ -29,7 +29,9 @@ def _expect_recursive(root: str, results: list[ExpectResult], vals, rules, case=
     if isinstance(rules, list):
         for idx, rule in enumerate(rules):
             root_dot_key = "{}.{}".format(root, idx).lstrip(".")
-            if isinstance(rule, dict) or isinstance(rule, list):
+            if idx >= len(vals):
+                results.append(ExpectResult(is_pass=False, message="NoSuchKey", node=root_dot_key, val=None, expect=rule))
+            elif isinstance(rule, dict) or isinstance(rule, list):
                 _expect_recursive(root_dot_key, results, vals[idx], rule, case=case, step=step, var=var, x=x)
             else:
                 results.append(run_expect(root_dot_key, rule, "equal", val=vals[idx], case=case, step=step, var=var, x=x))

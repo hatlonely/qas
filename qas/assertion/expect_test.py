@@ -187,6 +187,14 @@ class TestExpectObj(unittest.TestCase):
         self.assertEqual(len(res), 1)
         self.assertEqual(res[0], ExpectResult(is_pass=False, message='NoSuchKey', node='key2', val=None, expect='val2'))
 
+    def test_expect_list_no_such_key(self):
+        res = expect([1, 2], [1, 2, 3])
+        self.assertTrue(res)
+        self.assertEqual(len(res), 3)
+        self.assertEqual(res[0], ExpectResult(is_pass=True, message='OK', node='0', val=1, expect=1))
+        self.assertEqual(res[1], ExpectResult(is_pass=True, message='OK', node='1', val=2, expect=2))
+        self.assertEqual(res[2], ExpectResult(is_pass=False, message='NoSuchKey', node='2', val=None, expect=3))
+
 
 if __name__ == '__main__':
     unittest.main()
