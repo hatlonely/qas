@@ -5,6 +5,7 @@ from .reporter import Reporter
 from .json_reporter import JsonReporter
 from .text_reporter import TextReporter
 from .html_reporter import HtmlReporter
+from .format_step_res import format_step_res
 
 
 reporter_map = {
@@ -21,5 +22,6 @@ __all__ = [
     "TextReporter",
     "HtmlReporter",
     "reporter_map",
+    "format_step_res",
 ]
 

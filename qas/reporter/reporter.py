@@ -6,4 +6,4 @@ from ..result import TestResult
 
 class Reporter:
     def report(self, res: TestResult) -> str:
-        pass
+        return ""

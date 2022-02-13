@@ -2,12 +2,12 @@
 
 
 import json
-import re
-
 import durationpy
 from colorama import Fore
+
 from .hook import Hook
 from ..result import TestResult, CaseResult
+from ..reporter import format_step_res
 
 
 class TraceHook(Hook):
@@ -98,44 +98,9 @@ class TraceHook(Hook):
                 lines.extend(("res: " + json.dumps(sub_step.res, indent=2)).split("\n"))
                 lines.extend(["  " + i for i in sub_step.err.split("\n")])
                 return lines
-
-            # 修改 res 返回值，将预期值标记后拼接在 value 后面
-            for expect_result in sub_step.assertions:
-                if expect_result.is_pass:
-                    TraceHook.append_val_to_key(sub_step.res, expect_result.node, "<GREEN>{}<END>".format(expect_result.expect))
-                else:
-                    TraceHook.append_val_to_key(sub_step.res, expect_result.node, "<RED>{}<END>".format(expect_result.expect))
-
-            res_lines = ("res: " + json.dumps(sub_step.res, indent=2)).split("\n")
-            format_lines = []
-            # 解析 res 中 value 的值，重新拼接成带颜色的结果值
-            for line in res_lines:
-                mr = re.match(r'(\s+".*?": )"(.*)<GREEN>(.*)<END>"(.*)', line)
-                if mr:
-                    format_lines.append("{}{}{} # {}{}{}".format(
-                        mr.groups()[0], json.loads('"{}"'.format(mr.groups()[1])), mr.groups()[3], Fore.GREEN, mr.groups()[2], Fore.RESET,
-                    ))
-                    continue
-                mr = re.match(r'(\s+".*?": )"(.*)<RED>(.*)<END>"(.*)', line)
-                if mr:
-                    format_lines.append("{}{}{} # {}{}{}".format(
-                        mr.groups()[0], json.loads('"{}"'.format(mr.groups()[1])), mr.groups()[3], Fore.RED, mr.groups()[2], Fore.RESET,
-                    ))
-                    continue
-                mr = re.match(r'(\s+)"(.*)<GREEN>(.*)<END>"(.*)', line)
-                if mr:
-                    format_lines.append("{}{}{} # {}{}{}".format(
-                        mr.groups()[0], json.loads('"{}"'.format(mr.groups()[1])), mr.groups()[3], Fore.GREEN, mr.groups()[2], Fore.RESET,
-                    ))
-                    continue
-                mr = re.match(r'(\s+)"(.*)<RED>(.*)<END>"(.*)', line)
-                if mr:
-                    format_lines.append("{}{}{} # {}{}{}".format(
-                        mr.groups()[0], json.loads('"{}"'.format(mr.groups()[1])), mr.groups()[3], Fore.RED, mr.groups()[2], Fore.RESET,
-                    ))
-                    continue
-                format_lines.append(line)
-            lines.extend(format_lines)
+            lines.extend(format_step_res(
+                sub_step, pass_open=Fore.GREEN, pass_close=Fore.RESET, fail_open=Fore.RED, fail_close=Fore.RESET,
+            ).split("\n"))
         return lines
 
     @staticmethod
