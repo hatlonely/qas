@@ -154,11 +154,34 @@ class TestExpectObj(unittest.TestCase):
         self.assertEqual(res[2], ExpectResult(is_pass=True, message="OK", node="1.hex", val="333", expect="333"))
         self.assertEqual(res[3], ExpectResult(is_pass=False, message="NotEqual", node="1.num", val="444", expect="456"))
 
-    def test_expect_dict_no_such_key(self):
+    def test_expect_dict_no_such_key_1(self):
         res = expect({
             "key1": "val1"
         }, {
             "key2": "val2"
+        })
+        self.assertTrue(res)
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0], ExpectResult(is_pass=False, message='NoSuchKey', node='key2', val=None, expect='val2'))
+
+    def test_expect_dict_no_such_key_2(self):
+        res = expect({
+            "key1": "val1"
+        }, {
+            "key2": {
+                "key3": "val3",
+                "key3": "val4"
+            }
+        })
+        self.assertTrue(res)
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0], ExpectResult(is_pass=False, message='NoSuchKey', node='key2', val=None, expect={'key3': 'val4'}))
+
+    def test_expect_dict_no_such_key_3(self):
+        res = expect({
+            "key1": "val1"
+        }, {
+            "#key2": "val2"
         })
         self.assertTrue(res)
         self.assertEqual(len(res), 1)
