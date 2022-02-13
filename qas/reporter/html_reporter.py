@@ -6,6 +6,7 @@ import hashlib
 import json
 from jinja2 import Environment, BaseLoader
 import markdown
+from types import SimpleNamespace
 
 from ..result import TestResult, SubStepResult
 from ..util import merge, REQUIRED
@@ -16,7 +17,7 @@ from .format_step_res import format_step_res
 _report_tpl = """<!DOCTYPE html>
 <html lang="zh-cmn-Hans">
 <head>
-    <title>{{ res.name }} 测试报告</title>
+    <title>{{ res.name }} {{ i18n.testTitle.name }}</title>
     <meta charset="UTF-8">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
@@ -149,13 +150,13 @@ _test_tpl = """
 
     {% if res.is_skip %}
     <div class="card my-3 border-warning">
-        <div class="card-header text-white bg-warning"><h5>{{ res.name }} 测试跳过</h5></div>
+        <div class="card-header text-white bg-warning"><h5>{{ res.name }} {{ i18n.testTitle.skip }}</h5></div>
     {% elif res.is_pass %}
     <div class="card my-3 border-success">
-        <div class="card-header text-white bg-success"><h5>{{ res.name }} 测试通过</h5></div>
+        <div class="card-header text-white bg-success"><h5>{{ res.name }} {{ i18n.testTitle.pass }}</h5></div>
     {% else %}
     <div class="card my-3 border-danger">
-        <div class="card-header text-white bg-danger"><h5>{{ res.name }} 测试失败<h5></div>
+        <div class="card-header text-white bg-danger"><h5>{{ res.name }} {{ i18n.testTitle.fail }}<h5></div>
     {% endif %}
 
         {% if not res.is_skip %}
@@ -163,16 +164,16 @@ _test_tpl = """
             <table class="table table-striped">
                 <thead>
                     <tr class="text-center">
-                        <th>测试总数</th>
-                        <th>测试通过</th>
-                        <th>测试跳过</th>
-                        <th>测试失败</th>
-                        <th>步骤通过</th>
-                        <th>步骤跳过</th>
-                        <th>步骤失败</th>
-                        <th>断言成功</th>
-                        <th>断言失败</th>
-                        <th>耗时</th>
+                        <th>{{ i18n.summary.caseTotal }}</th>
+                        <th>{{ i18n.summary.casePass }}</th>
+                        <th>{{ i18n.summary.caseSkip }}</th>
+                        <th>{{ i18n.summary.caseFail }}</th>
+                        <th>{{ i18n.summary.stepPass }}</th>
+                        <th>{{ i18n.summary.stepSkip }}</th>
+                        <th>{{ i18n.summary.stepFail }}</th>
+                        <th>{{ i18n.summary.assertionPass }}</th>
+                        <th>{{ i18n.summary.assertionFail }}</th>
+                        <th>{{ i18n.summary.elapse }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -386,7 +387,7 @@ _case_tpl = """
         <div class="card-body">
             <div class="float-end">
                 <button type="button" class="btn btn-sm py-0" onclick="copyToClipboard('{{ name }}-command')"
-                    data-bs-toggle="tooltip" data-bs-placement="top" title="复制">
+                    data-bs-toggle="tooltip" data-bs-placement="top" title="{{ i18n.toolTips.copy }}">
                     <i class="bi-clipboard"></i>
                 </button>
             </div>
@@ -530,7 +531,7 @@ _sub_step_tpl = """
         <div class="card-body">
             <div class="float-end">
                 <button type="button" class="btn btn-sm py-0" onclick="copyToClipboard('{{ name }}-req')"
-                    data-bs-toggle="tooltip" data-bs-placement="top" title="复制">
+                    data-bs-toggle="tooltip" data-bs-placement="top" title="{{ i18n.toolTips.copy }}">
                     <i class="bi-clipboard"></i>
                 </button>
             </div>
@@ -553,7 +554,7 @@ _sub_step_tpl = """
         <div class="card-body">
             <div class="float-end">
                 <button type="button" class="btn btn-sm py-0" onclick="copyToClipboard('{{ name }}-res')"
-                    data-bs-toggle="tooltip" data-bs-placement="top" title="复制">
+                    data-bs-toggle="tooltip" data-bs-placement="top" title="{{ i18n.toolTips.copy }}">
                     <i class="bi-clipboard"></i>
                 </button>
             </div>
@@ -570,13 +571,88 @@ _sub_step_tpl = """
 </div>
 """
 
+i18n = {
+    "dft": {
+        "testTitle": {
+            "name": "REPORT",
+            "pass": "PASS",
+            "skip": "SKIP",
+            "fail": "FAIL",
+        },
+        "summary": {
+            "caseTotal": "TOTAL CASE",
+            "casePass": "CASE PASS",
+            "caseSkip": "CASE SKIP",
+            "caseFail": "CASE FAIL",
+            "stepPass": "STEP PASS",
+            "stepSkip": "STEP SKIP",
+            "stepFail": "STEP FAIL",
+            "assertionPass": "ASSERTION PASS",
+            "assertionFail": "ASSERTION FAIL",
+            "elapse": "ELAPSE",
+        },
+        "testHeader": {
+            "description": "Description",
+            "err": "Err",
+            "setUp": "SetUp",
+            "case": "Case",
+            "tearDown": "TearDown",
+            "subTest": "SubTest",
+        },
+        "caseHeader": {
+            "description": "Description",
+            "command": "Command",
+            "beforeCaseStep": "BeforeCaseStep",
+            "preStep": "PreStep",
+            "step": "Step",
+            "postStep": "PostStep",
+            "afterCaseStep": "AfterCaseStep",
+        },
+        "stepHeader": {
+            "description": "Description",
+            "req": "Req",
+            "res": "Res",
+            "err": "Err",
+        },
+        "toolTips": {
+            "copy": "copy"
+        }
+    },
+    "zh": {
+        "testTitle": {
+            "name": "测试报告",
+            "pass": "测试通过",
+            "skip": "测试跳过",
+            "fail": "测试失败",
+        },
+        "summary": {
+            "caseTotal": "测试总数",
+            "casePass": "测试通过",
+            "caseSkip": "测试跳过",
+            "caseFail": "测试失败",
+            "stepPass": "步骤通过",
+            "stepSkip": "步骤跳过",
+            "stepFail": "步骤失败",
+            "assertionSucc": "断言成功",
+            "assertionFail": "断言失败",
+            "elapse": "耗时",
+        },
+        "toolTips": {
+            "copy": "{{ i18n.toolTips.copy }}"
+        }
+    }
+}
+
 
 class HtmlReporter(Reporter):
     def __init__(self, args=None):
         args = merge(args, {
             "stepSeparator": "#",
+            "lang": "zh",
+            "i18n": {},
         })
         self.step_separator = args["stepSeparator"]
+        self.i18n = json.loads(json.dumps(merge(merge(i18n["dft"], args["lang"]), args["i18n"])), object_hook=lambda x: SimpleNamespace(**x))
 
         env = Environment(loader=BaseLoader)
         env.globals.update(format_timedelta=HtmlReporter.format_timedelta)
@@ -590,6 +666,7 @@ class HtmlReporter(Reporter):
         env.globals.update(len=len)
         env.globals.update(brief_mode=True)
         env.globals.update(markdown=markdown.markdown)
+        env.globals.update(i18n=self.i18n)
         self.report_tpl = env.from_string(_report_tpl)
         self.test_tpl = env.from_string(_test_tpl)
         self.case_tpl = env.from_string(_case_tpl)
