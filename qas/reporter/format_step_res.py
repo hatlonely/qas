@@ -47,14 +47,22 @@ def format_step_res(sub_step: SubStepResult, separator="#", pass_open="", pass_c
     return '\n'.join(lines)
 
 
-def append_val_to_key(vals: dict, key, val):
-    keys = key.split(".")
+def append_val_to_key(vals, node, val):
+    keys = node.split(".")
     for k in keys[:-1]:
         if isinstance(vals, dict):
             vals = vals[k]
         else:
             vals = vals[int(k)]
+
+    key = keys[-1]
     if isinstance(vals, dict):
-        vals[keys[-1]] = "{}{}".format(json.dumps(vals[keys[-1]]), val)
+        if key in vals:
+            vals[key] = "{}{}".format(json.dumps(vals[key]), val)
+        else:
+            vals[key] = "{}{}".format(json.dumps(None), val)
     else:
-        vals[int(keys[-1])] = "{}{}".format(json.dumps(vals[int(keys[-1])]), val)
+        if int(key) < len(vals):
+            vals[int(key)] = "{}{}".format(json.dumps(vals[int(key)]), val)
+        else:
+            vals.append("{}{}".format(json.dumps(None), val))
