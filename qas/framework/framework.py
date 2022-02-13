@@ -193,7 +193,7 @@ class Framework:
             if not configuration.parallel:
                 for case_info in Framework.setups(info, test_directory):
                     result = Framework.must_run_case(
-                        configuration, [], case_info, [], common_step_info, dft_info, var=var, ctx=ctx, x=parent_x,
+                        configuration, test_directory, [], case_info, [], common_step_info, dft_info, var=var, ctx=ctx, x=parent_x,
                         hooks=hooks, step_pool=step_pool, case_type="setup",
                     )
                     test_result.add_setup_result(result)
@@ -202,7 +202,7 @@ class Framework:
                 for i in grouper(Framework.setups(info, test_directory), info["parallel"]["setUp"]):
                     results = case_pool.map(
                         Framework.must_run_case,
-                        repeat(configuration), repeat(before_case_info), i, repeat(after_case_info),
+                        repeat(test_directory), repeat(configuration), repeat(before_case_info), i, repeat(after_case_info),
                         repeat(common_step_info), repeat(dft_info), repeat(var), repeat(ctx), repeat(parent_x), repeat(hooks),
                         repeat(step_pool), repeat("setup")
                     )
@@ -215,14 +215,14 @@ class Framework:
         if test_directory.startswith(configuration.case_directory):
             if not configuration.parallel:
                 for case_info in Framework.cases(info, test_directory):
-                    result = Framework.must_run_case(configuration, before_case_info, case_info, after_case_info, common_step_info, dft_info, var=var, ctx=ctx, x=parent_x, hooks=hooks, step_pool=step_pool)
+                    result = Framework.must_run_case(configuration, test_directory, before_case_info, case_info, after_case_info, common_step_info, dft_info, var=var, ctx=ctx, x=parent_x, hooks=hooks, step_pool=step_pool)
                     test_result.add_case_result(result)
             else:
                 # 并发执行，每次执行 ctx.yaml 中 parallel.case 定义的个数
                 for i in grouper(Framework.cases(info, test_directory), info["parallel"]["case"]):
                     results = case_pool.map(
                         Framework.must_run_case,
-                        repeat(configuration), repeat(before_case_info), i, repeat(after_case_info),
+                        repeat(test_directory), repeat(configuration), repeat(before_case_info), i, repeat(after_case_info),
                         repeat(common_step_info), repeat(dft_info), repeat(var), repeat(ctx), repeat(parent_x), repeat(hooks), repeat(step_pool),
                     )
                     for result in results:
@@ -253,14 +253,14 @@ class Framework:
         if not configuration.skip_teardown:
             if not configuration.parallel:
                 for case_info in Framework.teardowns(info, test_directory):
-                    result = Framework.must_run_case(configuration, [], case_info, [], common_step_info, dft_info, var=var, ctx=ctx, x=parent_x, hooks=hooks, step_pool=step_pool, case_type="teardown")
+                    result = Framework.must_run_case(configuration, test_directory, [], case_info, [], common_step_info, dft_info, var=var, ctx=ctx, x=parent_x, hooks=hooks, step_pool=step_pool, case_type="teardown")
                     test_result.add_teardown_result(result)
             else:
                 # 并发执行，每次执行 ctx.yaml 中 parallel.tearDown 定义的个数
                 for i in grouper(Framework.teardowns(info, test_directory), info["parallel"]["tearDown"]):
                     results = case_pool.map(
                         Framework.must_run_case,
-                        repeat(configuration), repeat(before_case_info), i, repeat(after_case_info),
+                        repeat(test_directory), repeat(configuration), repeat(before_case_info), i, repeat(after_case_info),
                         repeat(common_step_info), repeat(dft_info), repeat(var), repeat(ctx), repeat(parent_x), repeat(hooks),
                         repeat(step_pool), repeat("teardown")
                     )
@@ -405,7 +405,7 @@ class Framework:
         return info
 
     @staticmethod
-    def must_run_case(configuration, before_case_info, case_info, after_case_info, common_step_info, dft, var=None, ctx=None, x=None, hooks=None, step_pool=None, case_type="case"):
+    def must_run_case(configuration, directory, before_case_info, case_info, after_case_info, common_step_info, dft, var=None, ctx=None, x=None, hooks=None, step_pool=None, case_type="case"):
         for hook in hooks:
             if case_type == "setup":
                 hook.on_setup_start(case_info)
@@ -414,6 +414,7 @@ class Framework:
             else:
                 hook.on_case_start(case_info)
         result = Framework.run_case(
+            configuration, directory,
             Framework.need_skip(configuration, case_info, var, case_type), before_case_info, case_info, after_case_info,
             common_step_info, dft, var=var, ctx=ctx, x=x, hooks=hooks, parallel=configuration.parallel, step_pool=step_pool,
         )
@@ -427,9 +428,9 @@ class Framework:
         return result
 
     @staticmethod
-    def run_case(need_skip, before_case_info, case_info, after_case_info, common_step_info, dft, var=None, ctx=None, x=None, hooks=None, parallel=False, step_pool=None):
+    def run_case(configuration, directory, need_skip, before_case_info, case_info, after_case_info, common_step_info, dft, var=None, ctx=None, x=None, hooks=None, parallel=False, step_pool=None):
         if need_skip:
-            return CaseResult(case_info["name"], is_skip=True)
+            return CaseResult(directory=directory, name=case_info["name"], is_skip=True)
 
         case_info = merge(case_info, {
             "name": REQUIRED,
@@ -440,7 +441,7 @@ class Framework:
             "postStep": [],
         })
 
-        case = CaseResult(case_info["name"], case_info["description"])
+        case = CaseResult(directory=directory, name=case_info["name"], description=case_info["description"])
 
         now = datetime.now()
         for idx, step_info, case_add_step_func in itertools.chain([list(i) + [case.add_before_case_step_result] for i in enumerate(before_case_info)]):
