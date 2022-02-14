@@ -44,7 +44,7 @@ class RuntimeContext:
     ctx: dict[str, Driver]
     var: SimpleNamespace
     var_info: dict
-    dft_info: dict
+    dft: dict
     common_step_info: dict
     before_case_info: list
     after_case_info: list
@@ -131,8 +131,9 @@ class Framework:
     def run(self):
         rctx = RuntimeContext(
             ctx={},
+            dft={},
             var_info={},
-            dft_info={},
+            var=None,
             common_step_info={},
             before_case_info=[],
             after_case_info=[],
@@ -142,7 +143,6 @@ class Framework:
             step_pool=self.step_pool,
             case_pool=self.case_pool,
             test_pool=self.test_pool,
-            var=None,
         )
 
         res = self.must_run_test(self.constant.test_directory, self.constant, rctx)
@@ -184,7 +184,7 @@ class Framework:
         before_case_info = copy.deepcopy(parent_tctx.before_case_info) + info["beforeCase"] + list(Framework.load_step("{}/before_case.yaml".format(directory)))
         after_case_info = copy.deepcopy(parent_tctx.after_case_info) + info["afterCase"] + list(Framework.load_step("{}/after_case.yaml".format(directory)))
         ctx = copy.copy(parent_tctx.ctx)
-        dft_info = copy.deepcopy(parent_tctx.dft_info)
+        dft = copy.deepcopy(parent_tctx.dft)
         for key in info["ctx"]:
             val = merge(info["ctx"][key], {
                 "type": REQUIRED,
@@ -204,7 +204,7 @@ class Framework:
             })
             val = render(val, var=var)
             ctx[key] = parent_tctx.driver_map[val["type"]](val["args"])
-            dft_info[key] = val["dft"]
+            dft[key] = val["dft"]
 
         test_result = TestResult(directory, info["name"], description)
 
@@ -212,7 +212,7 @@ class Framework:
             ctx=ctx,
             var=var,
             var_info=var_info,
-            dft_info=dft_info,
+            dft=dft,
             common_step_info=common_step_info,
             before_case_info=before_case_info,
             after_case_info=after_case_info,
@@ -557,12 +557,12 @@ class Framework:
         sub_step_result = SubStepResult()
         sub_step_start = datetime.now()
         try:
-            req = merge(req, rctx.dft_info[step_info["ctx"]]["req"])
+            req = merge(req, rctx.dft[step_info["ctx"]]["req"])
             req = render(json.loads(json.dumps(req)), case=case, var=rctx.var, x=rctx.x)  # use json transform tuple to list
             sub_step_result.req = req
 
-            retry = Retry(merge(step_info["retry"], rctx.dft_info[step_info["ctx"]]["retry"]))
-            until = Until(merge(step_info["until"], rctx.dft_info[step_info["ctx"]]["until"]))
+            retry = Retry(merge(step_info["retry"], rctx.dft[step_info["ctx"]]["retry"]))
+            until = Until(merge(step_info["until"], rctx.dft[step_info["ctx"]]["until"]))
 
             for i in range(until.attempts):
                 for j in range(retry.attempts):
