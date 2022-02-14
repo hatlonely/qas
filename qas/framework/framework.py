@@ -182,11 +182,7 @@ class Framework:
         for hook in rctx.hooks:
             hook.on_test_start(directory)
         try:
-            if not (constant.case_directory + "/").startswith(directory + "/") and \
-                    not (directory + "/").startswith(constant.case_directory + "/"):
-                result = TestResult(directory, directory, "", is_skip=True)
-            else:
-                result = Framework.run_test(directory, customize, constant, rctx)
+            result = Framework.run_test(directory, customize, constant, rctx)
         except Exception as e:
             result = TestResult(directory, directory, "", "Exception {}".format(traceback.format_exc()))
         for hook in rctx.hooks:
@@ -200,6 +196,10 @@ class Framework:
         constant: RuntimeConstant,
         parent_rctx: RuntimeContext,
     ):
+        if not (constant.case_directory + "/").startswith(directory + "/") and \
+                not (directory + "/").startswith(constant.case_directory + "/"):
+            return TestResult(directory, directory, "", is_skip=True)
+
         now = datetime.now()
 
         info = Framework.load_ctx(os.path.basename(directory), "{}/{}".format(directory, customize.loadingFiles.ctx))
