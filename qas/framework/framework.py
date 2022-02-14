@@ -527,22 +527,22 @@ class Framework:
 
         for hook in test_context.hooks:
             hook.on_step_start(step_info)
-        step = Framework.run_step(step_info, case, test_context.dft_info, var=test_context.var, ctx=test_context.ctx, x=test_context.x, parallel=runtime_constant.parallel, step_pool=test_context.step_pool)
+        step = Framework.run_step(runtime_constant, test_context, step_info, case)
         for hook in test_context.hooks:
             hook.on_step_end(step)
         return step
 
     @staticmethod
-    def run_step(step_info, case, dft, var=None, ctx=None, x=None, parallel=False, step_pool=None):
+    def run_step(runtime_constant, test_context, step_info, case):
         # 条件步骤
-        if step_info["cond"] and not check(step_info["cond"], case=case, var=var, x=x):
+        if step_info["cond"] and not check(step_info["cond"], case=case, var=test_context.var, x=test_context.x):
             return StepResult(step_info["name"], step_info["ctx"], is_skip=True)
         step = StepResult(step_info["name"], step_info["ctx"], step_info["description"])
         now = datetime.now()
 
-        if not parallel:
+        if not runtime_constant.parallel:
             for req, res in zip(generate_req(step_info["req"]), generate_res(step_info["res"], calculate_num(step_info["req"]))):
-                result = Framework.run_sub_step(req, res, step_info, case, dft, var, ctx, x)
+                result = Framework.run_sub_step(test_context, case, req, res, step_info)
                 step.add_sub_step_result(result)
         else:
             # 并发执行，每次执行 case.step 中 parallel 定义的个数
@@ -550,49 +550,49 @@ class Framework:
                     grouper(generate_req(step_info["req"]), step_info["parallel"]),
                     grouper(generate_res(step_info["res"], calculate_num(step_info["req"])), step_info["parallel"])
             ):
-                results = step_pool.map(
+                results = test_context.step_pool.map(
                     Framework.run_sub_step,
-                    reqs, ress, repeat(step_info), repeat(case), repeat(dft), repeat(var), repeat(ctx), repeat(x),
+                    repeat(test_context), repeat(case), reqs, ress, repeat(step_info),
                 )
                 for result in results:
                     step.add_sub_step_result(result)
 
         # auto name step
         if not step.name:
-            step.name = ctx[step_info["ctx"]].default_step_name(step.req)
+            step.name = test_context.ctx[step_info["ctx"]].default_step_name(step.req)
             if not step.name:
                 step.name = "anonymous-step"
         step.elapse = datetime.now() - now
         return step
 
     @staticmethod
-    def run_sub_step(req, res, step_info, case, dft, var, ctx, x):
+    def run_sub_step(test_context: TestContext, case, req, res, step_info):
         sub_step_result = SubStepResult()
         sub_step_start = datetime.now()
         try:
-            req = merge(req, dft[step_info["ctx"]]["req"])
-            req = render(json.loads(json.dumps(req)), case=case, var=var, x=x)  # use json transform tuple to list
+            req = merge(req, test_context.dft_info[step_info["ctx"]]["req"])
+            req = render(json.loads(json.dumps(req)), case=case, var=test_context.var, x=test_context.x)  # use json transform tuple to list
             sub_step_result.req = req
 
-            retry = Retry(merge(step_info["retry"], dft[step_info["ctx"]]["retry"]))
-            until = Until(merge(step_info["until"], dft[step_info["ctx"]]["until"]))
+            retry = Retry(merge(step_info["retry"], test_context.dft_info[step_info["ctx"]]["retry"]))
+            until = Until(merge(step_info["until"], test_context.dft_info[step_info["ctx"]]["until"]))
 
             for i in range(until.attempts):
                 for j in range(retry.attempts):
-                    step_res = ctx[step_info["ctx"]].do(req)
+                    step_res = test_context.ctx[step_info["ctx"]].do(req)
                     sub_step_result.res = step_res
-                    if retry.condition == "" or not check(retry.condition, case=case, step=sub_step_result, var=var, x=x):
+                    if retry.condition == "" or not check(retry.condition, case=case, step=sub_step_result, var=test_context.var, x=test_context.x):
                         break
                     time.sleep(retry.delay.total_seconds())
                 else:
                     raise RetryError()
-                if until.condition == "" or check(until.condition, case=case, step=sub_step_result, var=var, x=x):
+                if until.condition == "" or check(until.condition, case=case, step=sub_step_result, var=test_context.var, x=test_context.x):
                     break
                 time.sleep(until.delay.total_seconds())
             else:
                 raise UntilError()
 
-            result = expect(step_res, json.loads(json.dumps(res)), case=case, step=sub_step_result, var=var, x=x)
+            result = expect(step_res, json.loads(json.dumps(res)), case=case, step=sub_step_result, var=test_context.var, x=test_context.x)
             sub_step_result.add_expect_result(result)
 
             # ensure req can json serialize
