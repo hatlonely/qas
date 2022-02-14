@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 
+
 import itertools
 import functools
 
 
-def generate_req(d):
+def generate_req(d, p="!"):
     if isinstance(d, list):
         return itertools.product(*[generate_req(v) for v in d])
     if isinstance(d, dict):
@@ -14,7 +15,7 @@ def generate_req(d):
                 [
                     (k[1:], i) for i in v
                 ]
-                if k.startswith("!") else
+                if k.startswith(p) else
                 [
                     *[(k, i) for i in generate_req(v)]
                 ]
@@ -24,7 +25,7 @@ def generate_req(d):
     return d,
 
 
-def generate_res(d, n):
+def generate_res(d, n, p="!"):
     if not d:
         return itertools.repeat(d, n)
     if isinstance(d, list):
@@ -34,7 +35,7 @@ def generate_res(d, n):
             dict(i)
             for i in zip(*[
                 [(k[1:], i) for i in v]
-                if k.startswith("!") else
+                if k.startswith(p) else
                 [(k, i) for i in generate_res(v, n)]
                 for k, v in sorted(d.items())
             ])
@@ -42,11 +43,11 @@ def generate_res(d, n):
     return itertools.repeat(d, n)
 
 
-def calculate_num(d):
+def calculate_num(d, p="!"):
     if isinstance(d, list):
         return functools.reduce(lambda x, y: x * y, [calculate_num(v) for v in d], 1)
     if isinstance(d, dict):
-        return functools.reduce(lambda x, y: x * y, [len(v) if k.startswith("!") else calculate_num(v) for k, v in d.items()], 1)
+        return functools.reduce(lambda x, y: x * y, [len(v) if k.startswith(p) else calculate_num(v) for k, v in d.items()], 1)
     return 1
 
 

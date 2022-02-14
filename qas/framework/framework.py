@@ -252,14 +252,14 @@ class Framework:
         if not constant.skip_setup:
             if not constant.parallel:
                 for case_info in Framework.setups(customize, info, directory):
-                    result = Framework.must_run_case(directory, constant, rctx, case_info, case_type="setup")
+                    result = Framework.must_run_case(directory, customize, constant, rctx, case_info, case_type="setup")
                     test_result.add_setup_result(result)
             else:
                 # 并发执行，每次执行 ctx.yaml 中 parallel.setUp 定义的个数
                 for i in grouper(Framework.setups(customize, info, directory), info["parallel"]["setUp"]):
                     results = parent_tctx.case_pool.map(
                         Framework.must_run_case,
-                        repeat(directory), repeat(constant), repeat(rctx), i, repeat("setup")
+                        repeat(directory), repeat(customize), repeat(constant), repeat(rctx), i, repeat("setup")
                     )
                     for result in results:
                         test_result.add_setup_result(result)
@@ -270,14 +270,14 @@ class Framework:
         if directory.startswith(constant.case_directory):
             if not constant.parallel:
                 for case_info in Framework.cases(customize, info, directory):
-                    result = Framework.must_run_case(directory, constant, rctx, case_info)
+                    result = Framework.must_run_case(directory, customize, constant, rctx, case_info)
                     test_result.add_case_result(result)
             else:
                 # 并发执行，每次执行 ctx.yaml 中 parallel.case 定义的个数
                 for i in grouper(Framework.cases(customize, info, directory), info["parallel"]["case"]):
                     results = parent_tctx.case_pool.map(
                         Framework.must_run_case,
-                        repeat(directory), repeat(constant), repeat(rctx), i
+                        repeat(directory), repeat(customize), repeat(constant), repeat(rctx), i
                     )
                     for result in results:
                         test_result.add_case_result(result)
@@ -306,14 +306,14 @@ class Framework:
         if not constant.skip_teardown:
             if not constant.parallel:
                 for case_info in Framework.teardowns(customize, info, directory):
-                    result = Framework.must_run_case(directory, constant, rctx, case_info, case_type="teardown")
+                    result = Framework.must_run_case(directory, customize, constant, rctx, case_info, case_type="teardown")
                     test_result.add_teardown_result(result)
             else:
                 # 并发执行，每次执行 ctx.yaml 中 parallel.tearDown 定义的个数
                 for i in grouper(Framework.teardowns(customize, info, directory), info["parallel"]["tearDown"]):
                     results = parent_tctx.case_pool.map(
                         Framework.must_run_case,
-                        repeat(directory), repeat(constant), repeat(rctx), i, repeat("teardown")
+                        repeat(directory), repeat(customize), repeat(constant), repeat(rctx), i, repeat("teardown")
                     )
                     for result in results:
                         test_result.add_teardown_result(result)
@@ -464,7 +464,7 @@ class Framework:
         return info
 
     @staticmethod
-    def must_run_case(directory, constant: RuntimeConstant, rctx: RuntimeContext, case_info, case_type="case"):
+    def must_run_case(directory, customize, constant: RuntimeConstant, rctx: RuntimeContext, case_info, case_type="case"):
         case_info = merge(case_info, {
             "name": REQUIRED,
             "description": "",
@@ -481,7 +481,7 @@ class Framework:
                 hook.on_teardown_start(case_info)
             else:
                 hook.on_case_start(case_info)
-        result = Framework.run_case(directory, constant, rctx, case_info, case_type=case_type)
+        result = Framework.run_case(directory, customize, constant, rctx, case_info, case_type=case_type)
         for hook in rctx.hooks:
             if case_type == "setup":
                 hook.on_setup_end(result)
@@ -492,7 +492,7 @@ class Framework:
         return result
 
     @staticmethod
-    def run_case(directory, constant: RuntimeConstant, rctx: RuntimeContext, case_info, case_type="case"):
+    def run_case(directory, customize, constant: RuntimeConstant, rctx: RuntimeContext, case_info, case_type="case"):
         if Framework.need_skip(constant, case_info, rctx.var, case_type):
             return CaseResult(directory=directory, name=case_info["name"], is_skip=True)
 
@@ -505,7 +505,7 @@ class Framework:
 
         if case_type == "case":
             for idx, step_info, case_add_step_func in itertools.chain([list(i) + [case.add_before_case_step_result] for i in enumerate(rctx.before_case_info)]):
-                step = Framework.must_run_step(constant, rctx, step_info, case)
+                step = Framework.must_run_step(customize, constant, rctx, step_info, case)
                 case_add_step_func(step)
                 if not step.is_pass:
                     break
@@ -517,14 +517,14 @@ class Framework:
             [list(i) + [case.add_case_step_result] for i in enumerate(case_info["step"])],
             [list(i) + [case.add_case_post_step_result] for i in enumerate([rctx.common_step_info[i] for i in case_info["postStep"]])],
         ):
-            step = Framework.must_run_step(constant, rctx, step_info, case)
+            step = Framework.must_run_step(customize, constant, rctx, step_info, case)
             case_add_step_func(step)
             if not step.is_pass:
                 break
 
         if case_type == "case":
             for idx, step_info, case_add_step_func in itertools.chain([list(i) + [case.add_after_case_step_result] for i in enumerate(rctx.after_case_info)]):
-                step = Framework.must_run_step(constant, rctx, step_info, case)
+                step = Framework.must_run_step(customize, constant, rctx, step_info, case)
                 case_add_step_func(step)
                 if not step.is_pass:
                     break
@@ -533,7 +533,7 @@ class Framework:
         return case
 
     @staticmethod
-    def must_run_step(constant: RuntimeConstant, rctx: RuntimeContext, step_info, case):
+    def must_run_step(customize, constant: RuntimeConstant, rctx: RuntimeContext, step_info, case):
         step_info = merge(step_info, {
             "name": "",
             "description": "",
@@ -546,13 +546,13 @@ class Framework:
 
         for hook in rctx.hooks:
             hook.on_step_start(step_info)
-        step = Framework.run_step(constant, rctx, step_info, case)
+        step = Framework.run_step(customize, constant, rctx, step_info, case)
         for hook in rctx.hooks:
             hook.on_step_end(step)
         return step
 
     @staticmethod
-    def run_step(constant, rctx, step_info, case):
+    def run_step(customize, constant, rctx, step_info, case):
         # 条件步骤
         if step_info["cond"] and not check(step_info["cond"], case=case, var=rctx.var, x=rctx.x):
             return StepResult(step_info["name"], step_info["ctx"], is_skip=True)
@@ -561,7 +561,7 @@ class Framework:
 
         if not constant.parallel:
             for req, res in zip(generate_req(step_info["req"]), generate_res(step_info["res"], calculate_num(step_info["req"]))):
-                result = Framework.run_sub_step(rctx, case, req, res, step_info)
+                result = Framework.run_sub_step(customize, rctx, case, req, res, step_info)
                 step.add_sub_step_result(result)
         else:
             # 并发执行，每次执行 case.step 中 parallel 定义的个数
@@ -571,7 +571,7 @@ class Framework:
             ):
                 results = rctx.step_pool.map(
                     Framework.run_sub_step,
-                    repeat(rctx), repeat(case), reqs, ress, repeat(step_info),
+                    repeat(customize), repeat(rctx), repeat(case), reqs, ress, repeat(step_info),
                 )
                 for result in results:
                     step.add_sub_step_result(result)
@@ -585,7 +585,7 @@ class Framework:
         return step
 
     @staticmethod
-    def run_sub_step(rctx: RuntimeContext, case, req, res, step_info):
+    def run_sub_step(customize, rctx: RuntimeContext, case, req, res, step_info):
         sub_step_result = SubStepResult()
         sub_step_start = datetime.now()
         try:
