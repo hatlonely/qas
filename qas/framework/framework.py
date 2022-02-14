@@ -139,7 +139,7 @@ class Framework:
         print(self.reporter.report(res))
 
     def run(self):
-        test_context = TestContext(
+        tctx = TestContext(
             ctx={},
             var_info={},
             dft_info={},
@@ -155,7 +155,7 @@ class Framework:
             var=None,
         )
 
-        res = self.must_run_test(self.constant.test_directory, self.constant, test_context)
+        res = self.must_run_test(self.constant.test_directory, self.constant, tctx)
         print(self.reporter.report(res))
         return res.is_pass
 
@@ -163,18 +163,18 @@ class Framework:
     def must_run_test(
         directory: str,
         constant: RuntimeConstant,
-        test_context: TestContext,
+        tctx: TestContext,
     ):
         if not (constant.case_directory + "/").startswith(directory + "/") and \
                 not (directory + "/").startswith(constant.case_directory + "/"):
             return TestResult(directory, directory, "", is_skip=True)
-        for hook in test_context.hooks:
+        for hook in tctx.hooks:
             hook.on_test_start(directory)
         try:
-            result = Framework.run_test(directory, constant, test_context)
+            result = Framework.run_test(directory, constant, tctx)
         except Exception as e:
             result = TestResult(directory, directory, "", "Exception {}".format(traceback.format_exc()))
-        for hook in test_context.hooks:
+        for hook in tctx.hooks:
             hook.on_test_end(result)
         return result
 
@@ -442,16 +442,16 @@ class Framework:
         return info
 
     @staticmethod
-    def must_run_case(directory, constant: RuntimeConstant, test_context: TestContext, case_info, case_type="case"):
-        for hook in test_context.hooks:
+    def must_run_case(directory, constant: RuntimeConstant, tctx: TestContext, case_info, case_type="case"):
+        for hook in tctx.hooks:
             if case_type == "setup":
                 hook.on_setup_start(case_info)
             elif case_type == "teardown":
                 hook.on_teardown_start(case_info)
             else:
                 hook.on_case_start(case_info)
-        result = Framework.run_case(directory, constant, test_context, case_info, case_type=case_type)
-        for hook in test_context.hooks:
+        result = Framework.run_case(directory, constant, tctx, case_info, case_type=case_type)
+        for hook in tctx.hooks:
             if case_type == "setup":
                 hook.on_setup_end(result)
             elif case_type == "teardown":
@@ -461,8 +461,8 @@ class Framework:
         return result
 
     @staticmethod
-    def run_case(directory, constant: RuntimeConstant, test_context: TestContext, case_info, case_type="case"):
-        if Framework.need_skip(constant, case_info, test_context.var, case_type):
+    def run_case(directory, constant: RuntimeConstant, tctx: TestContext, case_info, case_type="case"):
+        if Framework.need_skip(constant, case_info, tctx.var, case_type):
             return CaseResult(directory=directory, name=case_info["name"], is_skip=True)
 
         case_info = merge(case_info, {
@@ -477,16 +477,13 @@ class Framework:
         command = ""
         if case_type == "case":
             command = 'qas -t "{}" -c "{}" --case-name "{}"'.format(constant.test_directory, directory[len(constant.test_directory) + 1:], case_info["name"])
-        case = CaseResult(
-            directory=directory, name=case_info["name"], description=case_info["description"],
-            command=command,
-        )
+        case = CaseResult(directory=directory, name=case_info["name"], description=case_info["description"], command=command)
 
         now = datetime.now()
 
         if case_type == "case":
-            for idx, step_info, case_add_step_func in itertools.chain([list(i) + [case.add_before_case_step_result] for i in enumerate(test_context.before_case_info)]):
-                step = Framework.must_run_step(constant, test_context, step_info, case)
+            for idx, step_info, case_add_step_func in itertools.chain([list(i) + [case.add_before_case_step_result] for i in enumerate(tctx.before_case_info)]):
+                step = Framework.must_run_step(constant, tctx, step_info, case)
                 case_add_step_func(step)
                 if not step.is_pass:
                     break
@@ -494,18 +491,18 @@ class Framework:
                 return case
 
         for idx, step_info, case_add_step_func in itertools.chain(
-            [list(i) + [case.add_case_pre_step_result] for i in enumerate([test_context.common_step_info[i] for i in case_info["preStep"]])],
+            [list(i) + [case.add_case_pre_step_result] for i in enumerate([tctx.common_step_info[i] for i in case_info["preStep"]])],
             [list(i) + [case.add_case_step_result] for i in enumerate(case_info["step"])],
-            [list(i) + [case.add_case_post_step_result] for i in enumerate([test_context.common_step_info[i] for i in case_info["postStep"]])],
+            [list(i) + [case.add_case_post_step_result] for i in enumerate([tctx.common_step_info[i] for i in case_info["postStep"]])],
         ):
-            step = Framework.must_run_step(constant, test_context, step_info, case)
+            step = Framework.must_run_step(constant, tctx, step_info, case)
             case_add_step_func(step)
             if not step.is_pass:
                 break
 
         if case_type == "case":
-            for idx, step_info, case_add_step_func in itertools.chain([list(i) + [case.add_after_case_step_result] for i in enumerate(test_context.after_case_info)]):
-                step = Framework.must_run_step(constant, test_context, step_info, case)
+            for idx, step_info, case_add_step_func in itertools.chain([list(i) + [case.add_after_case_step_result] for i in enumerate(tctx.after_case_info)]):
+                step = Framework.must_run_step(constant, tctx, step_info, case)
                 case_add_step_func(step)
                 if not step.is_pass:
                     break
@@ -514,7 +511,7 @@ class Framework:
         return case
 
     @staticmethod
-    def must_run_step(constant: RuntimeConstant, test_context: TestContext, step_info, case):
+    def must_run_step(constant: RuntimeConstant, tctx: TestContext, step_info, case):
         step_info = merge(step_info, {
             "name": "",
             "description": "",
@@ -525,24 +522,24 @@ class Framework:
             "cond": "",
         })
 
-        for hook in test_context.hooks:
+        for hook in tctx.hooks:
             hook.on_step_start(step_info)
-        step = Framework.run_step(constant, test_context, step_info, case)
-        for hook in test_context.hooks:
+        step = Framework.run_step(constant, tctx, step_info, case)
+        for hook in tctx.hooks:
             hook.on_step_end(step)
         return step
 
     @staticmethod
-    def run_step(constant, test_context, step_info, case):
+    def run_step(constant, tctx, step_info, case):
         # 条件步骤
-        if step_info["cond"] and not check(step_info["cond"], case=case, var=test_context.var, x=test_context.x):
+        if step_info["cond"] and not check(step_info["cond"], case=case, var=tctx.var, x=tctx.x):
             return StepResult(step_info["name"], step_info["ctx"], is_skip=True)
         step = StepResult(step_info["name"], step_info["ctx"], step_info["description"])
         now = datetime.now()
 
         if not constant.parallel:
             for req, res in zip(generate_req(step_info["req"]), generate_res(step_info["res"], calculate_num(step_info["req"]))):
-                result = Framework.run_sub_step(test_context, case, req, res, step_info)
+                result = Framework.run_sub_step(tctx, case, req, res, step_info)
                 step.add_sub_step_result(result)
         else:
             # 并发执行，每次执行 case.step 中 parallel 定义的个数
@@ -550,49 +547,49 @@ class Framework:
                     grouper(generate_req(step_info["req"]), step_info["parallel"]),
                     grouper(generate_res(step_info["res"], calculate_num(step_info["req"])), step_info["parallel"])
             ):
-                results = test_context.step_pool.map(
+                results = tctx.step_pool.map(
                     Framework.run_sub_step,
-                    repeat(test_context), repeat(case), reqs, ress, repeat(step_info),
+                    repeat(tctx), repeat(case), reqs, ress, repeat(step_info),
                 )
                 for result in results:
                     step.add_sub_step_result(result)
 
         # auto name step
         if not step.name:
-            step.name = test_context.ctx[step_info["ctx"]].default_step_name(step.req)
+            step.name = tctx.ctx[step_info["ctx"]].default_step_name(step.req)
             if not step.name:
                 step.name = "anonymous-step"
         step.elapse = datetime.now() - now
         return step
 
     @staticmethod
-    def run_sub_step(test_context: TestContext, case, req, res, step_info):
+    def run_sub_step(tctx: TestContext, case, req, res, step_info):
         sub_step_result = SubStepResult()
         sub_step_start = datetime.now()
         try:
-            req = merge(req, test_context.dft_info[step_info["ctx"]]["req"])
-            req = render(json.loads(json.dumps(req)), case=case, var=test_context.var, x=test_context.x)  # use json transform tuple to list
+            req = merge(req, tctx.dft_info[step_info["ctx"]]["req"])
+            req = render(json.loads(json.dumps(req)), case=case, var=tctx.var, x=tctx.x)  # use json transform tuple to list
             sub_step_result.req = req
 
-            retry = Retry(merge(step_info["retry"], test_context.dft_info[step_info["ctx"]]["retry"]))
-            until = Until(merge(step_info["until"], test_context.dft_info[step_info["ctx"]]["until"]))
+            retry = Retry(merge(step_info["retry"], tctx.dft_info[step_info["ctx"]]["retry"]))
+            until = Until(merge(step_info["until"], tctx.dft_info[step_info["ctx"]]["until"]))
 
             for i in range(until.attempts):
                 for j in range(retry.attempts):
-                    step_res = test_context.ctx[step_info["ctx"]].do(req)
+                    step_res = tctx.ctx[step_info["ctx"]].do(req)
                     sub_step_result.res = step_res
-                    if retry.condition == "" or not check(retry.condition, case=case, step=sub_step_result, var=test_context.var, x=test_context.x):
+                    if retry.condition == "" or not check(retry.condition, case=case, step=sub_step_result, var=tctx.var, x=tctx.x):
                         break
                     time.sleep(retry.delay.total_seconds())
                 else:
                     raise RetryError()
-                if until.condition == "" or check(until.condition, case=case, step=sub_step_result, var=test_context.var, x=test_context.x):
+                if until.condition == "" or check(until.condition, case=case, step=sub_step_result, var=tctx.var, x=tctx.x):
                     break
                 time.sleep(until.delay.total_seconds())
             else:
                 raise UntilError()
 
-            result = expect(step_res, json.loads(json.dumps(res)), case=case, step=sub_step_result, var=test_context.var, x=test_context.x)
+            result = expect(step_res, json.loads(json.dumps(res)), case=case, step=sub_step_result, var=tctx.var, x=tctx.x)
             sub_step_result.add_expect_result(result)
 
             # ensure req can json serialize
