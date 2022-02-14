@@ -620,6 +620,7 @@ i18n = {
             "copy": "copy"
         }
     },
+    "en": {},
     "zh": {
         "testTitle": {
             "name": "测试报告",
@@ -650,7 +651,7 @@ class HtmlReporter(Reporter):
     def __init__(self, args=None):
         args = merge(args, {
             "stepSeparator": "#",
-            "lang": "zh",
+            "lang": "en",
             "i18n": {},
             "font": {
                 "style": """<link rel="preconnect" href="https://fonts.googleapis.com">
@@ -666,7 +667,7 @@ class HtmlReporter(Reporter):
             }
         })
         self.step_separator = args["stepSeparator"]
-        self.i18n = json.loads(json.dumps(merge(args["i18n"], merge(i18n["dft"], args["lang"]))), object_hook=lambda x: SimpleNamespace(**x))
+        self.i18n = json.loads(json.dumps(merge(args["i18n"], merge(i18n[args["lang"]], i18n["dft"]))), object_hook=lambda x: SimpleNamespace(**x))
         self.cfg = json.loads(json.dumps(args), object_hook=lambda x: SimpleNamespace(**x))
 
         env = Environment(loader=BaseLoader)
