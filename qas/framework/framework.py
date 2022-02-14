@@ -42,6 +42,7 @@ class RuntimeConstant:
 @dataclass
 class TestContext:
     ctx: dict[str, Driver]
+    var: SimpleNamespace
     var_info: dict
     dft_info: dict
     common_step_info: dict
@@ -151,6 +152,7 @@ class Framework:
             step_pool=self.step_pool,
             case_pool=self.case_pool,
             test_pool=self.test_pool,
+            var=None,
         )
 
         res = self.must_run_test(self.runtime_constant.test_directory, self.runtime_constant, test_context)
@@ -218,6 +220,7 @@ class Framework:
 
         test_context = TestContext(
             ctx=ctx,
+            var=var,
             var_info=var_info,
             dft_info=dft_info,
             common_step_info=common_step_info,
@@ -235,19 +238,14 @@ class Framework:
         if not runtime_constant.skip_setup:
             if not runtime_constant.parallel:
                 for case_info in Framework.setups(info, directory):
-                    result = Framework.must_run_case(
-                        directory, runtime_constant, [], case_info, [], common_step_info, dft_info, var=var, ctx=ctx, x=ptctx.x,
-                        hooks=ptctx.hooks, step_pool=ptctx.step_pool, case_type="setup",
-                    )
+                    result = Framework.must_run_case(directory, runtime_constant, test_context, case_info, case_type="setup")
                     test_result.add_setup_result(result)
             else:
                 # 并发执行，每次执行 ctx.yaml 中 parallel.setUp 定义的个数
                 for i in grouper(Framework.setups(info, directory), info["parallel"]["setUp"]):
                     results = ptctx.case_pool.map(
                         Framework.must_run_case,
-                        repeat(directory), repeat(runtime_constant), repeat(before_case_info), i, repeat(after_case_info),
-                        repeat(common_step_info), repeat(dft_info), repeat(var), repeat(ctx), repeat(ptctx.x), repeat(ptctx.hooks),
-                        repeat(ptctx.step_pool), repeat("setup")
+                        repeat(directory), repeat(runtime_constant), repeat(test_context), i, repeat("setup")
                     )
                     for result in results:
                         test_result.add_setup_result(result)
@@ -258,15 +256,14 @@ class Framework:
         if directory.startswith(runtime_constant.case_directory):
             if not runtime_constant.parallel:
                 for case_info in Framework.cases(info, directory):
-                    result = Framework.must_run_case(directory, runtime_constant, before_case_info, case_info, after_case_info, common_step_info, dft_info, var=var, ctx=ctx, x=ptctx.x, hooks=ptctx.hooks, step_pool=ptctx.step_pool)
+                    result = Framework.must_run_case(directory, runtime_constant, test_context, case_info)
                     test_result.add_case_result(result)
             else:
                 # 并发执行，每次执行 ctx.yaml 中 parallel.case 定义的个数
                 for i in grouper(Framework.cases(info, directory), info["parallel"]["case"]):
                     results = ptctx.case_pool.map(
                         Framework.must_run_case,
-                        repeat(directory), repeat(runtime_constant), repeat(before_case_info), i, repeat(after_case_info),
-                        repeat(common_step_info), repeat(dft_info), repeat(var), repeat(ctx), repeat(ptctx.x), repeat(ptctx.hooks), repeat(ptctx.step_pool),
+                        repeat(directory), repeat(runtime_constant), repeat(test_context), i
                     )
                     for result in results:
                         test_result.add_case_result(result)
@@ -295,16 +292,14 @@ class Framework:
         if not runtime_constant.skip_teardown:
             if not runtime_constant.parallel:
                 for case_info in Framework.teardowns(info, directory):
-                    result = Framework.must_run_case(directory, runtime_constant, [], case_info, [], common_step_info, dft_info, var=var, ctx=ctx, x=ptctx.x, hooks=ptctx.hooks, step_pool=ptctx.step_pool, case_type="teardown")
+                    result = Framework.must_run_case(directory, runtime_constant, test_context, case_info, case_type="teardown")
                     test_result.add_teardown_result(result)
             else:
                 # 并发执行，每次执行 ctx.yaml 中 parallel.tearDown 定义的个数
                 for i in grouper(Framework.teardowns(info, directory), info["parallel"]["tearDown"]):
                     results = ptctx.case_pool.map(
                         Framework.must_run_case,
-                        repeat(directory), repeat(runtime_constant), repeat(before_case_info), i, repeat(after_case_info),
-                        repeat(common_step_info), repeat(dft_info), repeat(var), repeat(ctx), repeat(ptctx.x), repeat(ptctx.hooks),
-                        repeat(ptctx.step_pool), repeat("teardown")
+                        repeat(directory), repeat(runtime_constant), repeat(test_context), i, repeat("teardown")
                     )
                     for result in results:
                         test_result.add_teardown_result(result)
@@ -447,20 +442,16 @@ class Framework:
         return info
 
     @staticmethod
-    def must_run_case(directory, runtime_constant, before_case_info, case_info, after_case_info, common_step_info, dft, var=None, ctx=None, x=None, hooks=None, step_pool=None, case_type="case"):
-        for hook in hooks:
+    def must_run_case(directory, runtime_constant: RuntimeConstant, test_context: TestContext, case_info, case_type="case"):
+        for hook in test_context.hooks:
             if case_type == "setup":
                 hook.on_setup_start(case_info)
             elif case_type == "teardown":
                 hook.on_teardown_start(case_info)
             else:
                 hook.on_case_start(case_info)
-        result = Framework.run_case(
-            runtime_constant, directory,
-            Framework.need_skip(runtime_constant, case_info, var, case_type), before_case_info, case_info, after_case_info,
-            common_step_info, dft, var=var, ctx=ctx, x=x, hooks=hooks, parallel=runtime_constant.parallel, step_pool=step_pool, case_type=case_type
-        )
-        for hook in hooks:
+        result = Framework.run_case(directory, runtime_constant, test_context, case_info, case_type=case_type)
+        for hook in test_context.hooks:
             if case_type == "setup":
                 hook.on_setup_end(result)
             elif case_type == "teardown":
@@ -470,8 +461,8 @@ class Framework:
         return result
 
     @staticmethod
-    def run_case(runtime_constant, directory, need_skip, before_case_info, case_info, after_case_info, common_step_info, dft, var=None, ctx=None, x=None, hooks=None, parallel=False, step_pool=None, case_type="case"):
-        if need_skip:
+    def run_case(directory, runtime_constant: RuntimeConstant, test_context: TestContext, case_info, case_type="case"):
+        if Framework.need_skip(runtime_constant, case_info, test_context.var, case_type):
             return CaseResult(directory=directory, name=case_info["name"], is_skip=True)
 
         case_info = merge(case_info, {
@@ -494,8 +485,9 @@ class Framework:
         now = datetime.now()
 
         if case_type == "case":
-            for idx, step_info, case_add_step_func in itertools.chain([list(i) + [case.add_before_case_step_result] for i in enumerate(before_case_info)]):
-                step = Framework.must_run_step(step_info, case, dft, var=var, ctx=ctx, x=x, hooks=hooks, parallel=parallel, step_pool=step_pool)
+            for idx, step_info, case_add_step_func in itertools.chain([list(i) + [case.add_before_case_step_result] for i in enumerate(test_context.before_case_info)]):
+                step = Framework.must_run_step(step_info, case, test_context.dft_info, var=test_context.var, ctx=test_context.ctx,
+                                               x=test_context.x, hooks=test_context.hooks, parallel=runtime_constant.parallel, step_pool=test_context.step_pool)
                 case_add_step_func(step)
                 if not step.is_pass:
                     break
@@ -503,18 +495,18 @@ class Framework:
                 return case
 
         for idx, step_info, case_add_step_func in itertools.chain(
-            [list(i) + [case.add_case_pre_step_result] for i in enumerate([common_step_info[i] for i in case_info["preStep"]])],
+            [list(i) + [case.add_case_pre_step_result] for i in enumerate([test_context.common_step_info[i] for i in case_info["preStep"]])],
             [list(i) + [case.add_case_step_result] for i in enumerate(case_info["step"])],
-            [list(i) + [case.add_case_post_step_result] for i in enumerate([common_step_info[i] for i in case_info["postStep"]])],
+            [list(i) + [case.add_case_post_step_result] for i in enumerate([test_context.common_step_info[i] for i in case_info["postStep"]])],
         ):
-            step = Framework.must_run_step(step_info, case, dft, var=var, ctx=ctx, x=x, hooks=hooks, parallel=parallel, step_pool=step_pool)
+            step = Framework.must_run_step(step_info, case, test_context.dft_info, var=test_context.var, ctx=test_context.ctx, x=test_context.x, hooks=test_context.hooks, parallel=runtime_constant.parallel, step_pool=test_context.step_pool)
             case_add_step_func(step)
             if not step.is_pass:
                 break
 
         if case_type == "case":
-            for idx, step_info, case_add_step_func in itertools.chain([list(i) + [case.add_after_case_step_result] for i in enumerate(after_case_info)]):
-                step = Framework.must_run_step(step_info, case, dft, var=var, ctx=ctx, x=x, hooks=hooks, parallel=parallel, step_pool=step_pool)
+            for idx, step_info, case_add_step_func in itertools.chain([list(i) + [case.add_after_case_step_result] for i in enumerate(test_context.after_case_info)]):
+                step = Framework.must_run_step(step_info, case, test_context.dft_info, var=test_context.var, ctx=test_context.ctx, x=test_context.x, hooks=test_context.hooks, parallel=runtime_constant.parallel, step_pool=test_context.step_pool)
                 case_add_step_func(step)
                 if not step.is_pass:
                     break
