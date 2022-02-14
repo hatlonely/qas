@@ -17,7 +17,7 @@ from .format_step_res import format_step_res
 _report_tpl = """<!DOCTYPE html>
 <html lang="zh-cmn-Hans">
 <head>
-    <title>{{ res.name }} {{ i18n.testTitle.name }}</title>
+    <title>{{ res.name }} {{ i18n.title.report }}</title>
     <meta charset="UTF-8">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
@@ -152,13 +152,13 @@ _test_tpl = """
 
     {% if res.is_skip %}
     <div class="card my-3 border-warning">
-        <div class="card-header text-white bg-warning"><h5>{{ res.name }} {{ i18n.testTitle.skip }}</h5></div>
+        <div class="card-header text-white bg-warning"><h5>{{ res.name }} {{ i18n.status.skip }}</h5></div>
     {% elif res.is_pass %}
     <div class="card my-3 border-success">
-        <div class="card-header text-white bg-success"><h5>{{ res.name }} {{ i18n.testTitle.pass }}</h5></div>
+        <div class="card-header text-white bg-success"><h5>{{ res.name }} {{ i18n.status.pass }}</h5></div>
     {% else %}
     <div class="card my-3 border-danger">
-        <div class="card-header text-white bg-danger"><h5>{{ res.name }} {{ i18n.testTitle.fail }}<h5></div>
+        <div class="card-header text-white bg-danger"><h5>{{ res.name }} {{ i18n.status.fail }}<h5></div>
     {% endif %}
 
         {% if not res.is_skip %}
@@ -573,79 +573,6 @@ _sub_step_tpl = """
 </div>
 """
 
-i18n = {
-    "dft": {
-        "testTitle": {
-            "name": "REPORT",
-            "pass": "PASS",
-            "skip": "SKIP",
-            "fail": "FAIL",
-        },
-        "summary": {
-            "caseTotal": "TOTAL CASE",
-            "casePass": "CASE PASS",
-            "caseSkip": "CASE SKIP",
-            "caseFail": "CASE FAIL",
-            "stepPass": "STEP PASS",
-            "stepSkip": "STEP SKIP",
-            "stepFail": "STEP FAIL",
-            "assertionPass": "ASSERTION PASS",
-            "assertionFail": "ASSERTION FAIL",
-            "elapse": "ELAPSE",
-        },
-        "testHeader": {
-            "description": "Description",
-            "err": "Err",
-            "setUp": "SetUp",
-            "case": "Case",
-            "tearDown": "TearDown",
-            "subTest": "SubTest",
-        },
-        "caseHeader": {
-            "description": "Description",
-            "command": "Command",
-            "beforeCaseStep": "BeforeCaseStep",
-            "preStep": "PreStep",
-            "step": "Step",
-            "postStep": "PostStep",
-            "afterCaseStep": "AfterCaseStep",
-        },
-        "stepHeader": {
-            "description": "Description",
-            "req": "Req",
-            "res": "Res",
-            "err": "Err",
-        },
-        "toolTips": {
-            "copy": "copy"
-        }
-    },
-    "en": {},
-    "zh": {
-        "testTitle": {
-            "name": "测试报告",
-            "pass": "测试通过",
-            "skip": "测试跳过",
-            "fail": "测试失败",
-        },
-        "summary": {
-            "caseTotal": "测试总数",
-            "casePass": "测试通过",
-            "caseSkip": "测试跳过",
-            "caseFail": "测试失败",
-            "stepPass": "步骤通过",
-            "stepSkip": "步骤跳过",
-            "stepFail": "步骤失败",
-            "assertionSucc": "断言成功",
-            "assertionFail": "断言失败",
-            "elapse": "耗时",
-        },
-        "toolTips": {
-            "copy": "复制"
-        }
-    }
-}
-
 
 class HtmlReporter(Reporter):
     def __init__(self, args=None):
@@ -668,7 +595,6 @@ class HtmlReporter(Reporter):
             }
         })
         self.step_separator = args["stepSeparator"]
-        self.i18n = json.loads(json.dumps(merge(args["i18n"], merge(i18n[args["lang"]], i18n["dft"]))), object_hook=lambda x: SimpleNamespace(**x))
         self.cfg = json.loads(json.dumps(args), object_hook=lambda x: SimpleNamespace(**x))
 
         env = Environment(loader=BaseLoader)
