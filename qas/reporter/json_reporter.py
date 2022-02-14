@@ -10,6 +10,7 @@ from .reporter import Reporter
 
 class JsonReporter(Reporter):
     def __init__(self, args=None):
+        super().__init__(args)
         args = merge(args, {
             "indent": None
         })

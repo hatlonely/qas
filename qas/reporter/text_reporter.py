@@ -12,6 +12,7 @@ from .format_step_res import format_step_res
 
 class TextReporter(Reporter):
     def __init__(self, args=None):
+        super().__init__(args)
         self.padding = ""
 
     def report(self, res: TestResult) -> str:

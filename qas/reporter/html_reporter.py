@@ -649,6 +649,7 @@ i18n = {
 
 class HtmlReporter(Reporter):
     def __init__(self, args=None):
+        super().__init__(args)
         args = merge(args, {
             "stepSeparator": "#",
             "lang": "en",
