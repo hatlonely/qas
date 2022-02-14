@@ -492,13 +492,15 @@ class Framework:
         )
 
         now = datetime.now()
-        for idx, step_info, case_add_step_func in itertools.chain([list(i) + [case.add_before_case_step_result] for i in enumerate(before_case_info)]):
-            step = Framework.must_run_step(step_info, case, dft, var=var, ctx=ctx, x=x, hooks=hooks, parallel=parallel, step_pool=step_pool)
-            case_add_step_func(step)
-            if not step.is_pass:
-                break
-        if not case.is_pass:
-            return case
+
+        if case_type == "case":
+            for idx, step_info, case_add_step_func in itertools.chain([list(i) + [case.add_before_case_step_result] for i in enumerate(before_case_info)]):
+                step = Framework.must_run_step(step_info, case, dft, var=var, ctx=ctx, x=x, hooks=hooks, parallel=parallel, step_pool=step_pool)
+                case_add_step_func(step)
+                if not step.is_pass:
+                    break
+            if not case.is_pass:
+                return case
 
         for idx, step_info, case_add_step_func in itertools.chain(
             [list(i) + [case.add_case_pre_step_result] for i in enumerate([common_step_info[i] for i in case_info["preStep"]])],
@@ -510,11 +512,12 @@ class Framework:
             if not step.is_pass:
                 break
 
-        for idx, step_info, case_add_step_func in itertools.chain([list(i) + [case.add_after_case_step_result] for i in enumerate(after_case_info)]):
-            step = Framework.must_run_step(step_info, case, dft, var=var, ctx=ctx, x=x, hooks=hooks, parallel=parallel, step_pool=step_pool)
-            case_add_step_func(step)
-            if not step.is_pass:
-                break
+        if case_type == "case":
+            for idx, step_info, case_add_step_func in itertools.chain([list(i) + [case.add_after_case_step_result] for i in enumerate(after_case_info)]):
+                step = Framework.must_run_step(step_info, case, dft, var=var, ctx=ctx, x=x, hooks=hooks, parallel=parallel, step_pool=step_pool)
+                case_add_step_func(step)
+                if not step.is_pass:
+                    break
 
         case.elapse = datetime.now() - now
         return case
