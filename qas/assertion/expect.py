@@ -3,6 +3,7 @@
 
 from ..result import ExpectResult
 from ..util.include import *
+from ..util import exec_with_res
 
 
 def expect(vals, rules, case=None, step=None, var=None, x=None, peval="#", pexec="%"):
@@ -73,15 +74,7 @@ def expect_eval(rule, val=None, case=None, step=None, var=None, x=None):
 
 
 def expect_exec(rule, val=None, case=None, step=None, var=None, x=None):
-    loc = {}
-    env = globals()
-    env.update(val=val)
-    env.update(case=case)
-    env.update(step=step)
-    env.update(var=var)
-    env.update(x=x)
-    exec(rule, env, loc)
-    res = loc["res"]
+    res = exec_with_res(rule, val=val, case=case, step=step, var=var, x=x)
     if not isinstance(res, bool):
         return res == val, res
     return res, res
