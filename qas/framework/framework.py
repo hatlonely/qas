@@ -545,7 +545,7 @@ class Framework:
         sub_step_start = datetime.now()
         try:
             req = merge(req, dft[step_info["ctx"]]["req"])
-            req = render(json.loads(json.dumps(req)), case=case, var=var, x=x)  # use json translate tuple to list
+            req = render(json.loads(json.dumps(req)), case=case, var=var, x=x)  # use json transform tuple to list
             sub_step_result.req = req
 
             retry = Retry(merge(step_info["retry"], dft[step_info["ctx"]]["retry"]))
