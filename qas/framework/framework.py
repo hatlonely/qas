@@ -196,19 +196,19 @@ class Framework:
         directory: str,
         customize,
         constant: RuntimeConstant,
-        parent_tctx: RuntimeContext,
+        parent_rctx: RuntimeContext,
     ):
         now = datetime.now()
 
         info = Framework.load_ctx(os.path.basename(directory), "{}/{}".format(directory, customize.loadingFiles.ctx))
         description = info["description"] + Framework.load_description("{}/{}".format(directory, customize.loadingFiles.description))
-        var_info = copy.deepcopy(parent_tctx.var_info) | info["var"] | Framework.load_var("{}/{}".format(directory, customize.loadingFiles.var))
+        var_info = copy.deepcopy(parent_rctx.var_info) | info["var"] | Framework.load_var("{}/{}".format(directory, customize.loadingFiles.var))
         var = json.loads(json.dumps(var_info), object_hook=lambda x: SimpleNamespace(**x))
-        common_step_info = copy.deepcopy(parent_tctx.common_step_info) | info["commonStep"] | Framework.load_common_step("{}/{}".format(directory, customize.loadingFiles.commonStep))
-        before_case_info = copy.deepcopy(parent_tctx.before_case_info) + info["beforeCase"] + list(Framework.load_step("{}/{}".format(directory, customize.loadingFiles.beforeCase)))
-        after_case_info = copy.deepcopy(parent_tctx.after_case_info) + info["afterCase"] + list(Framework.load_step("{}/{}".format(directory, customize.loadingFiles.afterCase)))
-        ctx = copy.copy(parent_tctx.ctx)
-        dft = copy.deepcopy(parent_tctx.dft)
+        common_step_info = copy.deepcopy(parent_rctx.common_step_info) | info["commonStep"] | Framework.load_common_step("{}/{}".format(directory, customize.loadingFiles.commonStep))
+        before_case_info = copy.deepcopy(parent_rctx.before_case_info) + info["beforeCase"] + list(Framework.load_step("{}/{}".format(directory, customize.loadingFiles.beforeCase)))
+        after_case_info = copy.deepcopy(parent_rctx.after_case_info) + info["afterCase"] + list(Framework.load_step("{}/{}".format(directory, customize.loadingFiles.afterCase)))
+        ctx = copy.copy(parent_rctx.ctx)
+        dft = copy.deepcopy(parent_rctx.dft)
         for key in info["ctx"]:
             val = merge(info["ctx"][key], {
                 "type": REQUIRED,
@@ -226,8 +226,8 @@ class Framework:
                     },
                 },
             })
-            val = render(val, var=var, x=parent_tctx.x, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec)
-            ctx[key] = parent_tctx.driver_map[val["type"]](val["args"])
+            val = render(val, var=var, x=parent_rctx.x, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec)
+            ctx[key] = parent_rctx.driver_map[val["type"]](val["args"])
             dft[key] = val["dft"]
 
         test_result = TestResult(directory, info["name"], description)
@@ -241,11 +241,11 @@ class Framework:
             before_case_info=before_case_info,
             after_case_info=after_case_info,
             driver_map=driver_map,
-            x=parent_tctx.x,
-            hooks=parent_tctx.hooks,
-            step_pool=parent_tctx.step_pool,
-            case_pool=parent_tctx.case_pool,
-            test_pool=parent_tctx.test_pool,
+            x=parent_rctx.x,
+            hooks=parent_rctx.hooks,
+            step_pool=parent_rctx.step_pool,
+            case_pool=parent_rctx.case_pool,
+            test_pool=parent_rctx.test_pool,
         )
 
         # 执行 setup
@@ -257,7 +257,7 @@ class Framework:
             else:
                 # 并发执行，每次执行 ctx.yaml 中 parallel.setUp 定义的个数
                 for i in grouper(Framework.setups(customize, info, directory), info["parallel"]["setUp"]):
-                    results = parent_tctx.case_pool.map(
+                    results = parent_rctx.case_pool.map(
                         Framework.must_run_case,
                         repeat(directory), repeat(customize), repeat(constant), repeat(rctx), i, repeat("setup")
                     )
@@ -275,7 +275,7 @@ class Framework:
             else:
                 # 并发执行，每次执行 ctx.yaml 中 parallel.case 定义的个数
                 for i in grouper(Framework.cases(customize, info, directory), info["parallel"]["case"]):
-                    results = parent_tctx.case_pool.map(
+                    results = parent_rctx.case_pool.map(
                         Framework.must_run_case,
                         repeat(directory), repeat(customize), repeat(constant), repeat(rctx), i
                     )
@@ -296,7 +296,7 @@ class Framework:
                 for i in os.listdir(directory)
                 if os.path.isdir(os.path.join(directory, i))
             ], info["parallel"]["subTest"]):
-                results = parent_tctx.test_pool.map(
+                results = parent_rctx.test_pool.map(
                     Framework.must_run_test, directories, repeat(customize), repeat(constant), repeat(rctx),
                 )
                 for result in results:
@@ -311,7 +311,7 @@ class Framework:
             else:
                 # 并发执行，每次执行 ctx.yaml 中 parallel.tearDown 定义的个数
                 for i in grouper(Framework.teardowns(customize, info, directory), info["parallel"]["tearDown"]):
-                    results = parent_tctx.case_pool.map(
+                    results = parent_rctx.case_pool.map(
                         Framework.must_run_case,
                         repeat(directory), repeat(customize), repeat(constant), repeat(rctx), i, repeat("teardown")
                     )
