@@ -26,6 +26,13 @@ class TraceHook(Hook):
 
     def on_test_end(self, res: TestResult):
         self._padding = self._padding[:-len(self.padding_to_add)]
+
+        if res.is_skip:
+            print("{}{fore.YELLOW}{i18n.title.test} {res.name} {i18n.status.skip}{fore.RESET}".format(
+                self._padding, res=res, i18n=self.i18n, fore=Fore,
+            ))
+            return
+
         if res.is_pass:
             print(
                 "{}{fore.GREEN}{i18n.title.test} {res.name} {i18n.status.pass}{fore.RESET}，"

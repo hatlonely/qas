@@ -179,13 +179,14 @@ class Framework:
         constant: RuntimeConstant,
         rctx: RuntimeContext,
     ):
-        if not (constant.case_directory + "/").startswith(directory + "/") and \
-                not (directory + "/").startswith(constant.case_directory + "/"):
-            return TestResult(directory, directory, "", is_skip=True)
         for hook in rctx.hooks:
             hook.on_test_start(directory)
         try:
-            result = Framework.run_test(directory, customize, constant, rctx)
+            if not (constant.case_directory + "/").startswith(directory + "/") and \
+                    not (directory + "/").startswith(constant.case_directory + "/"):
+                result = TestResult(directory, directory, "", is_skip=True)
+            else:
+                result = Framework.run_test(directory, customize, constant, rctx)
         except Exception as e:
             result = TestResult(directory, directory, "", "Exception {}".format(traceback.format_exc()))
         for hook in rctx.hooks:

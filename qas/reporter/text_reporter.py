@@ -24,6 +24,13 @@ class TextReporter(Reporter):
         return "\n".join(self._report_recursive(res))
 
     def _report_recursive(self, res: TestResult):
+        if res.is_skip:
+            return [
+                "{}{fore.YELLOW}{i18n.title.test} {res.name} {i18n.status.skip}{fore.RESET}".format(
+                    self._padding, res=res, i18n=self.i18n, fore=Fore,
+                )
+            ]
+
         lines = ["{}{i18n.title.test} {res.name}".format(self._padding, res=res, i18n=self.i18n)]
         self._padding += self.padding_to_add
         for case in res.setups:
