@@ -88,10 +88,10 @@ class Framework:
             self.test_pool = concurrent.futures.ThreadPoolExecutor(
                 max_workers=test_pool_size) if test_pool_size else concurrent.futures.ThreadPoolExecutor()
 
-        test_directory = test_directory.rstrip("/") if test_directory else test_directory
+        test_directory = test_directory.strip().rstrip("/") if test_directory else test_directory
         self.constant = RuntimeConstant(
             test_directory=test_directory,
-            case_directory=test_directory if not case_directory else os.path.join(test_directory, case_directory.rstrip("/")),
+            case_directory=test_directory if not case_directory else os.path.join(test_directory, case_directory.strip().rstrip("/")),
             case_regex=case_regex,
             case_name=case_name,
             skip_setup=skip_setup,
