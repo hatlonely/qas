@@ -486,8 +486,7 @@ class Framework:
 
         if case_type == "case":
             for idx, step_info, case_add_step_func in itertools.chain([list(i) + [case.add_before_case_step_result] for i in enumerate(test_context.before_case_info)]):
-                step = Framework.must_run_step(step_info, case, test_context.dft_info, var=test_context.var, ctx=test_context.ctx,
-                                               x=test_context.x, hooks=test_context.hooks, parallel=runtime_constant.parallel, step_pool=test_context.step_pool)
+                step = Framework.must_run_step(runtime_constant, test_context, step_info, case)
                 case_add_step_func(step)
                 if not step.is_pass:
                     break
@@ -499,14 +498,14 @@ class Framework:
             [list(i) + [case.add_case_step_result] for i in enumerate(case_info["step"])],
             [list(i) + [case.add_case_post_step_result] for i in enumerate([test_context.common_step_info[i] for i in case_info["postStep"]])],
         ):
-            step = Framework.must_run_step(step_info, case, test_context.dft_info, var=test_context.var, ctx=test_context.ctx, x=test_context.x, hooks=test_context.hooks, parallel=runtime_constant.parallel, step_pool=test_context.step_pool)
+            step = Framework.must_run_step(runtime_constant, test_context, step_info, case)
             case_add_step_func(step)
             if not step.is_pass:
                 break
 
         if case_type == "case":
             for idx, step_info, case_add_step_func in itertools.chain([list(i) + [case.add_after_case_step_result] for i in enumerate(test_context.after_case_info)]):
-                step = Framework.must_run_step(step_info, case, test_context.dft_info, var=test_context.var, ctx=test_context.ctx, x=test_context.x, hooks=test_context.hooks, parallel=runtime_constant.parallel, step_pool=test_context.step_pool)
+                step = Framework.must_run_step(runtime_constant, test_context, step_info, case)
                 case_add_step_func(step)
                 if not step.is_pass:
                     break
@@ -515,7 +514,7 @@ class Framework:
         return case
 
     @staticmethod
-    def must_run_step(step_info, case, dft, var=None, ctx=None, x=None, hooks=None, parallel=False, step_pool=None):
+    def must_run_step(runtime_constant: RuntimeConstant, test_context: TestContext, step_info, case):
         step_info = merge(step_info, {
             "name": "",
             "description": "",
@@ -526,10 +525,10 @@ class Framework:
             "cond": "",
         })
 
-        for hook in hooks:
+        for hook in test_context.hooks:
             hook.on_step_start(step_info)
-        step = Framework.run_step(step_info, case, dft, var=var, ctx=ctx, x=x, parallel=parallel, step_pool=step_pool)
-        for hook in hooks:
+        step = Framework.run_step(step_info, case, test_context.dft_info, var=test_context.var, ctx=test_context.ctx, x=test_context.x, parallel=runtime_constant.parallel, step_pool=test_context.step_pool)
+        for hook in test_context.hooks:
             hook.on_step_end(step)
         return step
 
