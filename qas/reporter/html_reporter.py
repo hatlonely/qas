@@ -641,7 +641,7 @@ i18n = {
             "elapse": "耗时",
         },
         "toolTips": {
-            "copy": "{{ i18n.toolTips.copy }}"
+            "copy": "复制"
         }
     }
 }
