@@ -18,9 +18,9 @@ from dataclasses import dataclass
 import concurrent.futures
 from itertools import repeat
 
-from ..driver import driver_map
+from ..driver import driver_map, Driver
 from ..reporter import reporter_map
-from ..hook import hook_map
+from ..hook import hook_map, Hook
 from ..assertion import expect, check
 from ..util import render, merge, REQUIRED
 from ..result import TestResult, CaseResult, StepResult, SubStepResult
@@ -37,6 +37,32 @@ class RuntimeConstant:
     skip_setup: bool
     skip_teardown: bool
     parallel: bool
+
+
+@dataclass
+class TestContext:
+    ctx: dict[str, Driver]
+    var_info: dict
+    dft_info: dict
+    common_step_info: dict
+    before_case_info: list
+    after_case_info: list
+    driver_map: dict
+    x: any
+    hooks: list[Hook]
+    step_pool: concurrent.futures.ThreadPoolExecutor
+    case_pool: concurrent.futures.ThreadPoolExecutor
+    test_pool: concurrent.futures.ThreadPoolExecutor
+
+
+@dataclass
+class CaseContext:
+    pass
+
+
+@dataclass
+class StepContext:
+    pass
 
 
 class Framework:
@@ -112,69 +138,61 @@ class Framework:
         print(self.reporter.report(res))
 
     def run(self):
-        res = self.must_run_test(self.runtime_constant, self.runtime_constant.test_directory, {}, {}, {}, {}, [], [], self.driver_map, self.x, self.hooks, self.step_pool, self.case_pool, self.test_pool)
+        test_context = TestContext(
+            ctx={},
+            var_info={},
+            dft_info={},
+            common_step_info={},
+            before_case_info=[],
+            after_case_info=[],
+            driver_map=self.driver_map,
+            x=self.x,
+            hooks=self.hooks,
+            step_pool=self.step_pool,
+            case_pool=self.case_pool,
+            test_pool=self.test_pool,
+        )
+
+        res = self.must_run_test(self.runtime_constant.test_directory, self.runtime_constant, test_context)
         print(self.reporter.report(res))
         return res.is_pass
 
     @staticmethod
     def must_run_test(
+        directory: str,
         runtime_constant: RuntimeConstant,
-        test_directory,
-        parent_var_info,
-        parent_ctx,
-        parent_dft_info,
-        parent_common_step_info,
-        parent_before_case_info,
-        parent_after_case_info,
-        parent_drivers,
-        parent_x,
-        hooks,
-        step_pool,
-        case_pool,
-        test_pool,
+        test_context: TestContext,
     ):
-        if not (runtime_constant.case_directory + "/").startswith(test_directory + "/") and not (test_directory + "/").startswith(runtime_constant.case_directory + "/"):
-            return TestResult(test_directory, test_directory, "", is_skip=True)
-        for hook in hooks:
-            hook.on_test_start(test_directory)
+        if not (runtime_constant.case_directory + "/").startswith(directory + "/") and \
+                not (directory + "/").startswith(runtime_constant.case_directory + "/"):
+            return TestResult(directory, directory, "", is_skip=True)
+        for hook in test_context.hooks:
+            hook.on_test_start(directory)
         try:
-            result = Framework.run_test(
-                runtime_constant, test_directory, parent_var_info, parent_ctx, parent_dft_info, parent_common_step_info, parent_before_case_info,
-                parent_after_case_info, parent_drivers, parent_x, hooks, step_pool, case_pool, test_pool,
-            )
+            result = Framework.run_test(directory, runtime_constant, test_context)
         except Exception as e:
-            result = TestResult(test_directory, test_directory, "", "Exception {}".format(traceback.format_exc()))
-        for hook in hooks:
+            result = TestResult(directory, directory, "", "Exception {}".format(traceback.format_exc()))
+        for hook in test_context.hooks:
             hook.on_test_end(result)
         return result
 
     @staticmethod
     def run_test(
+            directory: str,
             runtime_constant: RuntimeConstant,
-            test_directory,
-            parent_var_info,
-            parent_ctx,
-            parent_dft_info,
-            parent_common_step_info,
-            parent_before_case_info,
-            parent_after_case_info,
-            parent_drivers,
-            parent_x,
-            hooks,
-            step_pool,
-            case_pool,
-            test_pool,
+            ptctx: TestContext,
     ):
         now = datetime.now()
-        info = Framework.load_ctx(os.path.basename(test_directory), "{}/ctx.yaml".format(test_directory))
-        description = info["description"] + Framework.load_description("{}/README.md".format(test_directory))
-        var_info = copy.deepcopy(parent_var_info) | info["var"] | Framework.load_var("{}/var.yaml".format(test_directory))
+
+        info = Framework.load_ctx(os.path.basename(directory), "{}/ctx.yaml".format(directory))
+        description = info["description"] + Framework.load_description("{}/README.md".format(directory))
+        var_info = copy.deepcopy(ptctx.var_info) | info["var"] | Framework.load_var("{}/var.yaml".format(directory))
         var = json.loads(json.dumps(var_info), object_hook=lambda x: SimpleNamespace(**x))
-        common_step_info = copy.deepcopy(parent_common_step_info) | info["commonStep"] | Framework.load_common_step("{}/common_step.yaml".format(test_directory))
-        before_case_info = copy.deepcopy(parent_before_case_info) + info["beforeCase"] + list(Framework.load_step("{}/before_case.yaml".format(test_directory)))
-        after_case_info = copy.deepcopy(parent_after_case_info) + info["afterCase"] + list(Framework.load_step("{}/after_case.yaml".format(test_directory)))
-        ctx = copy.copy(parent_ctx)
-        dft_info = copy.deepcopy(parent_dft_info)
+        common_step_info = copy.deepcopy(ptctx.common_step_info) | info["commonStep"] | Framework.load_common_step("{}/common_step.yaml".format(directory))
+        before_case_info = copy.deepcopy(ptctx.before_case_info) + info["beforeCase"] + list(Framework.load_step("{}/before_case.yaml".format(directory)))
+        after_case_info = copy.deepcopy(ptctx.after_case_info) + info["afterCase"] + list(Framework.load_step("{}/after_case.yaml".format(directory)))
+        ctx = copy.copy(ptctx.ctx)
+        dft_info = copy.deepcopy(ptctx.dft_info)
         for key in info["ctx"]:
             val = merge(info["ctx"][key], {
                 "type": REQUIRED,
@@ -193,28 +211,43 @@ class Framework:
                 },
             })
             val = render(val, var=var)
-            ctx[key] = parent_drivers[val["type"]](val["args"])
+            ctx[key] = ptctx.driver_map[val["type"]](val["args"])
             dft_info[key] = val["dft"]
 
-        test_result = TestResult(test_directory, info["name"], description)
+        test_result = TestResult(directory, info["name"], description)
+
+        test_context = TestContext(
+            ctx=ctx,
+            var_info=var_info,
+            dft_info=dft_info,
+            common_step_info=common_step_info,
+            before_case_info=before_case_info,
+            after_case_info=after_case_info,
+            driver_map=driver_map,
+            x=ptctx.x,
+            hooks=ptctx.hooks,
+            step_pool=ptctx.step_pool,
+            case_pool=ptctx.case_pool,
+            test_pool=ptctx.test_pool,
+        )
 
         # 执行 setup
         if not runtime_constant.skip_setup:
             if not runtime_constant.parallel:
-                for case_info in Framework.setups(info, test_directory):
+                for case_info in Framework.setups(info, directory):
                     result = Framework.must_run_case(
-                        test_directory, runtime_constant, [], case_info, [], common_step_info, dft_info, var=var, ctx=ctx, x=parent_x,
-                        hooks=hooks, step_pool=step_pool, case_type="setup",
+                        directory, runtime_constant, [], case_info, [], common_step_info, dft_info, var=var, ctx=ctx, x=ptctx.x,
+                        hooks=ptctx.hooks, step_pool=ptctx.step_pool, case_type="setup",
                     )
                     test_result.add_setup_result(result)
             else:
                 # 并发执行，每次执行 ctx.yaml 中 parallel.setUp 定义的个数
-                for i in grouper(Framework.setups(info, test_directory), info["parallel"]["setUp"]):
-                    results = case_pool.map(
+                for i in grouper(Framework.setups(info, directory), info["parallel"]["setUp"]):
+                    results = ptctx.case_pool.map(
                         Framework.must_run_case,
-                        repeat(test_directory), repeat(runtime_constant), repeat(before_case_info), i, repeat(after_case_info),
-                        repeat(common_step_info), repeat(dft_info), repeat(var), repeat(ctx), repeat(parent_x), repeat(hooks),
-                        repeat(step_pool), repeat("setup")
+                        repeat(directory), repeat(runtime_constant), repeat(before_case_info), i, repeat(after_case_info),
+                        repeat(common_step_info), repeat(dft_info), repeat(var), repeat(ctx), repeat(ptctx.x), repeat(ptctx.hooks),
+                        repeat(ptctx.step_pool), repeat("setup")
                     )
                     for result in results:
                         test_result.add_setup_result(result)
@@ -222,39 +255,38 @@ class Framework:
                 return test_result
 
         # 执行 case
-        if test_directory.startswith(runtime_constant.case_directory):
+        if directory.startswith(runtime_constant.case_directory):
             if not runtime_constant.parallel:
-                for case_info in Framework.cases(info, test_directory):
-                    result = Framework.must_run_case(test_directory, runtime_constant, before_case_info, case_info, after_case_info, common_step_info, dft_info, var=var, ctx=ctx, x=parent_x, hooks=hooks, step_pool=step_pool)
+                for case_info in Framework.cases(info, directory):
+                    result = Framework.must_run_case(directory, runtime_constant, before_case_info, case_info, after_case_info, common_step_info, dft_info, var=var, ctx=ctx, x=ptctx.x, hooks=ptctx.hooks, step_pool=ptctx.step_pool)
                     test_result.add_case_result(result)
             else:
                 # 并发执行，每次执行 ctx.yaml 中 parallel.case 定义的个数
-                for i in grouper(Framework.cases(info, test_directory), info["parallel"]["case"]):
-                    results = case_pool.map(
+                for i in grouper(Framework.cases(info, directory), info["parallel"]["case"]):
+                    results = ptctx.case_pool.map(
                         Framework.must_run_case,
-                        repeat(test_directory), repeat(runtime_constant), repeat(before_case_info), i, repeat(after_case_info),
-                        repeat(common_step_info), repeat(dft_info), repeat(var), repeat(ctx), repeat(parent_x), repeat(hooks), repeat(step_pool),
+                        repeat(directory), repeat(runtime_constant), repeat(before_case_info), i, repeat(after_case_info),
+                        repeat(common_step_info), repeat(dft_info), repeat(var), repeat(ctx), repeat(ptctx.x), repeat(ptctx.hooks), repeat(ptctx.step_pool),
                     )
                     for result in results:
                         test_result.add_case_result(result)
 
         # 执行子目录
         if not runtime_constant.parallel:
-            for directory in [os.path.join(test_directory, i) for i in os.listdir(test_directory) if os.path.isdir(os.path.join(test_directory, i))]:
-                result = Framework.must_run_test(runtime_constant, directory, var_info, ctx, dft_info, common_step_info, before_case_info, after_case_info, parent_drivers, parent_x, hooks, step_pool, case_pool, test_pool)
+            for directory in [os.path.join(directory, i) for i in os.listdir(directory) if os.path.isdir(os.path.join(directory, i))]:
+                result = Framework.must_run_test(directory, runtime_constant, test_context)
                 test_result.add_sub_test_result(result)
         else:
             # 并发执行，每次执行 ctx.yaml 中 parallel.subTest 定义的个数
             # 每次执行会递归地使用 test_pool，每层目录需要占用一个线程，当 pool size 小于目录嵌套层数时会导致死锁
-            # 不设置 test-pool-size或者设置 test-pool-size 大于最大嵌套层数可解决这个问题
-            for i in grouper([os.path.join(test_directory, i) for i in os.listdir(test_directory) if os.path.isdir(os.path.join(test_directory, i))], info["parallel"]["subTest"]):
-                results = test_pool.map(
-                    Framework.must_run_test,
-                    repeat(runtime_constant),
-                    i,
-                    repeat(var_info), repeat(ctx), repeat(dft_info), repeat(common_step_info), repeat(before_case_info),
-                    repeat(after_case_info),
-                    repeat(parent_drivers), repeat(parent_x), repeat(hooks), repeat(step_pool), repeat(case_pool), repeat(test_pool),
+            # 不设置 test-pool-size 或者设置 test-pool-size 大于最大嵌套层数可解决这个问题
+            for directories in grouper([
+                os.path.join(directory, i)
+                for i in os.listdir(directory)
+                if os.path.isdir(os.path.join(directory, i))
+            ], info["parallel"]["subTest"]):
+                results = ptctx.test_pool.map(
+                    Framework.must_run_test, directories, repeat(runtime_constant), repeat(test_context),
                 )
                 for result in results:
                     test_result.add_sub_test_result(result)
@@ -262,17 +294,17 @@ class Framework:
         # 执行 teardown
         if not runtime_constant.skip_teardown:
             if not runtime_constant.parallel:
-                for case_info in Framework.teardowns(info, test_directory):
-                    result = Framework.must_run_case(test_directory, runtime_constant, [], case_info, [], common_step_info, dft_info, var=var, ctx=ctx, x=parent_x, hooks=hooks, step_pool=step_pool, case_type="teardown")
+                for case_info in Framework.teardowns(info, directory):
+                    result = Framework.must_run_case(directory, runtime_constant, [], case_info, [], common_step_info, dft_info, var=var, ctx=ctx, x=ptctx.x, hooks=ptctx.hooks, step_pool=ptctx.step_pool, case_type="teardown")
                     test_result.add_teardown_result(result)
             else:
                 # 并发执行，每次执行 ctx.yaml 中 parallel.tearDown 定义的个数
-                for i in grouper(Framework.teardowns(info, test_directory), info["parallel"]["tearDown"]):
-                    results = case_pool.map(
+                for i in grouper(Framework.teardowns(info, directory), info["parallel"]["tearDown"]):
+                    results = ptctx.case_pool.map(
                         Framework.must_run_case,
-                        repeat(test_directory), repeat(runtime_constant), repeat(before_case_info), i, repeat(after_case_info),
-                        repeat(common_step_info), repeat(dft_info), repeat(var), repeat(ctx), repeat(parent_x), repeat(hooks),
-                        repeat(step_pool), repeat("teardown")
+                        repeat(directory), repeat(runtime_constant), repeat(before_case_info), i, repeat(after_case_info),
+                        repeat(common_step_info), repeat(dft_info), repeat(var), repeat(ctx), repeat(ptctx.x), repeat(ptctx.hooks),
+                        repeat(ptctx.step_pool), repeat("teardown")
                     )
                     for result in results:
                         test_result.add_teardown_result(result)

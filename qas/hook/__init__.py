@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+
+from .hook import Hook
 from .debug_hook import DebugHook
 from .trace_hook import TraceHook
 
@@ -9,4 +11,4 @@ hook_map = {
     "trace": TraceHook,
 }
 
-__all__ = ["DebugHook", "TraceHook", "hook_map"]
+__all__ = ["Hook", "DebugHook", "TraceHook", "hook_map"]
