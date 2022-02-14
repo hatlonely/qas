@@ -443,6 +443,15 @@ class Framework:
 
     @staticmethod
     def must_run_case(directory, constant: RuntimeConstant, tctx: TestContext, case_info, case_type="case"):
+        case_info = merge(case_info, {
+            "name": REQUIRED,
+            "description": "",
+            "cond": "",
+            "label": {},
+            "preStep": [],
+            "postStep": [],
+        })
+
         for hook in tctx.hooks:
             if case_type == "setup":
                 hook.on_setup_start(case_info)
@@ -464,15 +473,6 @@ class Framework:
     def run_case(directory, constant: RuntimeConstant, tctx: TestContext, case_info, case_type="case"):
         if Framework.need_skip(constant, case_info, tctx.var, case_type):
             return CaseResult(directory=directory, name=case_info["name"], is_skip=True)
-
-        case_info = merge(case_info, {
-            "name": REQUIRED,
-            "description": "",
-            "cond": "",
-            "label": {},
-            "preStep": [],
-            "postStep": [],
-        })
 
         command = ""
         if case_type == "case":
