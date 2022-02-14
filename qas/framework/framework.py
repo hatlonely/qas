@@ -430,7 +430,7 @@ class Framework:
         result = Framework.run_case(
             runtime_constant, directory,
             Framework.need_skip(runtime_constant, case_info, var, case_type), before_case_info, case_info, after_case_info,
-            common_step_info, dft, var=var, ctx=ctx, x=x, hooks=hooks, parallel=runtime_constant.parallel, step_pool=step_pool,
+            common_step_info, dft, var=var, ctx=ctx, x=x, hooks=hooks, parallel=runtime_constant.parallel, step_pool=step_pool, case_type=case_type
         )
         for hook in hooks:
             if case_type == "setup":
@@ -442,7 +442,7 @@ class Framework:
         return result
 
     @staticmethod
-    def run_case(runtime_constant, directory, need_skip, before_case_info, case_info, after_case_info, common_step_info, dft, var=None, ctx=None, x=None, hooks=None, parallel=False, step_pool=None):
+    def run_case(runtime_constant, directory, need_skip, before_case_info, case_info, after_case_info, common_step_info, dft, var=None, ctx=None, x=None, hooks=None, parallel=False, step_pool=None, case_type="case"):
         if need_skip:
             return CaseResult(directory=directory, name=case_info["name"], is_skip=True)
 
@@ -455,9 +455,12 @@ class Framework:
             "postStep": [],
         })
 
+        command = ""
+        if case_type == "case":
+            command = 'qas -t "{}" -c "{}" --case-name "{}"'.format(runtime_constant.test_directory, directory[len(runtime_constant.test_directory) + 1:], case_info["name"])
         case = CaseResult(
             directory=directory, name=case_info["name"], description=case_info["description"],
-            command='qas -t "{}" -c "{}" --case-name "{}"'.format(runtime_constant.test_directory, directory[len(runtime_constant.test_directory)+1:], case_info["name"]),
+            command=command,
         )
 
         now = datetime.now()
