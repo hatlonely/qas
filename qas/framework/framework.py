@@ -251,12 +251,12 @@ class Framework:
         # 执行 setup
         if not constant.skip_setup:
             if not constant.parallel:
-                for case_info in Framework.setups(info, directory):
+                for case_info in Framework.setups(customize, info, directory):
                     result = Framework.must_run_case(directory, constant, rctx, case_info, case_type="setup")
                     test_result.add_setup_result(result)
             else:
                 # 并发执行，每次执行 ctx.yaml 中 parallel.setUp 定义的个数
-                for i in grouper(Framework.setups(info, directory), info["parallel"]["setUp"]):
+                for i in grouper(Framework.setups(customize, info, directory), info["parallel"]["setUp"]):
                     results = parent_tctx.case_pool.map(
                         Framework.must_run_case,
                         repeat(directory), repeat(constant), repeat(rctx), i, repeat("setup")
@@ -269,12 +269,12 @@ class Framework:
         # 执行 case
         if directory.startswith(constant.case_directory):
             if not constant.parallel:
-                for case_info in Framework.cases(info, directory):
+                for case_info in Framework.cases(customize, info, directory):
                     result = Framework.must_run_case(directory, constant, rctx, case_info)
                     test_result.add_case_result(result)
             else:
                 # 并发执行，每次执行 ctx.yaml 中 parallel.case 定义的个数
-                for i in grouper(Framework.cases(info, directory), info["parallel"]["case"]):
+                for i in grouper(Framework.cases(customize, info, directory), info["parallel"]["case"]):
                     results = parent_tctx.case_pool.map(
                         Framework.must_run_case,
                         repeat(directory), repeat(constant), repeat(rctx), i
@@ -305,12 +305,12 @@ class Framework:
         # 执行 teardown
         if not constant.skip_teardown:
             if not constant.parallel:
-                for case_info in Framework.teardowns(info, directory):
+                for case_info in Framework.teardowns(customize, info, directory):
                     result = Framework.must_run_case(directory, constant, rctx, case_info, case_type="teardown")
                     test_result.add_teardown_result(result)
             else:
                 # 并发执行，每次执行 ctx.yaml 中 parallel.tearDown 定义的个数
-                for i in grouper(Framework.teardowns(info, directory), info["parallel"]["tearDown"]):
+                for i in grouper(Framework.teardowns(customize, info, directory), info["parallel"]["tearDown"]):
                     results = parent_tctx.case_pool.map(
                         Framework.must_run_case,
                         repeat(directory), repeat(constant), repeat(rctx), i, repeat("teardown")
@@ -334,31 +334,39 @@ class Framework:
         return False
 
     @staticmethod
-    def setups(info, test_directory):
+    def setups(customize, info, directory):
         for case in info["setUp"]:
             yield case
-        if os.path.isfile("{}/setup.yaml".format(test_directory)):
-            for case in Framework.load_case("{}/setup.yaml".format(test_directory)):
+        if os.path.isfile("{}/{}".format(directory, customize.loadingFiles.setUp)):
+            for case in Framework.load_case("{}/{}".format(directory, customize.loadingFiles.setUp)):
                 yield case
 
     @staticmethod
-    def teardowns(info, test_directory):
+    def teardowns(customize, info, directory):
         for case in info["tearDown"]:
             yield case
-        if os.path.isfile("{}/teardown.yaml".format(test_directory)):
-            for case in Framework.load_case("{}/teardown.yaml".format(test_directory)):
+        if os.path.isfile("{}/{}".format(directory, customize.loadingFiles.tearDown)):
+            for case in Framework.load_case("{}/{}".format(directory, customize.loadingFiles.tearDown)):
                 yield case
 
     @staticmethod
-    def cases(info, test_directory):
+    def cases(customize, info, directory):
         for case in info["case"]:
             yield case
 
         for filename in [
-            os.path.join(test_directory, i)
-            for i in os.listdir(test_directory)
-            if i not in ["var.yaml", "ctx.yaml", "setup.yaml", "teardown.yaml", "before_case.yaml", "after_case.yaml", "common_step.yaml"]
-            and os.path.isfile(os.path.join(test_directory, i))
+            os.path.join(directory, i)
+            for i in os.listdir(directory)
+            if i not in [
+                customize.loadingFiles.ctx,
+                customize.loadingFiles.var,
+                customize.loadingFiles.setUp,
+                customize.loadingFiles.tearDown,
+                customize.loadingFiles.beforeCase,
+                customize.loadingFiles.afterCase,
+                customize.loadingFiles.commonStep,
+            ]
+            and os.path.isfile(os.path.join(directory, i))
         ]:
             if not filename.endswith(".yaml"):
                 continue
