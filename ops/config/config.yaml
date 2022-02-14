@@ -28,4 +28,4 @@ reporter:
     indent: 2
   text:
     lang: "zh"
-    padding: "+=+="
+    padding: "    "
