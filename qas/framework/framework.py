@@ -56,16 +56,6 @@ class TestContext:
     test_pool: concurrent.futures.ThreadPoolExecutor
 
 
-@dataclass
-class CaseContext:
-    pass
-
-
-@dataclass
-class StepContext:
-    pass
-
-
 class Framework:
     constant: RuntimeConstant
 
