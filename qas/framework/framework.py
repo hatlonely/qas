@@ -56,6 +56,25 @@ class RuntimeContext:
     test_pool: concurrent.futures.ThreadPoolExecutor
 
 
+customize = {
+    "keyPrefix": {
+        "eval": "#",
+        "exec": "%",
+        "loop": "!"
+    },
+    "loadingFiles": {
+        "ctx": "ctx.yaml",
+        "var": "var.yaml",
+        "setUp": "setup.yaml",
+        "tearDown": "teardown.yaml",
+        "beforeCase": "before_case.yaml",
+        "afterCase": "after_case.yaml",
+        "commonStep": "common_step.yaml",
+        "description": "README.md",
+    }
+}
+
+
 class Framework:
     constant: RuntimeConstant
 
@@ -77,6 +96,17 @@ class Framework:
         hook=None,
         config=None,
     ):
+        self.step_pool = None
+        self.case_pool = None
+        self.test_pool = None
+        if parallel:
+            self.step_pool = concurrent.futures.ThreadPoolExecutor(
+                max_workers=step_pool_size) if step_pool_size else concurrent.futures.ThreadPoolExecutor()
+            self.case_pool = concurrent.futures.ThreadPoolExecutor(
+                max_workers=case_pool_size) if case_pool_size else concurrent.futures.ThreadPoolExecutor()
+            self.test_pool = concurrent.futures.ThreadPoolExecutor(
+                max_workers=test_pool_size) if test_pool_size else concurrent.futures.ThreadPoolExecutor()
+
         self.constant = RuntimeConstant(
             test_directory=test_directory.rstrip("/") if test_directory else test_directory,
             case_directory=test_directory if not case_directory else os.path.join(test_directory, case_directory.rstrip("/")),
@@ -109,20 +139,13 @@ class Framework:
                 reporter: {},
             },
             "hook": dict([(i, {}) for i in hooks]),
+            "framework": {}
         })
 
         self.reporter = self.reporter_map[reporter](cfg["reporter"][reporter])
         self.hooks = [self.hook_map[i](cfg["hook"][i]) for i in hooks]
 
         self.json_result = json_result
-
-        self.step_pool = None
-        self.case_pool = None
-        self.test_pool = None
-        if self.constant.parallel:
-            self.step_pool = concurrent.futures.ThreadPoolExecutor(max_workers=step_pool_size) if step_pool_size else concurrent.futures.ThreadPoolExecutor()
-            self.case_pool = concurrent.futures.ThreadPoolExecutor(max_workers=case_pool_size) if case_pool_size else concurrent.futures.ThreadPoolExecutor()
-            self.test_pool = concurrent.futures.ThreadPoolExecutor(max_workers=test_pool_size) if test_pool_size else concurrent.futures.ThreadPoolExecutor()
 
     def format(self):
         res = TestResult.from_json(json.load(open(self.json_result)))

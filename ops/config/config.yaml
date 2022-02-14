@@ -34,3 +34,18 @@ hook:
   trace:
     lang: "zh"
     padding: "--<"
+
+framework:
+  keyPrefix:
+    eval: "#"
+    exec: "%"
+    loop: "!"
+  loadingFiles:
+    ctx: "ctx.yaml"
+    var: "var.yaml"
+    setUp: "setup.yaml"
+    tearDown: "teardown.yaml"
+    beforeCase: "before_case.yaml"
+    afterCase: "after_case.yaml"
+    commonStep: "common_step.yaml"
+    description: "README.md"
