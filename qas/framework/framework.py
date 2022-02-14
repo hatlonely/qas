@@ -28,10 +28,6 @@ from .retry_until import Retry, Until, RetryError, UntilError
 from .generate import generate_req, generate_res, calculate_num, grouper
 
 
-def dict_to_sns(d):
-    return SimpleNamespace(**d)
-
-
 @dataclass
 class RuntimeConstant:
     test_directory: str
@@ -173,7 +169,7 @@ class Framework:
         info = Framework.load_ctx(os.path.basename(test_directory), "{}/ctx.yaml".format(test_directory))
         description = info["description"] + Framework.load_description("{}/README.md".format(test_directory))
         var_info = copy.deepcopy(parent_var_info) | info["var"] | Framework.load_var("{}/var.yaml".format(test_directory))
-        var = json.loads(json.dumps(var_info), object_hook=dict_to_sns)
+        var = json.loads(json.dumps(var_info), object_hook=lambda x: SimpleNamespace(**x))
         common_step_info = copy.deepcopy(parent_common_step_info) | info["commonStep"] | Framework.load_common_step("{}/common_step.yaml".format(test_directory))
         before_case_info = copy.deepcopy(parent_before_case_info) + info["beforeCase"] + list(Framework.load_step("{}/before_case.yaml".format(test_directory)))
         after_case_info = copy.deepcopy(parent_after_case_info) + info["afterCase"] + list(Framework.load_step("{}/after_case.yaml".format(test_directory)))
