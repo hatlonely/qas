@@ -21,25 +21,28 @@ class TraceHook(Hook):
     def on_test_end(self, res: TestResult):
         self.padding = self.padding[:-2]
         if res.is_pass:
-            print("{}{}测试 {} 通过，成功 {}，跳过 {}，步骤成功 {}，跳过 {}，断言成功 {}，耗时 {}{}".format(
-                self.padding, Fore.GREEN, res.name, res.case_pass, res.case_skip,
-                res.step_pass, res.step_skip, res.assertion_pass,
-                durationpy.to_str(res.elapse), Fore.RESET,
-            ))
+            print(
+                "{}{}测试 {res.name} 通过，成功 {res.case_pass}，跳过 {res.case_skip}，"
+                "步骤成功 {res.step_pass}，跳过 {res.step_skip}，断言成功 {res.assertion_pass}，"
+                "耗时 {}{}".format(
+                    self.padding, Fore.GREEN, durationpy.to_str(res.elapse), Fore.RESET, res=res,
+                ))
         else:
             if res.is_err:
                 print('\n'.join([
                     "  {}  {}".format(self.padding, line)
                     for line in res.err.split("\n")
                 ]))
-            print("{}{}测试 {} 失败，成功 {}，失败 {}，跳过 {}，步骤成功 {}，失败 {}，断言成功 {}，失败 {}，耗时 {}{}".format(
-                self.padding, Fore.RED, res.name, res.case_pass, res.case_fail, res.case_skip,
-                res.step_pass, res.step_fail, res.assertion_pass, res.assertion_fail,
-                durationpy.to_str(res.elapse), Fore.RESET))
+            print(
+                "{}{}测试 {res.name} 失败，成功 {res.case_pass}，失败 {res.case_fail}，跳过 {res.case_pass}，"
+                "步骤成功 {res.step_pass}，跳过 {res.step_skip}，失败 {res.step_fail}，"
+                "断言成功 {res.assertion_pass}，失败 {res.assertion_fail}，耗时 {}{}".format(
+                    self.padding, Fore.RED, durationpy.to_str(res.elapse), Fore.RESET, res=res,
+                ))
 
     def on_case_end(self, res: CaseResult):
         if res.is_skip:
-            print("{}{}case {} 跳过{}".format(self.padding, Fore.YELLOW, res.name, Fore.RESET))
+            print("{}case {res.name} 跳过{}".format(Fore.YELLOW, Fore.RESET, res=res))
         else:
             print("\n".join([self.padding + i for i in TraceHook.format_case(res, "case")]))
 
@@ -53,15 +56,15 @@ class TraceHook(Hook):
     def format_case(res: CaseResult, case_type: str) -> list[str]:
         lines = []
         if res.is_pass:
-            lines.append("{}{} {} 通过，步骤成功 {}，断言成功 {}，耗时 {}{}".format(
-                Fore.GREEN, case_type, res.name, res.step_pass, res.assertion_pass,
-                durationpy.to_str(res.elapse), Fore.RESET,
+            lines.append("{}{case_type} {res.name} 通过，步骤成功 {res.step_pass}，断言成功 {res.assertion_pass}，耗时 {}{}".format(
+                Fore.GREEN, durationpy.to_str(res.elapse), Fore.RESET, case_type=case_type, res=res,
             ))
         else:
-            lines.append("{}{} {} 失败，步骤成功 {}，失败 {}，断言成功 {}，失败 {}，耗时 {}{}".format(
-                Fore.RED, case_type, res.name, res.step_pass, res.step_fail, res.assertion_pass, res.assertion_fail,
-                durationpy.to_str(res.elapse), Fore.RESET,
-            ))
+            lines.append(
+                "{}{case_type} {res.name} 失败，步骤成功 {res.step_pass}，失败 {res.step_fail}，"
+                "断言成功 {res.assertion_pass}，失败 {res.assertion_fail}，耗时 {}{}".format(
+                    Fore.RED, durationpy.to_str(res.elapse), Fore.RESET, case_type=case_type, res=res,
+                ))
 
         for step in res.before_case_steps:
             lines.extend(["  " + i for i in TraceHook.format_step(step, "beforeCase step")])
@@ -79,16 +82,16 @@ class TraceHook(Hook):
     @staticmethod
     def format_step(step, step_type: str) -> list[str]:
         if step.is_skip:
-            return ["{}{} {} 跳过{}".format(Fore.YELLOW, step_type, step.name, Fore.RESET)]
+            return ["{}{step_type} {step.name} 跳过{}".format(Fore.YELLOW, Fore.RESET, step_type=step_type, step=step)]
 
         lines = []
         if step.is_pass:
-            lines.append("{}{} {} 通过，断言成功 {}，耗时 {}{}".format(
-                Fore.GREEN, step_type, step.name, step.assertion_pass, durationpy.to_str(step.elapse), Fore.RESET,
+            lines.append("{}{step_type} {step.name} 通过，断言成功 {step.assertion_pass}，耗时 {}{}".format(
+                Fore.GREEN, durationpy.to_str(step.elapse), Fore.RESET, step_type=step_type, step=step
             ))
         else:
-            lines.append("{}{} {} 失败，断言成功 {}，失败 {}，耗时 {}{}".format(
-                Fore.RED, step_type, step.name, step.assertion_pass, step.assertion_fail, durationpy.to_str(step.elapse), Fore.RESET,
+            lines.append("{}{step_type} {step.name} 失败，断言成功 {step.assertion_pass}，失败 {step.assertion_fail}，耗时 {}{}".format(
+                Fore.RED, durationpy.to_str(step.elapse), Fore.RESET, step_type=step_type, step=step
             ))
 
         for sub_step in step.sub_steps:
@@ -98,20 +101,10 @@ class TraceHook(Hook):
                 lines.extend(("res: " + json.dumps(sub_step.res, indent=2)).split("\n"))
                 lines.extend(["  " + i for i in sub_step.err.split("\n")])
                 return lines
-            lines.extend(format_step_res(
+            res_lines = format_step_res(
                 sub_step, pass_open=Fore.GREEN, pass_close=Fore.RESET, fail_open=Fore.RED, fail_close=Fore.RESET,
-            ).split("\n"))
+            ).split("\n")
+            if res_lines:
+                res_lines[0] = "res: {}".format(res_lines[0])
+            lines.extend(res_lines)
         return lines
-
-    @staticmethod
-    def append_val_to_key(vals: dict, key, val):
-        keys = key.split(".")
-        for k in keys[:-1]:
-            if isinstance(vals, dict):
-                vals = vals[k]
-            else:
-                vals = vals[int(k)]
-        if isinstance(vals, dict):
-            vals[keys[-1]] = "{}{}".format(json.dumps(vals[keys[-1]]), val)
-        else:
-            vals[int(keys[-1])] = "{}{}".format(json.dumps(vals[int(keys[-1])]), val)
