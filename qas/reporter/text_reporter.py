@@ -8,28 +8,33 @@ from colorama import Fore
 from .reporter import Reporter
 from ..result import TestResult, CaseResult
 from .format_step_res import format_step_res
+from ..util import merge
 
 
 class TextReporter(Reporter):
     def __init__(self, args=None):
         super().__init__(args)
-        self.padding = ""
+        args = merge(args, {
+            "padding": "  "
+        })
+        self.padding_to_add = args["padding"]
+        self._padding = ""
 
     def report(self, res: TestResult) -> str:
         return "\n".join(self._report_recursive(res))
 
     def _report_recursive(self, res: TestResult):
-        lines = ["{}{i18n.title.test} {res.name}".format(self.padding, res=res, i18n=self.i18n)]
-        self.padding += "  "
+        lines = ["{}{i18n.title.test} {res.name}".format(self._padding, res=res, i18n=self.i18n)]
+        self._padding += self.padding_to_add
         for case in res.setups:
-            lines.extend([self.padding + i for i in self.format_case(case, "setUp")])
+            lines.extend([self._padding + i for i in self.format_case(case, "setUp")])
         for case in res.cases:
-            lines.extend([self.padding + i for i in self.format_case(case, "case")])
+            lines.extend([self._padding + i for i in self.format_case(case, "case")])
         for case in res.teardowns:
-            lines.extend([self.padding + i for i in self.format_case(case, "tearDown")])
+            lines.extend([self._padding + i for i in self.format_case(case, "tearDown")])
         for sub_test in res.sub_tests:
             lines.extend(self._report_recursive(sub_test))
-        self.padding = self.padding[:-2]
+        self._padding = self._padding[:-len(self.padding_to_add)]
         if res.is_pass:
             lines.append(
                 "{}{fore.GREEN}{i18n.title.test} {res.name} {i18n.status.pass}{fore.RESET}，"
@@ -40,12 +45,12 @@ class TextReporter(Reporter):
                 "{i18n.summary.stepSkip}: {res.step_skip}，"
                 "{i18n.summary.assertionPass}: {fore.GREEN}{res.assertion_pass}{fore.RESET}，"
                 "{i18n.summary.elapse}: {elapse}".format(
-                    self.padding, total_case=res.case_pass + res.case_skip,
+                    self._padding, total_case=res.case_pass + res.case_skip,
                     elapse=durationpy.to_str(res.elapse), res=res, i18n=self.i18n, fore=Fore,
                 ))
         else:
             if res.is_err:
-                lines.extend(["  {}  {}".format(self.padding, line) for line in res.err.split("\n")])
+                lines.extend(["  {}  {}".format(self._padding, line) for line in res.err.split("\n")])
             lines.append(
                 "{}{fore.RED}{i18n.title.test} {res.name} {i18n.status.fail}{fore.RESET}，"
                 "{i18n.summary.caseTotal}: {total_case}，"
@@ -58,7 +63,7 @@ class TextReporter(Reporter):
                 "{i18n.summary.assertionPass}: {fore.GREEN}{res.assertion_pass}{fore.RESET}，"
                 "{i18n.summary.assertionFail}: {fore.RED}{res.assertion_fail}{fore.RESET}，"
                 "{i18n.summary.elapse}: {elapse}".format(
-                    self.padding, total_case=res.case_pass + res.case_skip + res.case_fail,
+                    self._padding, total_case=res.case_pass + res.case_skip + res.case_fail,
                     elapse=durationpy.to_str(res.elapse), res=res, i18n=self.i18n, fore=Fore,
                 ))
         return lines
@@ -98,15 +103,15 @@ class TextReporter(Reporter):
                 ))
 
         for step in res.before_case_steps:
-            lines.extend(["  " + i for i in self.format_step(step, "beforeCaseStep")])
+            lines.extend([self.padding_to_add + i for i in self.format_step(step, "beforeCaseStep")])
         for step in res.pre_steps:
-            lines.extend(["  " + i for i in self.format_step(step, "preStep")])
+            lines.extend([self.padding_to_add + i for i in self.format_step(step, "preStep")])
         for step in res.steps:
-            lines.extend(["  " + i for i in self.format_step(step, "step")])
+            lines.extend([self.padding_to_add + i for i in self.format_step(step, "step")])
         for step in res.post_steps:
-            lines.extend(["  " + i for i in self.format_step(step, "postStep")])
+            lines.extend([self.padding_to_add + i for i in self.format_step(step, "postStep")])
         for step in res.after_case_steps:
-            lines.extend(["  " + i for i in self.format_step(step, "afterCaseStep")])
+            lines.extend([self.padding_to_add + i for i in self.format_step(step, "afterCaseStep")])
 
         return lines
 

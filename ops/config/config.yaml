@@ -26,3 +26,6 @@ reporter:
         <div class="text-center"> @Copyright 2022, hatlonely </div>
   json:
     indent: 2
+  text:
+    lang: "zh"
+    padding: "+=+="
