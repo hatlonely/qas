@@ -47,10 +47,14 @@ class TextReporter(Reporter):
                 "{i18n.summary.elapse}: {elapse}".format(
                     self._padding, total_case=res.case_pass + res.case_skip,
                     elapse=durationpy.to_str(res.elapse), res=res, i18n=self.i18n, fore=Fore,
-                ))
+                ),
+            )
         else:
             if res.is_err:
-                lines.extend(["  {}  {}".format(self._padding, line) for line in res.err.split("\n")])
+                lines.extend([
+                    "{}{}{}".format(self.padding_to_add, self._padding, line)
+                    for line in "{i18n.testHeader.err} {res.err}".format(res=res, i18n=self.i18n).split("\n")
+                ])
             lines.append(
                 "{}{fore.RED}{i18n.title.test} {res.name} {i18n.status.fail}{fore.RESET}，"
                 "{i18n.summary.caseTotal}: {total_case}，"
@@ -65,7 +69,8 @@ class TextReporter(Reporter):
                 "{i18n.summary.elapse}: {elapse}".format(
                     self._padding, total_case=res.case_pass + res.case_skip + res.case_fail,
                     elapse=durationpy.to_str(res.elapse), res=res, i18n=self.i18n, fore=Fore,
-                ))
+                ),
+            )
         return lines
 
     def format_case(self, res: CaseResult, case_type: str) -> list[str]:
@@ -89,7 +94,8 @@ class TextReporter(Reporter):
                 "{i18n.summary.assertionPass}: {fore.GREEN}{res.assertion_pass}{fore.RESET}，"
                 "{i18n.summary.elapse}: {elapse}".format(
                     header=case_type_map[case_type], elapse=durationpy.to_str(res.elapse), fore=Fore, i18n=self.i18n, res=res,
-                ))
+                ),
+            )
         else:
             lines.append(
                 "{fore.RED}{header} {res.name} {i18n.status.fail}{fore.RESET}，"
