@@ -56,25 +56,6 @@ class RuntimeContext:
     test_pool: concurrent.futures.ThreadPoolExecutor
 
 
-customize = {
-    "keyPrefix": {
-        "eval": "#",
-        "exec": "%",
-        "loop": "!"
-    },
-    "loadingFiles": {
-        "ctx": "ctx.yaml",
-        "var": "var.yaml",
-        "setUp": "setup.yaml",
-        "tearDown": "teardown.yaml",
-        "beforeCase": "before_case.yaml",
-        "afterCase": "after_case.yaml",
-        "commonStep": "common_step.yaml",
-        "description": "README.md",
-    }
-}
-
-
 class Framework:
     constant: RuntimeConstant
 
@@ -139,8 +120,26 @@ class Framework:
                 reporter: {},
             },
             "hook": dict([(i, {}) for i in hooks]),
-            "framework": {}
+            "framework": {
+                "keyPrefix": {
+                    "eval": "#",
+                    "exec": "%",
+                    "loop": "!"
+                },
+                "loadingFiles": {
+                    "ctx": "ctx.yaml",
+                    "var": "var.yaml",
+                    "setUp": "setup.yaml",
+                    "tearDown": "teardown.yaml",
+                    "beforeCase": "before_case.yaml",
+                    "afterCase": "after_case.yaml",
+                    "commonStep": "common_step.yaml",
+                    "description": "README.md",
+                }
+            }
         })
+
+        self.customize = json.loads(json.dumps(cfg["framework"]), object_hook=lambda y: SimpleNamespace(**y))
 
         self.reporter = self.reporter_map[reporter](cfg["reporter"][reporter])
         self.hooks = [self.hook_map[i](cfg["hook"][i]) for i in hooks]
@@ -168,13 +167,14 @@ class Framework:
             test_pool=self.test_pool,
         )
 
-        res = self.must_run_test(self.constant.test_directory, self.constant, rctx)
+        res = self.must_run_test(self.constant.test_directory, self.customize, self.constant, rctx)
         print(self.reporter.report(res))
         return res.is_pass
 
     @staticmethod
     def must_run_test(
         directory: str,
+        customize,
         constant: RuntimeConstant,
         rctx: RuntimeContext,
     ):
@@ -184,7 +184,7 @@ class Framework:
         for hook in rctx.hooks:
             hook.on_test_start(directory)
         try:
-            result = Framework.run_test(directory, constant, rctx)
+            result = Framework.run_test(directory, customize, constant, rctx)
         except Exception as e:
             result = TestResult(directory, directory, "", "Exception {}".format(traceback.format_exc()))
         for hook in rctx.hooks:
@@ -193,19 +193,20 @@ class Framework:
 
     @staticmethod
     def run_test(
-            directory: str,
-            constant: RuntimeConstant,
-            parent_tctx: RuntimeContext,
+        directory: str,
+        customize,
+        constant: RuntimeConstant,
+        parent_tctx: RuntimeContext,
     ):
         now = datetime.now()
 
-        info = Framework.load_ctx(os.path.basename(directory), "{}/ctx.yaml".format(directory))
-        description = info["description"] + Framework.load_description("{}/README.md".format(directory))
-        var_info = copy.deepcopy(parent_tctx.var_info) | info["var"] | Framework.load_var("{}/var.yaml".format(directory))
+        info = Framework.load_ctx(os.path.basename(directory), "{}/{}".format(directory, customize.loadingFiles.ctx))
+        description = info["description"] + Framework.load_description("{}/{}".format(directory, customize.loadingFiles.description))
+        var_info = copy.deepcopy(parent_tctx.var_info) | info["var"] | Framework.load_var("{}/{}".format(directory, customize.loadingFiles.var))
         var = json.loads(json.dumps(var_info), object_hook=lambda x: SimpleNamespace(**x))
-        common_step_info = copy.deepcopy(parent_tctx.common_step_info) | info["commonStep"] | Framework.load_common_step("{}/common_step.yaml".format(directory))
-        before_case_info = copy.deepcopy(parent_tctx.before_case_info) + info["beforeCase"] + list(Framework.load_step("{}/before_case.yaml".format(directory)))
-        after_case_info = copy.deepcopy(parent_tctx.after_case_info) + info["afterCase"] + list(Framework.load_step("{}/after_case.yaml".format(directory)))
+        common_step_info = copy.deepcopy(parent_tctx.common_step_info) | info["commonStep"] | Framework.load_common_step("{}/{}".format(directory, customize.loadingFiles.commonStep))
+        before_case_info = copy.deepcopy(parent_tctx.before_case_info) + info["beforeCase"] + list(Framework.load_step("{}/{}".format(directory, customize.loadingFiles.beforeCase)))
+        after_case_info = copy.deepcopy(parent_tctx.after_case_info) + info["afterCase"] + list(Framework.load_step("{}/{}".format(directory, customize.loadingFiles.afterCase)))
         ctx = copy.copy(parent_tctx.ctx)
         dft = copy.deepcopy(parent_tctx.dft)
         for key in info["ctx"]:
@@ -284,7 +285,7 @@ class Framework:
         # 执行子目录
         if not constant.parallel:
             for directory in [os.path.join(directory, i) for i in os.listdir(directory) if os.path.isdir(os.path.join(directory, i))]:
-                result = Framework.must_run_test(directory, constant, rctx)
+                result = Framework.must_run_test(directory, customize, constant, rctx)
                 test_result.add_sub_test_result(result)
         else:
             # 并发执行，每次执行 ctx.yaml 中 parallel.subTest 定义的个数
@@ -296,7 +297,7 @@ class Framework:
                 if os.path.isdir(os.path.join(directory, i))
             ], info["parallel"]["subTest"]):
                 results = parent_tctx.test_pool.map(
-                    Framework.must_run_test, directories, repeat(constant), repeat(rctx),
+                    Framework.must_run_test, directories, repeat(customize), repeat(constant), repeat(rctx),
                 )
                 for result in results:
                     test_result.add_sub_test_result(result)
