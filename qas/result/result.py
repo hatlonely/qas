@@ -55,7 +55,7 @@ class SubStepResult:
             "assertions":  self.assertions,
             "assertionPass": self.assertion_pass,
             "assertionFail": self.assertion_fail,
-            "elapse": int(self.elapse.microseconds),
+            "elapse": int(self.elapse.total_seconds() * 1000000),
         }
 
     @staticmethod
@@ -122,7 +122,7 @@ class StepResult:
             "subSteps": self.sub_steps,
             "assertionPass": self.assertion_pass,
             "assertionFail": self.assertion_fail,
-            "elapse": int(self.elapse.microseconds),
+            "elapse": int(self.elapse.total_seconds() * 1000000),
         }
 
     @staticmethod
@@ -188,7 +188,7 @@ class CaseResult:
             "description": self.description,
             "command": self.command,
             "status": self.status,
-            "elapse": int(self.elapse.microseconds),
+            "elapse": int(self.elapse.total_seconds() * 1000000),
             "isPass": self.is_pass,
             "isSkip": self.is_skip,
             "steps": self.steps,
@@ -335,7 +335,7 @@ class TestResult:
             "isPass": self.is_pass,
             "isErr": self.is_err,
             "err": self.err,
-            "elapse": int(self.elapse.microseconds),
+            "elapse": int(self.elapse.total_seconds() * 1000000),
             "casePass": self.case_pass,
             "caseFail": self.case_fail,
             "caseSkip": self.case_skip,
