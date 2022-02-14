@@ -4,12 +4,12 @@
 from .include import *
 
 
-def render(req, case=None, var=None, x=None):
+def render(req, case=None, var=None, x=None, peval="#", pexec="%"):
     if isinstance(req, dict):
         res = {}
         for key, val in req.items():
-            if key.startswith("#"):
-                res[key.lstrip("#")] = eval(val)
+            if key.startswith(peval):
+                res[key.lstrip(peval)] = eval(val)
             else:
                 res[key] = render(req[key], case=case, var=var, x=x)
         return res

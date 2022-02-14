@@ -226,7 +226,7 @@ class Framework:
                     },
                 },
             })
-            val = render(val, var=var)
+            val = render(val, var=var, x=parent_tctx.x, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec)
             ctx[key] = parent_tctx.driver_map[val["type"]](val["args"])
             dft[key] = val["dft"]
 
@@ -593,7 +593,7 @@ class Framework:
         sub_step_start = datetime.now()
         try:
             req = merge(req, rctx.dft[step_info["ctx"]]["req"])
-            req = render(json.loads(json.dumps(req)), case=case, var=rctx.var, x=rctx.x)  # use json transform tuple to list
+            req = render(json.loads(json.dumps(req)), case=case, var=rctx.var, x=rctx.x, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec)  # use json transform tuple to list
             sub_step_result.req = req
 
             retry = Retry(merge(step_info["retry"], rctx.dft[step_info["ctx"]]["retry"]))
