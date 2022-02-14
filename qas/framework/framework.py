@@ -614,7 +614,7 @@ class Framework:
             else:
                 raise UntilError()
 
-            result = expect(step_res, json.loads(json.dumps(res)), case=case, step=sub_step_result, var=rctx.var, x=rctx.x)
+            result = expect(step_res, json.loads(json.dumps(res)), case=case, step=sub_step_result, var=rctx.var, x=rctx.x, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec)
             sub_step_result.add_expect_result(result)
 
             # ensure req can json serialize
