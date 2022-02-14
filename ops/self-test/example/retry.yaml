@@ -10,12 +10,12 @@ step:
         "name": "retry-example",
         "isPass": true,
         "#elapse": "val > 0",
-        "caseSucc": 1,
+        "casePass": 1,
         "caseFail": 0,
         "caseSkip": 0,
-        "stepSucc": 1,
+        "stepPass": 1,
         "stepFail": 0,
-        "assertionSucc": 2,
+        "assertionPass": 2,
         "assertionFail": 0,
         "cases": [
           {
@@ -70,21 +70,21 @@ step:
                         "expect": 0
                       }
                     ],
-                    "assertionSucc": 2,
+                    "assertionPass": 2,
                     "assertionFail": 0,
                     "#elapse": "val > 0"
                   }
                 ],
-                "assertionSucc": 2,
+                "assertionPass": 2,
                 "assertionFail": 0,
                 "#elapse": "val > 0"
               }
             ],
             "beforeCaseSteps": [],
             "afterCaseSteps": [],
-            "stepSucc": 1,
+            "stepPass": 1,
             "stepFail": 0,
-            "assertionSucc": 2,
+            "assertionPass": 2,
             "assertionFail": 0
           }
         ],

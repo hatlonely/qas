@@ -10,12 +10,12 @@ step:
         "name": "custom-example",
         "isPass": true,
         "#elapse": "val > 0",
-        "caseSucc": 3,
+        "casePass": 3,
         "caseFail": 0,
         "caseSkip": 0,
-        "stepSucc": 3,
+        "stepPass": 3,
         "stepFail": 0,
-        "assertionSucc": 4,
+        "assertionPass": 4,
         "assertionFail": 0,
         "cases": [
           {
@@ -66,21 +66,21 @@ step:
                         "expect": "val2"
                       }
                     ],
-                    "assertionSucc": 2,
+                    "assertionPass": 2,
                     "assertionFail": 0,
                     "#elapse": "val > 0"
                   }
                 ],
-                "assertionSucc": 2,
+                "assertionPass": 2,
                 "assertionFail": 0,
                 "#elapse": "val > 0"
               }
             ],
             "beforeCaseSteps": [],
             "afterCaseSteps": [],
-            "stepSucc": 1,
+            "stepPass": 1,
             "stepFail": 0,
-            "assertionSucc": 2,
+            "assertionPass": 2,
             "assertionFail": 0
           },
           {
@@ -122,21 +122,21 @@ step:
                         "expect": 579
                       }
                     ],
-                    "assertionSucc": 1,
+                    "assertionPass": 1,
                     "assertionFail": 0,
                     "#elapse": "val > 0"
                   }
                 ],
-                "assertionSucc": 1,
+                "assertionPass": 1,
                 "assertionFail": 0,
                 "#elapse": "val > 0"
               }
             ],
             "beforeCaseSteps": [],
             "afterCaseSteps": [],
-            "stepSucc": 1,
+            "stepPass": 1,
             "stepFail": 0,
-            "assertionSucc": 1,
+            "assertionPass": 1,
             "assertionFail": 0
           },
           {
@@ -176,21 +176,21 @@ step:
                         "expect": "hello"
                       }
                     ],
-                    "assertionSucc": 1,
+                    "assertionPass": 1,
                     "assertionFail": 0,
                     "#elapse": "val > 0"
                   }
                 ],
-                "assertionSucc": 1,
+                "assertionPass": 1,
                 "assertionFail": 0,
                 "#elapse": "val > 0"
               }
             ],
             "beforeCaseSteps": [],
             "afterCaseSteps": [],
-            "stepSucc": 1,
+            "stepPass": 1,
             "stepFail": 0,
-            "assertionSucc": 1,
+            "assertionPass": 1,
             "assertionFail": 0
           }
         ],

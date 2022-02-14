@@ -10,12 +10,12 @@ step:
         "name": "var-example",
         "isPass": true,
         "#elapse": "val > 0",
-        "caseSucc": 2,
+        "casePass": 2,
         "caseFail": 0,
         "caseSkip": 0,
-        "stepSucc": 3,
+        "stepPass": 3,
         "stepFail": 0,
-        "assertionSucc": 4,
+        "assertionPass": 4,
         "assertionFail": 0,
         "cases": [
           {
@@ -80,21 +80,21 @@ step:
                         "expect": "val1\nval3\nval5\nval6\n"
                       }
                     ],
-                    "assertionSucc": 2,
+                    "assertionPass": 2,
                     "assertionFail": 0,
                     "#elapse": "val > 0"
                   }
                 ],
-                "assertionSucc": 2,
+                "assertionPass": 2,
                 "assertionFail": 0,
                 "#elapse": "val > 0"
               }
             ],
             "beforeCaseSteps": [],
             "afterCaseSteps": [],
-            "stepSucc": 1,
+            "stepPass": 1,
             "stepFail": 0,
-            "assertionSucc": 2,
+            "assertionPass": 2,
             "assertionFail": 0
           },
           {
@@ -142,12 +142,12 @@ step:
                         "expect": "(datetime.now() - datetime.fromtimestamp(int(val))).total_seconds() < 3"
                       }
                     ],
-                    "assertionSucc": 1,
+                    "assertionPass": 1,
                     "assertionFail": 0,
                     "#elapse": "val > 0"
                   }
                 ],
-                "assertionSucc": 1,
+                "assertionPass": 1,
                 "assertionFail": 0,
                 "#elapse": "val > 0"
               },
@@ -194,21 +194,21 @@ step:
                         "expect": "step.req['envs']['KEY7']"
                       }
                     ],
-                    "assertionSucc": 1,
+                    "assertionPass": 1,
                     "assertionFail": 0,
                     "#elapse": "val > 0"
                   }
                 ],
-                "assertionSucc": 1,
+                "assertionPass": 1,
                 "assertionFail": 0,
                 "#elapse": "val > 0"
               }
             ],
             "beforeCaseSteps": [],
             "afterCaseSteps": [],
-            "stepSucc": 2,
+            "stepPass": 2,
             "stepFail": 0,
-            "assertionSucc": 2,
+            "assertionPass": 2,
             "assertionFail": 0
           }
         ],

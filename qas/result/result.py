@@ -41,7 +41,7 @@ class SubStepResult:
     req: dict
     res: dict
     assertions: list[ExpectResult]
-    assertion_succ: int
+    assertion_pass: int
     assertion_fail: int
     elapse: timedelta
 
@@ -53,7 +53,7 @@ class SubStepResult:
             "req": self.req,
             "res": self.res,
             "assertions":  self.assertions,
-            "assertionSucc": self.assertion_succ,
+            "assertionPass": self.assertion_pass,
             "assertionFail": self.assertion_fail,
             "elapse": int(self.elapse.microseconds),
         }
@@ -67,7 +67,7 @@ class SubStepResult:
         res.req = obj["req"]
         res.res = obj["res"]
         res.assertions = [ExpectResult.from_json(i) for i in obj["assertions"]]
-        res.assertion_succ = obj["assertionSucc"]
+        res.assertion_pass = obj["assertionPass"]
         res.assertion_fail = obj["assertionFail"]
         res.elapse = timedelta(microseconds=obj["elapse"])
         return res
@@ -79,7 +79,7 @@ class SubStepResult:
         self.req = {}
         self.res = {}
         self.assertions = list[ExpectResult]()
-        self.assertion_succ = 0
+        self.assertion_pass = 0
         self.assertion_fail = 0
         self.elapse = timedelta(seconds=0)
 
@@ -91,8 +91,8 @@ class SubStepResult:
 
     def add_expect_result(self, result):
         self.assertions = result
-        self.assertion_succ += sum(1 for i in self.assertions if i.is_pass)
-        self.assertion_fail += len(self.assertions) - self.assertion_succ
+        self.assertion_pass += sum(1 for i in self.assertions if i.is_pass)
+        self.assertion_fail += len(self.assertions) - self.assertion_pass
         self.is_pass = self.assertion_fail == 0
 
 
@@ -106,7 +106,7 @@ class StepResult:
     req: dict
     res: dict
     sub_steps: list[SubStepResult]
-    assertion_succ: int
+    assertion_pass: int
     assertion_fail: int
     elapse: timedelta
 
@@ -120,7 +120,7 @@ class StepResult:
             "req": self.req,
             "res": self.res,
             "subSteps": self.sub_steps,
-            "assertionSucc": self.assertion_succ,
+            "assertionPass": self.assertion_pass,
             "assertionFail": self.assertion_fail,
             "elapse": int(self.elapse.microseconds),
         }
@@ -133,7 +133,7 @@ class StepResult:
         res.req = obj["req"]
         res.res = obj["res"]
         res.sub_steps = [SubStepResult.from_json(i) for i in obj["subSteps"]]
-        res.assertion_succ = obj["assertionSucc"]
+        res.assertion_pass = obj["assertionPass"]
         res.assertion_fail = obj["assertionFail"]
         res.elapse = timedelta(microseconds=obj["elapse"])
         return res
@@ -147,7 +147,7 @@ class StepResult:
         self.req = {}
         self.res = {}
         self.sub_steps = list[SubStepResult]()
-        self.assertion_succ = 0
+        self.assertion_pass = 0
         self.assertion_fail = 0
         self.elapse = timedelta(seconds=0)
 
@@ -155,7 +155,7 @@ class StepResult:
         self.req = result.req
         self.res = result.res
         self.sub_steps.append(result)
-        self.assertion_succ += result.assertion_succ
+        self.assertion_pass += result.assertion_pass
         self.assertion_fail += result.assertion_fail
         self.is_pass = self.assertion_fail == 0
 
@@ -174,10 +174,10 @@ class CaseResult:
     after_case_steps: list[StepResult]
     is_pass: bool
     is_skip: bool
-    step_succ: int
+    step_pass: int
     step_fail: int
     step_skip: int
-    assertion_succ: int
+    assertion_pass: int
     assertion_fail: int
     elapse: timedelta
 
@@ -194,9 +194,9 @@ class CaseResult:
             "steps": self.steps,
             "beforeCaseSteps": self.before_case_steps,
             "afterCaseSteps": self.after_case_steps,
-            "stepSucc": self.step_succ,
+            "stepPass": self.step_pass,
             "stepFail": self.step_fail,
-            "assertionSucc": self.assertion_succ,
+            "assertionPass": self.assertion_pass,
             "assertionFail": self.assertion_fail,
         }
 
@@ -210,9 +210,9 @@ class CaseResult:
         res.before_case_steps = [StepResult.from_json(i) for i in obj["beforeCaseSteps"]]
         res.steps = [StepResult.from_json(i) for i in obj["steps"]]
         res.after_case_steps = [StepResult.from_json(i) for i in obj["afterCaseSteps"]]
-        res.step_succ = obj["stepSucc"]
+        res.step_pass = obj["stepPass"]
         res.step_fail = obj["stepFail"]
-        res.assertion_succ = obj["assertionSucc"]
+        res.assertion_pass = obj["assertionPass"]
         res.assertion_fail = obj["assertionFail"]
         res.elapse = timedelta(microseconds=obj["elapse"])
         return res
@@ -231,9 +231,9 @@ class CaseResult:
         self.after_case_steps = list[StepResult]()
         self.is_pass = True
         self.elapse = timedelta(seconds=0)
-        self.assertion_succ = 0
+        self.assertion_pass = 0
         self.assertion_fail = 0
-        self.step_succ = 0
+        self.step_pass = 0
         self.step_fail = 0
         self.step_skip = 0
         if is_skip:
@@ -248,8 +248,8 @@ class CaseResult:
             self.status = "fail"
             self.step_fail += 1
         else:
-            self.step_succ += 1
-        self.assertion_succ += step.assertion_succ
+            self.step_pass += 1
+        self.assertion_pass += step.assertion_pass
         self.assertion_fail += step.assertion_fail
 
     def add_case_pre_step_result(self, step: StepResult):
@@ -261,8 +261,8 @@ class CaseResult:
             self.status = "fail"
             self.step_fail += 1
         else:
-            self.step_succ += 1
-        self.assertion_succ += step.assertion_succ
+            self.step_pass += 1
+        self.assertion_pass += step.assertion_pass
         self.assertion_fail += step.assertion_fail
 
     def add_case_post_step_result(self, step: StepResult):
@@ -274,8 +274,8 @@ class CaseResult:
             self.status = "fail"
             self.step_fail += 1
         else:
-            self.step_succ += 1
-        self.assertion_succ += step.assertion_succ
+            self.step_pass += 1
+        self.assertion_pass += step.assertion_pass
         self.assertion_fail += step.assertion_fail
 
     def add_before_case_step_result(self, step: StepResult):
@@ -306,22 +306,22 @@ class TestResult:
     sub_tests: list
     elapse: timedelta
     sub_tests: list
-    case_succ: int
+    case_pass: int
     case_fail: int
     case_skip: int
-    setup_succ: int
+    setup_pass: int
     setup_fail: int
-    teardown_succ: int
+    teardown_pass: int
     teardown_fail: int
-    step_succ: int
+    step_pass: int
     step_fail: int
     step_skip: int
-    assertion_succ: int
+    assertion_pass: int
     assertion_fail: int
-    curr_case_succ: int
+    curr_case_pass: int
     curr_case_fail: int
     curr_case_skip: int
-    sub_test_succ: int
+    sub_test_pass: int
     sub_test_skip: int
     sub_test_fail: int
 
@@ -336,22 +336,22 @@ class TestResult:
             "isErr": self.is_err,
             "err": self.err,
             "elapse": int(self.elapse.microseconds),
-            "caseSucc": self.case_succ,
+            "casePass": self.case_pass,
             "caseFail": self.case_fail,
             "caseSkip": self.case_skip,
-            "setupSucc": self.setup_succ,
+            "setupPass": self.setup_pass,
             "setupFail": self.setup_fail,
-            "teardownSucc": self.teardown_succ,
+            "teardownPass": self.teardown_pass,
             "teardownFail": self.teardown_fail,
-            "currCaseSucc": self.curr_case_succ,
+            "currCasePass": self.curr_case_pass,
             "currCaseFail": self.curr_case_fail,
             "currCaseSkip": self.curr_case_skip,
-            "stepSucc": self.step_succ,
+            "stepPass": self.step_pass,
             "stepFail": self.step_fail,
             "stepSkip": self.step_skip,
-            "assertionSucc": self.assertion_succ,
+            "assertionPass": self.assertion_pass,
             "assertionFail": self.assertion_fail,
-            "subTestSucc": self.sub_test_succ,
+            "subTestPass": self.sub_test_pass,
             "subTestSkip": self.sub_test_skip,
             "subTestFail": self.sub_test_fail,
             "cases": self.cases,
@@ -369,22 +369,22 @@ class TestResult:
         res.cases = [CaseResult.from_json(i) for i in obj["cases"]]
         res.teardowns = [CaseResult.from_json(i) for i in obj["teardowns"]]
         res.sub_tests = [TestResult.from_json(i) for i in obj["subTests"]]
-        res.case_succ = obj["caseSucc"]
+        res.case_pass = obj["casePass"]
         res.case_fail = obj["caseFail"]
         res.case_skip = obj["caseSkip"]
-        res.setup_succ = obj["setupSucc"]
+        res.setup_pass = obj["setupPass"]
         res.setup_fail = obj["setupFail"]
-        res.teardown_succ = obj["teardownSucc"]
+        res.teardown_pass = obj["teardownPass"]
         res.teardown_fail = obj["teardownFail"]
-        res.curr_case_succ = obj["currCaseSucc"]
+        res.curr_case_pass = obj["currCasePass"]
         res.curr_case_fail = obj["currCaseFail"]
         res.curr_case_skip = obj["currCaseSkip"]
-        res.step_succ = obj["stepSucc"]
+        res.step_pass = obj["stepPass"]
         res.step_fail = obj["stepFail"]
         res.step_skip = obj["stepSkip"]
-        res.assertion_succ = obj["assertionSucc"]
+        res.assertion_pass = obj["assertionPass"]
         res.assertion_fail = obj["assertionFail"]
-        res.sub_test_succ = obj["subTestSucc"]
+        res.sub_test_pass = obj["subTestPass"]
         res.sub_test_skip = obj["subTestSkip"]
         res.sub_test_fail = obj["subTestFail"]
         res.elapse = timedelta(microseconds=obj["elapse"])
@@ -403,22 +403,22 @@ class TestResult:
         self.teardowns = list[CaseResult]()
         self.sub_tests = list[TestResult]()
         self.elapse = timedelta(seconds=0)
-        self.case_succ = 0
+        self.case_pass = 0
         self.case_fail = 0
         self.case_skip = 0
-        self.setup_succ = 0
+        self.setup_pass = 0
         self.setup_fail = 0
-        self.teardown_succ = 0
+        self.teardown_pass = 0
         self.teardown_fail = 0
-        self.curr_case_succ = 0
+        self.curr_case_pass = 0
         self.curr_case_fail = 0
         self.curr_case_skip = 0
-        self.assertion_succ = 0
+        self.assertion_pass = 0
         self.assertion_fail = 0
-        self.step_succ = 0
+        self.step_pass = 0
         self.step_fail = 0
         self.step_skip = 0
-        self.sub_test_succ = 0
+        self.sub_test_pass = 0
         self.sub_test_skip = 0
         self.sub_test_fail = 0
         if err_message:
@@ -440,7 +440,7 @@ class TestResult:
             self.status = "fail"
             self.setup_fail += 1
         else:
-            self.setup_succ += 1
+            self.setup_pass += 1
 
     def add_case_result(self, case: CaseResult):
         self.cases.append(case)
@@ -453,12 +453,12 @@ class TestResult:
             self.status = "fail"
             self.curr_case_fail += 1
         else:
-            self.case_succ += 1
-            self.curr_case_succ += 1
-        self.step_succ += case.step_succ
+            self.case_pass += 1
+            self.curr_case_pass += 1
+        self.step_pass += case.step_pass
         self.step_fail += case.step_fail
         self.step_skip += case.step_skip
-        self.assertion_succ += case.assertion_succ
+        self.assertion_pass += case.assertion_pass
         self.assertion_fail += case.assertion_fail
 
     def add_teardown_result(self, case):
@@ -468,24 +468,24 @@ class TestResult:
             self.status = "fail"
             self.teardown_fail += 1
         else:
-            self.teardown_succ += 1
+            self.teardown_pass += 1
 
     def add_sub_test_result(self, sub_test):
         self.sub_tests.append(sub_test)
         if sub_test.is_skip:
             self.sub_test_skip += 1
             return
-        self.case_succ += sub_test.case_succ
+        self.case_pass += sub_test.case_pass
         self.case_fail += sub_test.case_fail
         self.case_skip += sub_test.case_skip
-        self.step_succ += sub_test.step_succ
+        self.step_pass += sub_test.step_pass
         self.step_fail += sub_test.step_fail
         self.step_skip += sub_test.step_skip
-        self.assertion_succ += sub_test.assertion_succ
+        self.assertion_pass += sub_test.assertion_pass
         self.assertion_fail += sub_test.assertion_fail
         if not sub_test.is_pass:
             self.is_pass = False
             self.status = "fail"
             self.sub_test_fail += 1
         else:
-            self.sub_test_succ += 1
+            self.sub_test_pass += 1

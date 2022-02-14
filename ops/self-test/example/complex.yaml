@@ -13,16 +13,16 @@ step:
         "isErr": false,
         "err": "",
         "#elapse": "val > 0",
-        "caseSucc": 3,
+        "casePass": 3,
         "caseFail": 0,
         "caseSkip": 0,
-        "currCaseSucc": 1,
+        "currCasePass": 1,
         "currCaseFail": 0,
         "currCaseSkip": 0,
-        "stepSucc": 9,
+        "stepPass": 9,
         "stepFail": 0,
         "stepSkip": 0,
-        "assertionSucc": 6,
+        "assertionPass": 6,
         "assertionFail": 0,
         "cases": [
           {
@@ -81,12 +81,12 @@ step:
                         "expect": "val1"
                       }
                     ],
-                    "assertionSucc": 2,
+                    "assertionPass": 2,
                     "assertionFail": 0,
                     "#elapse": "val > 0"
                   }
                 ],
-                "assertionSucc": 2,
+                "assertionPass": 2,
                 "assertionFail": 0,
                 "#elapse": "val > 0"
               }
@@ -127,12 +127,12 @@ step:
                       "stderr": ""
                     },
                     "assertions": [],
-                    "assertionSucc": 0,
+                    "assertionPass": 0,
                     "assertionFail": 0,
                     "#elapse": "val > 0"
                   }
                 ],
-                "assertionSucc": 0,
+                "assertionPass": 0,
                 "assertionFail": 0,
                 "#elapse": "val > 0"
               }
@@ -173,19 +173,19 @@ step:
                       "stderr": ""
                     },
                     "assertions": [],
-                    "assertionSucc": 0,
+                    "assertionPass": 0,
                     "assertionFail": 0,
                     "#elapse": "val > 0"
                   }
                 ],
-                "assertionSucc": 0,
+                "assertionPass": 0,
                 "assertionFail": 0,
                 "#elapse": "val > 0"
               }
             ],
-            "stepSucc": 3,
+            "stepPass": 3,
             "stepFail": 0,
-            "assertionSucc": 2,
+            "assertionPass": 2,
             "assertionFail": 0
           }
         ],
@@ -231,12 +231,12 @@ step:
                       "stderr": ""
                     },
                     "assertions": [],
-                    "assertionSucc": 0,
+                    "assertionPass": 0,
                     "assertionFail": 0,
                     "#elapse": "val > 0"
                   }
                 ],
-                "assertionSucc": 0,
+                "assertionPass": 0,
                 "assertionFail": 0,
                 "#elapse": "val > 0"
               },
@@ -275,21 +275,21 @@ step:
                       "stderr": ""
                     },
                     "assertions": [],
-                    "assertionSucc": 0,
+                    "assertionPass": 0,
                     "assertionFail": 0,
                     "#elapse": "val > 0"
                   }
                 ],
-                "assertionSucc": 0,
+                "assertionPass": 0,
                 "assertionFail": 0,
                 "#elapse": "val > 0"
               }
             ],
             "beforeCaseSteps": [],
             "afterCaseSteps": [],
-            "stepSucc": 2,
+            "stepPass": 2,
             "stepFail": 0,
-            "assertionSucc": 0,
+            "assertionPass": 0,
             "assertionFail": 0
           },
           {
@@ -333,12 +333,12 @@ step:
                       "stderr": ""
                     },
                     "assertions": [],
-                    "assertionSucc": 0,
+                    "assertionPass": 0,
                     "assertionFail": 0,
                     "#elapse": "val > 0"
                   }
                 ],
-                "assertionSucc": 0,
+                "assertionPass": 0,
                 "assertionFail": 0,
                 "#elapse": "val > 0"
               },
@@ -377,21 +377,21 @@ step:
                       "stderr": ""
                     },
                     "assertions": [],
-                    "assertionSucc": 0,
+                    "assertionPass": 0,
                     "assertionFail": 0,
                     "#elapse": "val > 0"
                   }
                 ],
-                "assertionSucc": 0,
+                "assertionPass": 0,
                 "assertionFail": 0,
                 "#elapse": "val > 0"
               }
             ],
             "beforeCaseSteps": [],
             "afterCaseSteps": [],
-            "stepSucc": 2,
+            "stepPass": 2,
             "stepFail": 0,
-            "assertionSucc": 0,
+            "assertionPass": 0,
             "assertionFail": 0
           }
         ],
@@ -437,12 +437,12 @@ step:
                       "stderr": ""
                     },
                     "assertions": [],
-                    "assertionSucc": 0,
+                    "assertionPass": 0,
                     "assertionFail": 0,
                     "#elapse": "val > 0"
                   }
                 ],
-                "assertionSucc": 0,
+                "assertionPass": 0,
                 "assertionFail": 0,
                 "#elapse": "val > 0"
               },
@@ -481,21 +481,21 @@ step:
                       "stderr": ""
                     },
                     "assertions": [],
-                    "assertionSucc": 0,
+                    "assertionPass": 0,
                     "assertionFail": 0,
                     "#elapse": "val > 0"
                   }
                 ],
-                "assertionSucc": 0,
+                "assertionPass": 0,
                 "assertionFail": 0,
                 "#elapse": "val > 0"
               }
             ],
             "beforeCaseSteps": [],
             "afterCaseSteps": [],
-            "stepSucc": 2,
+            "stepPass": 2,
             "stepFail": 0,
-            "assertionSucc": 0,
+            "assertionPass": 0,
             "assertionFail": 0
           },
           {
@@ -539,12 +539,12 @@ step:
                       "stderr": ""
                     },
                     "assertions": [],
-                    "assertionSucc": 0,
+                    "assertionPass": 0,
                     "assertionFail": 0,
                     "#elapse": "val > 0"
                   }
                 ],
-                "assertionSucc": 0,
+                "assertionPass": 0,
                 "assertionFail": 0,
                 "#elapse": "val > 0"
               },
@@ -583,21 +583,21 @@ step:
                       "stderr": ""
                     },
                     "assertions": [],
-                    "assertionSucc": 0,
+                    "assertionPass": 0,
                     "assertionFail": 0,
                     "#elapse": "val > 0"
                   }
                 ],
-                "assertionSucc": 0,
+                "assertionPass": 0,
                 "assertionFail": 0,
                 "#elapse": "val > 0"
               }
             ],
             "beforeCaseSteps": [],
             "afterCaseSteps": [],
-            "stepSucc": 2,
+            "stepPass": 2,
             "stepFail": 0,
-            "assertionSucc": 0,
+            "assertionPass": 0,
             "assertionFail": 0
           }
         ],
@@ -609,16 +609,16 @@ step:
             "isErr": false,
             "err": "",
             "#elapse": "val > 0",
-            "caseSucc": 1,
+            "casePass": 1,
             "caseFail": 0,
             "caseSkip": 0,
-            "currCaseSucc": 1,
+            "currCasePass": 1,
             "currCaseFail": 0,
             "currCaseSkip": 0,
-            "stepSucc": 3,
+            "stepPass": 3,
             "stepFail": 0,
             "stepSkip": 0,
-            "assertionSucc": 2,
+            "assertionPass": 2,
             "assertionFail": 0,
             "cases": [
               {
@@ -677,12 +677,12 @@ step:
                             "expect": "val1"
                           }
                         ],
-                        "assertionSucc": 2,
+                        "assertionPass": 2,
                         "assertionFail": 0,
                         "#elapse": "val > 0"
                       }
                     ],
-                    "assertionSucc": 2,
+                    "assertionPass": 2,
                     "assertionFail": 0,
                     "#elapse": "val > 0"
                   }
@@ -723,12 +723,12 @@ step:
                           "stderr": ""
                         },
                         "assertions": [],
-                        "assertionSucc": 0,
+                        "assertionPass": 0,
                         "assertionFail": 0,
                         "#elapse": "val > 0"
                       }
                     ],
-                    "assertionSucc": 0,
+                    "assertionPass": 0,
                     "assertionFail": 0,
                     "#elapse": "val > 0"
                   }
@@ -769,19 +769,19 @@ step:
                           "stderr": ""
                         },
                         "assertions": [],
-                        "assertionSucc": 0,
+                        "assertionPass": 0,
                         "assertionFail": 0,
                         "#elapse": "val > 0"
                       }
                     ],
-                    "assertionSucc": 0,
+                    "assertionPass": 0,
                     "assertionFail": 0,
                     "#elapse": "val > 0"
                   }
                 ],
-                "stepSucc": 3,
+                "stepPass": 3,
                 "stepFail": 0,
-                "assertionSucc": 2,
+                "assertionPass": 2,
                 "assertionFail": 0
               }
             ],
@@ -796,16 +796,16 @@ step:
             "isErr": false,
             "err": "",
             "#elapse": "val > 0",
-            "caseSucc": 1,
+            "casePass": 1,
             "caseFail": 0,
             "caseSkip": 0,
-            "currCaseSucc": 1,
+            "currCasePass": 1,
             "currCaseFail": 0,
             "currCaseSkip": 0,
-            "stepSucc": 3,
+            "stepPass": 3,
             "stepFail": 0,
             "stepSkip": 0,
-            "assertionSucc": 2,
+            "assertionPass": 2,
             "assertionFail": 0,
             "cases": [
               {
@@ -866,12 +866,12 @@ step:
                             "expect": "subval1"
                           }
                         ],
-                        "assertionSucc": 2,
+                        "assertionPass": 2,
                         "assertionFail": 0,
                         "#elapse": "val > 0"
                       }
                     ],
-                    "assertionSucc": 2,
+                    "assertionPass": 2,
                     "assertionFail": 0,
                     "#elapse": "val > 0"
                   }
@@ -914,12 +914,12 @@ step:
                           "stderr": ""
                         },
                         "assertions": [],
-                        "assertionSucc": 0,
+                        "assertionPass": 0,
                         "assertionFail": 0,
                         "#elapse": "val > 0"
                       }
                     ],
-                    "assertionSucc": 0,
+                    "assertionPass": 0,
                     "assertionFail": 0,
                     "#elapse": "val > 0"
                   }
@@ -962,19 +962,19 @@ step:
                           "stderr": ""
                         },
                         "assertions": [],
-                        "assertionSucc": 0,
+                        "assertionPass": 0,
                         "assertionFail": 0,
                         "#elapse": "val > 0"
                       }
                     ],
-                    "assertionSucc": 0,
+                    "assertionPass": 0,
                     "assertionFail": 0,
                     "#elapse": "val > 0"
                   }
                 ],
-                "stepSucc": 3,
+                "stepPass": 3,
                 "stepFail": 0,
-                "assertionSucc": 2,
+                "assertionPass": 2,
                 "assertionFail": 0
               }
             ],

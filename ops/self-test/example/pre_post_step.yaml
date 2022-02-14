@@ -10,12 +10,12 @@ step:
         "name": "pre-post-step-example",
         "isPass": true,
         "#elapse": "val > 0",
-        "caseSucc": 1,
+        "casePass": 1,
         "caseFail": 0,
         "caseSkip": 0,
-        "stepSucc": 3,
+        "stepPass": 3,
         "stepFail": 0,
-        "assertionSucc": 0,
+        "assertionPass": 0,
         "assertionFail": 0,
         "cases": [
           {
@@ -55,21 +55,21 @@ step:
                       "stderr": ""
                     },
                     "assertions": [],
-                    "assertionSucc": 0,
+                    "assertionPass": 0,
                     "assertionFail": 0,
                     "#elapse": "val > 0"
                   }
                 ],
-                "assertionSucc": 0,
+                "assertionPass": 0,
                 "assertionFail": 0,
                 "#elapse": "val > 0"
               }
             ],
             "beforeCaseSteps": [],
             "afterCaseSteps": [],
-            "stepSucc": 3,
+            "stepPass": 3,
             "stepFail": 0,
-            "assertionSucc": 0,
+            "assertionPass": 0,
             "assertionFail": 0
           }
         ],
