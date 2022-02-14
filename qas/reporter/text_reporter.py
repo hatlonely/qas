@@ -32,16 +32,16 @@ class TextReporter(Reporter):
         self.padding = self.padding[:-2]
         if res.is_pass:
             lines.append("{}{}测试 {} 通过，成功 {}，跳过 {}，步骤成功 {}，跳过 {}，断言成功 {}，耗时 {}{}".format(
-                self.padding, Fore.GREEN, res.name, res.case_succ, res.case_skip,
-                res.step_succ, res.step_skip, res.assertion_succ,
+                self.padding, Fore.GREEN, res.name, res.case_pass, res.case_skip,
+                res.step_pass, res.step_skip, res.assertion_pass,
                 durationpy.to_str(res.elapse), Fore.RESET,
             ))
         else:
             if res.is_err:
                 lines.extend(["  {}  {}".format(self.padding, line) for line in res.err.split("\n")])
             lines.append("{}{}测试 {} 失败，成功 {}，失败 {}，跳过 {}，步骤成功 {}，失败 {}，断言成功 {}，失败 {}，耗时 {}{}".format(
-                self.padding, Fore.RED, res.name, res.case_succ, res.case_fail, res.case_skip,
-                res.step_succ, res.step_fail, res.assertion_succ, res.assertion_fail,
+                self.padding, Fore.RED, res.name, res.case_pass, res.case_fail, res.case_skip,
+                res.step_pass, res.step_fail, res.assertion_pass, res.assertion_fail,
                 durationpy.to_str(res.elapse), Fore.RESET
             ))
         return lines
@@ -54,12 +54,12 @@ class TextReporter(Reporter):
 
         if res.is_pass:
             lines.append("{}{} {} 通过，步骤成功 {}，断言成功 {}，耗时 {}{}".format(
-                Fore.GREEN, case_type, res.name, res.step_succ, res.assertion_succ,
+                Fore.GREEN, case_type, res.name, res.step_pass, res.assertion_pass,
                 durationpy.to_str(res.elapse), Fore.RESET,
             ))
         else:
             lines.append("{}{} {} 失败，步骤成功 {}，失败 {}，断言成功 {}，失败 {}，耗时 {}{}".format(
-                Fore.RED, case_type, res.name, res.step_succ, res.step_fail, res.assertion_succ, res.assertion_fail,
+                Fore.RED, case_type, res.name, res.step_pass, res.step_fail, res.assertion_pass, res.assertion_fail,
                 durationpy.to_str(res.elapse), Fore.RESET,
             ))
 
@@ -84,11 +84,11 @@ class TextReporter(Reporter):
         lines = []
         if step.is_pass:
             lines.append("{}{} {} 通过，断言成功 {}，耗时 {}{}".format(
-                Fore.GREEN, step_type, step.name, step.assertion_succ, durationpy.to_str(step.elapse), Fore.RESET,
+                Fore.GREEN, step_type, step.name, step.assertion_pass, durationpy.to_str(step.elapse), Fore.RESET,
             ))
         else:
             lines.append("{}{} {} 失败，断言成功 {}，失败 {}，耗时 {}{}".format(
-                Fore.RED, step_type, step.name, step.assertion_succ, step.assertion_fail, durationpy.to_str(step.elapse), Fore.RESET,
+                Fore.RED, step_type, step.name, step.assertion_pass, step.assertion_fail, durationpy.to_str(step.elapse), Fore.RESET,
             ))
 
         for sub_step in step.sub_steps:
