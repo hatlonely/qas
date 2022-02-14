@@ -61,7 +61,7 @@ class Framework:
         config=None,
     ):
         self.runtime_constant = RuntimeConstant(
-            test_directory=test_directory.rstrip("/"),
+            test_directory=test_directory.rstrip("/") if test_directory else test_directory,
             case_directory=test_directory if not case_directory else os.path.join(test_directory, case_directory.rstrip("/")),
             case_regex=case_regex,
             case_name=case_name,
