@@ -46,36 +46,45 @@ _report_tpl = """<!DOCTYPE html>
         }
 
         function showTestPass(parentID) {
-            $('#' + parentID + ' .test.pass').show()
-            $('#' + parentID + ' .test.skip').hide()
-            $('#' + parentID + ' .test.fail').hide()
+            $('#' + parentID + ' .test.test-pass').show()
+            $('#' + parentID + ' .test.test-skip').hide()
+            $('#' + parentID + ' .test.test-fail').hide()
         }
 
         function showTestSkip(parentID) {
-            $('#' + parentID + ' .test.pass').hide()
-            $('#' + parentID + ' .test.skip').show()
-            $('#' + parentID + ' .test.fail').hide()
+            $('#' + parentID + ' .test.test-pass').hide()
+            $('#' + parentID + ' .test.test-skip').show()
+            $('#' + parentID + ' .test.test-fail').hide()
         }
 
         function showTestFail(parentID) {
-            $('#' + parentID + ' .test.pass').hide()
-            $('#' + parentID + ' .test.skip').hide()
-            $('#' + parentID + ' .test.fail').show()
+            $('#' + parentID + ' .test.test-pass').hide()
+            $('#' + parentID + ' .test.test-skip').hide()
+            $('#' + parentID + ' .test.test-fail').show()
         }
 
         function showCasePass(parentID) {
+            $('#' + parentID + ' .test.case-pass').show()
+            $('#' + parentID + ' .test.case-skip').hide()
+            $('#' + parentID + ' .test.case-fail').hide()
             $('#' + parentID + ' .case.pass').show()
             $('#' + parentID + ' .case.skip').hide()
             $('#' + parentID + ' .case.fail').hide()
         }
 
         function showCaseSkip(parentID) {
+            $('#' + parentID + ' .test.case-pass').hide()
+            $('#' + parentID + ' .test.case-skip').show()
+            $('#' + parentID + ' .test.case-fail').hide()
             $('#' + parentID + ' .case.skip').show()
             $('#' + parentID + ' .case.pass').hide()
             $('#' + parentID + ' .case.fail').hide()
         }
 
         function showCaseFail(parentID) {
+            $('#' + parentID + ' .test.case-pass').hide()
+            $('#' + parentID + ' .test.case-skip').hide()
+            $('#' + parentID + ' .test.case-fail').show()
             $('#' + parentID + ' .case.pass').hide()
             $('#' + parentID + ' .case.skip').hide()
             $('#' + parentID + ' .case.fail').show()
@@ -86,31 +95,31 @@ _report_tpl = """<!DOCTYPE html>
 
         function showAllTest(parentID) {
             if (testToggleStatus[parentID]) {
-                $('#' + parentID + ' .test.pass').show()
-                $('#' + parentID + ' .test.skip').show()
-                $('#' + parentID + ' .test.fail').show()
+                $('#' + parentID + ' .test.test-pass').show()
+                $('#' + parentID + ' .test.test-skip').show()
+                $('#' + parentID + ' .test.test-fail').show()
                 testToggleStatus[parentID] = false
             } else {
-                $('#' + parentID + ' .test.pass').hide()
-                $('#' + parentID + ' .test.skip').hide()
-                $('#' + parentID + ' .test.fail').hide()
+                $('#' + parentID + ' .test.test-pass').hide()
+                $('#' + parentID + ' .test.test-skip').hide()
+                $('#' + parentID + ' .test.test-fail').hide()
                 testToggleStatus[parentID] = true
             }
         }
 
         function showAllCase(parentID) {
             if (caseToggleStatus[parentID]) {
-                $('#' + parentID + ' .test.pass').show()
-                $('#' + parentID + ' .test.skip').show()
-                $('#' + parentID + ' .test.fail').show()
+                $('#' + parentID + ' .test.test-pass').show()
+                $('#' + parentID + ' .test.test-skip').show()
+                $('#' + parentID + ' .test.test-fail').show()
                 $('#' + parentID + ' .case.pass').show()
                 $('#' + parentID + ' .case.skip').show()
                 $('#' + parentID + ' .case.fail').show()
                 caseToggleStatus[parentID] = false
             } else {
-                $('#' + parentID + ' .test.pass').hide()
-                $('#' + parentID + ' .test.skip').hide()
-                $('#' + parentID + ' .test.fail').hide()
+                $('#' + parentID + ' .test.test-pass').hide()
+                $('#' + parentID + ' .test.test-skip').hide()
+                $('#' + parentID + ' .test.test-fail').hide()
                 $('#' + parentID + ' .case.pass').hide()
                 $('#' + parentID + ' .case.skip').hide()
                 $('#' + parentID + ' .case.fail').hide()
@@ -322,7 +331,13 @@ _test_tpl = """
         </div>
         <ul class="list-group list-group-flush" id="{{ name }}-subtest">
             {% for sub_test in res.sub_tests %}
-            <li class="list-group-item test {{ sub_test.status }}">
+            <li class="
+                list-group-item test
+                test-{{ sub_test.status }}
+                {% if sub_test.case_pass %}case-pass{% endif %}
+                {% if sub_test.case_skip %}case-skip{% endif %}
+                {% if sub_test.case_fail %}case-fail{% endif %}
+            ">
                 {{ render_test(sub_test, '{}-subtest-{}'.format(name, loop.index0)) }}
             </li>
             {% endfor %}
