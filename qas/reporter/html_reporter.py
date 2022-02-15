@@ -160,13 +160,13 @@ _test_tpl = """
 {% endif %}
 
     {% if res.is_skip %}
-    <div class="card my-3 border-warning">
+    <div class="card my-{{ customize.padding.y }} border-warning">
         <div class="card-header text-white bg-warning"><h5>{{ res.name }} {{ i18n.status.skip }}</h5></div>
     {% elif res.is_pass %}
-    <div class="card my-3 border-success">
+    <div class="card my-{{ customize.padding.y }} border-success">
         <div class="card-header text-white bg-success"><h5>{{ res.name }} {{ i18n.status.pass }}</h5></div>
     {% else %}
-    <div class="card my-3 border-danger">
+    <div class="card my-{{ customize.padding.y }} border-danger">
         <div class="card-header text-white bg-danger"><h5>{{ res.name }} {{ i18n.status.fail }}<h5></div>
     {% endif %}
 
