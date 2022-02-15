@@ -146,7 +146,6 @@ class Framework:
             if "stdoutLog" in cfg["hook"]:
                 cfg["hook"]["stdoutLog"]["lang"] = lang
 
-
         self.customize = json.loads(json.dumps(cfg["framework"]), object_hook=lambda y: SimpleNamespace(**y))
 
         self.reporter = self.reporter_map[reporter](cfg["reporter"][reporter])
