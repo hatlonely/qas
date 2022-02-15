@@ -3,7 +3,7 @@
 
 from .hook import Hook
 from .debug_hook import DebugHook
-from .trace_hook import StdoutLogHook
+from .stdout_log_hook import StdoutLogHook
 
 
 hook_map = {
