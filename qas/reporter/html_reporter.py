@@ -214,31 +214,31 @@ _test_tpl = """
                         {% endif %}
 
                         {% if res.step_pass %}
-                        <td><span class="badge bg-success rounded-pill" onclick="showCasePass('{{ name }}')">{{ res.step_pass }}</span></td>
+                        <td><span class="badge bg-success rounded-pill">{{ res.step_pass }}</span></td>
                         {% else %}
                         <td><span class="badge bg-secondary rounded-pill">{{ res.step_pass }}</span></td>
                         {% endif %}
 
                         {% if res.step_skip %}
-                        <td><span class="badge bg-warning rounded-pill" onclick="showCaseSkip('{{ name }}')">{{ res.step_skip }}</span></td>
+                        <td><span class="badge bg-warning rounded-pill">{{ res.step_skip }}</span></td>
                         {% else %}
                         <td><span class="badge bg-secondary rounded-pill">{{ res.step_skip }}</span></td>
                         {% endif %}
 
                         {% if res.step_fail %}
-                        <td><span class="badge bg-danger rounded-pill" onclick="showCaseFail('{{ name }}')">{{ res.step_fail }}</span></td>
+                        <td><span class="badge bg-danger rounded-pill">{{ res.step_fail }}</span></td>
                         {% else %}
                         <td><span class="badge bg-secondary rounded-pill">{{ res.step_fail }}</span></td>
                         {% endif %}
 
                         {% if res.assertion_pass %}
-                        <td><span class="badge bg-success rounded-pill" onclick="showCasePass('{{ name }}')">{{ res.assertion_pass }}</span></td>
+                        <td><span class="badge bg-success rounded-pill">{{ res.assertion_pass }}</span></td>
                         {% else %}
                         <td><span class="badge bg-secondary rounded-pill">{{ res.assertion_pass }}</span></td>
                         {% endif %}
 
                         {% if res.assertion_fail %}
-                        <td><span class="badge bg-danger rounded-pill" onclick="showCaseFail('{{ name }}')">{{ res.assertion_fail }}</span></td>
+                        <td><span class="badge bg-danger rounded-pill">{{ res.assertion_fail }}</span></td>
                         {% else %}
                         <td><span class="badge bg-secondary rounded-pill">{{ res.assertion_fail }}</span></td>
                         {% endif %}
