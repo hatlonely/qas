@@ -12,8 +12,6 @@ i18n = {
         "title": {
             "report": "REPORT",
             "test": "TEST",
-            "case": "CASE",
-            "step": "STEP",
         },
         "status": {
             "pass": "PASS",
