@@ -292,8 +292,8 @@ class Framework:
 
         # 执行子目录
         if not constant.parallel:
-            for directory in [os.path.join(directory, i) for i in os.listdir(directory) if os.path.isdir(os.path.join(directory, i))]:
-                result = Framework.must_run_test(directory, customize, constant, rctx)
+            for sub_directory in [os.path.join(directory, i) for i in os.listdir(directory) if os.path.isdir(os.path.join(directory, i))]:
+                result = Framework.must_run_test(sub_directory, customize, constant, rctx)
                 test_result.add_sub_test_result(result)
         else:
             # 并发执行，每次执行 ctx.yaml 中 parallel.subTest 定义的个数
