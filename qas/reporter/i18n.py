@@ -61,6 +61,14 @@ i18n = {
     },
     "en": {},
     "zh": {
+        "title": {
+            "report": "测试报告",
+        },
+        "status": {
+            "pass": "通过",
+            "skip": "跳过",
+            "fail": "失败",
+        },
         "testTitle": {
             "name": "测试报告",
             "pass": "测试通过",
@@ -75,7 +83,7 @@ i18n = {
             "stepPass": "步骤通过",
             "stepSkip": "步骤跳过",
             "stepFail": "步骤失败",
-            "assertionPass": "断言成功",
+            "assertionPass": "断言通过",
             "assertionFail": "断言失败",
             "elapse": "耗时",
         },

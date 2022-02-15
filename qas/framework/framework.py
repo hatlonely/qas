@@ -118,7 +118,9 @@ class Framework:
                 cfg = yaml.safe_load(fp)
         cfg = merge(cfg, {
             "reporter": {
-                reporter: {},
+                reporter: {
+                    "lang": "zh",
+                },
             },
             "hook": dict([(i, {}) for i in hooks]),
             "framework": {
