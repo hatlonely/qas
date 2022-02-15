@@ -215,7 +215,7 @@ class Framework:
         var = json.loads(json.dumps(var_info), object_hook=lambda x: SimpleNamespace(**x))
         common_step_info = copy.deepcopy(parent_rctx.common_step_info) | info["commonStep"] | Framework.load_common_step("{}/{}".format(directory, customize.loadingFiles.commonStep))
         before_case_info = copy.deepcopy(parent_rctx.before_case_info) + info["beforeCase"] + list(Framework.load_step("{}/{}".format(directory, customize.loadingFiles.beforeCase)))
-        after_case_info = copy.deepcopy(parent_rctx.after_case_info) + info["afterCase"] + list(Framework.load_step("{}/{}".format(directory, customize.loadingFiles.afterCase)))
+        after_case_info = info["afterCase"] + list(Framework.load_step("{}/{}".format(directory, customize.loadingFiles.afterCase))) + copy.deepcopy(parent_rctx.after_case_info)
         ctx = copy.copy(parent_rctx.ctx)
         dft = copy.deepcopy(parent_rctx.dft)
         for key in info["ctx"]:
