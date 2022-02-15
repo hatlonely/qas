@@ -88,7 +88,7 @@ class TraceHook(Hook):
 
         lines = []
         if res.is_skip:
-            return ["{fore.YELLOW}{header} {res.name} {i18n.status.fail}{fore.RESET}".format(
+            return ["{fore.YELLOW}{header} {res.name} {i18n.status.skip}{fore.RESET}".format(
                 fore=Fore, res=res, i18n=self.i18n, header=case_type_map[case_type]
             )]
 
