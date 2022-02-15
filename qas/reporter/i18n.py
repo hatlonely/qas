@@ -52,6 +52,7 @@ i18n = {
             "req": "Req",
             "res": "Res",
             "err": "Err",
+            "subStep": "SubStep",
         },
         "toolTips": {
             "copy": "copy"
@@ -95,19 +96,20 @@ i18n = {
             "subTest": "子测试",
         },
         "caseHeader": {
-            "description": "Description",
-            "command": "Command",
-            "beforeCaseStep": "BeforeCaseStep",
-            "preStep": "PreStep",
-            "step": "Step",
-            "postStep": "PostStep",
-            "afterCaseStep": "AfterCaseStep",
+            "description": "描述",
+            "command": "命令",
+            "beforeCaseStep": "测试开始前",
+            "preStep": "前置步骤",
+            "step": "步骤",
+            "postStep": "后置步骤",
+            "afterCaseStep": "测试结束后",
         },
         "stepHeader": {
-            "description": "Description",
-            "req": "Req",
-            "res": "Res",
-            "err": "Err",
+            "description": "描述",
+            "req": "请求",
+            "res": "返回",
+            "err": "错误",
+            "subStep": "子步骤",
         },
         "toolTips": {
             "copy": "复制"
