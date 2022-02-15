@@ -46,15 +46,15 @@ _report_tpl = """<!DOCTYPE html>
         }
 
         function showTestPass(parentID) {
-            $('#' + parentID + ' .test.test-pass').show()
             $('#' + parentID + ' .test.test-skip').hide()
             $('#' + parentID + ' .test.test-fail').hide()
+            $('#' + parentID + ' .test.test-pass').show()
         }
 
         function showTestSkip(parentID) {
             $('#' + parentID + ' .test.test-pass').hide()
-            $('#' + parentID + ' .test.test-skip').show()
             $('#' + parentID + ' .test.test-fail').hide()
+            $('#' + parentID + ' .test.test-skip').show()
         }
 
         function showTestFail(parentID) {
@@ -64,21 +64,21 @@ _report_tpl = """<!DOCTYPE html>
         }
 
         function showCasePass(parentID) {
-            $('#' + parentID + ' .test.case-pass').show()
             $('#' + parentID + ' .test.case-skip').hide()
             $('#' + parentID + ' .test.case-fail').hide()
-            $('#' + parentID + ' .case.pass').show()
+            $('#' + parentID + ' .test.case-pass').show()
             $('#' + parentID + ' .case.skip').hide()
             $('#' + parentID + ' .case.fail').hide()
+            $('#' + parentID + ' .case.pass').show()
         }
 
         function showCaseSkip(parentID) {
             $('#' + parentID + ' .test.case-pass').hide()
-            $('#' + parentID + ' .test.case-skip').show()
             $('#' + parentID + ' .test.case-fail').hide()
-            $('#' + parentID + ' .case.skip').show()
+            $('#' + parentID + ' .test.case-skip').show()
             $('#' + parentID + ' .case.pass').hide()
             $('#' + parentID + ' .case.fail').hide()
+            $('#' + parentID + ' .case.skip').show()
         }
 
         function showCaseFail(parentID) {
