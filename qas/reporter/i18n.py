@@ -63,6 +63,7 @@ i18n = {
     "zh": {
         "title": {
             "report": "测试报告",
+            "test": "测试",
         },
         "status": {
             "pass": "通过",
