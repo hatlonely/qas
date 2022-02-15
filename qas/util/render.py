@@ -11,7 +11,7 @@ def render(req, case=None, var=None, x=None, peval="#", pexec="%"):
         for key, val in req.items():
             if key.startswith(peval):
                 res[key.lstrip(peval)] = eval(val)
-            if key.startswith(pexec):
+            elif key.startswith(pexec):
                 res[key.lstrip(pexec)] = exec_with_res(val, case=case, var=var, x=x)
             else:
                 res[key] = render(req[key], case=case, var=var, x=x)
