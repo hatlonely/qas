@@ -6,7 +6,12 @@ from ..util.include import *
 from ..util import exec_with_res
 
 
-def expect(vals, rules, case=None, step=None, var=None, x=None, peval="#", pexec="%"):
+def expect(vals, rules, case=None, step=None, var=None, x=None, peval="#", pexec="%", mode=""):
+    if mode == peval:
+        return [run_expect("", rules, "eval", val=vals, case=case, step=step, var=var, x=x)]
+    if mode == pexec:
+        return [run_expect("", rules, "exec", val=vals, case=case, step=step, var=var, x=x)]
+
     results = []
     _expect_recursive("", results, vals, rules, case=case, step=step, var=var, x=x, peval=peval, pexec=pexec)
     return results

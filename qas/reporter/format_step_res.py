@@ -8,6 +8,16 @@ from ..result import SubStepResult
 
 
 def format_step_res(sub_step: SubStepResult, separator="#", pass_open="", pass_close="", fail_open="", fail_close="") -> str:
+    if len(sub_step.assertions) == 1 and sub_step.assertions[0].node == "":
+        if sub_step.assertions[0].is_pass:
+            return "{} {} {}{}{}".format(
+                json.dumps(sub_step.res, indent=2), separator, pass_open, sub_step.assertions[0].expect, pass_close
+            )
+        else:
+            return "{} {} {}{}{}".format(
+                json.dumps(sub_step.res, indent=2), separator, fail_open, sub_step.assertions[0].expect, fail_close
+            )
+
     # 修改 res 返回值，将预期值标记后拼接在 value 后面
     for expect_result in sub_step.assertions:
         if expect_result.is_pass:

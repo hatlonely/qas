@@ -165,9 +165,9 @@ class TextReporter(Reporter):
             lines.extend((self.i18n.stepHeader.req + ": " + json.dumps(sub_step.req, default=lambda x: str(x), indent=2)).split("\n"))
             if sub_step.is_err:
                 lines.extend((self.i18n.stepHeader.res + ": " + json.dumps(sub_step.res, indent=2)).split("\n"))
-                lines.extend([self.i18n.stepHeader.err + ":  " + i for i in sub_step.err.split("\n")])
+                lines.extend([self.i18n.stepHeader.err + ": " + i for i in sub_step.err.split("\n")])
                 return lines
-            lines.extend((self.i18n.stepHeader.res + ":" + format_step_res(
+            lines.extend((self.i18n.stepHeader.res + ": " + format_step_res(
                 sub_step, pass_open=Fore.GREEN, pass_close=Fore.RESET, fail_open=Fore.RED, fail_close=Fore.RESET,
             )).split("\n"))
         return lines

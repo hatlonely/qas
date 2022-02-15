@@ -561,12 +561,19 @@ class Framework:
         step = StepResult(step_info["name"], step_info["ctx"], step_info["description"])
         now = datetime.now()
 
+        mode = ""
+        if customize.keyPrefix.eval + "res" in step_info:
+            step_info["res"] = step_info[customize.keyPrefix.eval + "res"]
+            mode = customize.keyPrefix.eval
+        elif customize.keyPrefix.exec + "res" in step_info:
+            step_info["res"] = step_info[customize.keyPrefix.exec + "res"]
+            mode = customize.keyPrefix.exec
         if not constant.parallel:
             for req, res in zip(
                 generate_req(step_info["req"], p=customize.keyPrefix.loop),
                 generate_res(step_info["res"], calculate_num(step_info["req"], p=customize.keyPrefix.loop), p=customize.keyPrefix.loop)
             ):
-                result = Framework.run_sub_step(customize, rctx, case, req, res, step_info)
+                result = Framework.run_sub_step(customize, rctx, case, req, res, step_info, mode=mode)
                 step.add_sub_step_result(result)
         else:
             # 并发执行，每次执行 case.step 中 parallel 定义的个数
@@ -576,7 +583,7 @@ class Framework:
             ):
                 results = rctx.step_pool.map(
                     Framework.run_sub_step,
-                    repeat(customize), repeat(rctx), repeat(case), reqs, ress, repeat(step_info),
+                    repeat(customize), repeat(rctx), repeat(case), reqs, ress, repeat(step_info), repeat(mode)
                 )
                 for result in results:
                     step.add_sub_step_result(result)
@@ -590,7 +597,7 @@ class Framework:
         return step
 
     @staticmethod
-    def run_sub_step(customize, rctx: RuntimeContext, case, req, res, step_info):
+    def run_sub_step(customize, rctx: RuntimeContext, case, req, res, step_info, mode=""):
         sub_step_result = SubStepResult()
         sub_step_start = datetime.now()
         try:
@@ -616,7 +623,7 @@ class Framework:
             else:
                 raise UntilError()
 
-            result = expect(step_res, json.loads(json.dumps(res)), case=case, step=sub_step_result, var=rctx.var, x=rctx.x, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec)
+            result = expect(step_res, json.loads(json.dumps(res)), case=case, step=sub_step_result, var=rctx.var, x=rctx.x, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, mode=mode)
             sub_step_result.add_expect_result(result)
 
             # ensure req can json serialize
