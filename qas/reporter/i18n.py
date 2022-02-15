@@ -2,6 +2,7 @@
 
 
 import json
+import locale
 from types import SimpleNamespace
 
 from ..util import merge
@@ -58,7 +59,6 @@ i18n = {
             "copy": "copy"
         }
     },
-    "en": {},
     "zh": {
         "title": {
             "report": "测试报告",
@@ -120,8 +120,14 @@ i18n = {
 
 class I18n:
     def __init__(self, args):
+        lang = "dft"
+        try:
+            lang = locale.getdefaultlocale()[0].split('_')[0]
+        except Exception as e:
+            pass
+
         args = merge(args, {
-            "lang": "dft",
+            "lang": lang,
             "i18n": {},
         })
 
