@@ -23,13 +23,13 @@ _report_tpl = """<!DOCTYPE html>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
     <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
-    {{ cfg.font.style }}
+    {{ customize.font.style }}
     <style>
         body {
-            font-family: {{ cfg.font.body }};
+            font-family: {{ customize.font.body }};
         }
         pre, code {
-            font-family: {{ cfg.font.code }};
+            font-family: {{ customize.font.code }};
         }
     </style>
     <script>
@@ -128,11 +128,11 @@ _report_tpl = """<!DOCTYPE html>
         }
     </script>
 
-    {{ cfg.extra.head }}
+    {{ customize.extra.head }}
 </head>
 
 <body>
-    {{ cfg.extra.bodyHeader }}
+    {{ customize.extra.bodyHeader }}
     <div class="container">
         <div class="row justify-content-md-center">
             <div class="col-lg-10 col-md-12">
@@ -140,7 +140,7 @@ _report_tpl = """<!DOCTYPE html>
             </div>
         </div>
     </div>
-    {{ cfg.extra.bodyFooter }}
+    {{ customize.extra.bodyFooter }}
 </body>
 
 <script>
@@ -279,7 +279,7 @@ _test_tpl = """
         </div>
         <ul class="list-group list-group-flush" id="{{ name }}-setup">
             {% for case in res.setups %}
-            <li class="list-group-item case {{ case.status }}">
+            <li class="list-group-item px-{{ customize.padding.x }} py-{{ customize.padding.y }} case {{ case.status }}">
                 {{ render_case(case, '{}-setup-{}'.format(name, loop.index0)) }}
             </li>
             {% endfor %}
@@ -305,7 +305,7 @@ _test_tpl = """
         </div>
         <ul class="list-group list-group-flush" id="{{ name }}-case">
             {% for case in res.cases %}
-            <li class="list-group-item case {{ case.status }}">
+            <li class="list-group-item px-{{ customize.padding.x }} py-{{ customize.padding.y }} case {{ case.status }}">
                 {{ render_case(case, '{}-case-{}'.format(name, loop.index0)) }}
             </li>
             {% endfor %}
@@ -332,7 +332,7 @@ _test_tpl = """
         <ul class="list-group list-group-flush" id="{{ name }}-subtest">
             {% for sub_test in res.sub_tests %}
             <li class="
-                list-group-item test
+                list-group-item px-{{ customize.padding.x }} py-{{ customize.padding.y }} test
                 test-{{ sub_test.status }}
                 {% if sub_test.case_pass %}case-pass{% endif %}
                 {% if sub_test.case_skip %}case-skip{% endif %}
@@ -360,7 +360,7 @@ _test_tpl = """
         </div>
         <ul class="list-group list-group-flush" id="{{ name }}-teardown">
             {% for case in res.teardowns %}
-            <li class="list-group-item case {{ case.status }}">
+            <li class="list-group-item px-{{ customize.padding.x }} py-{{ customize.padding.y }} case {{ case.status }}">
                 {{ render_case(case, '{}-teardown-{}'.format(name, loop.index0)) }}
             </li>
             {% endfor %}
@@ -417,7 +417,7 @@ _case_tpl = """
         <div class="card-header">BeforeCaseStep</div>
         <ul class="list-group list-group-flush">
             {% for step in case.before_case_steps %}
-            <li class="list-group-item">
+            <li class="list-group-item px-{{ customize.padding.x }} py-{{ customize.padding.y }}">
                 {{ render_step(step, '{}-before-case-step-{}'.format(name, loop.index0)) }}
             </li>
             {% endfor %}
@@ -429,7 +429,7 @@ _case_tpl = """
         <div class="card-header">PreStep</div>
         <ul class="list-group list-group-flush">
             {% for step in case.pre_steps %}
-            <li class="list-group-item">
+            <li class="list-group-item px-{{ customize.padding.x }} py-{{ customize.padding.y }}">
                 {{ render_step(step, '{}-pre-step-{}'.format(name, loop.index0)) }}
             </li>
             {% endfor %}
@@ -440,7 +440,7 @@ _case_tpl = """
         <div class="card-header">Step</div>
         <ul class="list-group list-group-flush">
             {% for step in case.steps %}
-            <li class="list-group-item">
+            <li class="list-group-item px-{{ customize.padding.x }} py-{{ customize.padding.y }}">
                 {{ render_step(step, '{}-step-{}'.format(name, loop.index0)) }}
             </li>
             {% endfor %}
@@ -451,7 +451,7 @@ _case_tpl = """
         <div class="card-header">PostStep</div>
         <ul class="list-group list-group-flush">
             {% for step in case.post_steps %}
-            <li class="list-group-item">
+            <li class="list-group-item px-{{ customize.padding.x }} py-{{ customize.padding.y }}">
                 {{ render_step(step, '{}-post-step-{}'.format(name, loop.index0)) }}
             </li>
             {% endfor %}
@@ -463,7 +463,7 @@ _case_tpl = """
         <div class="card-header">AfterCaseStep</div>
         <ul class="list-group list-group-flush">
             {% for step in case.after_case_steps %}
-            <li class="list-group-item">
+            <li class="list-group-item px-{{ customize.padding.x }} py-{{ customize.padding.y }}">
                 {{ render_step(step, '{}-after-case-step-{}'.format(name, loop.index0)) }}
             </li>
             {% endfor %}
@@ -510,7 +510,7 @@ _step_tpl = """
         {% endif %}
         <ul class="list-group list-group-flush">
             {% for sub_step in step.sub_steps %}
-            <li class="list-group-item">
+            <li class="list-group-item px-{{ customize.padding.x }} py-{{ customize.padding.y }}">
                 {{ render_sub_step(sub_step, '{}-sub-step-{}'.format(name, loop.index0), loop.index0) }}
             </li>
             {% endfor %}
@@ -605,10 +605,14 @@ class HtmlReporter(Reporter):
                 "head": "",
                 "bodyHeader": "",
                 "bodyFooter": "",
+            },
+            "padding": {
+                "x": 2,
+                "y": 2,
             }
         })
         self.step_separator = args["stepSeparator"]
-        self.cfg = json.loads(json.dumps(args), object_hook=lambda x: SimpleNamespace(**x))
+        self.customize = json.loads(json.dumps(args), object_hook=lambda x: SimpleNamespace(**x))
 
         env = Environment(loader=BaseLoader)
         env.globals.update(format_timedelta=HtmlReporter.format_timedelta)
@@ -623,7 +627,7 @@ class HtmlReporter(Reporter):
         env.globals.update(brief_mode=True)
         env.globals.update(markdown=markdown.markdown)
         env.globals.update(i18n=self.i18n)
-        env.globals.update(cfg=self.cfg)
+        env.globals.update(customize=self.customize)
         self.report_tpl = env.from_string(_report_tpl)
         self.test_tpl = env.from_string(_test_tpl)
         self.case_tpl = env.from_string(_case_tpl)
