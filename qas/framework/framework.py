@@ -76,7 +76,7 @@ class Framework:
         test_pool_size=None,
         hook=None,
         customize=None,
-        lang="dft",
+        lang=None,
     ):
         self.step_pool = None
         self.case_pool = None
@@ -119,9 +119,7 @@ class Framework:
                 cfg = yaml.safe_load(fp)
         cfg = merge(cfg, {
             "reporter": {
-                reporter: {
-                    "lang": lang,
-                },
+                reporter: {},
             },
             "hook": dict([(i, {}) for i in hooks]),
             "framework": {
@@ -142,6 +140,11 @@ class Framework:
                 }
             }
         })
+
+        if lang:
+            cfg["reporter"][reporter]["lang"] = lang
+            cfg["hook"]["trace"]["lang"] = lang
+
 
         self.customize = json.loads(json.dumps(cfg["framework"]), object_hook=lambda y: SimpleNamespace(**y))
 
