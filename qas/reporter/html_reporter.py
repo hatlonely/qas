@@ -161,13 +161,13 @@ _test_tpl = """
 
     {% if res.is_skip %}
     <div class="card my-{{ customize.padding.y }} border-warning">
-        <div class="card-header text-white bg-warning"><h5>{{ i18n.title.test }} {{ res.name }} {{ i18n.status.skip }}</h5></div>
+        <h5 class="card-header text-white bg-warning">{{ i18n.title.test }} {{ res.name }} {{ i18n.status.skip }}</h5>
     {% elif res.is_pass %}
     <div class="card my-{{ customize.padding.y }} border-success">
-        <div class="card-header text-white bg-success"><h5>{{ i18n.title.test }} {{ res.name }} {{ i18n.status.pass }}</h5></div>
+        <h5 class="card-header text-white bg-success">{{ i18n.title.test }} {{ res.name }} {{ i18n.status.pass }}</h5>
     {% else %}
     <div class="card my-{{ customize.padding.y }} border-danger">
-        <div class="card-header text-white bg-danger"><h5>{{ i18n.title.test }} {{ res.name }} {{ i18n.status.fail }}<h5></div>
+        <h5 class="card-header text-white bg-danger">{{ i18n.title.test }} {{ res.name }} {{ i18n.status.fail }}<h5>
     {% endif %}
 
         {% if not res.is_skip %}
@@ -252,13 +252,13 @@ _test_tpl = """
         
         {# 渲染 Err #}
         {% if res.is_err %}
-        <div class="card-header text-white bg-danger">{{ i18n.testHeader.err }}</div>
+        <div class="card-header text-white bg-danger"><span class="fw-bolder">{{ i18n.testHeader.err }}</span></div>
         <div class="card-body"><pre>{{ res.err }}</pre></div>
         {% endif %}
 
         {# 渲染 Description #}
         {% if res.description %}
-        <div class="card-header justify-content-between d-flex">{{ i18n.testHeader.description }}</div>
+        <div class="card-header justify-content-between d-flex"><span class="fw-bolder">{{ i18n.testHeader.description }}</span></div>
         <div class="card-body">{{ markdown(res.description) }}</div>
         {% endif %}
 
@@ -266,7 +266,7 @@ _test_tpl = """
         {# 渲染 setup #}
         {% if res.setups %}
         <div class="card-header justify-content-between d-flex">
-            {{ i18n.testHeader.setUp }}
+            <span class="fw-bolder">{{ i18n.testHeader.setUp }}</span>
             <span>
                 <span class="badge bg-primary rounded-pill" onclick="showAllCase('{{ name }}-setup')">{{ res.setup_pass + res.setup_fail }}</span>
                 {% if res.setup_pass %}
@@ -289,7 +289,7 @@ _test_tpl = """
         {# 渲染 case #}
         {% if res.cases %}
         <div class="card-header justify-content-between d-flex {{ "pass" if res.case_fail == 0 else "fail" }}">
-            {{ i18n.testHeader.case }}
+            <span class="fw-bolder">{{ i18n.testHeader.case }}</span>
             <span>
                 <span class="badge bg-primary rounded-pill" onclick="showAllCase('{{ name }}-case')">{{ res.curr_case_pass + res.curr_case_skip + res.curr_case_fail }}</span>
                 {% if res.curr_case_pass %}
@@ -315,7 +315,7 @@ _test_tpl = """
         {# 渲染 subtest #}
         {% if res.sub_tests %}
         <div class="card-header justify-content-between d-flex">
-            {{ i18n.testHeader.subTest }}
+            <span class="fw-bolder">{{ i18n.testHeader.subTest }}</span>
             <span>
                 <span class="badge bg-primary rounded-pill" onclick="showAllTest('{{ name }}-subtest')">{{ res.sub_test_pass + res.sub_test_skip + res.sub_test_fail }}</span>
                 {% if res.sub_test_pass %}
@@ -347,7 +347,7 @@ _test_tpl = """
         {# 渲染 teardown #}
         {% if res.teardowns %}
         <div class="card-header justify-content-between d-flex">
-            {{ i18n.testHeader.tearDown }}
+            <span class="fw-bolder">{{ i18n.testHeader.tearDown }}</span>
             <span>
                 <span class="badge bg-primary rounded-pill" onclick="showAllCase('{{ name }}-teardown')">{{ res.teardown_pass + res.teardown_fail }}</span>
                 {% if res.teardown_pass %}
@@ -395,12 +395,12 @@ _case_tpl = """
     {% endif %}
         {# Description #}
         {% if case.description %}
-        <div class="card-header">{{ i18n.caseHeader.description }}</div>
+        <div class="card-header"><span class="fw-bolder">{{ i18n.caseHeader.description }}</span></div>
         <div class="card-body">{{ markdown(case.description) }}</div>
         {% endif %}
         
         {% if case.command %}
-        <div class="card-header">{{ i18n.caseHeader.command }}</div>
+        <div class="card-header"><span class="fw-bolder">{{ i18n.caseHeader.command }}</span></div>
         <div class="card-body">
             <div class="float-end">
                 <button type="button" class="btn btn-sm py-0" onclick="copyToClipboard('{{ name }}-command')"
@@ -414,7 +414,7 @@ _case_tpl = """
 
         {# BeforeCaseStep #}
         {% if case.before_case_steps %}
-        <div class="card-header">{{ i18n.caseHeader.beforeCaseStep }}</div>
+        <div class="card-header"><span class="fw-bolder">{{ i18n.caseHeader.beforeCaseStep }}</span></div>
         <ul class="list-group list-group-flush">
             {% for step in case.before_case_steps %}
             <li class="list-group-item px-{{ customize.padding.x }} py-{{ customize.padding.y }}">
@@ -426,7 +426,7 @@ _case_tpl = """
         
         {# PreStep #}
         {% if case.pre_steps %}
-        <div class="card-header">{{ i18n.caseHeader.preStep }}</div>
+        <div class="card-header"><span class="fw-bolder">{{ i18n.caseHeader.preStep }}</span></div>
         <ul class="list-group list-group-flush">
             {% for step in case.pre_steps %}
             <li class="list-group-item px-{{ customize.padding.x }} py-{{ customize.padding.y }}">
@@ -437,7 +437,7 @@ _case_tpl = """
         {% endif %}
         
         {# Step #}
-        <div class="card-header">{{ i18n.caseHeader.step }}</div>
+        <div class="card-header"><span class="fw-bolder">{{ i18n.caseHeader.step }}</span></div>
         <ul class="list-group list-group-flush">
             {% for step in case.steps %}
             <li class="list-group-item px-{{ customize.padding.x }} py-{{ customize.padding.y }}">
@@ -448,7 +448,7 @@ _case_tpl = """
         
         {# PostStep #}
         {% if case.pre_steps %}
-        <div class="card-header">{{ i18n.caseHeader.postStep }}</div>
+        <div class="card-header"><span class="fw-bolder">{{ i18n.caseHeader.postStep }}</span></div>
         <ul class="list-group list-group-flush">
             {% for step in case.post_steps %}
             <li class="list-group-item px-{{ customize.padding.x }} py-{{ customize.padding.y }}">
@@ -460,7 +460,7 @@ _case_tpl = """
 
         {# AfterCaseStep #}
         {% if case.after_case_steps %}
-        <div class="card-header">{{ i18n.caseHeader.afterCaseStep }}</div>
+        <div class="card-header"><span class="fw-bolder">{{ i18n.caseHeader.afterCaseStep }}</span></div>
         <ul class="list-group list-group-flush">
             {% for step in case.after_case_steps %}
             <li class="list-group-item px-{{ customize.padding.x }} py-{{ customize.padding.y }}">
@@ -499,12 +499,12 @@ _step_tpl = """
     {% endif %}
         {# Description #}
         {% if step.description %}
-        <div class="card-header">{{ i18n.stepHeader.description }}</div>
+        <div class="card-header"><span class="fw-bolder">{{ i18n.stepHeader.description }}</span></div>
         <div class="card-body">{{ markdown(step.description) }}</div>
         {% endif %}
 
         {% if not brief_mode %}
-        <div class="card-header">{{ i18n.stepHeader.subStep }}</div>
+        <div class="card-header"><span class="fw-bolder">{{ i18n.stepHeader.subStep }}</span></div>
         {% endif %}
         <ul class="list-group list-group-flush">
             {% for sub_step in step.sub_steps %}
@@ -542,7 +542,7 @@ _sub_step_tpl = """
     {% else %}
     <div class="card border-danger">
     {% endif %}
-        <div class="card-header">{{ i18n.stepHeader.req }}</div>
+        <div class="card-header"><span class="fw-bolder">{{ i18n.stepHeader.req }}</span></div>
         <div class="card-body">
             <div class="float-end">
                 <button type="button" class="btn btn-sm py-0" onclick="copyToClipboard('{{ name }}-req')"
@@ -558,7 +558,7 @@ _sub_step_tpl = """
         {% else %}
         <div class="card-header text-white bg-danger justify-content-between d-flex">
         {% endif %}
-            {{ i18n.stepHeader.res }}
+            <span class="fw-bolder">{{ i18n.stepHeader.res }}</span>
             <span>
                 <span class="badge bg-success rounded-pill">{{ sub_step.assertion_pass }}</span>
                 {% if sub_step.assertion_fail %}
@@ -577,7 +577,7 @@ _sub_step_tpl = """
         </div>
 
         {% if sub_step.is_err %}
-        <div class="card-header text-white bg-danger">{{ i18n.stepHeader.err }}</div>
+        <div class="card-header text-white bg-danger"><span class="fw-bolder">{{ i18n.stepHeader.err }}</span></div>
         <div class="card-body">
             <pre>{{ sub_step.err }}</pre>
         </div>
