@@ -15,12 +15,24 @@ reporter:
         assertionFail: Assertion Fail
         elapse: Elapse
     font:
+#      style: |
+#        <link rel="preconnect" href="https://fonts.googleapis.com">
+#        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+#        <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400&family=Roboto:wght@200;400;500&display=swap" rel="stylesheet">
+#      body: "'Roboto', sans-serif !important"
+#      code: "'Roboto Mono', monospace !important"
       style: |
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400&family=Roboto:wght@200;400;500&display=swap" rel="stylesheet">
-      body: "'Roboto', sans-serif !important"
-      code: "'Roboto Mono', monospace !important"
+        <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;700&family=Ubuntu+Mono:wght@400;700&display=swap" rel="stylesheet">
+      body: "'Oswald', sans-serif !important"
+      code: "'Ubuntu Mono', monospace !important"
+#      style: |
+#        <link rel="preconnect" href="https://fonts.googleapis.com">
+#        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+#        <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
+#      body: "'Roboto Condensed', sans-serif !important"
+#      code: "'JetBrains Mono', monospace !important"
     extra:
       bodyFooter: |
         <div class="text-center"> @Copyright 2022, hatlonely </div>

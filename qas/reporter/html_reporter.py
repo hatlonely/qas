@@ -593,11 +593,13 @@ class HtmlReporter(Reporter):
         args = merge(args, {
             "stepSeparator": "#",
             "font": {
-                "style": """<link rel="preconnect" href="https://fonts.googleapis.com">
+                "style": """
+<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;700&family=Ubuntu+Mono:wght@400;700&display=swap" rel="stylesheet">'""",
-                "body": "'Oswald', sans-serif !important",
-                "code": "'Ubuntu Mono', monospace !important",
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
+""",
+                "body": "'Roboto Condensed', sans-serif !important",
+                "code": "'JetBrains Mono', monospace !important",
             },
             "extra": {
                 "head": "",
