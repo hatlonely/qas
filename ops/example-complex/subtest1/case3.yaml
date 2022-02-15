@@ -1,0 +1,12 @@
+name: SubTest1Case3
+preStep:
+  - step1
+postStep:
+  - step2
+step:
+  - ctx: shell
+    req:
+      command: echo -n ${KEY2}
+    res:
+      exitCode: 0
+      stdout: val2
