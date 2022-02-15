@@ -143,7 +143,7 @@ class Framework:
 
         if lang:
             cfg["reporter"][reporter]["lang"] = lang
-            cfg["hook"]["trace"]["lang"] = lang
+            cfg["hook"]["stdoutLog"]["lang"] = lang
 
 
         self.customize = json.loads(json.dumps(cfg["framework"]), object_hook=lambda y: SimpleNamespace(**y))

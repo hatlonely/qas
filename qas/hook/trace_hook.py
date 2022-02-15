@@ -11,7 +11,7 @@ from ..reporter import format_step_res, I18n
 from ..util import merge
 
 
-class TraceHook(Hook):
+class StdoutLogHook(Hook):
     def __init__(self, args=None):
         self.i18n = I18n(args).i18n()
         args = merge(args, {

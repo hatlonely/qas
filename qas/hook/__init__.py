@@ -3,12 +3,12 @@
 
 from .hook import Hook
 from .debug_hook import DebugHook
-from .trace_hook import TraceHook
+from .trace_hook import StdoutLogHook
 
 
 hook_map = {
     "debug": DebugHook,
-    "trace": TraceHook,
+    "stdoutLog": StdoutLogHook,
 }
 
-__all__ = ["Hook", "DebugHook", "TraceHook", "hook_map"]
+__all__ = ["Hook", "DebugHook", "StdoutLogHook", "hook_map"]
