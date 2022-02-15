@@ -4,16 +4,16 @@ reporter:
     lang: "en"
     i18n:
       summary:
-        caseTotal: All Case
-        casePass: Case Pass
-        caseSkip: Case Skip
-        caseFail: Case Fail
-        stepPass: Step Pass
-        stepSkip: Step Skip
-        stepFail: Step Fail
-        assertionPass: Assertion Pass
-        assertionFail: Assertion Fail
-        elapse: Elapse
+        caseTotal: TOTAL CASE
+        casePass: CASE PASS
+        caseSkip: CASE SKIP
+        caseFail: CASE FAIL
+        stepPass: STEP PASS
+        stepSkip: STEP SKIP
+        stepFail: STEP FAIL
+        assertionPass: ASSERTION PASS
+        assertionFail: ASSERTION FAIL
+        elapse: ELAPSE
     font:
 #      style: |
 #        <link rel="preconnect" href="https://fonts.googleapis.com">
