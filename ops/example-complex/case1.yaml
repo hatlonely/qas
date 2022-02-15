@@ -1,4 +1,4 @@
-name: case1
+name: Case1
 preStep:
   - step1
 postStep:

@@ -1,4 +1,4 @@
-name: case2
+name: SubTest1Case2
 preStep:
   - step1
 postStep:
