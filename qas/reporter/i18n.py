@@ -90,9 +90,9 @@ i18n = {
         "testHeader": {
             "description": "描述",
             "err": "错误",
-            "setUp": "测试准备",
+            "setUp": "测试环境准备",
             "case": "测试单元",
-            "tearDown": "测试清理",
+            "tearDown": "测试环境清理",
             "subTest": "子测试",
         },
         "caseHeader": {
