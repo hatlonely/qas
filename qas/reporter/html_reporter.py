@@ -167,7 +167,7 @@ _test_tpl = """
         <h5 class="card-header text-white bg-success">{{ i18n.title.test }} {{ res.name }} {{ i18n.status.pass }}</h5>
     {% else %}
     <div class="card my-{{ customize.padding.y }} border-danger">
-        <h5 class="card-header text-white bg-danger">{{ i18n.title.test }} {{ res.name }} {{ i18n.status.fail }}<h5>
+        <h5 class="card-header text-white bg-danger">{{ i18n.title.test }} {{ res.name }} {{ i18n.status.fail }}</h5>
     {% endif %}
 
         {% if not res.is_skip %}
