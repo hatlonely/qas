@@ -5,7 +5,7 @@ ctx:
     type: shell
 
 case:
-  - name: AssertExample
+  - name: AssertExample1
     step:
       - ctx: shell
         req:

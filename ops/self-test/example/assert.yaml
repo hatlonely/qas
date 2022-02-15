@@ -7,25 +7,47 @@ step:
     res:
       exitCode: 0
       json: {
+        "directory": "ops/example-docs/assert",
         "name": "assert-example",
+        "status": "pass",
+        "description": "",
+        "isSkip": false,
         "isPass": true,
+        "isErr": false,
+        "err": "",
         "#elapse": "val > 0",
-        "casePass": 1,
+        "casePass": 2,
         "caseFail": 0,
         "caseSkip": 0,
-        "stepPass": 1,
+        "setupPass": 0,
+        "setupFail": 0,
+        "teardownPass": 0,
+        "teardownFail": 0,
+        "currCasePass": 2,
+        "currCaseFail": 0,
+        "currCaseSkip": 0,
+        "stepPass": 2,
         "stepFail": 0,
-        "assertionPass": 8,
+        "stepSkip": 0,
+        "assertionPass": 9,
         "assertionFail": 0,
+        "subTestPass": 0,
+        "subTestSkip": 0,
+        "subTestFail": 0,
         "cases": [
           {
-            "name": "AssertExample",
+            "name": "AssertExample1",
+            "directory": "ops/example-docs/assert",
+            "description": "",
+            "command": "qas -t \"ops/example-docs/assert\" -c \"\" --case-name \"AssertExample1\"",
+            "status": "pass",
             "#elapse": "val > 0",
             "isPass": true,
             "isSkip": false,
             "steps": [
               {
                 "name": "echo",
+                "description": "",
                 "ctx": "shell",
                 "isSkip": false,
                 "isPass": true,
@@ -162,10 +184,80 @@ step:
             "stepFail": 0,
             "assertionPass": 8,
             "assertionFail": 0
+          },
+          {
+            "name": "AssertExample2",
+            "directory": "ops/example-docs/assert",
+            "description": "",
+            "command": "qas -t \"ops/example-docs/assert\" -c \"\" --case-name \"AssertExample2\"",
+            "status": "pass",
+            "#elapse": "val > 0",
+            "isPass": true,
+            "isSkip": false,
+            "steps": [
+              {
+                "name": "echo",
+                "description": "",
+                "ctx": "shell",
+                "isSkip": false,
+                "isPass": true,
+                "req": {
+                  "command": "echo -n \"hello world\"",
+                  "envs": {},
+                  "decoder": "text"
+                },
+                "res": {
+                  "exitCode": 0,
+                  "stdout": "hello world",
+                  "stderr": ""
+                },
+                "subSteps": [
+                  {
+                    "isPass": true,
+                    "isErr": false,
+                    "err": "",
+                    "req": {
+                      "command": "echo -n \"hello world\"",
+                      "envs": {},
+                      "decoder": "text"
+                    },
+                    "res": {
+                      "exitCode": 0,
+                      "stdout": "hello world",
+                      "stderr": ""
+                    },
+                    "assertions": [
+                      {
+                        "isPass": true,
+                        "message": "OK",
+                        "node": "",
+                        "val": {
+                          "exitCode": 0,
+                          "stdout": "hello world",
+                          "stderr": ""
+                        },
+                        "expect": "val['stdout'].startswith('hello')"
+                      }
+                    ],
+                    "assertionPass": 1,
+                    "assertionFail": 0,
+                    "#elapse": "val > 0"
+                  }
+                ],
+                "assertionPass": 1,
+                "assertionFail": 0,
+                "#elapse": "val > 0"
+              }
+            ],
+            "beforeCaseSteps": [],
+            "afterCaseSteps": [],
+            "stepPass": 1,
+            "stepFail": 0,
+            "assertionPass": 1,
+            "assertionFail": 0
           }
         ],
         "setups": [],
         "teardowns": [],
         "subTests": []
       }
-
