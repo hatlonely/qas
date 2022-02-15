@@ -22,15 +22,15 @@ def _expect_recursive(root: str, results: list[ExpectResult], vals, rules, case=
         for key, rule in rules.items():
             root_dot_key = "{}.{}".format(root, key.lstrip(peval).lstrip(pexec)).lstrip(".")
             if key.startswith(pexec):
-                if key[1:] not in vals:
+                if key[len(pexec):] not in vals:
                     results.append(ExpectResult(is_pass=False, message="NoSuchKey", node=root_dot_key, val=None, expect=rule))
                 else:
-                    results.append(run_expect(root_dot_key, rule, "exec", val=vals[key[1:]], case=case, step=step, var=var, x=x))
+                    results.append(run_expect(root_dot_key, rule, "exec", val=vals[key[len(pexec):]], case=case, step=step, var=var, x=x))
             elif key.startswith(peval):
-                if key[1:] not in vals:
+                if key[len(peval):] not in vals:
                     results.append(ExpectResult(is_pass=False, message="NoSuchKey", node=root_dot_key, val=None, expect=rule))
                 else:
-                    results.append(run_expect(root_dot_key, rule, "eval", val=vals[key[1:]], case=case, step=step, var=var, x=x))
+                    results.append(run_expect(root_dot_key, rule, "eval", val=vals[key[len(peval):]], case=case, step=step, var=var, x=x))
             elif key not in vals:
                 results.append(ExpectResult(is_pass=False, message="NoSuchKey", node=root_dot_key, val=None, expect=rule))
             elif isinstance(rule, dict) or isinstance(rule, list):
