@@ -125,8 +125,12 @@ class I18n:
             "i18n": {},
         })
 
+        lang = args["lang"]
+        if lang not in i18n:
+            lang = "dft"
+
         self.i18n_ = json.loads(
-            json.dumps(merge(args["i18n"], merge(i18n[args["lang"]], i18n["dft"]))),
+            json.dumps(merge(args["i18n"], merge(i18n[lang], i18n["dft"]))),
             object_hook=lambda x: SimpleNamespace(**x),
         )
 
