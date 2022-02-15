@@ -8,4 +8,8 @@ driver_map = {
     "calc": CalcDriver,
 }
 
+_reporter_map = {}
+
+hook_map = {}
+
 __all__ = ["driver_map", "hello"]
