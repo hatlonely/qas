@@ -75,7 +75,8 @@ class Framework:
         case_pool_size=None,
         test_pool_size=None,
         hook=None,
-        config=None,
+        customize=None,
+        lang="dft",
     ):
         self.step_pool = None
         self.case_pool = None
@@ -113,13 +114,13 @@ class Framework:
 
         hooks = hook.split(",") if hook else []
         cfg = {}
-        if config:
-            with open(config, "r", encoding="utf-8") as fp:
+        if customize:
+            with open(customize, "r", encoding="utf-8") as fp:
                 cfg = yaml.safe_load(fp)
         cfg = merge(cfg, {
             "reporter": {
                 reporter: {
-                    "lang": "zh",
+                    "lang": lang,
                 },
             },
             "hook": dict([(i, {}) for i in hooks]),

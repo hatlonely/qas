@@ -35,8 +35,9 @@ def main():
     parser.add_argument("-r", "--reporter", default="text", help="test report format. Built in support of `html/json/text`. Support user defined extension in `x`")
     parser.add_argument("-t", "--test", help="test root directory")
     parser.add_argument("-c", "--case", help="test subdirectory")
+    parser.add_argument("--lang", default="dft", help="report language. Built in support of `zh|en`")
     parser.add_argument("-x", "--x", help="user defined extension directory. Support to expand drivers/reporters/hooks/util-functions")
-    parser.add_argument("--config", help="config filename")
+    parser.add_argument("--customize", help="customize filename")
     parser.add_argument("--parallel", nargs="?", const=True, default=False, type=str2bool, help="run parallel")
     parser.add_argument("--hook", help="runtime hook. Separated by comma. Built in support of `debug/trace`. Support user defined extension in `x`")
     parser.add_argument("--step-pool-size", type=int, help="step thread pool size")
@@ -64,7 +65,8 @@ def main():
         step_pool_size=args.step_pool_size,
         case_pool_size=args.case_pool_size,
         test_pool_size=args.test_pool_size,
-        config=args.config,
+        customize=args.customize,
+        lang=args.lang,
     )
     if args.json_result:
         fw.format()
