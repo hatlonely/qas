@@ -252,13 +252,13 @@ _test_tpl = """
         
         {# 渲染 Err #}
         {% if res.is_err %}
-        <div class="card-header text-white bg-danger">Err</div>
+        <div class="card-header text-white bg-danger">{{ i18n.testHeader.err }}</div>
         <div class="card-body"><pre>{{ res.err }}</pre></div>
         {% endif %}
 
         {# 渲染 Description #}
         {% if res.description %}
-        <div class="card-header justify-content-between d-flex">Description</div>
+        <div class="card-header justify-content-between d-flex">{{ i18n.testHeader.description }}</div>
         <div class="card-body">{{ markdown(res.description) }}</div>
         {% endif %}
 
@@ -266,7 +266,7 @@ _test_tpl = """
         {# 渲染 setup #}
         {% if res.setups %}
         <div class="card-header justify-content-between d-flex">
-            SetUp
+            {{ i18n.testHeader.setUp }}
             <span>
                 <span class="badge bg-primary rounded-pill" onclick="showAllCase('{{ name }}-setup')">{{ res.setup_pass + res.setup_fail }}</span>
                 {% if res.setup_pass %}
@@ -289,7 +289,7 @@ _test_tpl = """
         {# 渲染 case #}
         {% if res.cases %}
         <div class="card-header justify-content-between d-flex {{ "pass" if res.case_fail == 0 else "fail" }}">
-            Case
+            {{ i18n.testHeader.case }}
             <span>
                 <span class="badge bg-primary rounded-pill" onclick="showAllCase('{{ name }}-case')">{{ res.curr_case_pass + res.curr_case_skip + res.curr_case_fail }}</span>
                 {% if res.curr_case_pass %}
@@ -315,7 +315,7 @@ _test_tpl = """
         {# 渲染 subtest #}
         {% if res.sub_tests %}
         <div class="card-header justify-content-between d-flex">
-            SubTest
+            {{ i18n.testHeader.subTest }}
             <span>
                 <span class="badge bg-primary rounded-pill" onclick="showAllTest('{{ name }}-subtest')">{{ res.sub_test_pass + res.sub_test_skip + res.sub_test_fail }}</span>
                 {% if res.sub_test_pass %}
@@ -347,7 +347,7 @@ _test_tpl = """
         {# 渲染 teardown #}
         {% if res.teardowns %}
         <div class="card-header justify-content-between d-flex">
-            TearDown
+            {{ i18n.testHeader.tearDown }}
             <span>
                 <span class="badge bg-primary rounded-pill" onclick="showAllCase('{{ name }}-teardown')">{{ res.teardown_pass + res.teardown_fail }}</span>
                 {% if res.teardown_pass %}

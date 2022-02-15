@@ -86,6 +86,29 @@ i18n = {
             "assertionFail": "断言失败",
             "elapse": "耗时",
         },
+        "testHeader": {
+            "description": "描述",
+            "err": "错误",
+            "setUp": "测试准备",
+            "case": "测试单元",
+            "tearDown": "测试清理",
+            "subTest": "子测试",
+        },
+        "caseHeader": {
+            "description": "Description",
+            "command": "Command",
+            "beforeCaseStep": "BeforeCaseStep",
+            "preStep": "PreStep",
+            "step": "Step",
+            "postStep": "PostStep",
+            "afterCaseStep": "AfterCaseStep",
+        },
+        "stepHeader": {
+            "description": "Description",
+            "req": "Req",
+            "res": "Res",
+            "err": "Err",
+        },
         "toolTips": {
             "copy": "复制"
         }
