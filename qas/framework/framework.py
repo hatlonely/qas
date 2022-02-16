@@ -17,6 +17,8 @@ from datetime import datetime
 from dataclasses import dataclass
 import concurrent.futures
 from itertools import repeat
+from pathlib import Path
+
 
 from ..driver import driver_map, Driver
 from ..reporter import reporter_map
@@ -114,6 +116,9 @@ class Framework:
                 self.driver_map = self.driver_map | self.x.driver_map
             if hasattr(self.x, "hook_map"):
                 self.hook_map = self.hook_map | self.x.hook_map
+
+        if not customize and os.path.exists("{}/.qas/customize.yaml".format(Path.home())):
+            customize = "{}/.qas/customize.yaml".format(Path.home())
 
         hooks = hook.split(",") if hook else []
         cfg = {}
