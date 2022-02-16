@@ -363,7 +363,6 @@ class Framework:
     @staticmethod
     def cases(customize, constant: RuntimeConstant, info, directory):
         if constant.case_id:
-            filename, index = constant.case_id.split("-")
             pos = constant.case_id.find("-")
             if pos == -1:
                 filename = constant.case_id + ".yaml"
@@ -461,11 +460,15 @@ class Framework:
 
     @staticmethod
     def format_case(info, filename, idx):
+        text = os.path.splitext(filename)[0]
+        case_id = "{}-{}".format(text, idx)
+        if idx == 0 and text.find("-") == -1:
+            case_id = text
         info = merge(info, {
             "name": REQUIRED,
             "description": "",
             "cond": "",
-            "caseID": "{}-{}".format(os.path.splitext(filename)[0], idx)
+            "caseID": case_id
         })
         return info
 
