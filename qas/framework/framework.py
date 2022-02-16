@@ -632,14 +632,13 @@ class Framework:
 
             result = expect(step_res, json.loads(json.dumps(res)), case=case, step=sub_step_result, var=rctx.var, x=rctx.x, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, mode=mode)
             sub_step_result.add_expect_result(result)
-
-            # ensure req can json serialize
-            sub_step_result.req = json.loads(json.dumps(sub_step_result.req, default=lambda y: str(y)))
         except RetryError as e:
             sub_step_result.set_error("RetryError [{}]".format(retry))
         except UntilError as e:
             sub_step_result.set_error("UntilError [{}], ".format(until))
         except Exception as e:
             sub_step_result.set_error("Exception {}".format(traceback.format_exc()))
+        # ensure req can json serialize
+        sub_step_result.req = json.loads(json.dumps(sub_step_result.req, default=lambda y: str(y)))
         sub_step_result.elapse = datetime.now() - sub_step_start
         return sub_step_result
