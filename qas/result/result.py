@@ -162,6 +162,7 @@ class StepResult:
 
 @dataclass
 class CaseResult:
+    id_: str
     name: str
     directory: str
     description: str
@@ -183,6 +184,7 @@ class CaseResult:
 
     def to_json(self):
         return {
+            "id": self.id_,
             "name": self.name,
             "directory": self.directory,
             "description": self.description,
@@ -202,7 +204,7 @@ class CaseResult:
 
     @staticmethod
     def from_json(obj):
-        res = CaseResult(directory=obj["directory"], name=obj["name"], description=obj["description"])
+        res = CaseResult(directory=obj["directory"], id_=obj["id"], name=obj["name"], description=obj["description"])
         res.command = obj["command"]
         res.status = obj["status"]
         res.is_skip = obj["isSkip"]
@@ -217,7 +219,8 @@ class CaseResult:
         res.elapse = timedelta(microseconds=obj["elapse"])
         return res
 
-    def __init__(self, directory, name, description="", command="", is_skip=False):
+    def __init__(self, directory, id_, name, description="", command="", is_skip=False):
+        self.id_ = id_
         self.name = name
         self.directory = directory
         self.description = description

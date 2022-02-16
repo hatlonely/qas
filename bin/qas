@@ -44,6 +44,7 @@ def main():
     parser.add_argument("--case-pool-size", type=int, help="case thread pool size")
     parser.add_argument("--test-pool-size", type=int, help="test thread pool size")
     parser.add_argument("--case-name", help="filter case by name")
+    parser.add_argument("--case-id", help="filter case by id. id consists of case-filename.index")
     parser.add_argument("--case-regex", help="filter case by regex")
     parser.add_argument("--json-result", help="json result report. If you specify this field, you can convert the JSON report to another format report")
     parser.add_argument("--skip-setup", nargs="?", const=True, default=False, type=str2bool, help="skip setup cases")
@@ -54,6 +55,7 @@ def main():
         test_directory=args.test,
         case_directory=args.case,
         case_name=args.case_name,
+        case_id=args.case_id,
         case_regex=args.case_regex,
         skip_setup=args.skip_setup,
         skip_teardown=args.skip_teardown,

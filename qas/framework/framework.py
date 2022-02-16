@@ -34,6 +34,7 @@ class RuntimeConstant:
     case_directory: str
     case_regex: str
     case_name: str
+    case_id: str
     skip_setup: bool
     skip_teardown: bool
     parallel: bool
@@ -64,6 +65,7 @@ class Framework:
         test_directory=None,
         case_directory=None,
         case_name=None,
+        case_id=None,
         case_regex=None,
         skip_setup=False,
         skip_teardown=False,
@@ -95,6 +97,7 @@ class Framework:
             case_directory=test_directory if not case_directory else os.path.join(test_directory, case_directory.strip().rstrip("/")),
             case_regex=case_regex,
             case_name=case_name,
+            case_id=case_id,
             skip_setup=skip_setup,
             skip_teardown=skip_teardown,
             parallel=parallel,
@@ -277,12 +280,12 @@ class Framework:
         # 执行 case
         if directory.startswith(constant.case_directory):
             if not constant.parallel:
-                for case_info in Framework.cases(customize, info, directory):
+                for case_info in Framework.cases(customize, constant, info, directory):
                     result = Framework.must_run_case(directory, customize, constant, rctx, case_info)
                     test_result.add_case_result(result)
             else:
                 # 并发执行，每次执行 ctx.yaml 中 parallel.case 定义的个数
-                for i in grouper(Framework.cases(customize, info, directory), info["parallel"]["case"]):
+                for i in grouper(Framework.cases(customize, constant, info, directory), info["parallel"]["case"]):
                     results = parent_rctx.case_pool.map(
                         Framework.must_run_case,
                         repeat(directory), repeat(customize), repeat(constant), repeat(rctx), i
@@ -346,7 +349,7 @@ class Framework:
         for case in info["setUp"]:
             yield case
         if os.path.isfile("{}/{}".format(directory, customize.loadingFiles.setUp)):
-            for case in Framework.load_case("{}/{}".format(directory, customize.loadingFiles.setUp)):
+            for case in Framework.load_case(directory, customize.loadingFiles.setUp):
                 yield case
 
     @staticmethod
@@ -354,16 +357,31 @@ class Framework:
         for case in info["tearDown"]:
             yield case
         if os.path.isfile("{}/{}".format(directory, customize.loadingFiles.tearDown)):
-            for case in Framework.load_case("{}/{}".format(directory, customize.loadingFiles.tearDown)):
+            for case in Framework.load_case(directory, customize.loadingFiles.tearDown):
                 yield case
 
     @staticmethod
-    def cases(customize, info, directory):
-        for case in info["case"]:
-            yield case
+    def cases(customize, constant: RuntimeConstant, info, directory):
+        if constant.case_id:
+            filename, index = constant.case_id.split("-")
+            pos = constant.case_id.find("-")
+            if pos == -1:
+                filename = constant.case_id + ".yaml"
+                idx = 0
+            else:
+                filename = constant.case_id[:pos] + ".yaml"
+                idx = int(constant.case_id[pos+1:])
+            if filename == customize.loadingFiles.ctx:
+                yield Framework.format_case(info["case"][idx], filename, idx)
+            else:
+                yield Framework.format_case(list(Framework.load_case(directory, filename))[idx], filename, idx)
+            return
+
+        for idx, case in enumerate(info["case"]):
+            yield Framework.format_case(case, customize.loadingFiles.ctx, idx)
 
         for filename in [
-            os.path.join(directory, i)
+            i
             for i in os.listdir(directory)
             if i not in [
                 customize.loadingFiles.ctx,
@@ -378,7 +396,7 @@ class Framework:
         ]:
             if not filename.endswith(".yaml"):
                 continue
-            for case in Framework.load_case(filename):
+            for case in Framework.load_case(directory, filename):
                 yield case
 
     @staticmethod
@@ -432,21 +450,22 @@ class Framework:
         return merge(info, dft)
 
     @staticmethod
-    def load_case(filename):
-        with open(filename, "r", encoding="utf-8") as fp:
+    def load_case(directory, filename):
+        with open(os.path.join(directory, filename), "r", encoding="utf-8") as fp:
             info = yaml.safe_load(fp)
             if isinstance(info, dict):
-                yield Framework.format_case(info)
+                yield Framework.format_case(info, filename, 0)
             if isinstance(info, list):
-                for item in info:
-                    yield Framework.format_case(item)
+                for idx, item in enumerate(info):
+                    yield Framework.format_case(item, filename, idx)
 
     @staticmethod
-    def format_case(info):
+    def format_case(info, filename, idx):
         info = merge(info, {
             "name": REQUIRED,
             "description": "",
             "cond": "",
+            "caseID": "{}-{}".format(os.path.splitext(filename)[0], idx)
         })
         return info
 
@@ -502,12 +521,14 @@ class Framework:
     @staticmethod
     def run_case(directory, customize, constant: RuntimeConstant, rctx: RuntimeContext, case_info, case_type="case"):
         if Framework.need_skip(constant, case_info, rctx.var, case_type):
-            return CaseResult(directory=directory, name=case_info["name"], is_skip=True)
+            return CaseResult(directory=directory, id_=case_info["caseID"], name=case_info["name"], is_skip=True)
 
         command = ""
+        case_id = ""
         if case_type == "case":
-            command = 'qas -t "{}" -c "{}" --case-name "{}"'.format(constant.test_directory, directory[len(constant.test_directory) + 1:], case_info["name"])
-        case = CaseResult(directory=directory, name=case_info["name"], description=case_info["description"], command=command)
+            case_id = case_info["caseID"]
+            command = 'qas -t "{}" -c "{}" --case-id "{}"'.format(constant.test_directory, directory[len(constant.test_directory) + 1:], case_id)
+        case = CaseResult(directory=directory, id_=case_id, name=case_info["name"], description=case_info["description"], command=command)
 
         now = datetime.now()
 
