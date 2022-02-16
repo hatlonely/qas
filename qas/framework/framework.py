@@ -205,6 +205,8 @@ class Framework:
         constant: RuntimeConstant,
         parent_rctx: RuntimeContext,
     ):
+        if constant.case_id and not (constant.case_directory + "/").startswith(directory + "/"):
+            return TestResult(directory, directory, "", is_skip=True)
         if not (constant.case_directory + "/").startswith(directory + "/") and \
                 not (directory + "/").startswith(constant.case_directory + "/"):
             return TestResult(directory, directory, "", is_skip=True)
