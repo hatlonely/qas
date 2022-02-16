@@ -206,10 +206,10 @@ class Framework:
         parent_rctx: RuntimeContext,
     ):
         if constant.case_id and not (constant.case_directory + "/").startswith(directory + "/"):
-            return TestResult(directory, directory, "", is_skip=True)
+            return TestResult(directory, directory[len(constant.test_directory)+1:], "", is_skip=True)
         if not (constant.case_directory + "/").startswith(directory + "/") and \
                 not (directory + "/").startswith(constant.case_directory + "/"):
-            return TestResult(directory, directory, "", is_skip=True)
+            return TestResult(directory, directory[len(constant.test_directory)+1:], "", is_skip=True)
 
         now = datetime.now()
 
