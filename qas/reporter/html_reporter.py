@@ -160,8 +160,8 @@ _test_tpl = """
 {% endif %}
 
     {% if res.is_skip %}
-    <div class="card my-{{ customize.padding.y }} border-warning">
-        <h5 class="card-header text-white bg-warning">{{ i18n.title.test }} {{ res.name }} {{ i18n.status.skip }}</h5>
+    <div class="card my-{{ customize.padding.y }} border-warning bg-warning">
+        <h5 class="card-header text-white bg-transparent border-0">{{ i18n.title.test }} {{ res.name }} {{ i18n.status.skip }}</h5>
     {% elif res.is_pass %}
     <div class="card my-{{ customize.padding.y }} border-success">
         <h5 class="card-header text-white bg-success">{{ i18n.title.test }} {{ res.name }} {{ i18n.status.pass }}</h5>
