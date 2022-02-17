@@ -15,9 +15,9 @@ def _merge_recursive(root: str, req, dft):
         for key, val in dft.items():
             root_dot_key = "{}.{}".format(root, key).lstrip(".")
             if isinstance(val, dict):
-                req[key] = _merge_recursive(root_dot_key, req[key] if key in req else {}, val)
+                req[key] = _merge_recursive(root_dot_key, req[key] if key in req and req[key] is not None else {}, val)
             elif isinstance(val, list):
-                req[key] = _merge_recursive(root_dot_key, req[key] if key in req else [], val)
+                req[key] = _merge_recursive(root_dot_key, req[key] if key in req and req[key] is not None else [], val)
             else:
                 if val == REQUIRED and key not in req:
                     raise Exception("missing required key [{}]".format(root_dot_key))
