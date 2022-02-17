@@ -1,0 +1,541 @@
+name: TestHelloWorld
+step:
+  - ctx: shell
+    req:
+      command: qas --test ops/self-test-cases/assert --reporter json
+      decoder: json
+    res:
+      exitCode: 1
+      json: {
+        "directory": "ops/self-test-cases/assert",
+        "name": "test-assert",
+        "status": "fail",
+        "description": "",
+        "isSkip": false,
+        "isPass": false,
+        "isErr": false,
+        "err": "",
+        "#elapse": "val > 0",
+        "casePass": 1,
+        "caseFail": 3,
+        "caseSkip": 0,
+        "setupPass": 0,
+        "setupFail": 0,
+        "teardownPass": 0,
+        "teardownFail": 0,
+        "currCasePass": 1,
+        "currCaseFail": 3,
+        "currCaseSkip": 0,
+        "stepPass": 1,
+        "stepFail": 3,
+        "stepSkip": 0,
+        "assertionPass": 15,
+        "assertionFail": 7,
+        "subTestPass": 0,
+        "subTestSkip": 0,
+        "subTestFail": 0,
+        "cases": [
+          {
+            "id": "ctx",
+            "name": "TestAssertPass",
+            "directory": "ops/self-test-cases/assert",
+            "description": "",
+            "command": "qas -t \"ops/self-test-cases/assert\" -c \"\" --case-id \"ctx\"",
+            "status": "pass",
+            "#elapse": "val > 0",
+            "isPass": true,
+            "isSkip": false,
+            "steps": [
+              {
+                "name": "echo",
+                "description": "",
+                "ctx": "shell",
+                "isSkip": false,
+                "isPass": true,
+                "req": {
+                  "command": "echo '{\n  \"key1\": \"val1\",\n  \"key2\": 123,\n  \"key3\": {\n    \"key4\": \"val4\",\n    \"key5\": [{\n      \"key6\": \"val6\",\n      \"key7\": [\n        456,\n        \"val7\"\n      ],\n      \"key8\": 333\n    }]\n  },\n  \"key9\": \"hello world\"\n}'\n",
+                  "decoder": "json",
+                  "envs": {}
+                },
+                "res": {
+                  "exitCode": 0,
+                  "stdout": "{\n  \"key1\": \"val1\",\n  \"key2\": 123,\n  \"key3\": {\n    \"key4\": \"val4\",\n    \"key5\": [{\n      \"key6\": \"val6\",\n      \"key7\": [\n        456,\n        \"val7\"\n      ],\n      \"key8\": 333\n    }]\n  },\n  \"key9\": \"hello world\"\n}\n",
+                  "stderr": "",
+                  "json": {
+                    "key1": "val1",
+                    "key2": 123,
+                    "key3": {
+                      "key4": "val4",
+                      "key5": [
+                        {
+                          "key6": "val6",
+                          "key7": [
+                            456,
+                            "val7"
+                          ],
+                          "key8": 333
+                        }
+                      ]
+                    },
+                    "key9": "hello world"
+                  }
+                },
+                "subSteps": [
+                  {
+                    "isPass": true,
+                    "isErr": false,
+                    "err": "",
+                    "req": {
+                      "command": "echo '{\n  \"key1\": \"val1\",\n  \"key2\": 123,\n  \"key3\": {\n    \"key4\": \"val4\",\n    \"key5\": [{\n      \"key6\": \"val6\",\n      \"key7\": [\n        456,\n        \"val7\"\n      ],\n      \"key8\": 333\n    }]\n  },\n  \"key9\": \"hello world\"\n}'\n",
+                      "decoder": "json",
+                      "envs": {}
+                    },
+                    "res": {
+                      "exitCode": 0,
+                      "stdout": "{\n  \"key1\": \"val1\",\n  \"key2\": 123,\n  \"key3\": {\n    \"key4\": \"val4\",\n    \"key5\": [{\n      \"key6\": \"val6\",\n      \"key7\": [\n        456,\n        \"val7\"\n      ],\n      \"key8\": 333\n    }]\n  },\n  \"key9\": \"hello world\"\n}\n",
+                      "stderr": "",
+                      "json": {
+                        "key1": "val1",
+                        "key2": 123,
+                        "key3": {
+                          "key4": "val4",
+                          "key5": [
+                            {
+                              "key6": "val6",
+                              "key7": [
+                                456,
+                                "val7"
+                              ],
+                              "key8": 333
+                            }
+                          ]
+                        },
+                        "key9": "hello world"
+                      }
+                    },
+                    "assertions": [
+                      {
+                        "isPass": true,
+                        "message": "OK",
+                        "node": "exitCode",
+                        "val": 0,
+                        "expect": 0
+                      },
+                      {
+                        "isPass": true,
+                        "message": "OK",
+                        "node": "json.key2",
+                        "val": 123,
+                        "expect": "val % 3 == 0"
+                      },
+                      {
+                        "isPass": true,
+                        "message": "OK",
+                        "node": "json.key9",
+                        "val": "hello world",
+                        "expect": "def strcat(x, y):\n  return x + \" \" + y\nres = strcat(\"hello\", \"world\")\n"
+                      },
+                      {
+                        "isPass": true,
+                        "message": "OK",
+                        "node": "json.key1",
+                        "val": "val1",
+                        "expect": "val1"
+                      },
+                      {
+                        "isPass": true,
+                        "message": "OK",
+                        "node": "json.key3.key4",
+                        "val": "val4",
+                        "expect": "len(val) == 4"
+                      },
+                      {
+                        "isPass": true,
+                        "message": "OK",
+                        "node": "json.key3.key5.0.key6",
+                        "val": "val6",
+                        "expect": "val.endswith('6')"
+                      },
+                      {
+                        "isPass": true,
+                        "message": "OK",
+                        "node": "json.key3.key5.0.key8",
+                        "val": 333,
+                        "expect": "111 * 3"
+                      },
+                      {
+                        "isPass": true,
+                        "message": "OK",
+                        "node": "json.key3.key5.0.key7.0",
+                        "val": 456,
+                        "expect": 456
+                      },
+                      {
+                        "isPass": true,
+                        "message": "OK",
+                        "node": "json.key3.key5.0.key7.1",
+                        "val": "val7",
+                        "expect": "val7"
+                      }
+                    ],
+                    "assertionPass": 9,
+                    "assertionFail": 0,
+                    "#elapse": "val > 0"
+                  }
+                ],
+                "assertionPass": 9,
+                "assertionFail": 0,
+                "#elapse": "val > 0"
+              }
+            ],
+            "beforeCaseSteps": [],
+            "afterCaseSteps": [],
+            "stepPass": 1,
+            "stepFail": 0,
+            "assertionPass": 9,
+            "assertionFail": 0
+          },
+          {
+            "id": "ctx-1",
+            "name": "TestAssertFailDictNoSuchKey",
+            "directory": "ops/self-test-cases/assert",
+            "description": "",
+            "command": "qas -t \"ops/self-test-cases/assert\" -c \"\" --case-id \"ctx-1\"",
+            "status": "fail",
+            "#elapse": "val > 0",
+            "isPass": false,
+            "isSkip": false,
+            "steps": [
+              {
+                "name": "echo",
+                "description": "",
+                "ctx": "shell",
+                "isSkip": false,
+                "isPass": false,
+                "req": {
+                  "command": "echo '{\n  \"key1\": \"val1\"\n}'\n",
+                  "decoder": "json",
+                  "envs": {}
+                },
+                "res": {
+                  "exitCode": 0,
+                  "stdout": "{\n  \"key1\": \"val1\"\n}\n",
+                  "stderr": "",
+                  "json": {
+                    "key1": "val1"
+                  }
+                },
+                "subSteps": [
+                  {
+                    "isPass": false,
+                    "isErr": false,
+                    "err": "",
+                    "req": {
+                      "command": "echo '{\n  \"key1\": \"val1\"\n}'\n",
+                      "decoder": "json",
+                      "envs": {}
+                    },
+                    "res": {
+                      "exitCode": 0,
+                      "stdout": "{\n  \"key1\": \"val1\"\n}\n",
+                      "stderr": "",
+                      "json": {
+                        "key1": "val1"
+                      }
+                    },
+                    "assertions": [
+                      {
+                        "isPass": true,
+                        "message": "OK",
+                        "node": "exitCode",
+                        "val": 0,
+                        "expect": 0
+                      },
+                      {
+                        "isPass": false,
+                        "message": "NoSuchKey",
+                        "node": "json.key2",
+                        "val": null,
+                        "expect": "val2"
+                      }
+                    ],
+                    "assertionPass": 1,
+                    "assertionFail": 1,
+                    "#elapse": "val > 0"
+                  }
+                ],
+                "assertionPass": 1,
+                "assertionFail": 1,
+                "#elapse": "val > 0"
+              }
+            ],
+            "beforeCaseSteps": [],
+            "afterCaseSteps": [],
+            "stepPass": 0,
+            "stepFail": 1,
+            "assertionPass": 1,
+            "assertionFail": 1
+          },
+          {
+            "id": "ctx-2",
+            "name": "TestAssertFailListNoSuchKey",
+            "directory": "ops/self-test-cases/assert",
+            "description": "",
+            "command": "qas -t \"ops/self-test-cases/assert\" -c \"\" --case-id \"ctx-2\"",
+            "status": "fail",
+            "#elapse": "val > 0",
+            "isPass": false,
+            "isSkip": false,
+            "steps": [
+              {
+                "name": "echo",
+                "description": "",
+                "ctx": "shell",
+                "isSkip": false,
+                "isPass": false,
+                "req": {
+                  "command": "echo '[1, 2]'\n",
+                  "decoder": "json",
+                  "envs": {}
+                },
+                "res": {
+                  "exitCode": 0,
+                  "stdout": "[1, 2]\n",
+                  "stderr": "",
+                  "json": [
+                    1,
+                    2
+                  ]
+                },
+                "subSteps": [
+                  {
+                    "isPass": false,
+                    "isErr": false,
+                    "err": "",
+                    "req": {
+                      "command": "echo '[1, 2]'\n",
+                      "decoder": "json",
+                      "envs": {}
+                    },
+                    "res": {
+                      "exitCode": 0,
+                      "stdout": "[1, 2]\n",
+                      "stderr": "",
+                      "json": [
+                        1,
+                        2
+                      ]
+                    },
+                    "assertions": [
+                      {
+                        "isPass": true,
+                        "message": "OK",
+                        "node": "exitCode",
+                        "val": 0,
+                        "expect": 0
+                      },
+                      {
+                        "isPass": true,
+                        "message": "OK",
+                        "node": "json.0",
+                        "val": 1,
+                        "expect": 1
+                      },
+                      {
+                        "isPass": true,
+                        "message": "OK",
+                        "node": "json.1",
+                        "val": 2,
+                        "expect": 2
+                      },
+                      {
+                        "isPass": false,
+                        "message": "NoSuchKey",
+                        "node": "json.2",
+                        "val": null,
+                        "expect": 3
+                      }
+                    ],
+                    "assertionPass": 3,
+                    "assertionFail": 1,
+                    "#elapse": "val > 0"
+                  }
+                ],
+                "assertionPass": 3,
+                "assertionFail": 1,
+                "#elapse": "val > 0"
+              }
+            ],
+            "beforeCaseSteps": [],
+            "afterCaseSteps": [],
+            "stepPass": 0,
+            "stepFail": 1,
+            "assertionPass": 3,
+            "assertionFail": 1
+          },
+          {
+            "id": "ctx-3",
+            "name": "TestAssertFailTypeDiff",
+            "directory": "ops/self-test-cases/assert",
+            "description": "",
+            "command": "qas -t \"ops/self-test-cases/assert\" -c \"\" --case-id \"ctx-3\"",
+            "status": "fail",
+            "#elapse": "val > 0",
+            "isPass": false,
+            "isSkip": false,
+            "steps": [
+              {
+                "name": "echo",
+                "description": "",
+                "ctx": "shell",
+                "isSkip": false,
+                "isPass": false,
+                "req": {
+                  "command": "echo '{\n  \"key1\": [1, 2],\n  \"key2\": {\"key\": \"val\"},\n  \"key3\": 3,\n  \"key4\": [1, 2],\n  \"key5\": {\"key\": \"val\"}\n}'\n",
+                  "decoder": "json",
+                  "envs": {}
+                },
+                "res": {
+                  "exitCode": 0,
+                  "stdout": "{\n  \"key1\": [1, 2],\n  \"key2\": {\"key\": \"val\"},\n  \"key3\": 3,\n  \"key4\": [1, 2],\n  \"key5\": {\"key\": \"val\"}\n}\n",
+                  "stderr": "",
+                  "json": {
+                    "key1": [
+                      1,
+                      2
+                    ],
+                    "key2": {
+                      "key": "val"
+                    },
+                    "key3": 3,
+                    "key4": [
+                      1,
+                      2
+                    ],
+                    "key5": {
+                      "key": "val"
+                    }
+                  }
+                },
+                "subSteps": [
+                  {
+                    "isPass": false,
+                    "isErr": false,
+                    "err": "",
+                    "req": {
+                      "command": "echo '{\n  \"key1\": [1, 2],\n  \"key2\": {\"key\": \"val\"},\n  \"key3\": 3,\n  \"key4\": [1, 2],\n  \"key5\": {\"key\": \"val\"}\n}'\n",
+                      "decoder": "json",
+                      "envs": {}
+                    },
+                    "res": {
+                      "exitCode": 0,
+                      "stdout": "{\n  \"key1\": [1, 2],\n  \"key2\": {\"key\": \"val\"},\n  \"key3\": 3,\n  \"key4\": [1, 2],\n  \"key5\": {\"key\": \"val\"}\n}\n",
+                      "stderr": "",
+                      "json": {
+                        "key1": [
+                          1,
+                          2
+                        ],
+                        "key2": {
+                          "key": "val"
+                        },
+                        "key3": 3,
+                        "key4": [
+                          1,
+                          2
+                        ],
+                        "key5": {
+                          "key": "val"
+                        }
+                      }
+                    },
+                    "assertions": [
+                      {
+                        "isPass": true,
+                        "message": "OK",
+                        "node": "exitCode",
+                        "val": 0,
+                        "expect": 0
+                      },
+                      {
+                        "isPass": false,
+                        "message": "TypeDiff",
+                        "node": "json.key1",
+                        "val": [
+                          1,
+                          2
+                        ],
+                        "expect": {
+                          "key": "val"
+                        }
+                      },
+                      {
+                        "isPass": false,
+                        "message": "TypeDiff",
+                        "node": "json.key2",
+                        "val": {
+                          "key": "val"
+                        },
+                        "expect": [
+                          1,
+                          2
+                        ]
+                      },
+                      {
+                        "isPass": false,
+                        "message": "TypeDiff",
+                        "node": "json.key3",
+                        "val": 3,
+                        "expect": [
+                          1,
+                          2
+                        ]
+                      },
+                      {
+                        "isPass": true,
+                        "message": "OK",
+                        "node": "json.key4.0",
+                        "val": 1,
+                        "expect": 1
+                      },
+                      {
+                        "isPass": false,
+                        "message": "TypeDiff",
+                        "node": "json.key4.1",
+                        "val": 2,
+                        "expect": {
+                          "key": "val"
+                        }
+                      },
+                      {
+                        "isPass": false,
+                        "message": "NotEqual",
+                        "node": "json.key5",
+                        "val": {
+                          "key": "val"
+                        },
+                        "expect": 3
+                      }
+                    ],
+                    "assertionPass": 2,
+                    "assertionFail": 5,
+                    "#elapse": "val > 0"
+                  }
+                ],
+                "assertionPass": 2,
+                "assertionFail": 5,
+                "#elapse": "val > 0"
+              }
+            ],
+            "beforeCaseSteps": [],
+            "afterCaseSteps": [],
+            "stepPass": 0,
+            "stepFail": 1,
+            "assertionPass": 2,
+            "assertionFail": 5
+          }
+        ],
+        "setups": [],
+        "teardowns": [],
+        "subTests": []
+      }
