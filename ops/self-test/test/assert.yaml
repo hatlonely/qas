@@ -1,4 +1,4 @@
-name: TestHelloWorld
+name: TestAssert
 step:
   - ctx: shell
     req:
