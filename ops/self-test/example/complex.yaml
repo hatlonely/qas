@@ -9,30 +9,46 @@ step:
       json: {
         "directory": "ops/example-complex",
         "name": "example-complex",
+        "status": "pass",
+        "description": "",
+        "isSkip": false,
         "isPass": true,
         "isErr": false,
         "err": "",
         "#elapse": "val > 0",
-        "casePass": 3,
+        "casePass": 9,
         "caseFail": 0,
         "caseSkip": 0,
-        "currCasePass": 1,
+        "setupPass": 2,
+        "setupFail": 0,
+        "teardownPass": 2,
+        "teardownFail": 0,
+        "currCasePass": 3,
         "currCaseFail": 0,
         "currCaseSkip": 0,
-        "stepPass": 9,
+        "stepPass": 27,
         "stepFail": 0,
         "stepSkip": 0,
-        "assertionPass": 6,
+        "assertionPass": 18,
         "assertionFail": 0,
+        "subTestPass": 2,
+        "subTestSkip": 0,
+        "subTestFail": 0,
         "cases": [
           {
-            "name": "case1",
+            "id": "case3",
+            "name": "Case3",
+            "directory": "ops/example-complex",
+            "description": "",
+            "command": "qas -t \"ops/example-complex\" -c \"\" --case-id \"case3\"",
+            "status": "pass",
             "#elapse": "val > 0",
             "isPass": true,
             "isSkip": false,
             "steps": [
               {
                 "name": "echo",
+                "description": "",
                 "ctx": "shell",
                 "isSkip": false,
                 "isPass": true,
@@ -94,6 +110,7 @@ step:
             "beforeCaseSteps": [
               {
                 "name": "echo",
+                "description": "",
                 "ctx": "shell",
                 "isSkip": false,
                 "isPass": true,
@@ -140,6 +157,349 @@ step:
             "afterCaseSteps": [
               {
                 "name": "echo",
+                "description": "",
+                "ctx": "shell",
+                "isSkip": false,
+                "isPass": true,
+                "req": {
+                  "command": "echo after case",
+                  "envs": {
+                    "KEY1": "val1"
+                  },
+                  "decoder": "text"
+                },
+                "res": {
+                  "exitCode": 0,
+                  "stdout": "after case\n",
+                  "stderr": ""
+                },
+                "subSteps": [
+                  {
+                    "isPass": true,
+                    "isErr": false,
+                    "err": "",
+                    "req": {
+                      "command": "echo after case",
+                      "envs": {
+                        "KEY1": "val1"
+                      },
+                      "decoder": "text"
+                    },
+                    "res": {
+                      "exitCode": 0,
+                      "stdout": "after case\n",
+                      "stderr": ""
+                    },
+                    "assertions": [],
+                    "assertionPass": 0,
+                    "assertionFail": 0,
+                    "#elapse": "val > 0"
+                  }
+                ],
+                "assertionPass": 0,
+                "assertionFail": 0,
+                "#elapse": "val > 0"
+              }
+            ],
+            "stepPass": 3,
+            "stepFail": 0,
+            "assertionPass": 2,
+            "assertionFail": 0
+          },
+          {
+            "id": "case2",
+            "name": "Case2",
+            "directory": "ops/example-complex",
+            "description": "",
+            "command": "qas -t \"ops/example-complex\" -c \"\" --case-id \"case2\"",
+            "status": "pass",
+            "#elapse": "val > 0",
+            "isPass": true,
+            "isSkip": false,
+            "steps": [
+              {
+                "name": "echo",
+                "description": "",
+                "ctx": "shell",
+                "isSkip": false,
+                "isPass": true,
+                "req": {
+                  "command": "echo -n ${KEY1}",
+                  "envs": {
+                    "KEY1": "val1"
+                  },
+                  "decoder": "text"
+                },
+                "res": {
+                  "exitCode": 0,
+                  "stdout": "val1",
+                  "stderr": ""
+                },
+                "subSteps": [
+                  {
+                    "isPass": true,
+                    "isErr": false,
+                    "err": "",
+                    "req": {
+                      "command": "echo -n ${KEY1}",
+                      "envs": {
+                        "KEY1": "val1"
+                      },
+                      "decoder": "text"
+                    },
+                    "res": {
+                      "exitCode": 0,
+                      "stdout": "val1",
+                      "stderr": ""
+                    },
+                    "assertions": [
+                      {
+                        "isPass": true,
+                        "message": "OK",
+                        "node": "exitCode",
+                        "val": 0,
+                        "expect": 0
+                      },
+                      {
+                        "isPass": true,
+                        "message": "OK",
+                        "node": "stdout",
+                        "val": "val1",
+                        "expect": "val1"
+                      }
+                    ],
+                    "assertionPass": 2,
+                    "assertionFail": 0,
+                    "#elapse": "val > 0"
+                  }
+                ],
+                "assertionPass": 2,
+                "assertionFail": 0,
+                "#elapse": "val > 0"
+              }
+            ],
+            "beforeCaseSteps": [
+              {
+                "name": "echo",
+                "description": "",
+                "ctx": "shell",
+                "isSkip": false,
+                "isPass": true,
+                "req": {
+                  "command": "echo before case",
+                  "envs": {
+                    "KEY1": "val1"
+                  },
+                  "decoder": "text"
+                },
+                "res": {
+                  "exitCode": 0,
+                  "stdout": "before case\n",
+                  "stderr": ""
+                },
+                "subSteps": [
+                  {
+                    "isPass": true,
+                    "isErr": false,
+                    "err": "",
+                    "req": {
+                      "command": "echo before case",
+                      "envs": {
+                        "KEY1": "val1"
+                      },
+                      "decoder": "text"
+                    },
+                    "res": {
+                      "exitCode": 0,
+                      "stdout": "before case\n",
+                      "stderr": ""
+                    },
+                    "assertions": [],
+                    "assertionPass": 0,
+                    "assertionFail": 0,
+                    "#elapse": "val > 0"
+                  }
+                ],
+                "assertionPass": 0,
+                "assertionFail": 0,
+                "#elapse": "val > 0"
+              }
+            ],
+            "afterCaseSteps": [
+              {
+                "name": "echo",
+                "description": "",
+                "ctx": "shell",
+                "isSkip": false,
+                "isPass": true,
+                "req": {
+                  "command": "echo after case",
+                  "envs": {
+                    "KEY1": "val1"
+                  },
+                  "decoder": "text"
+                },
+                "res": {
+                  "exitCode": 0,
+                  "stdout": "after case\n",
+                  "stderr": ""
+                },
+                "subSteps": [
+                  {
+                    "isPass": true,
+                    "isErr": false,
+                    "err": "",
+                    "req": {
+                      "command": "echo after case",
+                      "envs": {
+                        "KEY1": "val1"
+                      },
+                      "decoder": "text"
+                    },
+                    "res": {
+                      "exitCode": 0,
+                      "stdout": "after case\n",
+                      "stderr": ""
+                    },
+                    "assertions": [],
+                    "assertionPass": 0,
+                    "assertionFail": 0,
+                    "#elapse": "val > 0"
+                  }
+                ],
+                "assertionPass": 0,
+                "assertionFail": 0,
+                "#elapse": "val > 0"
+              }
+            ],
+            "stepPass": 3,
+            "stepFail": 0,
+            "assertionPass": 2,
+            "assertionFail": 0
+          },
+          {
+            "id": "case1",
+            "name": "Case1",
+            "directory": "ops/example-complex",
+            "description": "",
+            "command": "qas -t \"ops/example-complex\" -c \"\" --case-id \"case1\"",
+            "status": "pass",
+            "#elapse": "val > 0",
+            "isPass": true,
+            "isSkip": false,
+            "steps": [
+              {
+                "name": "echo",
+                "description": "",
+                "ctx": "shell",
+                "isSkip": false,
+                "isPass": true,
+                "req": {
+                  "command": "echo -n ${KEY1}",
+                  "envs": {
+                    "KEY1": "val1"
+                  },
+                  "decoder": "text"
+                },
+                "res": {
+                  "exitCode": 0,
+                  "stdout": "val1",
+                  "stderr": ""
+                },
+                "subSteps": [
+                  {
+                    "isPass": true,
+                    "isErr": false,
+                    "err": "",
+                    "req": {
+                      "command": "echo -n ${KEY1}",
+                      "envs": {
+                        "KEY1": "val1"
+                      },
+                      "decoder": "text"
+                    },
+                    "res": {
+                      "exitCode": 0,
+                      "stdout": "val1",
+                      "stderr": ""
+                    },
+                    "assertions": [
+                      {
+                        "isPass": true,
+                        "message": "OK",
+                        "node": "exitCode",
+                        "val": 0,
+                        "expect": 0
+                      },
+                      {
+                        "isPass": true,
+                        "message": "OK",
+                        "node": "stdout",
+                        "val": "val1",
+                        "expect": "val1"
+                      }
+                    ],
+                    "assertionPass": 2,
+                    "assertionFail": 0,
+                    "#elapse": "val > 0"
+                  }
+                ],
+                "assertionPass": 2,
+                "assertionFail": 0,
+                "#elapse": "val > 0"
+              }
+            ],
+            "beforeCaseSteps": [
+              {
+                "name": "echo",
+                "description": "",
+                "ctx": "shell",
+                "isSkip": false,
+                "isPass": true,
+                "req": {
+                  "command": "echo before case",
+                  "envs": {
+                    "KEY1": "val1"
+                  },
+                  "decoder": "text"
+                },
+                "res": {
+                  "exitCode": 0,
+                  "stdout": "before case\n",
+                  "stderr": ""
+                },
+                "subSteps": [
+                  {
+                    "isPass": true,
+                    "isErr": false,
+                    "err": "",
+                    "req": {
+                      "command": "echo before case",
+                      "envs": {
+                        "KEY1": "val1"
+                      },
+                      "decoder": "text"
+                    },
+                    "res": {
+                      "exitCode": 0,
+                      "stdout": "before case\n",
+                      "stderr": ""
+                    },
+                    "assertions": [],
+                    "assertionPass": 0,
+                    "assertionFail": 0,
+                    "#elapse": "val > 0"
+                  }
+                ],
+                "assertionPass": 0,
+                "assertionFail": 0,
+                "#elapse": "val > 0"
+              }
+            ],
+            "afterCaseSteps": [
+              {
+                "name": "echo",
+                "description": "",
                 "ctx": "shell",
                 "isSkip": false,
                 "isPass": true,
@@ -191,13 +551,19 @@ step:
         ],
         "setups": [
           {
+            "id": "",
             "name": "setup1",
+            "directory": "ops/example-complex",
+            "description": "",
+            "command": "",
+            "status": "pass",
             "#elapse": "val > 0",
             "isPass": true,
             "isSkip": false,
             "steps": [
               {
                 "name": "echo",
+                "description": "",
                 "ctx": "shell",
                 "isSkip": false,
                 "isPass": true,
@@ -242,6 +608,7 @@ step:
               },
               {
                 "name": "echo",
+                "description": "",
                 "ctx": "shell",
                 "isSkip": false,
                 "isPass": true,
@@ -293,13 +660,19 @@ step:
             "assertionFail": 0
           },
           {
+            "id": "",
             "name": "setup2",
+            "directory": "ops/example-complex",
+            "description": "",
+            "command": "",
+            "status": "pass",
             "#elapse": "val > 0",
             "isPass": true,
             "isSkip": false,
             "steps": [
               {
                 "name": "echo",
+                "description": "",
                 "ctx": "shell",
                 "isSkip": false,
                 "isPass": true,
@@ -344,6 +717,7 @@ step:
               },
               {
                 "name": "echo",
+                "description": "",
                 "ctx": "shell",
                 "isSkip": false,
                 "isPass": true,
@@ -397,13 +771,19 @@ step:
         ],
         "teardowns": [
           {
+            "id": "",
             "name": "teardown1",
+            "directory": "ops/example-complex",
+            "description": "",
+            "command": "",
+            "status": "pass",
             "#elapse": "val > 0",
             "isPass": true,
             "isSkip": false,
             "steps": [
               {
                 "name": "echo",
+                "description": "",
                 "ctx": "shell",
                 "isSkip": false,
                 "isPass": true,
@@ -448,6 +828,7 @@ step:
               },
               {
                 "name": "echo",
+                "description": "",
                 "ctx": "shell",
                 "isSkip": false,
                 "isPass": true,
@@ -499,13 +880,19 @@ step:
             "assertionFail": 0
           },
           {
+            "id": "",
             "name": "teardown2",
+            "directory": "ops/example-complex",
+            "description": "",
+            "command": "",
+            "status": "pass",
             "#elapse": "val > 0",
             "isPass": true,
             "isSkip": false,
             "steps": [
               {
                 "name": "echo",
+                "description": "",
                 "ctx": "shell",
                 "isSkip": false,
                 "isPass": true,
@@ -550,6 +937,7 @@ step:
               },
               {
                 "name": "echo",
+                "description": "",
                 "ctx": "shell",
                 "isSkip": false,
                 "isPass": true,
@@ -605,30 +993,46 @@ step:
           {
             "directory": "ops/example-complex/subtest2",
             "name": "subtest2",
+            "status": "pass",
+            "description": "",
+            "isSkip": false,
             "isPass": true,
             "isErr": false,
             "err": "",
             "#elapse": "val > 0",
-            "casePass": 1,
+            "casePass": 3,
             "caseFail": 0,
             "caseSkip": 0,
-            "currCasePass": 1,
+            "setupPass": 0,
+            "setupFail": 0,
+            "teardownPass": 0,
+            "teardownFail": 0,
+            "currCasePass": 3,
             "currCaseFail": 0,
             "currCaseSkip": 0,
-            "stepPass": 3,
+            "stepPass": 9,
             "stepFail": 0,
             "stepSkip": 0,
-            "assertionPass": 2,
+            "assertionPass": 6,
             "assertionFail": 0,
+            "subTestPass": 0,
+            "subTestSkip": 0,
+            "subTestFail": 0,
             "cases": [
               {
-                "name": "case3",
+                "id": "case3",
+                "name": "SubTest2Case3",
+                "directory": "ops/example-complex/subtest2",
+                "description": "",
+                "command": "qas -t \"ops/example-complex\" -c \"subtest2\" --case-id \"case3\"",
+                "status": "pass",
                 "#elapse": "val > 0",
                 "isPass": true,
                 "isSkip": false,
                 "steps": [
                   {
                     "name": "echo",
+                    "description": "",
                     "ctx": "shell",
                     "isSkip": false,
                     "isPass": true,
@@ -690,6 +1094,7 @@ step:
                 "beforeCaseSteps": [
                   {
                     "name": "echo",
+                    "description": "",
                     "ctx": "shell",
                     "isSkip": false,
                     "isPass": true,
@@ -736,6 +1141,349 @@ step:
                 "afterCaseSteps": [
                   {
                     "name": "echo",
+                    "description": "",
+                    "ctx": "shell",
+                    "isSkip": false,
+                    "isPass": true,
+                    "req": {
+                      "command": "echo after case",
+                      "envs": {
+                        "KEY1": "val1"
+                      },
+                      "decoder": "text"
+                    },
+                    "res": {
+                      "exitCode": 0,
+                      "stdout": "after case\n",
+                      "stderr": ""
+                    },
+                    "subSteps": [
+                      {
+                        "isPass": true,
+                        "isErr": false,
+                        "err": "",
+                        "req": {
+                          "command": "echo after case",
+                          "envs": {
+                            "KEY1": "val1"
+                          },
+                          "decoder": "text"
+                        },
+                        "res": {
+                          "exitCode": 0,
+                          "stdout": "after case\n",
+                          "stderr": ""
+                        },
+                        "assertions": [],
+                        "assertionPass": 0,
+                        "assertionFail": 0,
+                        "#elapse": "val > 0"
+                      }
+                    ],
+                    "assertionPass": 0,
+                    "assertionFail": 0,
+                    "#elapse": "val > 0"
+                  }
+                ],
+                "stepPass": 3,
+                "stepFail": 0,
+                "assertionPass": 2,
+                "assertionFail": 0
+              },
+              {
+                "id": "case2",
+                "name": "SubTest2Case2",
+                "directory": "ops/example-complex/subtest2",
+                "description": "",
+                "command": "qas -t \"ops/example-complex\" -c \"subtest2\" --case-id \"case2\"",
+                "status": "pass",
+                "#elapse": "val > 0",
+                "isPass": true,
+                "isSkip": false,
+                "steps": [
+                  {
+                    "name": "echo",
+                    "description": "",
+                    "ctx": "shell",
+                    "isSkip": false,
+                    "isPass": true,
+                    "req": {
+                      "command": "echo -n ${KEY1}",
+                      "envs": {
+                        "KEY1": "val1"
+                      },
+                      "decoder": "text"
+                    },
+                    "res": {
+                      "exitCode": 0,
+                      "stdout": "val1",
+                      "stderr": ""
+                    },
+                    "subSteps": [
+                      {
+                        "isPass": true,
+                        "isErr": false,
+                        "err": "",
+                        "req": {
+                          "command": "echo -n ${KEY1}",
+                          "envs": {
+                            "KEY1": "val1"
+                          },
+                          "decoder": "text"
+                        },
+                        "res": {
+                          "exitCode": 0,
+                          "stdout": "val1",
+                          "stderr": ""
+                        },
+                        "assertions": [
+                          {
+                            "isPass": true,
+                            "message": "OK",
+                            "node": "exitCode",
+                            "val": 0,
+                            "expect": 0
+                          },
+                          {
+                            "isPass": true,
+                            "message": "OK",
+                            "node": "stdout",
+                            "val": "val1",
+                            "expect": "val1"
+                          }
+                        ],
+                        "assertionPass": 2,
+                        "assertionFail": 0,
+                        "#elapse": "val > 0"
+                      }
+                    ],
+                    "assertionPass": 2,
+                    "assertionFail": 0,
+                    "#elapse": "val > 0"
+                  }
+                ],
+                "beforeCaseSteps": [
+                  {
+                    "name": "echo",
+                    "description": "",
+                    "ctx": "shell",
+                    "isSkip": false,
+                    "isPass": true,
+                    "req": {
+                      "command": "echo before case",
+                      "envs": {
+                        "KEY1": "val1"
+                      },
+                      "decoder": "text"
+                    },
+                    "res": {
+                      "exitCode": 0,
+                      "stdout": "before case\n",
+                      "stderr": ""
+                    },
+                    "subSteps": [
+                      {
+                        "isPass": true,
+                        "isErr": false,
+                        "err": "",
+                        "req": {
+                          "command": "echo before case",
+                          "envs": {
+                            "KEY1": "val1"
+                          },
+                          "decoder": "text"
+                        },
+                        "res": {
+                          "exitCode": 0,
+                          "stdout": "before case\n",
+                          "stderr": ""
+                        },
+                        "assertions": [],
+                        "assertionPass": 0,
+                        "assertionFail": 0,
+                        "#elapse": "val > 0"
+                      }
+                    ],
+                    "assertionPass": 0,
+                    "assertionFail": 0,
+                    "#elapse": "val > 0"
+                  }
+                ],
+                "afterCaseSteps": [
+                  {
+                    "name": "echo",
+                    "description": "",
+                    "ctx": "shell",
+                    "isSkip": false,
+                    "isPass": true,
+                    "req": {
+                      "command": "echo after case",
+                      "envs": {
+                        "KEY1": "val1"
+                      },
+                      "decoder": "text"
+                    },
+                    "res": {
+                      "exitCode": 0,
+                      "stdout": "after case\n",
+                      "stderr": ""
+                    },
+                    "subSteps": [
+                      {
+                        "isPass": true,
+                        "isErr": false,
+                        "err": "",
+                        "req": {
+                          "command": "echo after case",
+                          "envs": {
+                            "KEY1": "val1"
+                          },
+                          "decoder": "text"
+                        },
+                        "res": {
+                          "exitCode": 0,
+                          "stdout": "after case\n",
+                          "stderr": ""
+                        },
+                        "assertions": [],
+                        "assertionPass": 0,
+                        "assertionFail": 0,
+                        "#elapse": "val > 0"
+                      }
+                    ],
+                    "assertionPass": 0,
+                    "assertionFail": 0,
+                    "#elapse": "val > 0"
+                  }
+                ],
+                "stepPass": 3,
+                "stepFail": 0,
+                "assertionPass": 2,
+                "assertionFail": 0
+              },
+              {
+                "id": "case1",
+                "name": "SubTest2Case1",
+                "directory": "ops/example-complex/subtest2",
+                "description": "",
+                "command": "qas -t \"ops/example-complex\" -c \"subtest2\" --case-id \"case1\"",
+                "status": "pass",
+                "#elapse": "val > 0",
+                "isPass": true,
+                "isSkip": false,
+                "steps": [
+                  {
+                    "name": "echo",
+                    "description": "",
+                    "ctx": "shell",
+                    "isSkip": false,
+                    "isPass": true,
+                    "req": {
+                      "command": "echo -n ${KEY1}",
+                      "envs": {
+                        "KEY1": "val1"
+                      },
+                      "decoder": "text"
+                    },
+                    "res": {
+                      "exitCode": 0,
+                      "stdout": "val1",
+                      "stderr": ""
+                    },
+                    "subSteps": [
+                      {
+                        "isPass": true,
+                        "isErr": false,
+                        "err": "",
+                        "req": {
+                          "command": "echo -n ${KEY1}",
+                          "envs": {
+                            "KEY1": "val1"
+                          },
+                          "decoder": "text"
+                        },
+                        "res": {
+                          "exitCode": 0,
+                          "stdout": "val1",
+                          "stderr": ""
+                        },
+                        "assertions": [
+                          {
+                            "isPass": true,
+                            "message": "OK",
+                            "node": "exitCode",
+                            "val": 0,
+                            "expect": 0
+                          },
+                          {
+                            "isPass": true,
+                            "message": "OK",
+                            "node": "stdout",
+                            "val": "val1",
+                            "expect": "val1"
+                          }
+                        ],
+                        "assertionPass": 2,
+                        "assertionFail": 0,
+                        "#elapse": "val > 0"
+                      }
+                    ],
+                    "assertionPass": 2,
+                    "assertionFail": 0,
+                    "#elapse": "val > 0"
+                  }
+                ],
+                "beforeCaseSteps": [
+                  {
+                    "name": "echo",
+                    "description": "",
+                    "ctx": "shell",
+                    "isSkip": false,
+                    "isPass": true,
+                    "req": {
+                      "command": "echo before case",
+                      "envs": {
+                        "KEY1": "val1"
+                      },
+                      "decoder": "text"
+                    },
+                    "res": {
+                      "exitCode": 0,
+                      "stdout": "before case\n",
+                      "stderr": ""
+                    },
+                    "subSteps": [
+                      {
+                        "isPass": true,
+                        "isErr": false,
+                        "err": "",
+                        "req": {
+                          "command": "echo before case",
+                          "envs": {
+                            "KEY1": "val1"
+                          },
+                          "decoder": "text"
+                        },
+                        "res": {
+                          "exitCode": 0,
+                          "stdout": "before case\n",
+                          "stderr": ""
+                        },
+                        "assertions": [],
+                        "assertionPass": 0,
+                        "assertionFail": 0,
+                        "#elapse": "val > 0"
+                      }
+                    ],
+                    "assertionPass": 0,
+                    "assertionFail": 0,
+                    "#elapse": "val > 0"
+                  }
+                ],
+                "afterCaseSteps": [
+                  {
+                    "name": "echo",
+                    "description": "",
                     "ctx": "shell",
                     "isSkip": false,
                     "isPass": true,
@@ -792,30 +1540,223 @@ step:
           {
             "directory": "ops/example-complex/subtest1",
             "name": "subtest1",
+            "status": "pass",
+            "description": "",
+            "isSkip": false,
             "isPass": true,
             "isErr": false,
             "err": "",
             "#elapse": "val > 0",
-            "casePass": 1,
+            "casePass": 3,
             "caseFail": 0,
             "caseSkip": 0,
-            "currCasePass": 1,
+            "setupPass": 0,
+            "setupFail": 0,
+            "teardownPass": 0,
+            "teardownFail": 0,
+            "currCasePass": 3,
             "currCaseFail": 0,
             "currCaseSkip": 0,
-            "stepPass": 3,
+            "stepPass": 9,
             "stepFail": 0,
             "stepSkip": 0,
-            "assertionPass": 2,
+            "assertionPass": 6,
             "assertionFail": 0,
+            "subTestPass": 0,
+            "subTestSkip": 0,
+            "subTestFail": 0,
             "cases": [
               {
-                "name": "case2",
+                "id": "case3",
+                "name": "SubTest1Case3",
+                "directory": "ops/example-complex/subtest1",
+                "description": "",
+                "command": "qas -t \"ops/example-complex\" -c \"subtest1\" --case-id \"case3\"",
+                "status": "pass",
                 "#elapse": "val > 0",
                 "isPass": true,
                 "isSkip": false,
                 "steps": [
                   {
                     "name": "echo",
+                    "description": "",
+                    "ctx": "shell",
+                    "isSkip": false,
+                    "isPass": true,
+                    "req": {
+                      "command": "echo -n ${KEY2}",
+                      "envs": {
+                        "KEY1": "subval1",
+                        "KEY2": "val2"
+                      },
+                      "decoder": "text"
+                    },
+                    "res": {
+                      "exitCode": 0,
+                      "stdout": "val2",
+                      "stderr": ""
+                    },
+                    "subSteps": [
+                      {
+                        "isPass": true,
+                        "isErr": false,
+                        "err": "",
+                        "req": {
+                          "command": "echo -n ${KEY2}",
+                          "envs": {
+                            "KEY1": "subval1",
+                            "KEY2": "val2"
+                          },
+                          "decoder": "text"
+                        },
+                        "res": {
+                          "exitCode": 0,
+                          "stdout": "val2",
+                          "stderr": ""
+                        },
+                        "assertions": [
+                          {
+                            "isPass": true,
+                            "message": "OK",
+                            "node": "exitCode",
+                            "val": 0,
+                            "expect": 0
+                          },
+                          {
+                            "isPass": true,
+                            "message": "OK",
+                            "node": "stdout",
+                            "val": "val2",
+                            "expect": "val2"
+                          }
+                        ],
+                        "assertionPass": 2,
+                        "assertionFail": 0,
+                        "#elapse": "val > 0"
+                      }
+                    ],
+                    "assertionPass": 2,
+                    "assertionFail": 0,
+                    "#elapse": "val > 0"
+                  }
+                ],
+                "beforeCaseSteps": [
+                  {
+                    "name": "echo",
+                    "description": "",
+                    "ctx": "shell",
+                    "isSkip": false,
+                    "isPass": true,
+                    "req": {
+                      "command": "echo before case",
+                      "envs": {
+                        "KEY1": "subval1",
+                        "KEY2": "val2"
+                      },
+                      "decoder": "text"
+                    },
+                    "res": {
+                      "exitCode": 0,
+                      "stdout": "before case\n",
+                      "stderr": ""
+                    },
+                    "subSteps": [
+                      {
+                        "isPass": true,
+                        "isErr": false,
+                        "err": "",
+                        "req": {
+                          "command": "echo before case",
+                          "envs": {
+                            "KEY1": "subval1",
+                            "KEY2": "val2"
+                          },
+                          "decoder": "text"
+                        },
+                        "res": {
+                          "exitCode": 0,
+                          "stdout": "before case\n",
+                          "stderr": ""
+                        },
+                        "assertions": [],
+                        "assertionPass": 0,
+                        "assertionFail": 0,
+                        "#elapse": "val > 0"
+                      }
+                    ],
+                    "assertionPass": 0,
+                    "assertionFail": 0,
+                    "#elapse": "val > 0"
+                  }
+                ],
+                "afterCaseSteps": [
+                  {
+                    "name": "echo",
+                    "description": "",
+                    "ctx": "shell",
+                    "isSkip": false,
+                    "isPass": true,
+                    "req": {
+                      "command": "echo after case",
+                      "envs": {
+                        "KEY1": "subval1",
+                        "KEY2": "val2"
+                      },
+                      "decoder": "text"
+                    },
+                    "res": {
+                      "exitCode": 0,
+                      "stdout": "after case\n",
+                      "stderr": ""
+                    },
+                    "subSteps": [
+                      {
+                        "isPass": true,
+                        "isErr": false,
+                        "err": "",
+                        "req": {
+                          "command": "echo after case",
+                          "envs": {
+                            "KEY1": "subval1",
+                            "KEY2": "val2"
+                          },
+                          "decoder": "text"
+                        },
+                        "res": {
+                          "exitCode": 0,
+                          "stdout": "after case\n",
+                          "stderr": ""
+                        },
+                        "assertions": [],
+                        "assertionPass": 0,
+                        "assertionFail": 0,
+                        "#elapse": "val > 0"
+                      }
+                    ],
+                    "assertionPass": 0,
+                    "assertionFail": 0,
+                    "#elapse": "val > 0"
+                  }
+                ],
+                "stepPass": 3,
+                "stepFail": 0,
+                "assertionPass": 2,
+                "assertionFail": 0
+              },
+              {
+                "id": "case2",
+                "name": "SubTest1Case2",
+                "directory": "ops/example-complex/subtest1",
+                "description": "",
+                "command": "qas -t \"ops/example-complex\" -c \"subtest1\" --case-id \"case2\"",
+                "status": "pass",
+                "#elapse": "val > 0",
+                "isPass": true,
+                "isSkip": false,
+                "steps": [
+                  {
+                    "name": "echo",
+                    "description": "",
                     "ctx": "shell",
                     "isSkip": false,
                     "isPass": true,
@@ -879,6 +1820,7 @@ step:
                 "beforeCaseSteps": [
                   {
                     "name": "echo",
+                    "description": "",
                     "ctx": "shell",
                     "isSkip": false,
                     "isPass": true,
@@ -927,6 +1869,184 @@ step:
                 "afterCaseSteps": [
                   {
                     "name": "echo",
+                    "description": "",
+                    "ctx": "shell",
+                    "isSkip": false,
+                    "isPass": true,
+                    "req": {
+                      "command": "echo after case",
+                      "envs": {
+                        "KEY1": "subval1",
+                        "KEY2": "val2"
+                      },
+                      "decoder": "text"
+                    },
+                    "res": {
+                      "exitCode": 0,
+                      "stdout": "after case\n",
+                      "stderr": ""
+                    },
+                    "subSteps": [
+                      {
+                        "isPass": true,
+                        "isErr": false,
+                        "err": "",
+                        "req": {
+                          "command": "echo after case",
+                          "envs": {
+                            "KEY1": "subval1",
+                            "KEY2": "val2"
+                          },
+                          "decoder": "text"
+                        },
+                        "res": {
+                          "exitCode": 0,
+                          "stdout": "after case\n",
+                          "stderr": ""
+                        },
+                        "assertions": [],
+                        "assertionPass": 0,
+                        "assertionFail": 0,
+                        "#elapse": "val > 0"
+                      }
+                    ],
+                    "assertionPass": 0,
+                    "assertionFail": 0,
+                    "#elapse": "val > 0"
+                  }
+                ],
+                "stepPass": 3,
+                "stepFail": 0,
+                "assertionPass": 2,
+                "assertionFail": 0
+              },
+              {
+                "id": "case1",
+                "name": "SubTest1Case1",
+                "directory": "ops/example-complex/subtest1",
+                "description": "",
+                "command": "qas -t \"ops/example-complex\" -c \"subtest1\" --case-id \"case1\"",
+                "status": "pass",
+                "#elapse": "val > 0",
+                "isPass": true,
+                "isSkip": false,
+                "steps": [
+                  {
+                    "name": "echo",
+                    "description": "",
+                    "ctx": "shell",
+                    "isSkip": false,
+                    "isPass": true,
+                    "req": {
+                      "command": "echo -n ${KEY1}",
+                      "envs": {
+                        "KEY1": "subval1",
+                        "KEY2": "val2"
+                      },
+                      "decoder": "text"
+                    },
+                    "res": {
+                      "exitCode": 0,
+                      "stdout": "subval1",
+                      "stderr": ""
+                    },
+                    "subSteps": [
+                      {
+                        "isPass": true,
+                        "isErr": false,
+                        "err": "",
+                        "req": {
+                          "command": "echo -n ${KEY1}",
+                          "envs": {
+                            "KEY1": "subval1",
+                            "KEY2": "val2"
+                          },
+                          "decoder": "text"
+                        },
+                        "res": {
+                          "exitCode": 0,
+                          "stdout": "subval1",
+                          "stderr": ""
+                        },
+                        "assertions": [
+                          {
+                            "isPass": true,
+                            "message": "OK",
+                            "node": "exitCode",
+                            "val": 0,
+                            "expect": 0
+                          },
+                          {
+                            "isPass": true,
+                            "message": "OK",
+                            "node": "stdout",
+                            "val": "subval1",
+                            "expect": "subval1"
+                          }
+                        ],
+                        "assertionPass": 2,
+                        "assertionFail": 0,
+                        "#elapse": "val > 0"
+                      }
+                    ],
+                    "assertionPass": 2,
+                    "assertionFail": 0,
+                    "#elapse": "val > 0"
+                  }
+                ],
+                "beforeCaseSteps": [
+                  {
+                    "name": "echo",
+                    "description": "",
+                    "ctx": "shell",
+                    "isSkip": false,
+                    "isPass": true,
+                    "req": {
+                      "command": "echo before case",
+                      "envs": {
+                        "KEY1": "subval1",
+                        "KEY2": "val2"
+                      },
+                      "decoder": "text"
+                    },
+                    "res": {
+                      "exitCode": 0,
+                      "stdout": "before case\n",
+                      "stderr": ""
+                    },
+                    "subSteps": [
+                      {
+                        "isPass": true,
+                        "isErr": false,
+                        "err": "",
+                        "req": {
+                          "command": "echo before case",
+                          "envs": {
+                            "KEY1": "subval1",
+                            "KEY2": "val2"
+                          },
+                          "decoder": "text"
+                        },
+                        "res": {
+                          "exitCode": 0,
+                          "stdout": "before case\n",
+                          "stderr": ""
+                        },
+                        "assertions": [],
+                        "assertionPass": 0,
+                        "assertionFail": 0,
+                        "#elapse": "val > 0"
+                      }
+                    ],
+                    "assertionPass": 0,
+                    "assertionFail": 0,
+                    "#elapse": "val > 0"
+                  }
+                ],
+                "afterCaseSteps": [
+                  {
+                    "name": "echo",
+                    "description": "",
                     "ctx": "shell",
                     "isSkip": false,
                     "isPass": true,
