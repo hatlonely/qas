@@ -23,14 +23,15 @@ case:
                   ],
                   "key8": 333
                 }]
-              }
+              },
+              "key9": "hello world"
             }'
           decoder: json
         res:
           exitCode: 0
-          json: {
-            "key1": "val1",
-            "#key2": "val % 3 == 0",
+          json:
+            "key1": "val1"
+            "#key2": "val % 3 == 0"
             "key3": {
               "#key4": "len(val) == 4",
               "key5": [{
@@ -42,7 +43,10 @@ case:
                 "#key8": "111 * 3"
               }]
             }
-          }
+            "%key9": |
+              def strcat(x, y):
+                return x + " " + y
+              res = strcat("hello", "world")
   - name: TestAssertFailDictNoSuchKey
     step:
       - ctx: shell
