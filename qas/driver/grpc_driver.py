@@ -38,7 +38,7 @@ class GRPCDriver(Driver):
         subprocess.run(command.split())
 
     def default_step_name(self, req):
-        return req["method"].split(" ")[0]
+        return req["method"]
 
     def do(self, req):
         req = merge(req, {
