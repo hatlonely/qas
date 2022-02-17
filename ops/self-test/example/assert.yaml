@@ -36,10 +36,11 @@ step:
         "subTestFail": 0,
         "cases": [
           {
+            "id": "ctx",
             "name": "AssertExample1",
             "directory": "ops/example-docs/assert",
             "description": "",
-            "command": "qas -t \"ops/example-docs/assert\" -c \"\" --case-name \"AssertExample1\"",
+            "command": "qas -t \"ops/example-docs/assert\" -c \"\" --case-id \"ctx\"",
             "status": "pass",
             "#elapse": "val > 0",
             "isPass": true,
@@ -186,10 +187,11 @@ step:
             "assertionFail": 0
           },
           {
+            "id": "ctx-1",
             "name": "AssertExample2",
             "directory": "ops/example-docs/assert",
             "description": "",
-            "command": "qas -t \"ops/example-docs/assert\" -c \"\" --case-name \"AssertExample2\"",
+            "command": "qas -t \"ops/example-docs/assert\" -c \"\" --case-id \"ctx-1\"",
             "status": "pass",
             "#elapse": "val > 0",
             "isPass": true,
