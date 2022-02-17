@@ -17,3 +17,4 @@ Jinja2~=3.0.3
 Markdown~=3.3.6
 grpcio~=1.43.0
 grpcio-tools~=1.43.0
+protobuf~=3.19.3
