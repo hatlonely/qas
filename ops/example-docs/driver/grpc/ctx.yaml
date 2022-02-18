@@ -1,0 +1,25 @@
+name: shell-example
+
+ctx:
+  sh:
+    type: grpc
+    args:
+      proto: ops/grpc/route_guide.proto
+      endpoint: localhost:50051
+      service: RouteGuideStub
+
+case:
+  - name: ShellExample
+    step:
+      - ctx: sh
+        req:
+          method: GetFeature
+          type: Point
+          args:
+            latitude: 409146138
+            longitude: 746188906
+        res:
+          location:
+            latitude: 409146138
+            longitude: 746188906
+

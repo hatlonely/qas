@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 
 
-import json
 import pathlib
-import os
 import sys
 import subprocess
 import importlib

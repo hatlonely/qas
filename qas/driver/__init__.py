@@ -7,6 +7,7 @@ from .mysql_driver import MysqlDriver
 from .redis_driver import RedisDriver
 from .mongo_driver import MongoDriver
 from .http_driver import HttpDriver
+from .grpc_driver import GRPCDriver
 from .pop_driver import POPDriver
 from .ots_driver import OTSDriver
 from .mns_driver import MNSDriver
@@ -15,6 +16,7 @@ from .oss_driver import OSSDriver
 
 driver_map = {
     "http": HttpDriver,
+    "grpc": GRPCDriver,
     "redis": RedisDriver,
     "shell": ShellDriver,
     "mysql": MysqlDriver,
