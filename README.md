@@ -80,7 +80,7 @@ qas 就是为了解决 devops 的功能测试问题，通过 yaml 来描述测�
 9. 支持重试和等待，`retry/until`
 10. 测试信息统计，`case/step/assertion` 成功失败数，`elapse` 时间统计
 11. 测试报告，支持 `text/json/html`
-12. 支持 `http/grpc/shell/redis/mysql/mongo/pop/ots/mns/oss`
+12. 支持 `http/grpc/thrift/shell/redis/mysql/mongo/pop/ots/mns/oss`
 13. 支持用户 python 拓展
 14. 支持并发执行
 15. 支持国际化
