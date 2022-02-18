@@ -1,7 +1,7 @@
-name: shell-example
+name: grpc-example
 
 ctx:
-  sh:
+  rpc:
     type: grpc
     args:
       proto: ops/grpc/route_guide.proto
@@ -9,9 +9,9 @@ ctx:
       service: RouteGuideStub
 
 case:
-  - name: ShellExample
+  - name: GRPCExample
     step:
-      - ctx: sh
+      - ctx: rpc
         req:
           method: GetFeature
           type: Point
