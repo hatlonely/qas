@@ -33,6 +33,8 @@ driver_map = {
 __all__ = [
     "Driver",
     "HttpDriver",
+    "GRPCDriver",
+    "ThriftDriver",
     "ShellDriver",
     "MysqlDriver",
     "RedisDriver",

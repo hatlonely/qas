@@ -33,7 +33,11 @@ class GRPCDriver(Driver):
                   "-I{directory} --python_out={directory} " \
                   "--grpc_python_out={directory} {source}".format(
                     directory=str(self.proto_path.parent), source=str(self.proto_path))
-        subprocess.run(command.split())
+        subprocess.run(
+            command.split(),
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
 
     def default_step_name(self, req):
         return req["method"]

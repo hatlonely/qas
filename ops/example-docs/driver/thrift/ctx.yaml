@@ -1,0 +1,35 @@
+name: thrift-example
+
+ctx:
+  rpc:
+    type: thrift
+    args:
+      proto: ops/thrift/tutorial.thrift
+      endpoint: localhost:9090
+      service: Calculator
+
+case:
+  - name: ThriftExample1
+    step:
+      - ctx: rpc
+        req:
+          method: calculate
+          args:
+            - 1234
+            - type: Work
+              args:
+                num1: 4
+                num2: 8
+                op: 3
+        res: 32
+  - name: ThriftExample2
+    step:
+      - ctx: rpc
+        req:
+          method: getStruct
+          args:
+            - 1234
+        res:
+          key: 1234
+          value: "32"
+

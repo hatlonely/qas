@@ -34,15 +34,18 @@ class ThriftDriver(Driver):
         protocol = TBinaryProtocol.TBinaryProtocol(transport)
         transport.open()
 
-        print(p.stem)
-
         service = __import__("{}.{}".format(p.stem, args["service"]), fromlist=[p.stem])
         self.ttypes = __import__("{}.ttypes".format(p.stem), fromlist=[p.stem])
         self.client = getattr(service, "Client")(protocol)
 
     def generate_proto(self):
         command = "thrift -r --gen py {source}".format(source=str(self.proto_path.absolute()))
-        subprocess.run(command.split(), cwd=str(self.proto_path.parent.absolute()))
+        subprocess.run(
+            command.split(),
+            cwd=str(self.proto_path.parent.absolute()),
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
 
     def default_step_name(self, req):
         return req["method"]

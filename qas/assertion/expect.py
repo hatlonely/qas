@@ -12,6 +12,9 @@ def expect(vals, rules, case=None, step=None, var=None, x=None, peval="#", pexec
     if mode == pexec:
         return [run_expect("", rules, "exec", val=vals, case=case, step=step, var=var, x=x)]
 
+    if not rules:
+        return []
+
     results = []
     _expect_recursive("", results, vals, rules, case=case, step=step, var=var, x=x, peval=peval, pexec=pexec)
     return results
@@ -40,7 +43,7 @@ def _expect_recursive(root: str, results: list[ExpectResult], vals, rules, case=
                     _expect_recursive(root_dot_key, results, vals[key], rule, case=case, step=step, var=var, x=x, peval=peval, pexec=pexec)
             else:
                 results.append(run_expect(root_dot_key, rule, "equal", val=vals[key], case=case, step=step, var=var, x=x))
-    if isinstance(rules, list):
+    elif isinstance(rules, list):
         for idx, rule in enumerate(rules):
             root_dot_key = "{}.{}".format(root, idx).lstrip(".")
             if idx >= len(vals):
@@ -52,6 +55,11 @@ def _expect_recursive(root: str, results: list[ExpectResult], vals, rules, case=
                     _expect_recursive(root_dot_key, results, vals[idx], rule, case=case, step=step, var=var, x=x, peval=peval, pexec=pexec)
             else:
                 results.append(run_expect(root_dot_key, rule, "equal", val=vals[idx], case=case, step=step, var=var, x=x))
+    else:
+        if vals == rules:
+            results.append(ExpectResult(is_pass=True, message="OK", node=root, val=vals, expect=rules))
+        else:
+            results.append(ExpectResult(is_pass=False, message="NotEqual", node=root, val=vals, expect=rules))
 
 
 def run_expect(root, rule, func, val=None, case=None, step=None, var=None, x=None):
