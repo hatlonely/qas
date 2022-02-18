@@ -40,12 +40,14 @@ class ThriftDriver(Driver):
 
     def generate_proto(self):
         command = "thrift -r --gen py {source}".format(source=str(self.proto_path.absolute()))
-        subprocess.run(
+        process = subprocess.run(
             command.split(),
             cwd=str(self.proto_path.parent.absolute()),
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
         )
+        if process.returncode != 0:
+            raise Exception(process.stderr)
 
     def default_step_name(self, req):
         return req["method"]
