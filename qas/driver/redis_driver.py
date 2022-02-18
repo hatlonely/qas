@@ -26,7 +26,7 @@ class RedisDriver(Driver):
             decode_responses=True,
         )
 
-    def default_step_name(self, req):
+    def name(self, req):
         return req["cmd"]
 
     def do(self, req):

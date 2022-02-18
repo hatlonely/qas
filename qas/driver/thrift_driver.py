@@ -49,7 +49,7 @@ class ThriftDriver(Driver):
         if process.returncode != 0:
             raise Exception(process.stderr)
 
-    def default_step_name(self, req):
+    def name(self, req):
         return req["method"]
 
     def do(self, req):

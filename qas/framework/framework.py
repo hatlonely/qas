@@ -627,7 +627,7 @@ class Framework:
 
         # auto name step
         if not step.name:
-            step.name = rctx.ctx[step_info["ctx"]].default_step_name(step.req)
+            step.name = rctx.ctx[step_info["ctx"]].name(step.req)
             if not step.name:
                 step.name = "anonymous-step"
         step.elapse = datetime.now() - now

@@ -39,7 +39,7 @@ class GRPCDriver(Driver):
             stderr=subprocess.PIPE,
         )
 
-    def default_step_name(self, req):
+    def name(self, req):
         return req["method"]
 
     def do(self, req):
