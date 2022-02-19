@@ -27,6 +27,9 @@ class TestElasticSearch(unittest.TestCase):
         res = es.search(index="test-index", query={"match_all": {}})
         print(res)
 
+        res = es.delete(index="test-index", id="123")
+        print(res)
+
 
 class TestElasticSearchDriver(unittest.TestCase):
     def test_elasticsearch(self):

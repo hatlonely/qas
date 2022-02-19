@@ -45,21 +45,15 @@ case:
           index: test-index
           query:
             match_all:
-        res:  {
-          "hits": {
-            "total": 1,
-            "max_score": 1.0,
-            "hits": [
-              {
-                "_index": "test-index",
-                "_type": "_doc",
-                "_id": "123",
-                "_source": {
-                  "author": "kimchy",
-                  "text": "Elasticsearch: cool. bonsai cool."
-                }
-              }
-            ]
-          }
+        res:
+      - ctx: es
+        req:
+          cmd: delete
+          index: test-index
+          id: "123"
+        res: {
+          "_index": "test-index",
+          "_type": "_doc",
+          "_id": "123",
         }
 

@@ -38,6 +38,7 @@ class ElasticSearchDriver(Driver):
             "index": self.index,
             "get": self.get,
             "search": self.search,
+            "delete": self.delete,
         }
 
         if req["cmd"] not in do_map:
@@ -69,3 +70,10 @@ class ElasticSearchDriver(Driver):
         })
 
         return self.client.search(index=req["index"], query=req["query"])
+
+    def delete(self, req):
+        req = merge(req, {
+            "index": REQUIRED,
+            "id": REQUIRED,
+        })
+        return self.client.delete(index=req["index"], id=req["id"])
