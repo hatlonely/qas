@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-
-
+import copy
 import re
 import json
 
@@ -19,13 +18,14 @@ def format_step_res(sub_step: SubStepResult, separator="#", pass_open="", pass_c
             )
 
     # 修改 res 返回值，将预期值标记后拼接在 value 后面
+    res = copy.deepcopy(sub_step.res)
     for expect_result in sub_step.assertions:
         if expect_result.is_pass:
-            append_val_to_key(sub_step.res, expect_result.node, "<GREEN>{}<END>".format(expect_result.expect))
+            append_val_to_key(res, expect_result.node, "<GREEN>{}<END>".format(expect_result.expect))
         else:
-            append_val_to_key(sub_step.res, expect_result.node, "<RED>{}<END>".format(expect_result.expect))
+            append_val_to_key(res, expect_result.node, "<RED>{}<END>".format(expect_result.expect))
 
-    res_lines = json.dumps(sub_step.res, indent=2).split("\n")
+    res_lines = json.dumps(res, indent=2).split("\n")
     lines = []
     # 解析 res 中 value 的值，重新拼接成带颜色的结果值
     for line in res_lines:
