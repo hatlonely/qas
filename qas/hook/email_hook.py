@@ -10,7 +10,7 @@ from jinja2 import Environment, BaseLoader
 from .hook import Hook
 from ..util import merge, REQUIRED
 from ..result import TestResult
-from ..reporter import I18n
+from ..i18n import I18n
 
 
 _test_tpl = """

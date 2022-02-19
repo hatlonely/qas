@@ -7,7 +7,8 @@ from colorama import Fore
 
 from .hook import Hook
 from ..result import TestResult, CaseResult
-from ..reporter import format_step_res, I18n
+from ..reporter import format_step_res
+from ..i18n import I18n
 from ..util import merge
 
 

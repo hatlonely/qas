@@ -2,7 +2,6 @@
 
 
 from .reporter import Reporter
-from .i18n import I18n
 from .json_reporter import JsonReporter
 from .text_reporter import TextReporter
 from .html_reporter import HtmlReporter
@@ -24,6 +23,4 @@ __all__ = [
     "HtmlReporter",
     "reporter_map",
     "format_step_res",
-    "I18n",
 ]
-

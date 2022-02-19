@@ -2,7 +2,7 @@
 
 
 from ..result import TestResult
-from .i18n import I18n
+from ..i18n import I18n
 
 
 class Reporter:
