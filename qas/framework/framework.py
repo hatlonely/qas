@@ -151,8 +151,8 @@ class Framework:
 
         if lang:
             cfg["reporter"][reporter]["lang"] = lang
-            if "stdoutLog" in cfg["hook"]:
-                cfg["hook"]["stdoutLog"]["lang"] = lang
+            for key in cfg["hook"]:
+                cfg["hook"][key]["lang"] = lang
 
         self.customize = json.loads(json.dumps(cfg["framework"]), object_hook=lambda y: SimpleNamespace(**y))
 
