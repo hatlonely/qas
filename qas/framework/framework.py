@@ -184,6 +184,10 @@ class Framework:
 
         res = self.must_run_test(self.constant.test_directory, self.customize, self.constant, rctx)
         print(self.reporter.report(res))
+
+        for hook in self.hooks:
+            hook.on_exit(res)
+
         return res.is_pass
 
     @staticmethod
