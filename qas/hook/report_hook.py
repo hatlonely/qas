@@ -11,7 +11,7 @@ from ..reporter import format_step_res
 from ..util import merge
 
 
-class StdoutLogHook(Hook):
+class ReportHook(Hook):
     def __init__(self, args=None):
         super().__init__(args)
         args = merge(args, {
