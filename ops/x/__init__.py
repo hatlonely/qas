@@ -1,5 +1,7 @@
 from .echo_driver import EchoDriver
 from .calc_driver import CalcDriver
+from .echo_hook import EchoHook
+from .summary_reporter import SummaryReporter
 from .hello import hello
 
 
@@ -8,8 +10,17 @@ driver_map = {
     "calc": CalcDriver,
 }
 
-_reporter_map = {}
+hook_map = {
+    "echo": EchoHook,
+}
 
-hook_map = {}
+reporter_map = {
+    "summary": SummaryReporter,
+}
 
-__all__ = ["driver_map", "hello"]
+
+__all__ = [
+    "driver_map",
+    "hook_map",
+    "hello",
+]
