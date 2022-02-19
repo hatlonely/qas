@@ -14,7 +14,7 @@ from ..util import merge
 
 class StdoutLogHook(Hook):
     def __init__(self, args=None):
-        self.i18n = I18n(args).i18n()
+        super().__init__(args)
         args = merge(args, {
             "padding": "  "
         })

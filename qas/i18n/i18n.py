@@ -119,13 +119,15 @@ i18n = {
 
 
 class I18n:
-    def __init__(self, args):
+    def __init__(self, args=None):
         lang = "dft"
         try:
             lang = locale.getdefaultlocale()[0].split('_')[0]
         except Exception as e:
             pass
 
+        if args is None:
+            args = {}
         args = merge(args, {
             "lang": lang,
             "i18n": {},

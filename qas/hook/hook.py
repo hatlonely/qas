@@ -2,9 +2,13 @@
 
 
 from ..result import TestResult, CaseResult, StepResult
+from ..i18n import I18n
 
 
 class Hook:
+    def __init__(self, args=None):
+        self.i18n = I18n(args).i18n()
+
     def on_exit(self, res: TestResult):
         pass
 

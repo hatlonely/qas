@@ -121,14 +121,13 @@ _test_tpl = """
 
 class EmailHook(Hook):
     def __init__(self, args):
+        super().__init__(args)
         args = merge(args, {
             "endpoint": REQUIRED,
             "username": REQUIRED,
             "password": REQUIRED,
             "receiver": REQUIRED,
-            "i18n": {}
         })
-        self.i18n = I18n(args["i18n"]).i18n()
 
         host, port = args["endpoint"].split(":")
         self.host = host
