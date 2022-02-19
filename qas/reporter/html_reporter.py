@@ -2,7 +2,6 @@
 
 
 import datetime
-import hashlib
 import json
 from jinja2 import Environment, BaseLoader
 import markdown
@@ -614,16 +613,14 @@ class HtmlReporter(Reporter):
         self.step_separator = args["stepSeparator"]
         self.customize = json.loads(json.dumps(args), object_hook=lambda x: SimpleNamespace(**x))
 
-        env = Environment(loader=BaseLoader)
+        env = Environment(loader=BaseLoader())
         env.globals.update(format_timedelta=HtmlReporter.format_timedelta)
-        env.globals.update(hashlib=hashlib)
         env.globals.update(json=json)
         env.globals.update(render_test=self.render_test)
         env.globals.update(render_case=self.render_case)
         env.globals.update(render_step=self.render_step)
         env.globals.update(render_sub_step=self.render_sub_step)
         env.globals.update(format_sub_step_res=self.format_sub_step_res)
-        env.globals.update(len=len)
         env.globals.update(brief_mode=True)
         env.globals.update(markdown=markdown.markdown)
         env.globals.update(i18n=self.i18n)
