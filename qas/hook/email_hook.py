@@ -126,6 +126,7 @@ class EmailHook(Hook):
             "username": REQUIRED,
             "password": REQUIRED,
             "receiver": REQUIRED,
+            "disableOnPass": False,
         })
 
         host, port = args["endpoint"].split(":")
@@ -134,8 +135,12 @@ class EmailHook(Hook):
         self.password = args["password"]
         self.username = args["username"]
         self.receiver = args["receiver"]
+        self.disable_on_pass = args["disableOnPass"]
 
     def on_exit(self, res: TestResult):
+        if self.disable_on_pass and res.is_pass:
+            return
+
         body = self.render(res)
 
         message = MIMEText(body, 'html', 'utf-8')
