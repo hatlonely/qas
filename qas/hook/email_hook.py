@@ -12,6 +12,7 @@ from ..util import merge, REQUIRED
 from ..result import TestResult
 from ..reporter import I18n
 
+
 _test_tpl = """
 <!DOCTYPE html>
 <html lang="zh-cmn-Hans">
