@@ -2,9 +2,7 @@
 
 
 import smtplib
-import json
 import datetime
-from types import SimpleNamespace
 from email.mime.text import MIMEText
 from email.header import Header
 from jinja2 import Environment, BaseLoader
