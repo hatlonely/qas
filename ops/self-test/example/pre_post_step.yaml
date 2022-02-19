@@ -73,7 +73,7 @@ step:
             "assertionFail": 0
           }
         ],
-        "setups": [],
-        "teardowns": [],
+        "setUps": [],
+        "tearDowns": [],
         "subTests": []
       }

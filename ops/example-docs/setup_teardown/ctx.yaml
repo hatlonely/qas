@@ -1,4 +1,4 @@
-name: setup-teardown-example
+name: set-up-tear-down-example
 
 ctx:
   shell:

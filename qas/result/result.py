@@ -342,10 +342,10 @@ class TestResult:
             "casePass": self.case_pass,
             "caseFail": self.case_fail,
             "caseSkip": self.case_skip,
-            "setupPass": self.setup_pass,
-            "setupFail": self.setup_fail,
-            "teardownPass": self.teardown_pass,
-            "teardownFail": self.teardown_fail,
+            "setUpPass": self.setup_pass,
+            "setUpFail": self.setup_fail,
+            "tearDownPass": self.teardown_pass,
+            "tearDownFail": self.teardown_fail,
             "currCasePass": self.curr_case_pass,
             "currCaseFail": self.curr_case_fail,
             "currCaseSkip": self.curr_case_skip,
@@ -358,8 +358,8 @@ class TestResult:
             "subTestSkip": self.sub_test_skip,
             "subTestFail": self.sub_test_fail,
             "cases": self.cases,
-            "setups": self.setups,
-            "teardowns": self.teardowns,
+            "setUps": self.setups,
+            "tearDowns": self.teardowns,
             "subTests": self.sub_tests,
         }
 
@@ -368,17 +368,17 @@ class TestResult:
         res = TestResult(directory=obj["directory"], name=obj["name"], description=obj["description"], err_message=obj["err"], is_skip=obj["isSkip"])
         res.is_pass = obj["isPass"]
         res.status = obj["status"]
-        res.setups = [CaseResult.from_json(i) for i in obj["setups"]]
+        res.setups = [CaseResult.from_json(i) for i in obj["setUps"]]
         res.cases = [CaseResult.from_json(i) for i in obj["cases"]]
-        res.teardowns = [CaseResult.from_json(i) for i in obj["teardowns"]]
+        res.teardowns = [CaseResult.from_json(i) for i in obj["tearDowns"]]
         res.sub_tests = [TestResult.from_json(i) for i in obj["subTests"]]
         res.case_pass = obj["casePass"]
         res.case_fail = obj["caseFail"]
         res.case_skip = obj["caseSkip"]
-        res.setup_pass = obj["setupPass"]
-        res.setup_fail = obj["setupFail"]
-        res.teardown_pass = obj["teardownPass"]
-        res.teardown_fail = obj["teardownFail"]
+        res.setup_pass = obj["setUpPass"]
+        res.setup_fail = obj["setUpFail"]
+        res.teardown_pass = obj["tearDownPass"]
+        res.teardown_fail = obj["tearDownFail"]
         res.curr_case_pass = obj["currCasePass"]
         res.curr_case_fail = obj["currCaseFail"]
         res.curr_case_skip = obj["currCaseSkip"]

@@ -19,10 +19,10 @@ step:
         "casePass": 9,
         "caseFail": 0,
         "caseSkip": 0,
-        "setupPass": 2,
-        "setupFail": 0,
-        "teardownPass": 2,
-        "teardownFail": 0,
+        "setUpPass": 2,
+        "setUpFail": 0,
+        "tearDownPass": 2,
+        "tearDownFail": 0,
         "currCasePass": 3,
         "currCaseFail": 0,
         "currCaseSkip": 0,
@@ -549,10 +549,10 @@ step:
             "assertionFail": 0
           }
         ],
-        "setups": [
+        "setUps": [
           {
             "id": "",
-            "name": "setup1",
+            "name": "setUp1",
             "directory": "ops/example-complex",
             "description": "",
             "command": "",
@@ -568,7 +568,7 @@ step:
                 "isSkip": false,
                 "isPass": true,
                 "req": {
-                  "command": "echo setup1 step1",
+                  "command": "echo setUp1 step1",
                   "envs": {
                     "KEY1": "val1"
                   },
@@ -576,7 +576,7 @@ step:
                 },
                 "res": {
                   "exitCode": 0,
-                  "stdout": "setup1 step1\n",
+                  "stdout": "setUp1 step1\n",
                   "stderr": ""
                 },
                 "subSteps": [
@@ -585,7 +585,7 @@ step:
                     "isErr": false,
                     "err": "",
                     "req": {
-                      "command": "echo setup1 step1",
+                      "command": "echo setUp1 step1",
                       "envs": {
                         "KEY1": "val1"
                       },
@@ -593,7 +593,7 @@ step:
                     },
                     "res": {
                       "exitCode": 0,
-                      "stdout": "setup1 step1\n",
+                      "stdout": "setUp1 step1\n",
                       "stderr": ""
                     },
                     "assertions": [],
@@ -613,7 +613,7 @@ step:
                 "isSkip": false,
                 "isPass": true,
                 "req": {
-                  "command": "echo setup1 step2",
+                  "command": "echo setUp1 step2",
                   "envs": {
                     "KEY1": "val1"
                   },
@@ -621,7 +621,7 @@ step:
                 },
                 "res": {
                   "exitCode": 0,
-                  "stdout": "setup1 step2\n",
+                  "stdout": "setUp1 step2\n",
                   "stderr": ""
                 },
                 "subSteps": [
@@ -630,7 +630,7 @@ step:
                     "isErr": false,
                     "err": "",
                     "req": {
-                      "command": "echo setup1 step2",
+                      "command": "echo setUp1 step2",
                       "envs": {
                         "KEY1": "val1"
                       },
@@ -638,7 +638,7 @@ step:
                     },
                     "res": {
                       "exitCode": 0,
-                      "stdout": "setup1 step2\n",
+                      "stdout": "setUp1 step2\n",
                       "stderr": ""
                     },
                     "assertions": [],
@@ -661,7 +661,7 @@ step:
           },
           {
             "id": "",
-            "name": "setup2",
+            "name": "setUp2",
             "directory": "ops/example-complex",
             "description": "",
             "command": "",
@@ -677,7 +677,7 @@ step:
                 "isSkip": false,
                 "isPass": true,
                 "req": {
-                  "command": "echo setup2 step1",
+                  "command": "echo setUp2 step1",
                   "envs": {
                     "KEY1": "val1"
                   },
@@ -685,7 +685,7 @@ step:
                 },
                 "res": {
                   "exitCode": 0,
-                  "stdout": "setup2 step1\n",
+                  "stdout": "setUp2 step1\n",
                   "stderr": ""
                 },
                 "subSteps": [
@@ -694,7 +694,7 @@ step:
                     "isErr": false,
                     "err": "",
                     "req": {
-                      "command": "echo setup2 step1",
+                      "command": "echo setUp2 step1",
                       "envs": {
                         "KEY1": "val1"
                       },
@@ -702,7 +702,7 @@ step:
                     },
                     "res": {
                       "exitCode": 0,
-                      "stdout": "setup2 step1\n",
+                      "stdout": "setUp2 step1\n",
                       "stderr": ""
                     },
                     "assertions": [],
@@ -722,7 +722,7 @@ step:
                 "isSkip": false,
                 "isPass": true,
                 "req": {
-                  "command": "echo setup2 step2",
+                  "command": "echo setUp2 step2",
                   "envs": {
                     "KEY1": "val1"
                   },
@@ -730,7 +730,7 @@ step:
                 },
                 "res": {
                   "exitCode": 0,
-                  "stdout": "setup2 step2\n",
+                  "stdout": "setUp2 step2\n",
                   "stderr": ""
                 },
                 "subSteps": [
@@ -739,7 +739,7 @@ step:
                     "isErr": false,
                     "err": "",
                     "req": {
-                      "command": "echo setup2 step2",
+                      "command": "echo setUp2 step2",
                       "envs": {
                         "KEY1": "val1"
                       },
@@ -747,7 +747,7 @@ step:
                     },
                     "res": {
                       "exitCode": 0,
-                      "stdout": "setup2 step2\n",
+                      "stdout": "setUp2 step2\n",
                       "stderr": ""
                     },
                     "assertions": [],
@@ -769,10 +769,10 @@ step:
             "assertionFail": 0
           }
         ],
-        "teardowns": [
+        "tearDowns": [
           {
             "id": "",
-            "name": "teardown1",
+            "name": "tearDown1",
             "directory": "ops/example-complex",
             "description": "",
             "command": "",
@@ -788,7 +788,7 @@ step:
                 "isSkip": false,
                 "isPass": true,
                 "req": {
-                  "command": "echo teardown1 step1",
+                  "command": "echo tearDown1 step1",
                   "envs": {
                     "KEY1": "val1"
                   },
@@ -796,7 +796,7 @@ step:
                 },
                 "res": {
                   "exitCode": 0,
-                  "stdout": "teardown1 step1\n",
+                  "stdout": "tearDown1 step1\n",
                   "stderr": ""
                 },
                 "subSteps": [
@@ -805,7 +805,7 @@ step:
                     "isErr": false,
                     "err": "",
                     "req": {
-                      "command": "echo teardown1 step1",
+                      "command": "echo tearDown1 step1",
                       "envs": {
                         "KEY1": "val1"
                       },
@@ -813,7 +813,7 @@ step:
                     },
                     "res": {
                       "exitCode": 0,
-                      "stdout": "teardown1 step1\n",
+                      "stdout": "tearDown1 step1\n",
                       "stderr": ""
                     },
                     "assertions": [],
@@ -833,7 +833,7 @@ step:
                 "isSkip": false,
                 "isPass": true,
                 "req": {
-                  "command": "echo teardown1 step2",
+                  "command": "echo tearDown1 step2",
                   "envs": {
                     "KEY1": "val1"
                   },
@@ -841,7 +841,7 @@ step:
                 },
                 "res": {
                   "exitCode": 0,
-                  "stdout": "teardown1 step2\n",
+                  "stdout": "tearDown1 step2\n",
                   "stderr": ""
                 },
                 "subSteps": [
@@ -850,7 +850,7 @@ step:
                     "isErr": false,
                     "err": "",
                     "req": {
-                      "command": "echo teardown1 step2",
+                      "command": "echo tearDown1 step2",
                       "envs": {
                         "KEY1": "val1"
                       },
@@ -858,7 +858,7 @@ step:
                     },
                     "res": {
                       "exitCode": 0,
-                      "stdout": "teardown1 step2\n",
+                      "stdout": "tearDown1 step2\n",
                       "stderr": ""
                     },
                     "assertions": [],
@@ -881,7 +881,7 @@ step:
           },
           {
             "id": "",
-            "name": "teardown2",
+            "name": "tearDown2",
             "directory": "ops/example-complex",
             "description": "",
             "command": "",
@@ -897,7 +897,7 @@ step:
                 "isSkip": false,
                 "isPass": true,
                 "req": {
-                  "command": "echo teardown2 step1",
+                  "command": "echo tearDown2 step1",
                   "envs": {
                     "KEY1": "val1"
                   },
@@ -905,7 +905,7 @@ step:
                 },
                 "res": {
                   "exitCode": 0,
-                  "stdout": "teardown2 step1\n",
+                  "stdout": "tearDown2 step1\n",
                   "stderr": ""
                 },
                 "subSteps": [
@@ -914,7 +914,7 @@ step:
                     "isErr": false,
                     "err": "",
                     "req": {
-                      "command": "echo teardown2 step1",
+                      "command": "echo tearDown2 step1",
                       "envs": {
                         "KEY1": "val1"
                       },
@@ -922,7 +922,7 @@ step:
                     },
                     "res": {
                       "exitCode": 0,
-                      "stdout": "teardown2 step1\n",
+                      "stdout": "tearDown2 step1\n",
                       "stderr": ""
                     },
                     "assertions": [],
@@ -942,7 +942,7 @@ step:
                 "isSkip": false,
                 "isPass": true,
                 "req": {
-                  "command": "echo teardown2 step2",
+                  "command": "echo tearDown2 step2",
                   "envs": {
                     "KEY1": "val1"
                   },
@@ -950,7 +950,7 @@ step:
                 },
                 "res": {
                   "exitCode": 0,
-                  "stdout": "teardown2 step2\n",
+                  "stdout": "tearDown2 step2\n",
                   "stderr": ""
                 },
                 "subSteps": [
@@ -959,7 +959,7 @@ step:
                     "isErr": false,
                     "err": "",
                     "req": {
-                      "command": "echo teardown2 step2",
+                      "command": "echo tearDown2 step2",
                       "envs": {
                         "KEY1": "val1"
                       },
@@ -967,7 +967,7 @@ step:
                     },
                     "res": {
                       "exitCode": 0,
-                      "stdout": "teardown2 step2\n",
+                      "stdout": "tearDown2 step2\n",
                       "stderr": ""
                     },
                     "assertions": [],
@@ -1003,10 +1003,10 @@ step:
             "casePass": 3,
             "caseFail": 0,
             "caseSkip": 0,
-            "setupPass": 0,
-            "setupFail": 0,
-            "teardownPass": 0,
-            "teardownFail": 0,
+            "setUpPass": 0,
+            "setUpFail": 0,
+            "tearDownPass": 0,
+            "tearDownFail": 0,
             "currCasePass": 3,
             "currCaseFail": 0,
             "currCaseSkip": 0,
@@ -1533,8 +1533,8 @@ step:
                 "assertionFail": 0
               }
             ],
-            "setups": [],
-            "teardowns": [],
+            "setUps": [],
+            "tearDowns": [],
             "subTests": []
           },
           {
@@ -1550,10 +1550,10 @@ step:
             "casePass": 3,
             "caseFail": 0,
             "caseSkip": 0,
-            "setupPass": 0,
-            "setupFail": 0,
-            "teardownPass": 0,
-            "teardownFail": 0,
+            "setUpPass": 0,
+            "setUpFail": 0,
+            "tearDownPass": 0,
+            "tearDownFail": 0,
             "currCasePass": 3,
             "currCaseFail": 0,
             "currCaseSkip": 0,
@@ -2098,8 +2098,8 @@ step:
                 "assertionFail": 0
               }
             ],
-            "setups": [],
-            "teardowns": [],
+            "setUps": [],
+            "tearDowns": [],
             "subTests": []
           }
         ]

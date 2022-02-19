@@ -7,7 +7,7 @@ step:
     res:
       exitCode: 0
       json: {
-        "name": "setup-teardown-example",
+        "name": "set-up-tear-down-example",
         "isPass": true,
         "#elapse": "val > 0",
         "casePass": 1,
@@ -73,7 +73,7 @@ step:
             "assertionFail": 0
           }
         ],
-        "setups": [
+        "setUps": [
           {
             "name": "SetUpCase",
             "#elapse": "val > 0",
@@ -86,13 +86,13 @@ step:
                 "isSkip": false,
                 "isPass": true,
                 "req": {
-                  "command": "echo setup",
+                  "command": "echo setUp",
                   "envs": {},
                   "decoder": "text"
                 },
                 "res": {
                   "exitCode": 0,
-                  "stdout": "setup\n",
+                  "stdout": "setUp\n",
                   "stderr": ""
                 },
                 "subSteps": [
@@ -101,13 +101,13 @@ step:
                     "isErr": false,
                     "err": "",
                     "req": {
-                      "command": "echo setup",
+                      "command": "echo setUp",
                       "envs": {},
                       "decoder": "text"
                     },
                     "res": {
                       "exitCode": 0,
-                      "stdout": "setup\n",
+                      "stdout": "setUp\n",
                       "stderr": ""
                     },
                     "assertions": [],
@@ -129,7 +129,7 @@ step:
             "assertionFail": 0
           }
         ],
-        "teardowns": [
+        "tearDowns": [
           {
             "name": "TearDownCase",
             "#elapse": "val > 0",
@@ -142,13 +142,13 @@ step:
                 "isSkip": false,
                 "isPass": true,
                 "req": {
-                  "command": "echo teardown",
+                  "command": "echo tearDown",
                   "envs": {},
                   "decoder": "text"
                 },
                 "res": {
                   "exitCode": 0,
-                  "stdout": "teardown\n",
+                  "stdout": "tearDown\n",
                   "stderr": ""
                 },
                 "subSteps": [
@@ -157,13 +157,13 @@ step:
                     "isErr": false,
                     "err": "",
                     "req": {
-                      "command": "echo teardown",
+                      "command": "echo tearDown",
                       "envs": {},
                       "decoder": "text"
                     },
                     "res": {
                       "exitCode": 0,
-                      "stdout": "teardown\n",
+                      "stdout": "tearDown\n",
                       "stderr": ""
                     },
                     "assertions": [],

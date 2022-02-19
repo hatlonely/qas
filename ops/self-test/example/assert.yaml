@@ -19,10 +19,10 @@ step:
         "casePass": 2,
         "caseFail": 0,
         "caseSkip": 0,
-        "setupPass": 0,
-        "setupFail": 0,
-        "teardownPass": 0,
-        "teardownFail": 0,
+        "setUpPass": 0,
+        "setUpFail": 0,
+        "tearDownPass": 0,
+        "tearDownFail": 0,
         "currCasePass": 2,
         "currCaseFail": 0,
         "currCaseSkip": 0,
@@ -259,7 +259,7 @@ step:
             "assertionFail": 0
           }
         ],
-        "setups": [],
-        "teardowns": [],
+        "setUps": [],
+        "tearDowns": [],
         "subTests": []
       }
