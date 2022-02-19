@@ -1,3 +1,17 @@
+i18n:
+  lang: "en"
+  i18n:
+    summary:
+      caseTotal: TOTAL CASE
+      casePass: CASE PASS
+      caseSkip: CASE SKIP
+      caseFail: CASE FAIL
+      stepPass: STEP PASS
+      stepSkip: STEP SKIP
+      stepFail: STEP FAIL
+      assertionPass: ASSERTION PASS
+      assertionFail: ASSERTION FAIL
+      elapse: ELAPSE
 reporter:
   html:
     stepSeparator: "//"
@@ -43,9 +57,14 @@ reporter:
     padding: "--<"
 
 hook:
-  trace:
+  stdoutLog:
     lang: "zh"
     padding: "--<"
+  email:
+    endpoint: smtp.qq.com:465
+    username: hatlonely@foxmail.com
+    password: xxxxxx
+    receiver: hatlonely@foxmail.com
 
 framework:
   keyPrefix:

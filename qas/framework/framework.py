@@ -126,10 +126,15 @@ class Framework:
             with open(customize, "r", encoding="utf-8") as fp:
                 cfg = yaml.safe_load(fp)
         cfg = merge(cfg, {
+            "i18n": {},
             "reporter": {
-                reporter: {},
+                reporter: {
+                    "i18n": {}
+                },
             },
-            "hook": dict([(i, {}) for i in hooks]),
+            "hook": dict([(i, {
+                "i18n": {}
+            }) for i in hooks]),
             "framework": {
                 "keyPrefix": {
                     "eval": "#",
@@ -150,9 +155,15 @@ class Framework:
         })
 
         if lang:
+            cfg["i18n"]["lang"] = lang
+        if "lang" in cfg["i18n"] and cfg["i18n"]["lang"]:
             cfg["reporter"][reporter]["lang"] = lang
-            for key in cfg["hook"]:
+            for key in hooks:
                 cfg["hook"][key]["lang"] = lang
+        if "i18n" in cfg["i18n"] and cfg["i18n"]["i18n"]:
+            cfg["reporter"][reporter]["i18n"] = merge(cfg["reporter"][reporter]["i18n"], cfg["i18n"]["i18n"])
+            for key in hooks:
+                cfg["hook"][key]["i18n"] = merge(cfg["hook"][key]["i18n"], cfg["i18n"]["i18n"])
 
         self.customize = json.loads(json.dumps(cfg["framework"]), object_hook=lambda y: SimpleNamespace(**y))
 
