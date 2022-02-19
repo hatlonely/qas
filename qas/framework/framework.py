@@ -154,16 +154,14 @@ class Framework:
             }
         })
 
+        if "i18n" in cfg:
+            cfg["reporter"][reporter] = merge(cfg["reporter"][reporter], cfg["i18n"])
+            for key in hooks:
+                cfg["hook"][key] = merge(cfg["hook"][key], cfg["i18n"])
         if lang:
-            cfg["i18n"]["lang"] = lang
-        if "lang" in cfg["i18n"] and cfg["i18n"]["lang"]:
             cfg["reporter"][reporter]["lang"] = lang
             for key in hooks:
                 cfg["hook"][key]["lang"] = lang
-        if "i18n" in cfg["i18n"] and cfg["i18n"]["i18n"]:
-            cfg["reporter"][reporter]["i18n"] = merge(cfg["reporter"][reporter]["i18n"], cfg["i18n"]["i18n"])
-            for key in hooks:
-                cfg["hook"][key]["i18n"] = merge(cfg["hook"][key]["i18n"], cfg["i18n"]["i18n"])
 
         self.customize = json.loads(json.dumps(cfg["framework"]), object_hook=lambda y: SimpleNamespace(**y))
 
