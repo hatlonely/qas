@@ -152,12 +152,7 @@ _report_tpl = """<!DOCTYPE html>
 """
 
 _test_tpl = """
-{% if res.is_pass%}
 <div class="col-md-12" id={{ name }}>
-{% else %}
-<div class="col-md-12" id={{ name }}>
-{% endif %}
-
     {% if res.is_skip %}
     <div class="card my-{{ customize.padding.y }} border-warning bg-warning">
         <h5 class="card-header text-white bg-transparent border-0">{{ i18n.title.test }} {{ res.name }} {{ i18n.status.skip }}</h5>
