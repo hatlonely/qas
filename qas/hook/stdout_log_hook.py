@@ -8,7 +8,6 @@ from colorama import Fore
 from .hook import Hook
 from ..result import TestResult, CaseResult
 from ..reporter import format_step_res
-from ..i18n import I18n
 from ..util import merge
 
 
@@ -19,18 +18,18 @@ class StdoutLogHook(Hook):
             "padding": "  "
         })
         self.padding_to_add = args["padding"]
-        self._padding = ""
+        self.padding = ""
 
     def on_test_start(self, directory):
-        print("{}{i18n.title.test} {directory}".format(self._padding, directory=directory, i18n=self.i18n))
-        self._padding += self.padding_to_add
+        print("{}{i18n.title.test} {directory}".format(self.padding, directory=directory, i18n=self.i18n))
+        self.padding += self.padding_to_add
 
     def on_test_end(self, res: TestResult):
-        self._padding = self._padding[:-len(self.padding_to_add)]
+        self.padding = self.padding[:-len(self.padding_to_add)]
 
         if res.is_skip:
             print("{}{fore.YELLOW}{i18n.title.test} {res.name} {i18n.status.skip}{fore.RESET}".format(
-                self._padding, res=res, i18n=self.i18n, fore=Fore,
+                self.padding, res=res, i18n=self.i18n, fore=Fore,
             ))
             return
 
@@ -44,14 +43,14 @@ class StdoutLogHook(Hook):
                 "{i18n.summary.stepSkip}: {res.step_skip}，"
                 "{i18n.summary.assertionPass}: {fore.GREEN}{res.assertion_pass}{fore.RESET}，"
                 "{i18n.summary.elapse}: {elapse}".format(
-                    self._padding, total_case=res.case_pass + res.case_skip,
+                    self.padding, total_case=res.case_pass + res.case_skip,
                     elapse=durationpy.to_str(res.elapse), res=res, i18n=self.i18n, fore=Fore,
                 ),
             )
         else:
             if res.is_err:
                 print('\n'.join([
-                    "{}{}{}".format(self.padding_to_add, self._padding, line)
+                    "{}{}{}".format(self.padding_to_add, self.padding, line)
                     for line in "{i18n.testHeader.err} {res.err}".format(res=res, i18n=self.i18n).split("\n")
                 ]))
             print(
@@ -66,19 +65,19 @@ class StdoutLogHook(Hook):
                 "{i18n.summary.assertionPass}: {fore.GREEN}{res.assertion_pass}{fore.RESET}，"
                 "{i18n.summary.assertionFail}: {fore.RED}{res.assertion_fail}{fore.RESET}，"
                 "{i18n.summary.elapse}: {elapse}".format(
-                    self._padding, total_case=res.case_pass + res.case_skip + res.case_fail,
+                    self.padding, total_case=res.case_pass + res.case_skip + res.case_fail,
                     elapse=durationpy.to_str(res.elapse), res=res, i18n=self.i18n, fore=Fore,
                 ),
             )
 
     def on_case_end(self, res: CaseResult):
-        print("\n".join([self._padding + i for i in self.format_case(res, "case")]))
+        print("\n".join([self.padding + i for i in self.format_case(res, "case")]))
 
     def on_set_up_end(self, res: CaseResult):
-        print("\n".join([self._padding + i for i in self.format_case(res, "setUp")]))
+        print("\n".join([self.padding + i for i in self.format_case(res, "setUp")]))
 
     def on_tear_down_end(self, res: CaseResult):
-        print("\n".join([self._padding + i for i in self.format_case(res, "tearDown")]))
+        print("\n".join([self.padding + i for i in self.format_case(res, "tearDown")]))
 
     def format_case(self, res: CaseResult, case_type: str) -> list[str]:
         case_type_map = {

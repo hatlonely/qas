@@ -18,7 +18,7 @@ class TextReporter(Reporter):
             "padding": "  "
         })
         self.padding_to_add = args["padding"]
-        self._padding = ""
+        self.padding = ""
 
     def report(self, res: TestResult) -> str:
         return "\n".join(self._report_recursive(res))
@@ -27,21 +27,21 @@ class TextReporter(Reporter):
         if res.is_skip:
             return [
                 "{}{fore.YELLOW}{i18n.title.test} {res.name} {i18n.status.skip}{fore.RESET}".format(
-                    self._padding, res=res, i18n=self.i18n, fore=Fore,
+                    self.padding, res=res, i18n=self.i18n, fore=Fore,
                 )
             ]
 
-        lines = ["{}{i18n.title.test} {res.name}".format(self._padding, res=res, i18n=self.i18n)]
-        self._padding += self.padding_to_add
+        lines = ["{}{i18n.title.test} {res.name}".format(self.padding, res=res, i18n=self.i18n)]
+        self.padding += self.padding_to_add
         for case in res.set_ups:
-            lines.extend([self._padding + i for i in self.format_case(case, "setUp")])
+            lines.extend([self.padding + i for i in self.format_case(case, "setUp")])
         for case in res.cases:
-            lines.extend([self._padding + i for i in self.format_case(case, "case")])
+            lines.extend([self.padding + i for i in self.format_case(case, "case")])
         for sub_test in res.sub_tests:
             lines.extend(self._report_recursive(sub_test))
         for case in res.tear_downs:
-            lines.extend([self._padding + i for i in self.format_case(case, "tearDown")])
-        self._padding = self._padding[:-len(self.padding_to_add)]
+            lines.extend([self.padding + i for i in self.format_case(case, "tearDown")])
+        self.padding = self.padding[:-len(self.padding_to_add)]
         if res.is_pass:
             lines.append(
                 "{}{fore.GREEN}{i18n.title.test} {res.name} {i18n.status.pass}{fore.RESET}，"
@@ -52,14 +52,14 @@ class TextReporter(Reporter):
                 "{i18n.summary.stepSkip}: {res.step_skip}，"
                 "{i18n.summary.assertionPass}: {fore.GREEN}{res.assertion_pass}{fore.RESET}，"
                 "{i18n.summary.elapse}: {elapse}".format(
-                    self._padding, total_case=res.case_pass + res.case_skip,
+                    self.padding, total_case=res.case_pass + res.case_skip,
                     elapse=durationpy.to_str(res.elapse), res=res, i18n=self.i18n, fore=Fore,
                 ),
             )
         else:
             if res.is_err:
                 lines.extend([
-                    "{}{}{}".format(self.padding_to_add, self._padding, line)
+                    "{}{}{}".format(self.padding_to_add, self.padding, line)
                     for line in "{i18n.testHeader.err} {res.err}".format(res=res, i18n=self.i18n).split("\n")
                 ])
             lines.append(
@@ -74,7 +74,7 @@ class TextReporter(Reporter):
                 "{i18n.summary.assertionPass}: {fore.GREEN}{res.assertion_pass}{fore.RESET}，"
                 "{i18n.summary.assertionFail}: {fore.RED}{res.assertion_fail}{fore.RESET}，"
                 "{i18n.summary.elapse}: {elapse}".format(
-                    self._padding, total_case=res.case_pass + res.case_skip + res.case_fail,
+                    self.padding, total_case=res.case_pass + res.case_skip + res.case_fail,
                     elapse=durationpy.to_str(res.elapse), res=res, i18n=self.i18n, fore=Fore,
                 ),
             )
