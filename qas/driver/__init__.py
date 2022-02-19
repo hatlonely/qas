@@ -9,6 +9,7 @@ from .mongo_driver import MongoDriver
 from .http_driver import HttpDriver
 from .grpc_driver import GRPCDriver
 from .thrift_driver import ThriftDriver
+from .elasticsearch_driver import ElasticSearchDriver
 from .pop_driver import POPDriver
 from .ots_driver import OTSDriver
 from .mns_driver import MNSDriver
@@ -23,6 +24,7 @@ driver_map = {
     "shell": ShellDriver,
     "mysql": MysqlDriver,
     "mongo": MongoDriver,
+    "elasticsearch": ElasticSearchDriver,
     "pop": POPDriver,
     "ots": OTSDriver,
     "mns": MNSDriver,

@@ -1,0 +1,65 @@
+name: elasticsearch-example
+
+ctx:
+  es:
+    type: elasticsearch
+    args:
+      endpoint: "http://localhost:9200"
+      username:
+      password:
+
+case:
+  - name: ElasticSearchExample
+    step:
+      - ctx: es
+        req:
+          cmd: index
+          index: test-index
+          id: "123"
+          document:
+            author: "kimchy"
+            text: "Elasticsearch: cool. bonsai cool."
+            "#timestamp": "datetime.now()"
+        res: {
+          "_index": "test-index",
+          "_type": "_doc",
+          "_id": "123",
+        }
+      - ctx: es
+        req:
+          cmd: get
+          index: test-index
+          id: "123"
+        res: {
+          "_index": "test-index",
+          "_type": "_doc",
+          "_id": "123",
+          "_source": {
+            "author": "kimchy",
+            "text": "Elasticsearch: cool. bonsai cool."
+          }
+        }
+      - ctx: es
+        req:
+          cmd: search
+          index: test-index
+          query:
+            match_all:
+        res:  {
+          "hits": {
+            "total": 1,
+            "max_score": 1.0,
+            "hits": [
+              {
+                "_index": "test-index",
+                "_type": "_doc",
+                "_id": "123",
+                "_source": {
+                  "author": "kimchy",
+                  "text": "Elasticsearch: cool. bonsai cool."
+                }
+              }
+            ]
+          }
+        }
+
