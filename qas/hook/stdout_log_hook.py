@@ -74,10 +74,10 @@ class StdoutLogHook(Hook):
     def on_case_end(self, res: CaseResult):
         print("\n".join([self._padding + i for i in self.format_case(res, "case")]))
 
-    def on_setup_end(self, res: CaseResult):
+    def on_set_up_end(self, res: CaseResult):
         print("\n".join([self._padding + i for i in self.format_case(res, "setUp")]))
 
-    def on_teardown_end(self, res: CaseResult):
+    def on_tear_down_end(self, res: CaseResult):
         print("\n".join([self._padding + i for i in self.format_case(res, "tearDown")]))
 
     def format_case(self, res: CaseResult, case_type: str) -> list[str]:

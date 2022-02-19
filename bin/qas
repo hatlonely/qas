@@ -47,8 +47,8 @@ def main():
     parser.add_argument("--case-id", help="filter case by id. id consists of case-filename.index")
     parser.add_argument("--case-regex", help="filter case by regex")
     parser.add_argument("--json-result", help="json result report. If you specify this field, you can convert the JSON report to another format report")
-    parser.add_argument("--skip-setup", nargs="?", const=True, default=False, type=str2bool, help="skip setup cases")
-    parser.add_argument("--skip-teardown", nargs="?", const=True, default=False, type=str2bool, help="skip teardown cases")
+    parser.add_argument("--skip-set-up", nargs="?", const=True, default=False, type=str2bool, help="skip set up cases")
+    parser.add_argument("--skip-tear-down", nargs="?", const=True, default=False, type=str2bool, help="skip tear down cases")
     args = parser.parse_args()
 
     fw = Framework(
@@ -57,8 +57,8 @@ def main():
         case_name=args.case_name,
         case_id=args.case_id,
         case_regex=args.case_regex,
-        skip_setup=args.skip_setup,
-        skip_teardown=args.skip_teardown,
+        skip_set_up=args.skip_set_up,
+        skip_tear_down=args.skip_tear_down,
         reporter=args.reporter,
         x=args.x,
         json_result=args.json_result,

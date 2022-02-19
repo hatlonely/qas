@@ -27,21 +27,21 @@ class DebugHook(Hook):
         self.padding = self.padding[:-2]
         print("{} case 结束 {} {}".format(self.padding, res.name, json.dumps(res, default=lambda x: x.to_json())))
 
-    def on_setup_start(self, case_info):
-        print("{} setup 开始 {} {}".format(self.padding, case_info["name"], json.dumps(case_info)))
+    def on_set_up_start(self, case_info):
+        print("{} set_up 开始 {} {}".format(self.padding, case_info["name"], json.dumps(case_info)))
         self.padding += "  "
 
-    def on_setup_end(self, res: CaseResult):
+    def on_set_up_end(self, res: CaseResult):
         self.padding = self.padding[:-2]
-        print("{} setup 结束 {} {}".format(self.padding, res.name, json.dumps(res, default=lambda x: x.to_json())))
+        print("{} set_up 结束 {} {}".format(self.padding, res.name, json.dumps(res, default=lambda x: x.to_json())))
 
-    def on_teardown_start(self, case_info):
-        print("{} teardown 开始 {} {}".format(self.padding, case_info["name"], json.dumps(case_info)))
+    def on_tear_down_start(self, case_info):
+        print("{} tear_down 开始 {} {}".format(self.padding, case_info["name"], json.dumps(case_info)))
         self.padding += "  "
 
-    def on_teardown_end(self, res: CaseResult):
+    def on_tear_down_end(self, res: CaseResult):
         self.padding = self.padding[:-2]
-        print("{} teardown 结束 {} {}".format(self.padding, res.name, json.dumps(res, default=lambda x: x.to_json())))
+        print("{} tear_down 结束 {} {}".format(self.padding, res.name, json.dumps(res, default=lambda x: x.to_json())))
 
     def on_step_start(self, step_info):
         print("{} step 开始 {} {}".format(self.padding, step_info["name"], json.dumps(step_info)))

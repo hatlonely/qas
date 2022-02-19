@@ -24,16 +24,16 @@ class Hook:
     def on_case_end(self, res: CaseResult):
         pass
 
-    def on_setup_start(self, case_info):
+    def on_set_up_start(self, case_info):
         pass
 
-    def on_setup_end(self, res: CaseResult):
+    def on_set_up_end(self, res: CaseResult):
         pass
 
-    def on_teardown_start(self, case_info):
+    def on_tear_down_start(self, case_info):
         pass
 
-    def on_teardown_end(self, res: CaseResult):
+    def on_tear_down_end(self, res: CaseResult):
         pass
 
     def on_step_start(self, step_info):

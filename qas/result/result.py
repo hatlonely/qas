@@ -303,19 +303,19 @@ class TestResult:
     is_pass: bool
     is_err: bool
     err: str
-    setups: list[CaseResult]
+    set_ups: list[CaseResult]
     cases: list[CaseResult]
-    teardowns: list[CaseResult]
+    tear_downs: list[CaseResult]
     sub_tests: list
     elapse: timedelta
     sub_tests: list
     case_pass: int
     case_fail: int
     case_skip: int
-    setup_pass: int
-    setup_fail: int
-    teardown_pass: int
-    teardown_fail: int
+    set_up_pass: int
+    set_up_fail: int
+    tear_down_pass: int
+    tear_down_fail: int
     step_pass: int
     step_fail: int
     step_skip: int
@@ -342,10 +342,10 @@ class TestResult:
             "casePass": self.case_pass,
             "caseFail": self.case_fail,
             "caseSkip": self.case_skip,
-            "setUpPass": self.setup_pass,
-            "setUpFail": self.setup_fail,
-            "tearDownPass": self.teardown_pass,
-            "tearDownFail": self.teardown_fail,
+            "setUpPass": self.set_up_pass,
+            "setUpFail": self.set_up_fail,
+            "tearDownPass": self.tear_down_pass,
+            "tearDownFail": self.tear_down_fail,
             "currCasePass": self.curr_case_pass,
             "currCaseFail": self.curr_case_fail,
             "currCaseSkip": self.curr_case_skip,
@@ -358,8 +358,8 @@ class TestResult:
             "subTestSkip": self.sub_test_skip,
             "subTestFail": self.sub_test_fail,
             "cases": self.cases,
-            "setUps": self.setups,
-            "tearDowns": self.teardowns,
+            "setUps": self.set_ups,
+            "tearDowns": self.tear_downs,
             "subTests": self.sub_tests,
         }
 
@@ -368,17 +368,17 @@ class TestResult:
         res = TestResult(directory=obj["directory"], name=obj["name"], description=obj["description"], err_message=obj["err"], is_skip=obj["isSkip"])
         res.is_pass = obj["isPass"]
         res.status = obj["status"]
-        res.setups = [CaseResult.from_json(i) for i in obj["setUps"]]
+        res.set_ups = [CaseResult.from_json(i) for i in obj["setUps"]]
         res.cases = [CaseResult.from_json(i) for i in obj["cases"]]
-        res.teardowns = [CaseResult.from_json(i) for i in obj["tearDowns"]]
+        res.tear_downs = [CaseResult.from_json(i) for i in obj["tearDowns"]]
         res.sub_tests = [TestResult.from_json(i) for i in obj["subTests"]]
         res.case_pass = obj["casePass"]
         res.case_fail = obj["caseFail"]
         res.case_skip = obj["caseSkip"]
-        res.setup_pass = obj["setUpPass"]
-        res.setup_fail = obj["setUpFail"]
-        res.teardown_pass = obj["tearDownPass"]
-        res.teardown_fail = obj["tearDownFail"]
+        res.set_up_pass = obj["setUpPass"]
+        res.set_up_fail = obj["setUpFail"]
+        res.tear_down_pass = obj["tearDownPass"]
+        res.tear_down_fail = obj["tearDownFail"]
         res.curr_case_pass = obj["currCasePass"]
         res.curr_case_fail = obj["currCaseFail"]
         res.curr_case_skip = obj["currCaseSkip"]
@@ -401,18 +401,18 @@ class TestResult:
         self.is_pass = True
         self.is_err = False
         self.err = ""
-        self.setups = list[CaseResult]()
+        self.set_ups = list[CaseResult]()
         self.cases = list[CaseResult]()
-        self.teardowns = list[CaseResult]()
+        self.tear_downs = list[CaseResult]()
         self.sub_tests = list[TestResult]()
         self.elapse = timedelta(seconds=0)
         self.case_pass = 0
         self.case_fail = 0
         self.case_skip = 0
-        self.setup_pass = 0
-        self.setup_fail = 0
-        self.teardown_pass = 0
-        self.teardown_fail = 0
+        self.set_up_pass = 0
+        self.set_up_fail = 0
+        self.tear_down_pass = 0
+        self.tear_down_fail = 0
         self.curr_case_pass = 0
         self.curr_case_fail = 0
         self.curr_case_skip = 0
@@ -436,14 +436,14 @@ class TestResult:
         else:
             self.status = "fail"
 
-    def add_setup_result(self, case: CaseResult):
-        self.setups.append(case)
+    def add_set_up_result(self, case: CaseResult):
+        self.set_ups.append(case)
         if not case.is_pass:
             self.is_pass = False
             self.status = "fail"
-            self.setup_fail += 1
+            self.set_up_fail += 1
         else:
-            self.setup_pass += 1
+            self.set_up_pass += 1
 
     def add_case_result(self, case: CaseResult):
         self.cases.append(case)
@@ -464,14 +464,14 @@ class TestResult:
         self.assertion_pass += case.assertion_pass
         self.assertion_fail += case.assertion_fail
 
-    def add_teardown_result(self, case):
-        self.teardowns.append(case)
+    def add_tear_down_result(self, case):
+        self.tear_downs.append(case)
         if not case.is_pass:
             self.is_pass = False
             self.status = "fail"
-            self.teardown_fail += 1
+            self.tear_down_fail += 1
         else:
-            self.teardown_pass += 1
+            self.tear_down_pass += 1
 
     def add_sub_test_result(self, sub_test):
         self.sub_tests.append(sub_test)

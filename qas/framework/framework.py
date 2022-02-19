@@ -37,8 +37,8 @@ class RuntimeConstant:
     case_regex: str
     case_name: str
     case_id: str
-    skip_setup: bool
-    skip_teardown: bool
+    skip_set_up: bool
+    skip_tear_down: bool
     parallel: bool
 
 
@@ -69,8 +69,8 @@ class Framework:
         case_name=None,
         case_id=None,
         case_regex=None,
-        skip_setup=False,
-        skip_teardown=False,
+        skip_set_up=False,
+        skip_tear_down=False,
         reporter="text",
         x=None,
         json_result=None,
@@ -100,8 +100,8 @@ class Framework:
             case_regex=case_regex,
             case_name=case_name,
             case_id=case_id,
-            skip_setup=skip_setup,
-            skip_teardown=skip_teardown,
+            skip_set_up=skip_set_up,
+            skip_tear_down=skip_tear_down,
             parallel=parallel,
         )
         self.reporter_map = reporter_map
@@ -144,8 +144,8 @@ class Framework:
                 "loadingFiles": {
                     "ctx": "ctx.yaml",
                     "var": "var.yaml",
-                    "setUp": "setup.yaml",
-                    "tearDown": "teardown.yaml",
+                    "setUp": "set_up.yaml",
+                    "tearDown": "tear_down.yaml",
                     "beforeCase": "before_case.yaml",
                     "afterCase": "after_case.yaml",
                     "commonStep": "common_step.yaml",
@@ -279,21 +279,21 @@ class Framework:
             test_pool=parent_rctx.test_pool,
         )
 
-        # 执行 setup
-        if not constant.skip_setup:
+        # 执行 set_up
+        if not constant.skip_set_up:
             if not constant.parallel:
-                for case_info in Framework.setups(customize, info, directory):
-                    result = Framework.must_run_case(directory, customize, constant, rctx, case_info, case_type="setup")
-                    test_result.add_setup_result(result)
+                for case_info in Framework.set_ups(customize, info, directory):
+                    result = Framework.must_run_case(directory, customize, constant, rctx, case_info, case_type="set_up")
+                    test_result.add_set_up_result(result)
             else:
                 # 并发执行，每次执行 ctx.yaml 中 parallel.setUp 定义的个数
-                for i in grouper(Framework.setups(customize, info, directory), info["parallel"]["setUp"]):
+                for i in grouper(Framework.set_ups(customize, info, directory), info["parallel"]["setUp"]):
                     results = parent_rctx.case_pool.map(
                         Framework.must_run_case,
-                        repeat(directory), repeat(customize), repeat(constant), repeat(rctx), i, repeat("setup")
+                        repeat(directory), repeat(customize), repeat(constant), repeat(rctx), i, repeat("set_up")
                     )
                     for result in results:
-                        test_result.add_setup_result(result)
+                        test_result.add_set_up_result(result)
             if not test_result.is_pass:
                 return test_result
 
@@ -333,28 +333,28 @@ class Framework:
                 for result in results:
                     test_result.add_sub_test_result(result)
 
-        # 执行 teardown
-        if not constant.skip_teardown:
+        # 执行 tear_down
+        if not constant.skip_tear_down:
             if not constant.parallel:
-                for case_info in Framework.teardowns(customize, info, directory):
-                    result = Framework.must_run_case(directory, customize, constant, rctx, case_info, case_type="teardown")
-                    test_result.add_teardown_result(result)
+                for case_info in Framework.tear_downs(customize, info, directory):
+                    result = Framework.must_run_case(directory, customize, constant, rctx, case_info, case_type="tear_down")
+                    test_result.add_tear_down_result(result)
             else:
                 # 并发执行，每次执行 ctx.yaml 中 parallel.tearDown 定义的个数
-                for i in grouper(Framework.teardowns(customize, info, directory), info["parallel"]["tearDown"]):
+                for i in grouper(Framework.tear_downs(customize, info, directory), info["parallel"]["tearDown"]):
                     results = parent_rctx.case_pool.map(
                         Framework.must_run_case,
-                        repeat(directory), repeat(customize), repeat(constant), repeat(rctx), i, repeat("teardown")
+                        repeat(directory), repeat(customize), repeat(constant), repeat(rctx), i, repeat("tear_down")
                     )
                     for result in results:
-                        test_result.add_teardown_result(result)
+                        test_result.add_tear_down_result(result)
 
         test_result.elapse = datetime.now() - now
         return test_result
 
     @staticmethod
     def need_skip(constant, case, var, case_type):
-        if case_type == "setup" or case_type == "teardown":
+        if case_type == "set_up" or case_type == "tear_down":
             return False
         if constant.case_name and constant.case_name != case["name"]:
             return True
@@ -365,7 +365,7 @@ class Framework:
         return False
 
     @staticmethod
-    def setups(customize, info, directory):
+    def set_ups(customize, info, directory):
         for case in info["setUp"]:
             yield case
         if os.path.isfile("{}/{}".format(directory, customize.loadingFiles.setUp)):
@@ -373,7 +373,7 @@ class Framework:
                 yield case
 
     @staticmethod
-    def teardowns(customize, info, directory):
+    def tear_downs(customize, info, directory):
         for case in info["tearDown"]:
             yield case
         if os.path.isfile("{}/{}".format(directory, customize.loadingFiles.tearDown)):
@@ -525,18 +525,18 @@ class Framework:
         })
 
         for hook in rctx.hooks:
-            if case_type == "setup":
-                hook.on_setup_start(case_info)
-            elif case_type == "teardown":
-                hook.on_teardown_start(case_info)
+            if case_type == "set_up":
+                hook.on_set_up_start(case_info)
+            elif case_type == "tear_down":
+                hook.on_tear_down_start(case_info)
             else:
                 hook.on_case_start(case_info)
         result = Framework.run_case(directory, customize, constant, rctx, case_info, case_type=case_type)
         for hook in rctx.hooks:
-            if case_type == "setup":
-                hook.on_setup_end(result)
-            elif case_type == "teardown":
-                hook.on_teardown_end(result)
+            if case_type == "set_up":
+                hook.on_set_up_end(result)
+            elif case_type == "tear_down":
+                hook.on_tear_down_end(result)
             else:
                 hook.on_case_end(result)
         return result

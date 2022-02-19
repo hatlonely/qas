@@ -263,22 +263,22 @@ _test_tpl = """
         {% endif %}
 
 
-        {# 渲染 setup #}
-        {% if res.setups %}
+        {# 渲染 set_up #}
+        {% if res.set_ups %}
         <div class="card-header justify-content-between d-flex">
             <span class="fw-bolder">{{ i18n.testHeader.setUp }}</span>
             <span>
-                <span class="badge bg-primary rounded-pill" onclick="showAllCase('{{ name }}-set-up')">{{ res.setup_pass + res.setup_fail }}</span>
-                {% if res.setup_pass %}
-                <span class="badge bg-success rounded-pill" onclick="showCasePass('{{ name }}-set-up')">{{ res.setup_pass }}</span>
+                <span class="badge bg-primary rounded-pill" onclick="showAllCase('{{ name }}-set-up')">{{ res.set_up_pass + res.set_up_fail }}</span>
+                {% if res.set_up_pass %}
+                <span class="badge bg-success rounded-pill" onclick="showCasePass('{{ name }}-set-up')">{{ res.set_up_pass }}</span>
                 {% endif %}
-                {% if res.setup_fail %}
-                <span class="badge bg-danger rounded-pill" onclick="showCaseFail('{{ name }}-set-up">{{ res.setup_fail }}</span>
+                {% if res.set_up_fail %}
+                <span class="badge bg-danger rounded-pill" onclick="showCaseFail('{{ name }}-set-up">{{ res.set_up_fail }}</span>
                 {% endif %}
             </span>
         </div>
         <ul class="list-group list-group-flush" id="{{ name }}-set-up">
-            {% for case in res.setups %}
+            {% for case in res.set_ups %}
             <li class="list-group-item px-{{ customize.padding.x }} py-{{ customize.padding.y }} case {{ case.status }}">
                 {{ render_case(case, '{}-set-up-{}'.format(name, loop.index0)) }}
             </li>
@@ -344,22 +344,22 @@ _test_tpl = """
         </ul>
         {% endif %}
 
-        {# 渲染 teardown #}
-        {% if res.teardowns %}
+        {# 渲染 tear_down #}
+        {% if res.tear_downs %}
         <div class="card-header justify-content-between d-flex">
             <span class="fw-bolder">{{ i18n.testHeader.tearDown }}</span>
             <span>
-                <span class="badge bg-primary rounded-pill" onclick="showAllCase('{{ name }}-tear-down')">{{ res.teardown_pass + res.teardown_fail }}</span>
-                {% if res.teardown_pass %}
-                <span class="badge bg-success rounded-pill" onclick="showCasePass('{{ name }}-tear-down')">{{ res.teardown_pass }}</span>
+                <span class="badge bg-primary rounded-pill" onclick="showAllCase('{{ name }}-tear-down')">{{ res.tear_down_pass + res.tear_down_fail }}</span>
+                {% if res.tear_down_pass %}
+                <span class="badge bg-success rounded-pill" onclick="showCasePass('{{ name }}-tear-down')">{{ res.tear_down_pass }}</span>
                 {% endif %}
-                {% if res.teardown_fail %}
-                <span class="badge bg-danger rounded-pill" onclick="showCaseFail('{{ name }}-tear-down')">{{ res.teardown_fail }}</span>
+                {% if res.tear_down_fail %}
+                <span class="badge bg-danger rounded-pill" onclick="showCaseFail('{{ name }}-tear-down')">{{ res.tear_down_fail }}</span>
                 {% endif %}
             </span>
         </div>
         <ul class="list-group list-group-flush" id="{{ name }}-tear-down">
-            {% for case in res.teardowns %}
+            {% for case in res.tear_downs %}
             <li class="list-group-item px-{{ customize.padding.x }} py-{{ customize.padding.y }} case {{ case.status }}">
                 {{ render_case(case, '{}-tear-down-{}'.format(name, loop.index0)) }}
             </li>

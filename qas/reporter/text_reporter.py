@@ -33,13 +33,13 @@ class TextReporter(Reporter):
 
         lines = ["{}{i18n.title.test} {res.name}".format(self._padding, res=res, i18n=self.i18n)]
         self._padding += self.padding_to_add
-        for case in res.setups:
+        for case in res.set_ups:
             lines.extend([self._padding + i for i in self.format_case(case, "setUp")])
         for case in res.cases:
             lines.extend([self._padding + i for i in self.format_case(case, "case")])
         for sub_test in res.sub_tests:
             lines.extend(self._report_recursive(sub_test))
-        for case in res.teardowns:
+        for case in res.tear_downs:
             lines.extend([self._padding + i for i in self.format_case(case, "tearDown")])
         self._padding = self._padding[:-len(self.padding_to_add)]
         if res.is_pass:
