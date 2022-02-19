@@ -474,6 +474,9 @@ class TestResult:
             self.tear_down_pass += 1
 
     def add_sub_test_result(self, sub_test):
+        if sub_test.case_pass + sub_test.case_skip + sub_test.case_fail == 0:
+            return
+
         self.sub_tests.append(sub_test)
         if sub_test.is_skip:
             self.sub_test_skip += 1
