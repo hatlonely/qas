@@ -40,6 +40,7 @@ class RuntimeConstant:
     skip_set_up: bool
     skip_tear_down: bool
     parallel: bool
+    x: str
 
 
 @dataclass
@@ -103,6 +104,7 @@ class Framework:
             skip_set_up=skip_set_up,
             skip_tear_down=skip_tear_down,
             parallel=parallel,
+            x=x,
         )
         self.reporter_map = reporter_map
         self.driver_map = driver_map
@@ -550,7 +552,14 @@ class Framework:
         case_id = ""
         if case_type == "case":
             case_id = case_info["caseID"]
-            command = 'qas -t "{}" -c "{}" --case-id "{}"'.format(constant.test_directory, directory[len(constant.test_directory) + 1:], case_id)
+            if constant.x:
+                command = 'qas -x "{}" -t "{}" -c "{}" --case-id "{}"'.format(
+                    constant.x, constant.test_directory, directory[len(constant.test_directory) + 1:], case_id,
+                )
+            else:
+                command = 'qas -t "{}" -c "{}" --case-id "{}"'.format(
+                    constant.test_directory, directory[len(constant.test_directory) + 1:], case_id,
+                )
         case = CaseResult(directory=directory, id_=case_id, name=case_info["name"], description=case_info["description"], command=command)
 
         now = datetime.now()
