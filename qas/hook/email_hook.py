@@ -27,7 +27,7 @@ _test_tpl = """
             <h5 class="card-header text-white bg-transparent border-0">{{ i18n.title.test }} {{ res.name }} {{ i18n.status.skip }}</h5>
         {% elif res.is_pass %}
         <div class="card border-success">
-            <h5 class="card-header text-white bg-success">{{ i18n.title.test }} {{ res.name }} {{ i18n.status.pass }}</h5>
+            <h5 class="card-header text-white bg-success">{{ i18n.title.test }} {{ res.name }} {{ i18n.status.succ }}</h5>
         {% else %}
         <div class="card border-danger">
             <h5 class="card-header text-white bg-danger">{{ i18n.title.test }} {{ res.name }} {{ i18n.status.fail }}</h5>

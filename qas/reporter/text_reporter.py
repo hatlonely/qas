@@ -44,7 +44,7 @@ class TextReporter(Reporter):
         self.padding = self.padding[:-len(self.padding_to_add)]
         if res.is_pass:
             lines.append(
-                "{}{fore.GREEN}{i18n.title.test} {res.name} {i18n.status.pass}{fore.RESET}，"
+                "{}{fore.GREEN}{i18n.title.test} {res.name} {i18n.status.succ}{fore.RESET}，"
                 "{i18n.summary.caseTotal}: {total_case}，"
                 "{i18n.summary.casePass}: {fore.GREEN}{res.case_pass}{fore.RESET}，"
                 "{i18n.summary.caseSkip}: {res.case_skip}，"
@@ -95,7 +95,7 @@ class TextReporter(Reporter):
 
         if res.is_pass:
             lines.append(
-                "{fore.GREEN}{header} {res.name} {i18n.status.pass}{fore.RESET}，"
+                "{fore.GREEN}{header} {res.name} {i18n.status.succ}{fore.RESET}，"
                 "{i18n.summary.stepPass}: {fore.GREEN}{res.step_pass}{fore.RESET}，"
                 "{i18n.summary.stepSkip}: {res.step_skip}，"
                 "{i18n.summary.assertionPass}: {fore.GREEN}{res.assertion_pass}{fore.RESET}，"
@@ -145,7 +145,7 @@ class TextReporter(Reporter):
         lines = []
         if step.is_pass:
             lines.append(
-                "{fore.GREEN}{header} {step.name} {i18n.status.pass}{fore.RESET}，"
+                "{fore.GREEN}{header} {step.name} {i18n.status.succ}{fore.RESET}，"
                 "{i18n.summary.assertionPass}: {fore.GREEN}{step.assertion_pass}{fore.RESET}，"
                 "{i18n.summary.elapse}: {elapse}".format(
                     fore=Fore, step=step, i18n=self.i18n, header=step_type_map[step_type], elapse=durationpy.to_str(step.elapse),

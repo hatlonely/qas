@@ -15,7 +15,7 @@ i18n = {
             "test": "TEST",
         },
         "status": {
-            "pass": "PASS",
+            "succ": "PASS",
             "skip": "SKIP",
             "fail": "FAIL",
         },
@@ -65,15 +65,9 @@ i18n = {
             "test": "测试",
         },
         "status": {
-            "pass": "通过",
+            "succ": "通过",
             "skip": "跳过",
             "fail": "失败",
-        },
-        "testTitle": {
-            "name": "测试报告",
-            "pass": "测试通过",
-            "skip": "测试跳过",
-            "fail": "测试失败",
         },
         "summary": {
             "caseTotal": "测试总数",
