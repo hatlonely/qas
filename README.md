@@ -4,6 +4,12 @@
 
 ## 安装
 
+### pip 安装
+
+```shell
+pip3 install qas
+```
+
 ### 源码安装
 
 ```shell
