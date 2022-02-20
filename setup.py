@@ -4,7 +4,7 @@
 from setuptools import setup, find_packages
 
 
-with open("README.md") as fp:
+with open("README.rst") as fp:
     readme = fp.read()
 
 
@@ -15,7 +15,7 @@ with open("LICENSE") as fp:
 setup(
     name="qas",
     version="1.0.0",
-    description="a function test framework",
+    description="A general, concurrent and extensible functional testing framework",
     long_description=readme,
     author="hatlonely",
     author_email="hatlonely@foxmail.com",
