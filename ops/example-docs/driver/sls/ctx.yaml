@@ -1,0 +1,36 @@
+name: sls-example
+
+ctx:
+  sls:
+    type: sls
+    args:
+      AccessKeyId: xxx
+      AccessKeySecret: xxx
+      Endpoint: cn-shanghai.log.aliyuncs.com
+
+case:
+  - name: SLSExample
+    step:
+      - ctx: sls
+        req:
+          Action: PutLogs
+          Project: test-project
+          Logstore: test-logstore
+          Topic: test-topic
+          Source: test-source
+          HashKey: "121123"
+          LogTags:
+            tag1: val1
+            tag2: val2
+          LogItems:
+            - Contents:
+                key1: val1
+                key2: val2
+                key3: val3
+        res:
+          "#RequestId": "len(val) == 24"
+      - ctx: sls
+        req:
+          Action: GetLogs
+          Project: test-project
+          Logstore: test-logstore

@@ -85,9 +85,10 @@ class SLSDriver(Driver):
             "HashKey": None,
             "Compress": False,
             "LogTags": {},
-            "LogItems": [
-                REQUIRED
-            ]
+            "LogItems": [{
+                "Timestamp": int(datetime.now().timestamp()),
+                "Contents": {},
+            }]
         })
 
         res = self.client.put_logs(PutLogsRequest(

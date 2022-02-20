@@ -14,6 +14,7 @@ from .pop_driver import POPDriver
 from .ots_driver import OTSDriver
 from .mns_driver import MNSDriver
 from .oss_driver import OSSDriver
+from .sls_driver import SLSDriver
 
 
 driver_map = {
@@ -29,6 +30,7 @@ driver_map = {
     "ots": OTSDriver,
     "mns": MNSDriver,
     "oss": OSSDriver,
+    "sls": SLSDriver,
 }
 
 
@@ -45,5 +47,6 @@ __all__ = [
     "POPDriver",
     "OTSDriver",
     "OSSDriver",
+    "SLSDriver",
     "driver_map",
 ]
