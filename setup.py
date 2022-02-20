@@ -12,6 +12,10 @@ with open("LICENSE") as fp:
     license_ = fp.read()
 
 
+with open("requirements.txt") as fp:
+    requires = [i.strip() for i in fp.readlines()]
+
+
 setup(
     name="qas",
     version="1.0.0",
@@ -23,4 +27,6 @@ setup(
     license=license_,
     packages=find_packages(exclude=("tests", "docs", "tmp", "ops", "build", "dist")),
     scripts=["bin/qas"],
+    keywords=["qas"],
+    install_requires=requires,
 )
