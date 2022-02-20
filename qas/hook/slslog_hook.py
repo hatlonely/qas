@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 
-import json
 from datetime import datetime
 from aliyun.log import LogClient, PutLogsRequest, LogItem, GetLogsRequest
 
