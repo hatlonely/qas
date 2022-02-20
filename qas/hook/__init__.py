@@ -6,6 +6,7 @@ from .debug_hook import DebugHook
 from .report_hook import ReportHook
 from .email_hook import EmailHook
 from .stdlog_hook import StdLogHook
+from .slslog_hook import SLSLogHook
 
 
 hook_map = {
@@ -13,6 +14,7 @@ hook_map = {
     "report": ReportHook,
     "email": EmailHook,
     "stdLog": StdLogHook,
+    "slsLog": SLSLogHook,
 }
 
 __all__ = [
@@ -21,5 +23,6 @@ __all__ = [
     "EmailHook",
     "ReportHook",
     "StdLogHook",
+    "SLSLogHook",
     "hook_map",
 ]

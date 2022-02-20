@@ -57,7 +57,7 @@ reporter:
     padding: "--<"
 
 hook:
-  stdoutLog:
+  report:
     lang: "zh"
     padding: "--<"
   email:
@@ -65,6 +65,12 @@ hook:
     username: hatlonely@foxmail.com
     password: xxxxxx
     receiver: hatlonely@foxmail.com
+  slsLog:
+    Endpoint: cn-shanghai.log.aliyuncs.com
+    AccessKeyId: xxx
+    AccessKeySecret: xxx
+    Project: test-project
+    Logstore: test-logstore
 
 framework:
   keyPrefix:
