@@ -18,7 +18,7 @@ with open("requirements.txt") as fp:
 
 setup(
     name="qas",
-    version="1.0.0",
+    version="1.0.1",
     description="A general, concurrent and extensible functional testing framework",
     long_description=readme,
     author="hatlonely",
