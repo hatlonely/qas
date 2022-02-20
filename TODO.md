@@ -5,4 +5,3 @@
 5. 参数支持 validator
 6. http 支持文件上传
 7. 支持 pip install
-8. 钉钉 hook
