@@ -23,7 +23,7 @@ class SLSDriver(Driver):
         )
 
     def name(self, req):
-        pass
+        return req["Action"]
 
     def do(self, req: dict):
         req = merge(req, {
