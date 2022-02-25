@@ -15,18 +15,20 @@ class TestRender(unittest.TestCase):
                 "key4": "val4",
                 "#key5": "case['key5']"
             }],
+            "$key6": "echo -n 'val6'",
         }, {
             "key2": 2,
             "key5": "val5"
         })
         print(json.dumps(res, indent=True))
         self.assertDictEqual(res, {
-          "key1": "val1",
-          "key2": 2,
-          "key3": [{
-             "key4": "val4",
-             "key5": "val5"
-           }]
+            "key1": "val1",
+            "key2": 2,
+            "key3": [{
+                "key4": "val4",
+                "key5": "val5"
+            }],
+            "key6": "val6"
         })
 
 

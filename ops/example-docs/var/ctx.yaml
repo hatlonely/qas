@@ -8,6 +8,7 @@ var:
       - key5: val5
         key6: val6
   "#key7": "os.getenv('PATH')"
+  "$key8": "echo 'val8'"
 
 ctx:
   shell:

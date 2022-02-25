@@ -141,7 +141,8 @@ class Framework:
                 "keyPrefix": {
                     "eval": "#",
                     "exec": "%",
-                    "loop": "!"
+                    "loop": "!",
+                    "shell": "$",
                 },
                 "loadingFiles": {
                     "ctx": "ctx.yaml",
@@ -236,7 +237,7 @@ class Framework:
         info = Framework.load_ctx(os.path.basename(directory), "{}/{}".format(directory, customize.loadingFiles.ctx))
         description = info["description"] + Framework.load_description("{}/{}".format(directory, customize.loadingFiles.description))
         var_info = copy.deepcopy(parent_rctx.var_info) | info["var"] | Framework.load_var("{}/{}".format(directory, customize.loadingFiles.var))
-        var_info = render(var_info)
+        var_info = render(var_info, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, pshell=customize.keyPrefix.shell)
         var = json.loads(json.dumps(var_info), object_hook=lambda x: SimpleNamespace(**x))
         common_step_info = copy.deepcopy(parent_rctx.common_step_info) | info["commonStep"] | Framework.load_common_step("{}/{}".format(directory, customize.loadingFiles.commonStep))
         before_case_info = copy.deepcopy(parent_rctx.before_case_info) + info["beforeCase"] + list(Framework.load_step("{}/{}".format(directory, customize.loadingFiles.beforeCase)))
@@ -260,7 +261,7 @@ class Framework:
                     },
                 },
             })
-            val = render(val, var=var, x=parent_rctx.x, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec)
+            val = render(val, var=var, x=parent_rctx.x, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, pshell=customize.keyPrefix.shell)
             ctx[key] = parent_rctx.driver_map[val["type"]](val["args"])
             dft[key] = val["dft"]
 
@@ -663,7 +664,7 @@ class Framework:
         try:
             req = merge(req, rctx.dft[step_info["ctx"]]["req"])
             # use json transform tuple to list
-            req = render(json.loads(json.dumps(req)), case=case, var=rctx.var, x=rctx.x, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec)
+            req = render(json.loads(json.dumps(req)), case=case, var=rctx.var, x=rctx.x, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, pshell=customize.keyPrefix.shell)
             sub_step_result.req = req
 
             retry = Retry(merge(step_info["retry"], rctx.dft[step_info["ctx"]]["retry"]))
