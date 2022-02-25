@@ -236,6 +236,7 @@ class Framework:
         info = Framework.load_ctx(os.path.basename(directory), "{}/{}".format(directory, customize.loadingFiles.ctx))
         description = info["description"] + Framework.load_description("{}/{}".format(directory, customize.loadingFiles.description))
         var_info = copy.deepcopy(parent_rctx.var_info) | info["var"] | Framework.load_var("{}/{}".format(directory, customize.loadingFiles.var))
+        var_info = render(var_info)
         var = json.loads(json.dumps(var_info), object_hook=lambda x: SimpleNamespace(**x))
         common_step_info = copy.deepcopy(parent_rctx.common_step_info) | info["commonStep"] | Framework.load_common_step("{}/{}".format(directory, customize.loadingFiles.commonStep))
         before_case_info = copy.deepcopy(parent_rctx.before_case_info) + info["beforeCase"] + list(Framework.load_step("{}/{}".format(directory, customize.loadingFiles.beforeCase)))
@@ -648,10 +649,10 @@ class Framework:
                     step.add_sub_step_result(result)
 
         # auto name step
-        if not step.name:
+        if not step.name and step.req:
             step.name = rctx.ctx[step_info["ctx"]].name(step.req)
-            if not step.name:
-                step.name = "anonymous-step"
+        if not step.name:
+            step.name = "anonymous-step"
         step.elapse = datetime.now() - now
         return step
 
