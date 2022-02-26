@@ -68,11 +68,17 @@ def append_val_to_key(vals, node, val):
     key = keys[-1]
     if isinstance(vals, dict):
         if key in vals:
-            vals[key] = "{}{}".format(json.dumps(vals[key], indent=2), val)
+            lines = json.dumps(vals[key], indent=2).split("\n")
+            for i in range(1, len(lines)):
+                lines[i] =  "  " * len(keys) + lines[i]
+            vals[key] = "{}{}".format("\n".join(lines), val)
         else:
             vals[key] = "{}{}".format(json.dumps(None), val)
     else:
         if int(key) < len(vals):
-            vals[int(key)] = "{}{}".format(json.dumps(vals[int(key)], indent=2), val)
+            lines = json.dumps(vals[int(key)], indent=2).split("\n")
+            for i in range(1, len(lines)):
+                lines[i] = "  " * len(keys) + lines[i]
+            vals[int(key)] = "{}{}".format("\n".join(lines), val)
         else:
             vals.append("{}{}".format(json.dumps(None), val))
