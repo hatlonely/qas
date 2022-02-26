@@ -12,7 +12,7 @@ case:
           command: echo -n "${KEY1} ${KEY2}"
           envs:
             "!KEY1": ["hello", "world"]
-            "!KEY2": ["123", "456"]
+            "#!KEY2": "['123', '456']"
         res:
           exitCode: 0
           "!stdout":
