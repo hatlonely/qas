@@ -14,7 +14,7 @@ with open("LICENSE") as fp:
 
 setup(
     name="qas",
-    version="1.0.5",
+    version="1.0.6",
     description="A general, concurrent and extensible functional testing framework",
     long_description=readme,
     author="hatlonely",
