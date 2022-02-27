@@ -14,7 +14,7 @@ with open("LICENSE") as fp:
 
 setup(
     name="qas",
-    version="1.0.3",
+    version="1.0.4",
     description="A general, concurrent and extensible functional testing framework",
     long_description=readme,
     author="hatlonely",
@@ -37,9 +37,8 @@ setup(
         "setuptools~=57.4.0",
         "durationpy~=0.5",
         "aliyun-mns-sdk~=1.1.6",
-        "oss2~=2.13.0",
+        "oss2~=2.15.0",
         "pymongo~=4.0.1",
-        "pycrypto~=2.6.1",
         "Jinja2~=3.0.3",
         "Markdown~=3.3.6",
         "grpcio~=1.43.0",
