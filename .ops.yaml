@@ -62,3 +62,9 @@ task:
       - docker login --username="${REGISTRY_USERNAME}" --password="${REGISTRY_PASSWORD}" "${REGISTRY_ENDPOINT}"
       - docker build --tag=${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/${NAME}:${IMAGE_TAG} .
       - docker push "${REGISTRY_ENDPOINT}/${REGISTRY_NAMESPACE}/${NAME}:${IMAGE_TAG}"
+  pip:
+    step:
+      - rm -rf dist
+      - python3 setup.py sdist
+      - pip3 install twine
+      - twine upload dist/*
