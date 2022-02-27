@@ -5,6 +5,8 @@ import copy
 import itertools
 import re
 import time
+import uuid
+
 import yaml
 import traceback
 import os
@@ -32,6 +34,7 @@ from .generate import generate_req, generate_res, calculate_num, grouper
 
 @dataclass
 class RuntimeConstant:
+    test_id: str
     test_directory: str
     case_directory: str
     case_regex: str
@@ -96,6 +99,7 @@ class Framework:
 
         test_directory = test_directory.strip().rstrip("/") if test_directory else test_directory
         self.constant = RuntimeConstant(
+            test_id=uuid.uuid4().hex,
             test_directory=test_directory,
             case_directory=test_directory if not case_directory else os.path.join(test_directory, case_directory.strip().rstrip("/")),
             case_regex=case_regex,
@@ -175,7 +179,7 @@ class Framework:
         self.customize = json.loads(json.dumps(cfg["framework"]), object_hook=lambda y: SimpleNamespace(**y))
 
         self.reporter = self.reporter_map[reporter](cfg["reporter"][reporter])
-        self.hooks = [self.hook_map[i](cfg["hook"][i]) for i in hooks]
+        self.hooks = [self.hook_map[i](cfg["hook"][i], test_id=self.constant.test_id) for i in hooks]
 
         self.json_result = json_result
 

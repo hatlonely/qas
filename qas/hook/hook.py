@@ -6,8 +6,9 @@ from ..i18n import I18n
 
 
 class Hook:
-    def __init__(self, args=None):
+    def __init__(self, args=None, test_id=""):
         self.i18n = I18n(args).i18n()
+        self.test_id=test_id
 
     def on_exit(self, res: TestResult):
         pass

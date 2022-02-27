@@ -119,8 +119,8 @@ _test_tpl = """
 
 
 class EmailHook(Hook):
-    def __init__(self, args):
-        super().__init__(args)
+    def __init__(self, args, test_id=""):
+        super().__init__(args, test_id=test_id)
         args = merge(args, {
             "endpoint": REQUIRED,
             "username": REQUIRED,

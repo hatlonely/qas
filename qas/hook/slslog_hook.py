@@ -10,8 +10,8 @@ from ..util import merge, REQUIRED
 
 
 class SLSLogHook(Hook):
-    def __init__(self, args):
-        super().__init__(args)
+    def __init__(self, args, test_id=""):
+        super().__init__(args, test_id=test_id)
 
         args = merge(args, {
             "Endpoint": REQUIRED,
@@ -39,6 +39,7 @@ class SLSLogHook(Hook):
 
     def on_exit(self, res: TestResult):
         self.log(res.name, "test", res.status, res.elapse, {
+            "testID": self.test_id,
             "casePass": res.case_pass,
             "caseFail": res.case_fail,
             "caseSkip": res.case_skip,
@@ -51,6 +52,7 @@ class SLSLogHook(Hook):
 
     def on_test_end(self, res: TestResult):
         self.log(res.name, "subTest", res.status, res.elapse, {
+            "testID": self.test_id,
             "casePass": res.case_pass,
             "caseFail": res.case_fail,
             "caseSkip": res.case_skip,
@@ -63,6 +65,7 @@ class SLSLogHook(Hook):
 
     def on_set_up_end(self, res: CaseResult):
         self.log(res.name, "setUp", res.status, res.elapse, {
+            "testID": self.test_id,
             "stepPass": res.step_pass,
             "stepFail": res.step_fail,
             "stepSkip": res.step_skip,
@@ -72,6 +75,7 @@ class SLSLogHook(Hook):
 
     def on_case_end(self, res: CaseResult):
         self.log(res.name, "case", res.status, res.elapse, {
+            "testID": self.test_id,
             "stepPass": res.step_pass,
             "stepFail": res.step_fail,
             "stepSkip": res.step_skip,
@@ -81,6 +85,7 @@ class SLSLogHook(Hook):
 
     def on_tear_down_end(self, res: CaseResult):
         self.log(res.name, "tearDown", res.status, res.elapse, {
+            "testID": self.test_id,
             "stepPass": res.step_pass,
             "stepFail": res.step_fail,
             "stepSkip": res.step_skip,
