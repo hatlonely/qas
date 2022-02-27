@@ -15,6 +15,7 @@ class StdLogHook(Hook):
     def on_exit(self, res: TestResult):
         StdLogHook.log(res.name, "test", res.status, res.elapse, {
             "testID": self.test_id,
+            "name": res.name,
             "casePass": res.case_pass,
             "caseFail": res.case_fail,
             "caseSkip": res.case_skip,
@@ -28,6 +29,7 @@ class StdLogHook(Hook):
     def on_test_end(self, res: TestResult):
         StdLogHook.log(res.name, "subTest", res.status, res.elapse, {
             "testID": self.test_id,
+            "name": res.name,
             "casePass": res.case_pass,
             "caseFail": res.case_fail,
             "caseSkip": res.case_skip,
@@ -41,6 +43,7 @@ class StdLogHook(Hook):
     def on_set_up_end(self, res: CaseResult):
         StdLogHook.log(res.name, "setUp", res.status, res.elapse, {
             "testID": self.test_id,
+            "name": res.name,
             "stepPass": res.step_pass,
             "stepFail": res.step_fail,
             "stepSkip": res.step_skip,
@@ -51,6 +54,7 @@ class StdLogHook(Hook):
     def on_case_end(self, res: CaseResult):
         StdLogHook.log(res.name, "case", res.status, res.elapse, {
             "testID": self.test_id,
+            "name": res.name,
             "stepPass": res.step_pass,
             "stepFail": res.step_fail,
             "stepSkip": res.step_skip,
@@ -61,6 +65,7 @@ class StdLogHook(Hook):
     def on_tear_down_end(self, res: CaseResult):
         StdLogHook.log(res.name, "tearDown", res.status, res.elapse, {
             "testID": self.test_id,
+            "name": res.name,
             "stepPass": res.step_pass,
             "stepFail": res.step_fail,
             "stepSkip": res.step_skip,
@@ -76,6 +81,8 @@ class StdLogHook(Hook):
         else:
             status = "fail"
         StdLogHook.log(res.name, "step", status, res.elapse, {
+            "ctx": res.ctx,
+            "name": res.name,
             "assertionPass": res.assertion_pass,
             "assertionFail": res.assertion_fail,
         })
