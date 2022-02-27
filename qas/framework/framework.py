@@ -156,6 +156,12 @@ class Framework:
                 }
             }
         })
+        cfg = render(
+            cfg,
+            peval=cfg["framework"]["keyPrefix"]["eval"],
+            pexec=cfg["framework"]["keyPrefix"]["exec"],
+            pshell=cfg["framework"]["keyPrefix"]["shell"],
+        )
 
         if "i18n" in cfg:
             cfg["reporter"][reporter] = merge(cfg["reporter"][reporter], cfg["i18n"])
