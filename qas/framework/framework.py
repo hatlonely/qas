@@ -224,7 +224,7 @@ class Framework:
         try:
             result = Framework.run_test(directory, customize, constant, rctx)
         except Exception as e:
-            result = TestResult(directory, directory, "", "Exception {}".format(traceback.format_exc()))
+            result = TestResult(constant.test_id, directory, directory, "", "Exception {}".format(traceback.format_exc()))
         for hook in rctx.hooks:
             hook.on_test_end(result)
         return result
@@ -237,10 +237,10 @@ class Framework:
         parent_rctx: RuntimeContext,
     ):
         if constant.case_id and not (constant.case_directory + "/").startswith(directory + "/"):
-            return TestResult(directory, directory[len(constant.test_directory)+1:], "", is_skip=True)
+            return TestResult(constant.test_id, directory, directory[len(constant.test_directory)+1:], "", is_skip=True)
         if not (constant.case_directory + "/").startswith(directory + "/") and \
                 not (directory + "/").startswith(constant.case_directory + "/"):
-            return TestResult(directory, directory[len(constant.test_directory)+1:], "", is_skip=True)
+            return TestResult(constant.test_id, directory, directory[len(constant.test_directory)+1:], "", is_skip=True)
 
         now = datetime.now()
 
@@ -275,7 +275,7 @@ class Framework:
             ctx[key] = parent_rctx.driver_map[val["type"]](val["args"])
             dft[key] = val["dft"]
 
-        test_result = TestResult(directory, info["name"], description)
+        test_result = TestResult(constant.test_id, directory, info["name"], description)
 
         rctx = RuntimeContext(
             ctx=ctx,

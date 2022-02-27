@@ -295,6 +295,7 @@ class CaseResult:
 
 @dataclass
 class TestResult:
+    id_: str
     directory: str
     name: str
     description: str
@@ -330,6 +331,7 @@ class TestResult:
 
     def to_json(self):
         return {
+            "id": self.id_,
             "directory": self.directory,
             "name": self.name,
             "status": self.status,
@@ -365,7 +367,14 @@ class TestResult:
 
     @staticmethod
     def from_json(obj):
-        res = TestResult(directory=obj["directory"], name=obj["name"], description=obj["description"], err_message=obj["err"], is_skip=obj["isSkip"])
+        res = TestResult(
+            id_=obj["id"],
+            directory=obj["directory"],
+            name=obj["name"],
+            description=obj["description"],
+            err_message=obj["err"],
+            is_skip=obj["isSkip"],
+        )
         res.is_pass = obj["isPass"]
         res.status = obj["status"]
         res.set_ups = [CaseResult.from_json(i) for i in obj["setUps"]]
@@ -393,7 +402,8 @@ class TestResult:
         res.elapse = timedelta(microseconds=obj["elapse"])
         return res
 
-    def __init__(self, directory, name, description="", err_message=None, is_skip=False):
+    def __init__(self, id_, directory, name, description="", err_message=None, is_skip=False):
+        self.id_ = id_
         self.directory = directory
         self.name = name
         self.description = description
