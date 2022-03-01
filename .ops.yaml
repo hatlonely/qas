@@ -1,11 +1,5 @@
 name: qas
 
-dep:
-  ops:
-    type: git
-    url: "https://github.com/hatlonely/ops.git"
-    version: master
-
 env:
   default:
     NAME: qas
@@ -14,35 +8,8 @@ env:
     REGISTRY_PASSWORD: "{{.registry.dockerhub.password}}"
     REGISTRY_NAMESPACE: "{{.registry.dockerhub.namespace}}"
     IMAGE_TAG: "$(git describe --tags | awk '{print(substr($0,2,length($0)))}'; test ${PIPESTATUS[0]} -eq 0)"
-  dev:
-    IMM_AK: "{{.credential.imm.accessKeyId}}"
-    IMM_SK: "{{.credential.imm.accessKeySecret}}"
-    IMM_ENDPOINT: https://imm.cn-shanghai.aliyuncs.com
-    OTS_AK: "{{.credential.ots.accessKeyId}}"
-    OTS_SK: "{{.credential.ots.accessKeySecret}}"
-    OTS_INSTANCE: imm-dev-hl
-    OTS_ENDPOINT: https://imm-dev-hl.cn-shanghai.ots.aliyuncs.com
-    OSS_AK: "{{.credential.oss.accessKeyId}}"
-    OSS_SK: "{{.credential.oss.accessKeySecret}}"
-    OSS_ENDPOINT: oss-cn-shanghai.aliyuncs.com
-    OSS_BUCKET: imm-test-hl-shanghai
-    MNS_AK: "{{.credential.mns.accessKeyId}}"
-    MNS_SK: "{{.credential.mns.accessKeySecret}}"
-    MNS_ENDPOINT: "http://{{.credential.mns.ownerId}}.mns.cn-shanghai.aliyuncs.com"
 
 task:
-  example-docs:
-    args:
-      case:
-        type: string
-    step:
-      - sh ${DEP}/ops/tool/render.sh ops/example-docs ${TMP}/example-docs
-      - |
-        if [[ "${case}" == "" ]]; then
-          python3 main.py --test "${TMP}/example-docs" -x ops/x
-        else
-          python3 main.py --test "${TMP}/example-docs" -x ops/x --case "${case}"
-        fi
   self-test:
     args:
       case_regex:
