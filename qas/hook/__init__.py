@@ -7,6 +7,7 @@ from .report_hook import ReportHook
 from .email_hook import EmailHook
 from .stdlog_hook import StdLogHook
 from .slslog_hook import SLSLogHook
+from .dingtalk_hook import DingTalkHook
 
 
 hook_map = {
@@ -15,6 +16,7 @@ hook_map = {
     "email": EmailHook,
     "stdLog": StdLogHook,
     "slsLog": SLSLogHook,
+    "dingTalk": DingTalkHook,
 }
 
 __all__ = [
@@ -24,5 +26,6 @@ __all__ = [
     "ReportHook",
     "StdLogHook",
     "SLSLogHook",
+    "DingTalkHook",
     "hook_map",
 ]
