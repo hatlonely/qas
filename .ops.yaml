@@ -11,16 +11,8 @@ env:
 
 task:
   self-test:
-    args:
-      case_regex:
-        type: string
     step:
-      - |
-        if [[ "${case_regex}" == "" ]]; then
-          python3 main.py --test "ops/self-test" --hook trace
-        else
-          python3 main.py --test "ops/self-test" --case-regex "${case_regex}"
-        fi
+      - qas -t ops/self-test --parallel --reporter html > self-test.html
   install:
     step:
       - python3 setup.py install
