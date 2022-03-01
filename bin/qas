@@ -39,7 +39,7 @@ def main():
     parser.add_argument("-x", "--x", help="user defined extension directory. Support to expand drivers/reporters/hooks/util-functions")
     parser.add_argument("--customize", help="customize filename")
     parser.add_argument("--parallel", nargs="?", const=True, default=False, type=str2bool, help="run parallel")
-    parser.add_argument("--hook", help="runtime hook. Separated by comma. Built in support of `debug/trace`. Support user defined extension in `x`")
+    parser.add_argument("--hook", help="runtime hook. Separated by comma. Built in support of `debug/report/slsLog/stdLog/email/dingTalk`. Support user defined extension in `x`")
     parser.add_argument("--step-pool-size", type=int, help="step thread pool size")
     parser.add_argument("--case-pool-size", type=int, help="case thread pool size")
     parser.add_argument("--test-pool-size", type=int, help="test thread pool size")
