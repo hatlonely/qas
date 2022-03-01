@@ -1,4 +1,4 @@
-FROM centos:centos8
+FROM centos:centos8.2.2004
 
 RUN dnf module install -y python39 python39-devel
 RUN dnf module install -y wget gcc jq
