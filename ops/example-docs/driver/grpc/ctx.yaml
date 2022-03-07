@@ -6,7 +6,7 @@ ctx:
     args:
       proto: ops/grpc/route_guide.proto
       endpoint: localhost:50051
-      service: RouteGuideStub
+      service: RouteGuide
 
 case:
   - name: GRPCExample
