@@ -30,7 +30,7 @@ setup(
         "colorama~=0.4.4",
         "tablestore~=5.1.0",
         "python-dateutil~=2.8.1",
-        "aliyun_python_sdk_core==2.13.30",
+        "aliyun_python_sdk_core~=2.13.30",
         "aliyunsdkcore~=1.0.3",
         "PyMySQL~=1.0.2",
         "redis~=4.1.0",
@@ -46,6 +46,8 @@ setup(
         "protobuf~=3.19.3",
         "thrift~=0.15.0",
         "elasticsearch~=7.16.0",
-        "aliyun-log-python-sdk~=0.7.5"
+        "aliyun-log-python-sdk~=0.7.5",
+        "google-api-python-client~=2.39.0",
+        "gcloud~=0.18.3",
     ],
 )
