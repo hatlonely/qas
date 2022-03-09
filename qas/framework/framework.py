@@ -675,7 +675,13 @@ class Framework:
         sub_step_result = SubStepResult()
         sub_step_start = datetime.now()
         try:
-            req = merge(req, rctx.dft[step_info["ctx"]]["req"])
+            req = merge(req, render(
+                rctx.dft[step_info["ctx"]]["req"],
+                case=case, var=rctx.var, x=rctx.x,
+                peval=customize.keyPrefix.eval,
+                pexec=customize.keyPrefix.exec,
+                pshell=customize.keyPrefix.shell,
+            ))
             sub_step_result.req = req
 
             retry = Retry(merge(step_info["retry"], rctx.dft[step_info["ctx"]]["retry"]))
