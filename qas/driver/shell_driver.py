@@ -2,6 +2,9 @@
 
 
 import json
+import os
+import uuid
+
 import yaml
 import subprocess
 import traceback
@@ -33,14 +36,26 @@ class ShellDriver(Driver):
             "command": REQUIRED,
             "envs": dict[str, str](),
             "decoder": "text",
+            "files": dict[str, str](),
+            "tmp": "/tmp",
+            "clean": True,
         })
+
+        filenames = dict([(k, "{}/{}".format(req["tmp"], uuid.uuid4().hex)) for k in req["files"]])
+        for (k, v) in req["files"].items():
+            with open(filenames[k], "wt", encoding='utf-8') as fp:
+                fp.write(v)
 
         process = subprocess.run(
             [self.shebang, *self.args, req["command"]],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
-            env=self.envs | req["envs"],
+            env=self.envs | req["envs"] | filenames,
         )
+
+        if req["clean"]:
+            for filename in filenames.values():
+                os.remove(filename)
 
         res = {
             "exitCode": process.returncode,
