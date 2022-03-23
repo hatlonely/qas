@@ -2,6 +2,8 @@
 
 一个通用、并发、可拓展的功能测试框架
 
+![](docs/assets/example-docs-html-reporter.png)
+
 ## 安装
 
 ### pip 安装
