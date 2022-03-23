@@ -48,6 +48,8 @@ reporter:
 #      body: "'Roboto Condensed', sans-serif !important"
 #      code: "'JetBrains Mono', monospace !important"
     extra:
+      head: ""
+      bodyHeader: ""
       bodyFooter: |
         <div class="text-center"> @Copyright 2022, hatlonely </div>
   json:
