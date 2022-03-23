@@ -22,9 +22,8 @@ python3 -m pip install -r requirements.txt
 ### docker 运行
 
 ```shell
-docker run -i --tty --rm \
-  -v $(pwd)/ops/example-docs/helloworld:/example-docs/helloworld \
-  docker.io/hatlonely/qas:1.0.7 qas -t example-docs/helloworld
+docker run -i --tty --rm -v $(pwd)/ops/example-docs/helloworld:/example-docs/helloworld docker.io/hatlonely/qas:1.0.7 \
+  qas -t example-docs/helloworld
 ```
 
 ## 快速入门
