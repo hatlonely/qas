@@ -76,19 +76,19 @@ qas 就是为了解决 devops 的功能测试问题，通过 yaml 来描述测�
 ## 特性
 
 1. 完全 yaml 描述
-2. 变量引用，支持常量引用 `var`，支持运行结果引用 `case/step/val`
-3. 断言，支持相等断言，支持 python 断言
-4. 支持请求默认值
-5. 支持条件执行
-6. 支持循环执行
-7. 支持执行 hook，`setUp/tearDown/beforeCase/afterCase`
-8. 支持公共步骤引用，`preStep/postStep`
-9. 支持重试和等待，`retry/until`
-10. 测试信息统计，`case/step/assertion` 成功失败数，`elapse` 时间统计
-11. 测试报告，支持 `text/json/html`
-12. 支持 `http/grpc/thrift/shell/redis/mysql/mongo/pop/ots/mns/oss`
-13. 支持用户 python 拓展
-14. 支持并发执行
+2. 支持并发执行
+3. 报告支持 `text/json/html`
+4. 驱动支持 `http/grpc/thrift/shell/redis/mysql/mongo/pop/ots/mns/oss`
+5. 钩子支持，`debug/report/slsLog/email/dingTalk`
+6. 支持用户拓展
+7. 测试信息统计，`case/step/assertion` 成功失败数，`elapse` 时间统计
+8. 变量引用，支持常量引用 `var`，支持运行结果引用 `case/step/val`
+9. 结果断言，支持相等断言，python 表达式断言，python 代码断言，shell 结果断言
+10. 支持默认值
+11. 支持条件执行
+12. 支持循环执行
+13. 执行流程，`setUp/tearDown/beforeCase/afterCase/preStep/postStep`
+14. 支持重试和等待，`retry/until`
 15. 支持国际化
 16. 支持个性化
 
