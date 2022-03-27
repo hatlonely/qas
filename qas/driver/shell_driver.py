@@ -26,7 +26,7 @@ class ShellDriver(Driver):
         })
         self.shebang = args["shebang"]
         self.args = args["args"]
-        self.envs = args["envs"]
+        self.envs = os.environ.copy() | args["envs"]
 
     def name(self, req):
         return req["command"].split(" ")[0]
@@ -50,7 +50,7 @@ class ShellDriver(Driver):
             [self.shebang, *self.args, req["command"]],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
-            env=os.environ.copy() | self.envs | req["envs"] | filenames,
+            env=self.envs | req["envs"] | filenames,
         )
 
         if req["clean"]:
