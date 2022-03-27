@@ -50,7 +50,7 @@ class ShellDriver(Driver):
             [self.shebang, *self.args, req["command"]],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
-            env=self.envs | req["envs"] | filenames,
+            env=os.environ.copy() | self.envs | req["envs"] | filenames,
         )
 
         if req["clean"]:
