@@ -6,6 +6,20 @@ import json
 from .render import render
 
 
+def func(**kwargs):
+    print(kwargs)
+    for k in kwargs:
+        print(k, "=>", kwargs[k])
+    env = locals()
+    env.update(**kwargs)
+    print(eval("a + b"))
+
+
+class TestKwArgs(unittest.TestCase):
+    def test_kwargs(self):
+        func(a="hello", b="world")
+
+
 class TestRender(unittest.TestCase):
     def test_render(self):
         res = render({
@@ -16,7 +30,7 @@ class TestRender(unittest.TestCase):
                 "#key5": "case['key5']"
             }],
             "$key6": "echo -n 'val6'",
-        }, {
+        }, case={
             "key2": 2,
             "key5": "val5"
         })
