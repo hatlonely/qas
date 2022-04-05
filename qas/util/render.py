@@ -2,7 +2,7 @@
 
 
 from .include import *
-from .exec_func import exec_with_kw, eval_with_kw, exec_shell
+from .exec_func import py_exec, py_eval, sh_exec
 
 
 def render(req, peval="#", pexec="%", pshell="$", **kwargs):
@@ -10,11 +10,11 @@ def render(req, peval="#", pexec="%", pshell="$", **kwargs):
         res = {}
         for key, val in req.items():
             if key.startswith(peval):
-                res[key[len(peval):]] = eval_with_kw(val, **kwargs)
+                res[key[len(peval):]] = py_eval(val, **kwargs)
             elif key.startswith(pexec):
-                res[key[len(pexec):]] = exec_with_kw(val, **kwargs)
+                res[key[len(pexec):]] = py_exec(val, **kwargs)
             elif key.startswith(pshell):
-                res[key[len(pshell):]] = exec_shell(val)
+                res[key[len(pshell):]] = sh_exec(val)
             else:
                 res[key] = render(req[key], **kwargs)
         return res

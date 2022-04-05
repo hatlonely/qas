@@ -5,12 +5,12 @@ from .include import *
 import subprocess
 
 
-def eval_with_kw(rule, **kwargs):
+def py_eval(rule, **kwargs):
     locals().update(**kwargs)
     return eval(rule)
 
 
-def exec_with_kw(rule, **kwargs):
+def py_exec(rule, **kwargs):
     loc = {}
     env = locals()
     env.update(**kwargs)
@@ -19,7 +19,7 @@ def exec_with_kw(rule, **kwargs):
     return loc["res"]
 
 
-def exec_shell(rule):
+def sh_exec(rule):
     process = subprocess.run(
         ["/bin/bash", "-c", rule],
         stdout=subprocess.PIPE,

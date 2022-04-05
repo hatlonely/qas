@@ -3,7 +3,7 @@
 
 from ..result import ExpectResult
 from ..util.include import *
-from ..util import exec_with_kw
+from ..util import py_exec
 
 
 def expect(vals, rules, case=None, step=None, var=None, x=None, peval="#", pexec="%", mode=""):
@@ -87,7 +87,7 @@ def expect_eval(rule, val=None, case=None, step=None, var=None, x=None):
 
 
 def expect_exec(rule, val=None, case=None, step=None, var=None, x=None):
-    res = exec_with_kw(rule, val=val, case=case, step=step, var=var, x=x)
+    res = py_exec(rule, val=val, case=case, step=step, var=var, x=x)
     if not isinstance(res, bool):
         return res == val, res
     return res, res
