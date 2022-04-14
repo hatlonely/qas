@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-import copy
-import json
 
+
+import json
 import oss2
 import re
 
@@ -49,6 +49,8 @@ class OSSDriver(Driver):
         try:
             if req["Action"] == "SignURL":
                 return self.sign_url(req)
+            elif req["Action"] == "DeletePrefix":
+                return self.delete_prefix(req)
             args = dict((pascal_to_snake(k), v) for k, v in req.items())
             del args["action"]
             res = getattr(self.client, pascal_to_snake(req["Action"]))(**args)
@@ -88,4 +90,14 @@ class OSSDriver(Driver):
         )
         return {
             "DownloadURL": res
+        }
+
+    def delete_prefix(self, req):
+        req = merge(req, {
+            "Prefix": REQUIRED
+        })
+        for obj in oss2.ObjectIterator(self.client, prefix=req["Prefix"]):
+            self.client.delete_object(obj.key)
+        return {
+            "Success": True
         }

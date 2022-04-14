@@ -702,7 +702,7 @@ class Framework:
             else:
                 raise UntilError()
 
-            result = expect(json.loads(json.dumps(step_res)), res, case=case, step=sub_step_result, var=rctx.var, x=rctx.x, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, mode=mode)
+            result = expect(json.loads(json.dumps(step_res)), json.loads(json.dumps(res)), case=case, step=sub_step_result, var=rctx.var, x=rctx.x, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, mode=mode)
             sub_step_result.add_expect_result(result)
         except RetryError as e:
             sub_step_result.set_error("RetryError [{}]".format(retry))
