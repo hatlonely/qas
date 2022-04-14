@@ -56,6 +56,7 @@ class OSSDriver(Driver):
             del res["resp"]
             res["headers"] = dict([(i, res["headers"][i]) for i in res["headers"]])
             res = dict((snake_to_pascal(k), v) for k, v in res.items())
+            res = json.loads(json.dumps(res, default=lambda x: dict((snake_to_pascal(k), v) for k, v in x.__dict__.items())))
             return res
         except oss2.exceptions.NoSuchKey as e:
             return {

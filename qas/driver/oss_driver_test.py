@@ -10,8 +10,8 @@ from .oss_driver import OSSDriver
 
 access_key_id = "xx"
 access_key_secret = "xx"
-endpoint = "http://oss-cn-shanghai.aliyuncs.com"
 bucket = "xx"
+endpoint = "http://oss-cn-beijing.aliyuncs.com"
 
 
 class TestOSS(unittest.TestCase):
@@ -105,7 +105,7 @@ class TestOSSDriver(unittest.TestCase):
             "Key": "test-file.txt",
             "Filename": "test-file.txt"
         })
-        print(json.dumps(res, indent=True))
+        print(json.dumps(res, indent=2))
 
     def test_put_object_from_file(self):
         res = self.driver.do({
@@ -113,7 +113,14 @@ class TestOSSDriver(unittest.TestCase):
             "Key": "test-file.txt",
             "Filename": "test-file.txt"
         })
-        print(json.dumps(res, indent=True))
+        print(json.dumps(res, indent=2))
+
+    def test_list_objects_v2(self):
+        res = self.driver.do({
+            "Action": "ListObjectsV2",
+            "Prefix": "target/docx/DocxToJPG",
+        })
+        print(json.dumps(res, indent=2))
 
 
 if __name__ == "__main__":
