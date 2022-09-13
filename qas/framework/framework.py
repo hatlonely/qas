@@ -577,6 +577,7 @@ class Framework:
 
         case = CaseResult(directory=directory, id_=case_id, name=case_info["name"], description=case_info["description"], command=command)
         local = render(case_info["local"], var=rctx.var, x=rctx.x, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, pshell=customize.keyPrefix.shell)
+        local = json.loads(json.dumps(local), object_hook=lambda x: SimpleNamespace(**x))
         now = datetime.now()
 
         if case_type == "case":
