@@ -1,0 +1,24 @@
+name: local-example
+
+ctx:
+  shell:
+    type: shell
+
+var:
+  globalKey: hello
+
+case:
+  - name: LocalExample
+    local:
+      key1: world
+      "#key2": "var.globalKey"
+    step:
+      - ctx: shell
+        req:
+          command: echo -n hello world
+          env:
+            "#KEY1": local.key1
+            "#KEY2": local.key2
+        res:
+          exitCode: 0
+          stdout: hello world
