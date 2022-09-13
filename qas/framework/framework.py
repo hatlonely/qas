@@ -502,7 +502,8 @@ class Framework:
             "name": REQUIRED,
             "description": "",
             "cond": "",
-            "caseID": case_id
+            "caseID": case_id,
+            "local": {}
         })
         return info
 
@@ -536,6 +537,7 @@ class Framework:
             "label": {},
             "preStep": [],
             "postStep": [],
+            "local": {},
         })
 
         for hook in rctx.hooks:
@@ -572,13 +574,14 @@ class Framework:
                 command = 'qas -t "{}" -c "{}" --case-id "{}"'.format(
                     constant.test_directory, directory[len(constant.test_directory) + 1:], case_id,
                 )
-        case = CaseResult(directory=directory, id_=case_id, name=case_info["name"], description=case_info["description"], command=command)
 
+        case = CaseResult(directory=directory, id_=case_id, name=case_info["name"], description=case_info["description"], command=command)
+        local = render(case_info["local"], var=rctx.var, x=rctx.x, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, pshell=customize.keyPrefix.shell)
         now = datetime.now()
 
         if case_type == "case":
             for idx, step_info, case_add_step_func in itertools.chain([list(i) + [case.add_before_case_step_result] for i in enumerate(rctx.before_case_info)]):
-                step = Framework.must_run_step(customize, constant, rctx, step_info, case)
+                step = Framework.must_run_step(customize, constant, rctx, local, step_info, case)
                 case_add_step_func(step)
                 if not step.is_pass:
                     break
@@ -590,14 +593,14 @@ class Framework:
             [list(i) + [case.add_case_step_result] for i in enumerate(case_info["step"])],
             [list(i) + [case.add_case_post_step_result] for i in enumerate([rctx.common_step_info[i] for i in case_info["postStep"]])],
         ):
-            step = Framework.must_run_step(customize, constant, rctx, step_info, case)
+            step = Framework.must_run_step(customize, constant, rctx, local, step_info, case)
             case_add_step_func(step)
             if not step.is_pass:
                 break
 
         if case_type == "case":
             for idx, step_info, case_add_step_func in itertools.chain([list(i) + [case.add_after_case_step_result] for i in enumerate(rctx.after_case_info)]):
-                step = Framework.must_run_step(customize, constant, rctx, step_info, case)
+                step = Framework.must_run_step(customize, constant, rctx, local, step_info, case)
                 case_add_step_func(step)
                 if not step.is_pass:
                     break
@@ -606,7 +609,7 @@ class Framework:
         return case
 
     @staticmethod
-    def must_run_step(customize, constant: RuntimeConstant, rctx: RuntimeContext, step_info, case):
+    def must_run_step(customize, constant: RuntimeConstant, rctx: RuntimeContext, local, step_info, case):
         step_info = merge(step_info, {
             "name": "",
             "description": "",
@@ -619,13 +622,13 @@ class Framework:
 
         for hook in rctx.hooks:
             hook.on_step_start(step_info)
-        step = Framework.run_step(customize, constant, rctx, step_info, case)
+        step = Framework.run_step(customize, constant, rctx, local, step_info, case)
         for hook in rctx.hooks:
             hook.on_step_end(step)
         return step
 
     @staticmethod
-    def run_step(customize, constant, rctx, step_info, case):
+    def run_step(customize, constant, rctx, local, step_info, case):
         # 条件步骤
         if step_info["cond"] and not check(step_info["cond"], case=case, var=rctx.var, x=rctx.x):
             return StepResult(step_info["name"], step_info["ctx"], is_skip=True)
@@ -633,7 +636,7 @@ class Framework:
         now = datetime.now()
 
         # use json transform tuple to list
-        step_info["req"] = render(json.loads(json.dumps(step_info["req"])), case=case, var=rctx.var, x=rctx.x, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, pshell=customize.keyPrefix.shell)
+        step_info["req"] = render(json.loads(json.dumps(step_info["req"])), case=case, var=rctx.var, local=local, x=rctx.x, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, pshell=customize.keyPrefix.shell)
 
         mode = ""
         if customize.keyPrefix.eval + "res" in step_info:
@@ -647,7 +650,7 @@ class Framework:
                 generate_req(step_info["req"], p=customize.keyPrefix.loop),
                 generate_res(step_info["res"], calculate_num(step_info["req"], p=customize.keyPrefix.loop), p=customize.keyPrefix.loop)
             ):
-                result = Framework.run_sub_step(customize, rctx, case, req, res, step_info, mode=mode)
+                result = Framework.run_sub_step(customize, rctx, local, case, req, res, step_info, mode=mode)
                 step.add_sub_step_result(result)
         else:
             # 并发执行，每次执行 case.step 中 parallel 定义的个数
@@ -657,7 +660,7 @@ class Framework:
             ):
                 results = rctx.step_pool.map(
                     Framework.run_sub_step,
-                    repeat(customize), repeat(rctx), repeat(case), reqs, ress, repeat(step_info), repeat(mode)
+                    repeat(customize), repeat(rctx), repeat(local), repeat(case), reqs, ress, repeat(step_info), repeat(mode)
                 )
                 for result in results:
                     step.add_sub_step_result(result)
@@ -671,13 +674,13 @@ class Framework:
         return step
 
     @staticmethod
-    def run_sub_step(customize, rctx: RuntimeContext, case, req, res, step_info, mode=""):
+    def run_sub_step(customize, rctx: RuntimeContext, local, case, req, res, step_info, mode=""):
         sub_step_result = SubStepResult()
         sub_step_start = datetime.now()
         try:
             req = merge(json.loads(json.dumps(req)), render(
                 rctx.dft[step_info["ctx"]]["req"],
-                case=case, var=rctx.var, x=rctx.x,
+                case=case, var=rctx.var, x=rctx.x, local=local,
                 peval=customize.keyPrefix.eval,
                 pexec=customize.keyPrefix.exec,
                 pshell=customize.keyPrefix.shell,
