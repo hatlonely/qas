@@ -106,5 +106,5 @@ def assert_(rules, **kwargs):
             ok = check(rule, **kwargs)
             results.append(AssertResult(is_pass=ok, rule=rule, message=""))
         except Exception as e:
-            results.append(AssertResult(is_pass=False, rule=rule, message="Exception {}".format(traceback.format_exc())))
+            results.append(AssertResult(is_pass=False, rule=rule, message="Exception: {}".format(e)))
     return results

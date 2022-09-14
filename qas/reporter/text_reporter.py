@@ -8,6 +8,7 @@ from colorama import Fore
 from .reporter import Reporter
 from ..result import TestResult, CaseResult
 from .format_step_res import format_step_res
+from .format_step_assert import format_step_assert
 from ..util import merge
 
 
@@ -170,4 +171,11 @@ class TextReporter(Reporter):
             lines.extend((self.i18n.stepHeader.res + ": " + format_step_res(
                 sub_step, pass_open=Fore.GREEN, pass_close=Fore.RESET, fail_open=Fore.RED, fail_close=Fore.RESET,
             )).split("\n"))
+            if sub_step.asserts:
+                lines.append(self.i18n.stepHeader.assert_ + ":")
+                lines.extend([
+                    self.padding_to_add + i
+                    for i in format_step_assert(
+                    sub_step, pass_open=Fore.GREEN, pass_close=Fore.RESET, fail_open=Fore.RED, fail_close=Fore.RESET,
+                ).split("\n")])
         return lines

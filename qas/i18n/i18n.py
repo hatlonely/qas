@@ -54,6 +54,7 @@ i18n = {
             "res": "Res",
             "err": "Err",
             "subStep": "SubStep",
+            "assert_": "Assert",
         },
         "toolTips": {
             "copy": "copy"
@@ -104,6 +105,7 @@ i18n = {
             "res": "返回",
             "err": "错误",
             "subStep": "子步骤",
+            "assert_": "断言",
         },
         "toolTips": {
             "copy": "复制"
