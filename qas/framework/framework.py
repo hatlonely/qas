@@ -577,7 +577,6 @@ class Framework:
 
         case = CaseResult(directory=directory, id_=case_id, name=case_info["name"], description=case_info["description"], command=command)
         local = render(case_info["local"], var=rctx.var, x=rctx.x, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, pshell=customize.keyPrefix.shell)
-        local = json.loads(json.dumps(local), object_hook=lambda x: SimpleNamespace(**x))
         now = datetime.now()
 
         if case_type == "case":
@@ -619,6 +618,7 @@ class Framework:
             "retry": {},
             "until": {},
             "cond": "",
+            "assign": {},
         })
 
         for hook in rctx.hooks:
@@ -637,7 +637,8 @@ class Framework:
         now = datetime.now()
 
         # use json transform tuple to list
-        step_info["req"] = render(json.loads(json.dumps(step_info["req"])), case=case, var=rctx.var, local=local, x=rctx.x, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, pshell=customize.keyPrefix.shell)
+        local_namespace = json.loads(json.dumps(local), object_hook=lambda x: SimpleNamespace(**x))
+        step_info["req"] = render(json.loads(json.dumps(step_info["req"])), case=case, var=rctx.var, local=local_namespace, x=rctx.x, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, pshell=customize.keyPrefix.shell)
 
         mode = ""
         if customize.keyPrefix.eval + "res" in step_info:
@@ -651,7 +652,7 @@ class Framework:
                 generate_req(step_info["req"], p=customize.keyPrefix.loop),
                 generate_res(step_info["res"], calculate_num(step_info["req"], p=customize.keyPrefix.loop), p=customize.keyPrefix.loop)
             ):
-                result = Framework.run_sub_step(customize, rctx, local, case, req, res, step_info, mode=mode)
+                result = Framework.run_sub_step(customize, rctx, local_namespace, case, req, res, step_info, mode=mode)
                 step.add_sub_step_result(result)
         else:
             # 并发执行，每次执行 case.step 中 parallel 定义的个数
@@ -661,10 +662,14 @@ class Framework:
             ):
                 results = rctx.step_pool.map(
                     Framework.run_sub_step,
-                    repeat(customize), repeat(rctx), repeat(local), repeat(case), reqs, ress, repeat(step_info), repeat(mode)
+                    repeat(customize), repeat(rctx), repeat(local_namespace), repeat(case), reqs, ress, repeat(step_info), repeat(mode)
                 )
                 for result in results:
                     step.add_sub_step_result(result)
+
+        assign = render(step_info["assign"], var=rctx.var, x=rctx.x, case=case, step=step, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, pshell=customize.keyPrefix.shell)
+        for key in assign:
+            local[key] = assign[key]
 
         # auto name step
         if not step.name and step.req:
@@ -675,13 +680,13 @@ class Framework:
         return step
 
     @staticmethod
-    def run_sub_step(customize, rctx: RuntimeContext, local, case, req, res, step_info, mode=""):
+    def run_sub_step(customize, rctx: RuntimeContext, local_namespace, case, req, res, step_info, mode=""):
         sub_step_result = SubStepResult()
         sub_step_start = datetime.now()
         try:
             req = merge(json.loads(json.dumps(req)), render(
                 rctx.dft[step_info["ctx"]]["req"],
-                case=case, var=rctx.var, x=rctx.x, local=local,
+                case=case, var=rctx.var, x=rctx.x, local=local_namespace,
                 peval=customize.keyPrefix.eval,
                 pexec=customize.keyPrefix.exec,
                 pshell=customize.keyPrefix.shell,

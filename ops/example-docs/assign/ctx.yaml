@@ -1,0 +1,25 @@
+name: assign-example
+
+ctx:
+  shell:
+    type: shell
+
+case:
+  - name: AssignExample
+    step:
+      - ctx: shell
+        req:
+          command: echo -n hello world
+        res:
+          exitCode: 0
+          stdout: hello world
+        assign:
+          "#output": step.res["stdout"]
+      - ctx: shell
+        req:
+          command: echo -n $OUTPUT
+          envs:
+            "#OUTPUT": local.output
+        res:
+          exitCode: 0
+          stdout: hello world
