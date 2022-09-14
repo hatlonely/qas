@@ -64,7 +64,7 @@ step:
                       "stdout": "val1\nval3\nval5\nval6\n",
                       "stderr": ""
                     },
-                    "assertions": [
+                    "expects": [
                       {
                         "isPass": true,
                         "message": "OK",
@@ -133,7 +133,7 @@ step:
                       "#stdout": "step.res['json']['cases'][1]['steps'][0]['res']['stdout']",
                       "stderr": ""
                     },
-                    "assertions": [
+                    "expects": [
                       {
                         "isPass": true,
                         "message": "OK",
@@ -185,7 +185,7 @@ step:
                       "#stdout": "step.res['json']['cases'][1]['steps'][0]['res']['stdout']",
                       "stderr": ""
                     },
-                    "assertions": [
+                    "expects": [
                       {
                         "isPass": true,
                         "message": "OK",

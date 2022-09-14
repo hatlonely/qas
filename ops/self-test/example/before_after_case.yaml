@@ -54,7 +54,7 @@ step:
                       "stdout": "case\n",
                       "stderr": ""
                     },
-                    "assertions": [],
+                    "expects": [],
                     "assertionPass": 0,
                     "assertionFail": 0,
                     "#elapse": "val > 0"
@@ -96,7 +96,7 @@ step:
                       "stdout": "before case\n",
                       "stderr": ""
                     },
-                    "assertions": [],
+                    "expects": [],
                     "assertionPass": 0,
                     "assertionFail": 0,
                     "#elapse": "val > 0"
@@ -138,7 +138,7 @@ step:
                       "stdout": "after case\n",
                       "stderr": ""
                     },
-                    "assertions": [],
+                    "expects": [],
                     "assertionPass": 0,
                     "assertionFail": 0,
                     "#elapse": "val > 0"

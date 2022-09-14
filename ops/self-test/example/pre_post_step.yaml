@@ -54,7 +54,7 @@ step:
                       "stdout": "case step\n",
                       "stderr": ""
                     },
-                    "assertions": [],
+                    "expects": [],
                     "assertionPass": 0,
                     "assertionFail": 0,
                     "#elapse": "val > 0"

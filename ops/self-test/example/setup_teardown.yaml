@@ -77,7 +77,7 @@ step:
                       "stdout": "case\n",
                       "stderr": ""
                     },
-                    "assertions": [],
+                    "expects": [],
                     "assertionPass": 0,
                     "assertionFail": 0,
                     "#elapse": "val > 0"
@@ -139,7 +139,7 @@ step:
                       "stdout": "setup\n",
                       "stderr": ""
                     },
-                    "assertions": [],
+                    "expects": [],
                     "assertionPass": 0,
                     "assertionFail": 0,
                     "#elapse": "val > 0"
@@ -201,7 +201,7 @@ step:
                       "stdout": "teardown\n",
                       "stderr": ""
                     },
-                    "assertions": [],
+                    "expects": [],
                     "assertionPass": 0,
                     "assertionFail": 0,
                     "#elapse": "val > 0"

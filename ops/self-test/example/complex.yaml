@@ -81,7 +81,7 @@ step:
                       "stdout": "val1",
                       "stderr": ""
                     },
-                    "assertions": [
+                    "expects": [
                       {
                         "isPass": true,
                         "message": "OK",
@@ -143,7 +143,7 @@ step:
                       "stdout": "before case\n",
                       "stderr": ""
                     },
-                    "assertions": [],
+                    "expects": [],
                     "assertionPass": 0,
                     "assertionFail": 0,
                     "#elapse": "val > 0"
@@ -190,7 +190,7 @@ step:
                       "stdout": "after case\n",
                       "stderr": ""
                     },
-                    "assertions": [],
+                    "expects": [],
                     "assertionPass": 0,
                     "assertionFail": 0,
                     "#elapse": "val > 0"
@@ -252,7 +252,7 @@ step:
                       "stdout": "val1",
                       "stderr": ""
                     },
-                    "assertions": [
+                    "expects": [
                       {
                         "isPass": true,
                         "message": "OK",
@@ -314,7 +314,7 @@ step:
                       "stdout": "before case\n",
                       "stderr": ""
                     },
-                    "assertions": [],
+                    "expects": [],
                     "assertionPass": 0,
                     "assertionFail": 0,
                     "#elapse": "val > 0"
@@ -361,7 +361,7 @@ step:
                       "stdout": "after case\n",
                       "stderr": ""
                     },
-                    "assertions": [],
+                    "expects": [],
                     "assertionPass": 0,
                     "assertionFail": 0,
                     "#elapse": "val > 0"
@@ -423,7 +423,7 @@ step:
                       "stdout": "val1",
                       "stderr": ""
                     },
-                    "assertions": [
+                    "expects": [
                       {
                         "isPass": true,
                         "message": "OK",
@@ -485,7 +485,7 @@ step:
                       "stdout": "before case\n",
                       "stderr": ""
                     },
-                    "assertions": [],
+                    "expects": [],
                     "assertionPass": 0,
                     "assertionFail": 0,
                     "#elapse": "val > 0"
@@ -532,7 +532,7 @@ step:
                       "stdout": "after case\n",
                       "stderr": ""
                     },
-                    "assertions": [],
+                    "expects": [],
                     "assertionPass": 0,
                     "assertionFail": 0,
                     "#elapse": "val > 0"
@@ -596,7 +596,7 @@ step:
                       "stdout": "setup1 step1\n",
                       "stderr": ""
                     },
-                    "assertions": [],
+                    "expects": [],
                     "assertionPass": 0,
                     "assertionFail": 0,
                     "#elapse": "val > 0"
@@ -641,7 +641,7 @@ step:
                       "stdout": "setup1 step2\n",
                       "stderr": ""
                     },
-                    "assertions": [],
+                    "expects": [],
                     "assertionPass": 0,
                     "assertionFail": 0,
                     "#elapse": "val > 0"
@@ -705,7 +705,7 @@ step:
                       "stdout": "setup2 step1\n",
                       "stderr": ""
                     },
-                    "assertions": [],
+                    "expects": [],
                     "assertionPass": 0,
                     "assertionFail": 0,
                     "#elapse": "val > 0"
@@ -750,7 +750,7 @@ step:
                       "stdout": "setup2 step2\n",
                       "stderr": ""
                     },
-                    "assertions": [],
+                    "expects": [],
                     "assertionPass": 0,
                     "assertionFail": 0,
                     "#elapse": "val > 0"
@@ -816,7 +816,7 @@ step:
                       "stdout": "teardown1 step1\n",
                       "stderr": ""
                     },
-                    "assertions": [],
+                    "expects": [],
                     "assertionPass": 0,
                     "assertionFail": 0,
                     "#elapse": "val > 0"
@@ -861,7 +861,7 @@ step:
                       "stdout": "teardown1 step2\n",
                       "stderr": ""
                     },
-                    "assertions": [],
+                    "expects": [],
                     "assertionPass": 0,
                     "assertionFail": 0,
                     "#elapse": "val > 0"
@@ -925,7 +925,7 @@ step:
                       "stdout": "teardown2 step1\n",
                       "stderr": ""
                     },
-                    "assertions": [],
+                    "expects": [],
                     "assertionPass": 0,
                     "assertionFail": 0,
                     "#elapse": "val > 0"
@@ -970,7 +970,7 @@ step:
                       "stdout": "teardown2 step2\n",
                       "stderr": ""
                     },
-                    "assertions": [],
+                    "expects": [],
                     "assertionPass": 0,
                     "assertionFail": 0,
                     "#elapse": "val > 0"
@@ -1065,7 +1065,7 @@ step:
                           "stdout": "val1",
                           "stderr": ""
                         },
-                        "assertions": [
+                        "expects": [
                           {
                             "isPass": true,
                             "message": "OK",
@@ -1127,7 +1127,7 @@ step:
                           "stdout": "before case\n",
                           "stderr": ""
                         },
-                        "assertions": [],
+                        "expects": [],
                         "assertionPass": 0,
                         "assertionFail": 0,
                         "#elapse": "val > 0"
@@ -1174,7 +1174,7 @@ step:
                           "stdout": "after case\n",
                           "stderr": ""
                         },
-                        "assertions": [],
+                        "expects": [],
                         "assertionPass": 0,
                         "assertionFail": 0,
                         "#elapse": "val > 0"
@@ -1236,7 +1236,7 @@ step:
                           "stdout": "val1",
                           "stderr": ""
                         },
-                        "assertions": [
+                        "expects": [
                           {
                             "isPass": true,
                             "message": "OK",
@@ -1298,7 +1298,7 @@ step:
                           "stdout": "before case\n",
                           "stderr": ""
                         },
-                        "assertions": [],
+                        "expects": [],
                         "assertionPass": 0,
                         "assertionFail": 0,
                         "#elapse": "val > 0"
@@ -1345,7 +1345,7 @@ step:
                           "stdout": "after case\n",
                           "stderr": ""
                         },
-                        "assertions": [],
+                        "expects": [],
                         "assertionPass": 0,
                         "assertionFail": 0,
                         "#elapse": "val > 0"
@@ -1407,7 +1407,7 @@ step:
                           "stdout": "val1",
                           "stderr": ""
                         },
-                        "assertions": [
+                        "expects": [
                           {
                             "isPass": true,
                             "message": "OK",
@@ -1469,7 +1469,7 @@ step:
                           "stdout": "before case\n",
                           "stderr": ""
                         },
-                        "assertions": [],
+                        "expects": [],
                         "assertionPass": 0,
                         "assertionFail": 0,
                         "#elapse": "val > 0"
@@ -1516,7 +1516,7 @@ step:
                           "stdout": "after case\n",
                           "stderr": ""
                         },
-                        "assertions": [],
+                        "expects": [],
                         "assertionPass": 0,
                         "assertionFail": 0,
                         "#elapse": "val > 0"
@@ -1614,7 +1614,7 @@ step:
                           "stdout": "val2",
                           "stderr": ""
                         },
-                        "assertions": [
+                        "expects": [
                           {
                             "isPass": true,
                             "message": "OK",
@@ -1678,7 +1678,7 @@ step:
                           "stdout": "before case\n",
                           "stderr": ""
                         },
-                        "assertions": [],
+                        "expects": [],
                         "assertionPass": 0,
                         "assertionFail": 0,
                         "#elapse": "val > 0"
@@ -1727,7 +1727,7 @@ step:
                           "stdout": "after case\n",
                           "stderr": ""
                         },
-                        "assertions": [],
+                        "expects": [],
                         "assertionPass": 0,
                         "assertionFail": 0,
                         "#elapse": "val > 0"
@@ -1791,7 +1791,7 @@ step:
                           "stdout": "subval1",
                           "stderr": ""
                         },
-                        "assertions": [
+                        "expects": [
                           {
                             "isPass": true,
                             "message": "OK",
@@ -1855,7 +1855,7 @@ step:
                           "stdout": "before case\n",
                           "stderr": ""
                         },
-                        "assertions": [],
+                        "expects": [],
                         "assertionPass": 0,
                         "assertionFail": 0,
                         "#elapse": "val > 0"
@@ -1904,7 +1904,7 @@ step:
                           "stdout": "after case\n",
                           "stderr": ""
                         },
-                        "assertions": [],
+                        "expects": [],
                         "assertionPass": 0,
                         "assertionFail": 0,
                         "#elapse": "val > 0"
@@ -1968,7 +1968,7 @@ step:
                           "stdout": "subval1",
                           "stderr": ""
                         },
-                        "assertions": [
+                        "expects": [
                           {
                             "isPass": true,
                             "message": "OK",
@@ -2032,7 +2032,7 @@ step:
                           "stdout": "before case\n",
                           "stderr": ""
                         },
-                        "assertions": [],
+                        "expects": [],
                         "assertionPass": 0,
                         "assertionFail": 0,
                         "#elapse": "val > 0"
@@ -2081,7 +2081,7 @@ step:
                           "stdout": "after case\n",
                           "stderr": ""
                         },
-                        "assertions": [],
+                        "expects": [],
                         "assertionPass": 0,
                         "assertionFail": 0,
                         "#elapse": "val > 0"

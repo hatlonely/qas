@@ -92,7 +92,7 @@ step:
                       "stdout": "hello world",
                       "stderr": ""
                     },
-                    "assertions": [
+                    "expects": [
                       {
                         "isPass": true,
                         "message": "OK",

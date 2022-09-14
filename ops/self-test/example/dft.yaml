@@ -58,7 +58,7 @@ step:
                       "stdout": "val1\n",
                       "stderr": ""
                     },
-                    "assertions": [
+                    "expects": [
                       {
                         "isPass": true,
                         "message": "OK",

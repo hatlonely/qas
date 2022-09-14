@@ -111,7 +111,7 @@ step:
                         }
                       }
                     },
-                    "assertions": [
+                    "expects": [
                       {
                         "isPass": true,
                         "message": "OK",
@@ -228,7 +228,7 @@ step:
                       "stdout": "hello world",
                       "stderr": ""
                     },
-                    "assertions": [
+                    "expects": [
                       {
                         "isPass": true,
                         "message": "OK",

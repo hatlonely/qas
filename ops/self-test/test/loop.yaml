@@ -83,7 +83,7 @@ step:
                       "stdout": "hello 123",
                       "stderr": ""
                     },
-                    "assertions": [
+                    "expects": [
                       {
                         "isPass": true,
                         "message": "OK",
@@ -120,7 +120,7 @@ step:
                       "stdout": "hello 456",
                       "stderr": ""
                     },
-                    "assertions": [
+                    "expects": [
                       {
                         "isPass": true,
                         "message": "OK",
@@ -157,7 +157,7 @@ step:
                       "stdout": "world 123",
                       "stderr": ""
                     },
-                    "assertions": [
+                    "expects": [
                       {
                         "isPass": true,
                         "message": "OK",
@@ -194,7 +194,7 @@ step:
                       "stdout": "world 456",
                       "stderr": ""
                     },
-                    "assertions": [
+                    "expects": [
                       {
                         "isPass": true,
                         "message": "OK",
@@ -275,7 +275,7 @@ step:
                       "stdout": "13",
                       "stderr": ""
                     },
-                    "assertions": [
+                    "expects": [
                       {
                         "isPass": true,
                         "message": "OK",
@@ -312,7 +312,7 @@ step:
                       "stdout": "14",
                       "stderr": ""
                     },
-                    "assertions": [
+                    "expects": [
                       {
                         "isPass": true,
                         "message": "OK",
@@ -349,7 +349,7 @@ step:
                       "stdout": "23",
                       "stderr": ""
                     },
-                    "assertions": [
+                    "expects": [
                       {
                         "isPass": true,
                         "message": "OK",
@@ -386,7 +386,7 @@ step:
                       "stdout": "24",
                       "stderr": ""
                     },
-                    "assertions": [
+                    "expects": [
                       {
                         "isPass": true,
                         "message": "OK",
@@ -467,7 +467,7 @@ step:
                       "stdout": "13",
                       "stderr": ""
                     },
-                    "assertions": [
+                    "expects": [
                       {
                         "isPass": true,
                         "message": "OK",
@@ -504,7 +504,7 @@ step:
                       "stdout": "14",
                       "stderr": ""
                     },
-                    "assertions": [
+                    "expects": [
                       {
                         "isPass": true,
                         "message": "OK",
@@ -541,7 +541,7 @@ step:
                       "stdout": "23",
                       "stderr": ""
                     },
-                    "assertions": [
+                    "expects": [
                       {
                         "isPass": true,
                         "message": "OK",
@@ -578,7 +578,7 @@ step:
                       "stdout": "24",
                       "stderr": ""
                     },
-                    "assertions": [
+                    "expects": [
                       {
                         "isPass": true,
                         "message": "OK",
@@ -659,7 +659,7 @@ step:
                       "stdout": "13",
                       "stderr": ""
                     },
-                    "assertions": [
+                    "expects": [
                       {
                         "isPass": true,
                         "message": "OK",
@@ -696,7 +696,7 @@ step:
                       "stdout": "14",
                       "stderr": ""
                     },
-                    "assertions": [
+                    "expects": [
                       {
                         "isPass": true,
                         "message": "OK",
@@ -733,7 +733,7 @@ step:
                       "stdout": "23",
                       "stderr": ""
                     },
-                    "assertions": [
+                    "expects": [
                       {
                         "isPass": true,
                         "message": "OK",
@@ -770,7 +770,7 @@ step:
                       "stdout": "24",
                       "stderr": ""
                     },
-                    "assertions": [
+                    "expects": [
                       {
                         "isPass": true,
                         "message": "OK",
@@ -851,7 +851,7 @@ step:
                       "stdout": "13",
                       "stderr": ""
                     },
-                    "assertions": [
+                    "expects": [
                       {
                         "isPass": true,
                         "message": "OK",
@@ -888,7 +888,7 @@ step:
                       "stdout": "14",
                       "stderr": ""
                     },
-                    "assertions": [
+                    "expects": [
                       {
                         "isPass": true,
                         "message": "OK",
@@ -925,7 +925,7 @@ step:
                       "stdout": "23",
                       "stderr": ""
                     },
-                    "assertions": [
+                    "expects": [
                       {
                         "isPass": true,
                         "message": "OK",
@@ -962,7 +962,7 @@ step:
                       "stdout": "24",
                       "stderr": ""
                     },
-                    "assertions": [
+                    "expects": [
                       {
                         "isPass": true,
                         "message": "OK",

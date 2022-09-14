@@ -54,7 +54,7 @@ step:
                       "#stdout": "int(val) % 2 == 0",
                       "stderr": ""
                     },
-                    "assertions": [
+                    "expects": [
                       {
                         "isPass": true,
                         "message": "OK",
@@ -114,7 +114,7 @@ step:
                       "stdout": "even\n",
                       "stderr": ""
                     },
-                    "assertions": [],
+                    "expects": [],
                     "assertionPass": 0,
                     "assertionFail": 0,
                     "#elapse": "val > 0"

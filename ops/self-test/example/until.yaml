@@ -54,7 +54,7 @@ step:
                       "#stdout": "int(val) % 5 == 0",
                       "stderr": ""
                     },
-                    "assertions": [
+                    "expects": [
                       {
                         "isPass": true,
                         "message": "OK",

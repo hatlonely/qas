@@ -58,7 +58,7 @@ class SubStepResult:
     err: str
     req: dict
     res: dict
-    assertions: list[ExpectResult]
+    expects: list[ExpectResult]
     assertion_pass: int
     assertion_fail: int
     elapse: timedelta
@@ -70,7 +70,7 @@ class SubStepResult:
             "err": self.err,
             "req": self.req,
             "res": self.res,
-            "assertions":  self.assertions,
+            "expects":  self.expects,
             "assertionPass": self.assertion_pass,
             "assertionFail": self.assertion_fail,
             "elapse": int(self.elapse.total_seconds() * 1000000),
@@ -84,7 +84,7 @@ class SubStepResult:
         res.err = obj["err"]
         res.req = obj["req"]
         res.res = obj["res"]
-        res.assertions = [ExpectResult.from_json(i) for i in obj["assertions"]]
+        res.expects = [ExpectResult.from_json(i) for i in obj["expects"]]
         res.assertion_pass = obj["assertionPass"]
         res.assertion_fail = obj["assertionFail"]
         res.elapse = timedelta(microseconds=obj["elapse"])
@@ -96,7 +96,7 @@ class SubStepResult:
         self.err = ""
         self.req = {}
         self.res = {}
-        self.assertions = list[ExpectResult]()
+        self.expects = list[ExpectResult]()
         self.assertion_pass = 0
         self.assertion_fail = 0
         self.elapse = timedelta(seconds=0)
@@ -108,9 +108,9 @@ class SubStepResult:
         self.assertion_fail += 1
 
     def add_expect_result(self, result):
-        self.assertions = result
-        self.assertion_pass += sum(1 for i in self.assertions if i.is_pass)
-        self.assertion_fail += len(self.assertions) - self.assertion_pass
+        self.expects = result
+        self.assertion_pass += sum(1 for i in self.expects if i.is_pass)
+        self.assertion_fail += len(self.expects) - self.assertion_pass
         self.is_pass = self.assertion_fail == 0
 
     # def add_assert_result(self, result):

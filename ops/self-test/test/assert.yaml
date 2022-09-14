@@ -113,7 +113,7 @@ step:
                         "key9": "hello world"
                       }
                     },
-                    "assertions": [
+                    "expects": [
                       {
                         "isPass": true,
                         "message": "OK",
@@ -243,7 +243,7 @@ step:
                         "key1": "val1"
                       }
                     },
-                    "assertions": [
+                    "expects": [
                       {
                         "isPass": true,
                         "message": "OK",
@@ -326,7 +326,7 @@ step:
                         2
                       ]
                     },
-                    "assertions": [
+                    "expects": [
                       {
                         "isPass": true,
                         "message": "OK",
@@ -449,7 +449,7 @@ step:
                         }
                       }
                     },
-                    "assertions": [
+                    "expects": [
                       {
                         "isPass": true,
                         "message": "OK",
