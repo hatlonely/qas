@@ -7,6 +7,7 @@ step:
     res:
       exitCode: 0
       json: {
+        "#id": "len(val) > 0",
         "directory": "ops/example-docs/assert",
         "name": "assert-example",
         "status": "pass",
@@ -29,7 +30,7 @@ step:
         "stepPass": 2,
         "stepFail": 0,
         "stepSkip": 0,
-        "assertionPass": 9,
+        "assertionPass": 11,
         "assertionFail": 0,
         "subTestPass": 0,
         "subTestSkip": 0,
@@ -55,7 +56,10 @@ step:
                 "req": {
                   "command": "echo '{\n  \"key1\": \"val1\",\n  \"key2\": 123,\n  \"key3\": {\n    \"key4\": \"val4\",\n    \"key5\": [{\n      \"key6\": \"val6\",\n      \"key7\": [\n        456,\n        \"val7\"\n      ],\n      \"key8\": 333\n    }]\n  }\n}'\n",
                   "decoder": "json",
-                  "envs": {}
+                  "envs": {},
+                  "files": {},
+                  "tmp": "/tmp",
+                  "clean": true
                 },
                 "res": {
                   "exitCode": 0,
@@ -87,7 +91,10 @@ step:
                     "req": {
                       "command": "echo '{\n  \"key1\": \"val1\",\n  \"key2\": 123,\n  \"key3\": {\n    \"key4\": \"val4\",\n    \"key5\": [{\n      \"key6\": \"val6\",\n      \"key7\": [\n        456,\n        \"val7\"\n      ],\n      \"key8\": 333\n    }]\n  }\n}'\n",
                       "decoder": "json",
-                      "envs": {}
+                      "envs": {},
+                      "files": {},
+                      "tmp": "/tmp",
+                      "clean": true
                     },
                     "res": {
                       "exitCode": 0,
@@ -169,12 +176,24 @@ step:
                         "expect": "val7"
                       }
                     ],
-                    "assertionPass": 8,
+                    "asserts": [
+                      {
+                        "isPass": true,
+                        "rule": "res['exitCode'] == 0",
+                        "message": ""
+                      },
+                      {
+                        "isPass": true,
+                        "rule": "'json' in res",
+                        "message": ""
+                      }
+                    ],
+                    "assertionPass": 10,
                     "assertionFail": 0,
                     "#elapse": "val > 0"
                   }
                 ],
-                "assertionPass": 8,
+                "assertionPass": 10,
                 "assertionFail": 0,
                 "#elapse": "val > 0"
               }
@@ -183,7 +202,7 @@ step:
             "afterCaseSteps": [],
             "stepPass": 1,
             "stepFail": 0,
-            "assertionPass": 8,
+            "assertionPass": 10,
             "assertionFail": 0
           },
           {
@@ -206,7 +225,10 @@ step:
                 "req": {
                   "command": "echo -n \"hello world\"",
                   "envs": {},
-                  "decoder": "text"
+                  "decoder": "text",
+                  "files": {},
+                  "tmp": "/tmp",
+                  "clean": true
                 },
                 "res": {
                   "exitCode": 0,
@@ -221,7 +243,10 @@ step:
                     "req": {
                       "command": "echo -n \"hello world\"",
                       "envs": {},
-                      "decoder": "text"
+                      "decoder": "text",
+                      "files": {},
+                      "tmp": "/tmp",
+                      "clean": true
                     },
                     "res": {
                       "exitCode": 0,
@@ -241,6 +266,7 @@ step:
                         "expect": "val['stdout'].startswith('hello')"
                       }
                     ],
+                    "asserts": [],
                     "assertionPass": 1,
                     "assertionFail": 0,
                     "#elapse": "val > 0"
@@ -263,3 +289,4 @@ step:
         "tearDowns": [],
         "subTests": []
       }
+
