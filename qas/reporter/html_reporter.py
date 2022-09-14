@@ -11,6 +11,7 @@ from ..result import TestResult, SubStepResult
 from ..util import merge, REQUIRED
 from .reporter import Reporter
 from .format_step_res import format_step_res
+from .format_step_assert import format_step_assert
 
 
 _report_tpl = """<!DOCTYPE html>
@@ -570,6 +571,17 @@ _sub_step_tpl = """
             <pre id="{{ name }}-res">{{ format_sub_step_res(sub_step) }}</pre>
         </div>
 
+        <div class="card-header"><span class="fw-bolder">{{ i18n.stepHeader.assert_ }}</span></div>
+        <div class="card-body">
+            <div class="float-end">
+                <button type="button" class="btn btn-sm py-0" onclick="copyToClipboard('{{ name }}-assert')"
+                    data-bs-toggle="tooltip" data-bs-placement="top" title="{{ i18n.toolTips.copy }}">
+                    <i class="bi-clipboard"></i>
+                </button>
+            </div>
+            <pre id="{{ name }}-assert">{{ format_sub_step_assert(sub_step) }}</pre>
+        </div>
+
         {% if sub_step.is_err %}
         <div class="card-header text-white bg-danger"><span class="fw-bolder">{{ i18n.stepHeader.err }}</span></div>
         <div class="card-body">
@@ -616,6 +628,7 @@ class HtmlReporter(Reporter):
         env.globals.update(render_step=self.render_step)
         env.globals.update(render_sub_step=self.render_sub_step)
         env.globals.update(format_sub_step_res=self.format_sub_step_res)
+        env.globals.update(format_sub_step_assert=self.format_sub_step_assert)
         env.globals.update(brief_mode=True)
         env.globals.update(markdown=markdown.markdown)
         env.globals.update(i18n=self.i18n)
@@ -643,6 +656,13 @@ class HtmlReporter(Reporter):
 
     def format_sub_step_res(self, sub_step: SubStepResult) -> str:
         return format_step_res(
+            sub_step, separator=self.step_separator,
+            pass_open="<span class='text-success'>", pass_close="</span>",
+            fail_open="<span class='text-danger'>", fail_close="</span>",
+        )
+
+    def format_sub_step_assert(self, sub_step: SubStepResult) -> str:
+        return format_step_assert(
             sub_step, separator=self.step_separator,
             pass_open="<span class='text-success'>", pass_close="</span>",
             fail_open="<span class='text-danger'>", fail_close="</span>",
