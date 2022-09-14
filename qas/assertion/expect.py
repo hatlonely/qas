@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 
 
-from ..result import ExpectResult
+from ..result import ExpectResult, AssertResult
 from ..util.include import *
 from ..util import py_exec, py_eval
+import traceback
 
 
 def expect(vals, rules, peval="#", pexec="%", mode="", **kwargs):
@@ -96,3 +97,14 @@ def expect_exec(rule, val=None, **kwargs):
 def check(rule, val=None, **kwargs):
     ok, res = expect_eval(rule, val=val, **kwargs)
     return ok
+
+
+def assert_(rules, **kwargs):
+    results = list[AssertResult]()
+    for rule in rules:
+        try:
+            ok = check(rule, **kwargs)
+            results.append(AssertResult(is_pass=ok, rule=rule, message=""))
+        except Exception as e:
+            results.append(AssertResult(is_pass=False, rule=rule, message="Exception {}".format(traceback.format_exc())))
+    return results

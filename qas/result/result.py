@@ -9,11 +9,13 @@ from datetime import timedelta
 class AssertResult:
     is_pass: bool
     rule: str
+    message: str
 
     def to_json(self):
         return {
             "isPass": self.is_pass,
             "rule": self.rule,
+            "message": self.message,
         }
 
     @staticmethod
@@ -21,6 +23,7 @@ class AssertResult:
         return AssertResult(
             is_pass=obj["isPass"],
             rule=obj["rule"],
+            message=obj["message"],
         )
 
 @dataclass
@@ -59,6 +62,7 @@ class SubStepResult:
     req: dict
     res: dict
     expects: list[ExpectResult]
+    asserts: list[AssertResult]
     assertion_pass: int
     assertion_fail: int
     elapse: timedelta
@@ -71,6 +75,7 @@ class SubStepResult:
             "req": self.req,
             "res": self.res,
             "expects":  self.expects,
+            "asserts":  self.asserts,
             "assertionPass": self.assertion_pass,
             "assertionFail": self.assertion_fail,
             "elapse": int(self.elapse.total_seconds() * 1000000),
@@ -85,6 +90,7 @@ class SubStepResult:
         res.req = obj["req"]
         res.res = obj["res"]
         res.expects = [ExpectResult.from_json(i) for i in obj["expects"]]
+        res.asserts = [AssertResult.from_json(i) for i in obj["asserts"]]
         res.assertion_pass = obj["assertionPass"]
         res.assertion_fail = obj["assertionFail"]
         res.elapse = timedelta(microseconds=obj["elapse"])
@@ -97,6 +103,7 @@ class SubStepResult:
         self.req = {}
         self.res = {}
         self.expects = list[ExpectResult]()
+        self.asserts = list[AssertResult]()
         self.assertion_pass = 0
         self.assertion_fail = 0
         self.elapse = timedelta(seconds=0)
@@ -110,11 +117,14 @@ class SubStepResult:
     def add_expect_result(self, result):
         self.expects = result
         self.assertion_pass += sum(1 for i in self.expects if i.is_pass)
-        self.assertion_fail += len(self.expects) - self.assertion_pass
+        self.assertion_fail += len(self.expects) + len(self.asserts) - self.assertion_pass
         self.is_pass = self.assertion_fail == 0
 
-    # def add_assert_result(self, result):
-    #     self.
+    def add_assert_result(self, result):
+        self.asserts = result
+        self.assertion_pass += sum(1 for i in self.asserts if i.is_pass)
+        self.assertion_fail += len(self.expects) + len(self.asserts) - self.assertion_pass
+        self.is_pass = self.assertion_fail == 0
 
 
 @dataclass

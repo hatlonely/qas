@@ -25,7 +25,7 @@ from pathlib import Path
 from ..driver import driver_map, Driver
 from ..reporter import reporter_map
 from ..hook import hook_map, Hook
-from ..assertion import expect, check
+from ..assertion import expect, check, assert_
 from ..util import render, merge, REQUIRED
 from ..result import TestResult, CaseResult, StepResult, SubStepResult
 from .retry_until import Retry, Until, RetryError, UntilError
@@ -712,11 +712,10 @@ class Framework:
             else:
                 raise UntilError()
 
-            result = expect(json.loads(json.dumps(step_res)), json.loads(json.dumps(res)), case=case, step=sub_step_result, var=rctx.var, x=rctx.x, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, mode=mode)
-            for rule in step_info:
-                # ok = check(rule, case=case, step=sub_step_result, var=rctx.var, x=rctx.x, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, mode=mode)
-                pass
-            sub_step_result.add_expect_result(result)
+            expects = expect(json.loads(json.dumps(step_res)), json.loads(json.dumps(res)), case=case, step=sub_step_result, var=rctx.var, x=rctx.x, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, mode=mode)
+            sub_step_result.add_expect_result(expects)
+            asserts = assert_(step_info["assert"], case=case, step=sub_step_result, var=rctx.var, x=rctx.x, req=req, res=res)
+            sub_step_result.add_assert_result(asserts)
         except RetryError as e:
             sub_step_result.set_error("RetryError [{}]".format(retry))
         except UntilError as e:
