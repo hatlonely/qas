@@ -49,6 +49,7 @@ class RuntimeConstant:
 @dataclass
 class RuntimeContext:
     ctx: dict[str, Driver]
+    skip: set[str]
     var: SimpleNamespace
     var_info: dict
     dft: dict
@@ -156,6 +157,7 @@ class Framework:
                     "beforeCase": "before_case.yaml",
                     "afterCase": "after_case.yaml",
                     "commonStep": "common_step.yaml",
+                    "skip": "skip.yaml",
                     "description": "README.md",
                 }
             }
@@ -191,6 +193,7 @@ class Framework:
         rctx = RuntimeContext(
             ctx={},
             dft={},
+            skip=set[str](),
             var_info={},
             var=None,
             common_step_info={},
@@ -275,10 +278,22 @@ class Framework:
             ctx[key] = parent_rctx.driver_map[val["type"]](val["args"])
             dft[key] = val["dft"]
 
+        skip = copy.deepcopy(parent_rctx.skip)
+        for item in info["skip"] + Framework.load_skip("{}/{}".format(directory, customize.loadingFiles.skip)):
+            item = merge(item, {
+                "cond": REQUIRED,
+                "case": REQUIRED,
+            })
+            if not check(item["cond"], var=var):
+                continue
+            for name in item["case"]:
+                skip.add(name)
+
         test_result = TestResult(constant.test_id, directory, info["name"], description)
 
         rctx = RuntimeContext(
             ctx=ctx,
+            skip=skip,
             var=var,
             var_info=var_info,
             dft=dft,
@@ -367,10 +382,12 @@ class Framework:
         return test_result
 
     @staticmethod
-    def need_skip(constant, case, var, case_type):
+    def need_skip(constant, rctx, case, var, case_type):
         if case_type == "set_up" or case_type == "tear_down":
             return False
         if constant.case_name and constant.case_name != case["name"]:
+            return True
+        if case["name"] in rctx.skip:
             return True
         if constant.case_regex and not re.search(constant.case_regex, case["name"]):
             return True
@@ -468,6 +485,7 @@ class Framework:
                 "tearDown": 0,
             },
             "ctx": {},
+            "skip": [],
             "var": {},
             "case": [],
             "setUp": [],
@@ -529,6 +547,16 @@ class Framework:
         return info
 
     @staticmethod
+    def load_skip(filename):
+        if not os.path.exists(filename) or not os.path.isfile(filename):
+            return []
+        with open(filename, "r", encoding="utf-8") as fp:
+            info = yaml.safe_load(fp)
+            if not info:
+                return []
+        return info
+
+    @staticmethod
     def must_run_case(directory, customize, constant: RuntimeConstant, rctx: RuntimeContext, case_info, case_type="case"):
         case_info = merge(case_info, {
             "name": REQUIRED,
@@ -559,7 +587,7 @@ class Framework:
 
     @staticmethod
     def run_case(directory, customize, constant: RuntimeConstant, rctx: RuntimeContext, case_info, case_type="case"):
-        if Framework.need_skip(constant, case_info, rctx.var, case_type):
+        if Framework.need_skip(constant, rctx, case_info, rctx.var, case_type):
             return CaseResult(directory=directory, id_=case_info["caseID"], name=case_info["name"], is_skip=True)
 
         command = ""

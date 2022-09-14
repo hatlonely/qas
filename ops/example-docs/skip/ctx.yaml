@@ -1,0 +1,40 @@
+name: skip-example
+
+ctx:
+  shell:
+    type: shell
+
+var:
+  tag: dev
+
+skip:
+  - cond: var.tag == "dev"
+    case:
+      - SkipExample1
+      - SkipExample3
+
+case:
+  - name: SkipExample1
+    step:
+      - ctx: shell
+        req:
+          command: echo -n skip example 1
+        res:
+          exitCode: 0
+          stdout: skip example 1
+  - name: SkipExample2
+    step:
+      - ctx: shell
+        req:
+          command: echo -n skip example 2
+        res:
+          exitCode: 0
+          stdout: skip example 2
+  - name: SkipExample3
+    step:
+      - ctx: shell
+        req:
+          command: echo -n skip example 3
+        res:
+          exitCode: 0
+          stdout: skip example 3
