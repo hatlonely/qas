@@ -537,6 +537,7 @@ _sub_step_tpl = """
     {% else %}
     <div class="card border-danger">
     {% endif %}
+        {# Req #}
         <div class="card-header"><span class="fw-bolder">{{ i18n.stepHeader.req }}</span></div>
         <div class="card-body">
             <div class="float-end">
@@ -548,6 +549,7 @@ _sub_step_tpl = """
             <pre id="{{ name }}-req">{{ json.dumps(sub_step.req, indent=2) }}</pre>
         </div>
 
+        {# Res #}
         {% if sub_step.is_pass or sub_step.is_err %}
         <div class="card-header justify-content-between d-flex">
         {% else %}
@@ -555,9 +557,9 @@ _sub_step_tpl = """
         {% endif %}
             <span class="fw-bolder">{{ i18n.stepHeader.res }}</span>
             <span>
-                <span class="badge bg-success rounded-pill">{{ sub_step.assertion_pass }}</span>
-                {% if sub_step.assertion_fail %}
-                <span class="badge bg-danger rounded-pill">{{ sub_step.assertion_fail }}</span>
+                <span class="badge bg-success rounded-pill">{{ sum_pass(sub_step.expects) }}</span>
+                {% if sum_fail(sub_step.expects) %}
+                <span class="badge bg-danger rounded-pill">{{ sum_fail(sub_step.expects) }}</span>
                 {% endif %}
             </span>
         </div>
@@ -571,7 +573,21 @@ _sub_step_tpl = """
             <pre id="{{ name }}-res">{{ format_sub_step_res(sub_step) }}</pre>
         </div>
 
-        <div class="card-header"><span class="fw-bolder">{{ i18n.stepHeader.assert_ }}</span></div>
+        {# Assert #}
+        {% if sub_step.asserts %}
+        {% if sub_step.is_pass or sub_step.is_err %}
+        <div class="card-header justify-content-between d-flex">
+        {% else %}
+        <div class="card-header text-white bg-danger justify-content-between d-flex">
+        {% endif %}
+            <span class="fw-bolder">{{ i18n.stepHeader.assert_ }}</span>
+            <span>
+                <span class="badge bg-success rounded-pill">{{ sum_pass(sub_step.asserts) }}</span>
+                {% if sum_fail(sub_step.asserts) %}
+                <span class="badge bg-danger rounded-pill">{{ sum_fail(sub_step.asserts) }}</span>
+                {% endif %}
+            </span>
+        </div>
         <div class="card-body">
             <div class="float-end">
                 <button type="button" class="btn btn-sm py-0" onclick="copyToClipboard('{{ name }}-assert')"
@@ -581,7 +597,9 @@ _sub_step_tpl = """
             </div>
             <pre id="{{ name }}-assert">{{ format_sub_step_assert(sub_step) }}</pre>
         </div>
+        {% endif %}
 
+        {# Err #}
         {% if sub_step.is_err %}
         <div class="card-header text-white bg-danger"><span class="fw-bolder">{{ i18n.stepHeader.err }}</span></div>
         <div class="card-body">
@@ -633,6 +651,8 @@ class HtmlReporter(Reporter):
         env.globals.update(markdown=markdown.markdown)
         env.globals.update(i18n=self.i18n)
         env.globals.update(customize=self.customize)
+        env.globals.update(sum_pass=self.sum_pass)
+        env.globals.update(sum_fail=self.sum_fail)
         self.report_tpl = env.from_string(_report_tpl)
         self.test_tpl = env.from_string(_test_tpl)
         self.case_tpl = env.from_string(_case_tpl)
@@ -667,6 +687,12 @@ class HtmlReporter(Reporter):
             pass_open="<span class='text-success'>", pass_close="</span>",
             fail_open="<span class='text-danger'>", fail_close="</span>",
         )
+
+    def sum_pass(self, vals):
+        return sum(1 for i in vals if i.is_pass)
+
+    def sum_fail(self, vals):
+        return len(vals) - sum(1 for i in vals if i.is_pass)
 
     @staticmethod
     def format_timedelta(t: datetime.timedelta):
