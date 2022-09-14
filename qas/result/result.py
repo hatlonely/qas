@@ -6,6 +6,24 @@ from datetime import timedelta
 
 
 @dataclass
+class AssertResult:
+    is_pass: bool
+    rule: str
+
+    def to_json(self):
+        return {
+            "isPass": self.is_pass,
+            "rule": self.rule,
+        }
+
+    @staticmethod
+    def from_json(obj):
+        return AssertResult(
+            is_pass=obj["isPass"],
+            rule=obj["rule"],
+        )
+
+@dataclass
 class ExpectResult:
     is_pass: bool
     message: str
@@ -24,14 +42,13 @@ class ExpectResult:
 
     @staticmethod
     def from_json(obj):
-        res = ExpectResult(
+        return ExpectResult(
             is_pass=obj["isPass"],
             message=obj["message"],
             node=obj["node"],
             val=obj["val"],
             expect=obj["expect"],
         )
-        return res
 
 
 @dataclass
@@ -95,6 +112,9 @@ class SubStepResult:
         self.assertion_pass += sum(1 for i in self.assertions if i.is_pass)
         self.assertion_fail += len(self.assertions) - self.assertion_pass
         self.is_pass = self.assertion_fail == 0
+
+    # def add_assert_result(self, result):
+    #     self.
 
 
 @dataclass

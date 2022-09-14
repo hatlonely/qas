@@ -43,6 +43,9 @@ case:
               }]
             }
           }
+#        assert:
+#          - res['exitCode'] == 0
+#          - 'json' in res
   - name: AssertExample2
     step:
       - ctx: shell
