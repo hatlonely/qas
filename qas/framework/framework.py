@@ -740,9 +740,9 @@ class Framework:
             else:
                 raise UntilError()
 
-            expects = expect(json.loads(json.dumps(step_res)), json.loads(json.dumps(res)), case=case, step=sub_step_result, var=rctx.var, x=rctx.x, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, mode=mode)
+            expects = expect(json.loads(json.dumps(step_res)), json.loads(json.dumps(res)), case=case, step=sub_step_result, var=rctx.var, x=rctx.x, local=local_namespace, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, mode=mode)
             sub_step_result.add_expect_result(expects)
-            asserts = assert_(step_info["assert"], case=case, step=sub_step_result, var=rctx.var, x=rctx.x, req=req, res=res)
+            asserts = assert_(step_info["assert"], case=case, step=sub_step_result, var=rctx.var, x=rctx.x, local=local_namespace, req=req, res=res)
             sub_step_result.add_assert_result(asserts)
         except RetryError as e:
             sub_step_result.set_error("RetryError [{}]".format(retry))
