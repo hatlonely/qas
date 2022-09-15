@@ -3,6 +3,7 @@
 
 import durationpy
 import requests
+import hashlib
 from ..util import merge, REQUIRED
 from .driver import Driver
 
@@ -31,7 +32,11 @@ class HttpDriver(Driver):
             "path": "",
             "timeout": "1s",
             "allowRedirects": True,
+            "md5Only": False,
         })
+
+        if req["md5Only"]:
+            return self.do_md5only(req)
 
         res = requests.request(
             method=req["method"],
@@ -56,3 +61,30 @@ class HttpDriver(Driver):
             "json": body,
             "text": res.text,
         }
+
+    def do_md5only(self, req: dict):
+        res = requests.request(
+            method=req["method"],
+            url="{}{}".format(req["endpoint"], req["path"]),
+            params=req["params"],
+            data=req["data"],
+            json=req["json"],
+            headers=req["headers"],
+            timeout=durationpy.from_str(req["timeout"]).total_seconds(),
+            allow_redirects=req["allowRedirects"],
+            stream=True,
+        )
+
+        md5 = ""
+        if res.status_code == 200:
+            h = hashlib.new("md5")
+            for chunk in res:
+                h.update(chunk)
+            md5 = h.hexdigest()
+
+        return {
+            "status": res.status_code,
+            "headers": dict(res.headers),
+            "md5": md5
+        }
+

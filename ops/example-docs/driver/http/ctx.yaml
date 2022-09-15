@@ -5,6 +5,13 @@ ctx:
     type: http
     args:
       endpoint: http://echo.jsontest.com/
+  imagetest:
+    type: http
+    args:
+      endpoint: https://www.baidu.com/
+    dft:
+      req:
+        md5Only: True
 
 case:
   - name: HttpExample
@@ -24,3 +31,15 @@ case:
             "one": "two",
             "key": "value"
           }
+  - name: ImageExample
+    step:
+      - ctx: imagetest
+        req:
+          path: /img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png
+          timeout: 10s
+        res:
+          headers:
+            Content-Length: "15444"
+            Content-Type: image/png
+          status: 200
+          md5: d9c8750bed0b3c7d089fa7d55720d6cf
