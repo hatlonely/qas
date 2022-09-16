@@ -565,6 +565,7 @@ class Framework:
             "label": {},
             "preStep": [],
             "postStep": [],
+            "step": REQUIRED,
             "local": {},
         })
 
