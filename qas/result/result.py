@@ -220,6 +220,8 @@ class CaseResult:
     after_case_steps: list[StepResult]
     is_pass: bool
     is_skip: bool
+    is_err: bool
+    err: str
     step_pass: int
     step_fail: int
     step_skip: int
@@ -238,6 +240,8 @@ class CaseResult:
             "elapse": int(self.elapse.total_seconds() * 1000000),
             "isPass": self.is_pass,
             "isSkip": self.is_skip,
+            "isErr": self.is_err,
+            "err": self.err,
             "steps": self.steps,
             "beforeCaseSteps": self.before_case_steps,
             "afterCaseSteps": self.after_case_steps,
@@ -254,6 +258,8 @@ class CaseResult:
         res.status = obj["status"]
         res.is_skip = obj["isSkip"]
         res.is_pass = obj["isPass"]
+        res.is_err = obj["isErr"]
+        res.err = obj["err"]
         res.before_case_steps = [StepResult.from_json(i) for i in obj["beforeCaseSteps"]]
         res.steps = [StepResult.from_json(i) for i in obj["steps"]]
         res.after_case_steps = [StepResult.from_json(i) for i in obj["afterCaseSteps"]]
@@ -278,6 +284,8 @@ class CaseResult:
         self.post_steps = list[StepResult]()
         self.after_case_steps = list[StepResult]()
         self.is_pass = True
+        self.is_err = False
+        self.err = ""
         self.elapse = timedelta(seconds=0)
         self.assertion_pass = 0
         self.assertion_fail = 0
@@ -337,6 +345,13 @@ class CaseResult:
         if not step.is_pass:
             self.is_pass = False
             self.status = "fail"
+
+    def set_error(self, message):
+        self.is_pass = False
+        self.is_err = True
+        self.err = message
+        self.assertion_fail += 1
+
 
 @dataclass
 class TestResult:

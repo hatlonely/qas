@@ -605,9 +605,16 @@ class Framework:
                 )
 
         case = CaseResult(directory=directory, id_=case_id, name=case_info["name"], description=case_info["description"], command=command)
-        local = render(case_info["local"], var=rctx.var, x=rctx.x, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, pshell=customize.keyPrefix.shell)
-        now = datetime.now()
+        try:
+            local = render(case_info["local"], var=rctx.var, x=rctx.x, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, pshell=customize.keyPrefix.shell)
+        except RenderError as e:
+            case.set_error("Exception: render [case.local] failed. {}".format(e))
+        except Exception as e:
+            case.set_error("Exception: render [case.local] failed. {}".format(traceback.format_exc()))
+        if case.is_err:
+            return case
 
+        now = datetime.now()
         if case_type == "case":
             for idx, step_info, case_add_step_func in itertools.chain([list(i) + [case.add_before_case_step_result] for i in enumerate(rctx.before_case_info)]):
                 step = Framework.must_run_step(customize, constant, rctx, local, step_info, case)
@@ -674,6 +681,8 @@ class Framework:
             step.set_error("Exception: render [step.req] failed. {}".format(e))
         except Exception as e:
             step.set_error("Exception: render [step.req] failed. {}".format(traceback.format_exc()))
+        if step.is_err:
+            return step
 
         mode = ""
         if customize.keyPrefix.eval + "res" in step_info:
@@ -704,7 +713,7 @@ class Framework:
 
         if step.is_pass:
             try:
-                assign = render(step_info["assign"], var=rctx.var, x=rctx.x, case=case, step=step, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, pshell=customize.keyPrefix.shell)
+                assign = render(step_info["assign"], var=rctx.var, x=rctx.x, case=case, step=step, res=step.res, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, pshell=customize.keyPrefix.shell)
                 for key in assign:
                     local[key] = assign[key]
             except RenderError as e:
