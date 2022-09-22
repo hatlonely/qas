@@ -134,6 +134,8 @@ class StepResult:
     ctx: str
     is_skip: bool
     is_pass: bool
+    is_err: bool
+    err: str
     req: dict
     res: dict
     sub_steps: list[SubStepResult]
@@ -148,6 +150,8 @@ class StepResult:
             "ctx": self.ctx,
             "isSkip": self.is_skip,
             "isPass": self.is_pass,
+            "isErr": self.is_err,
+            "err": self.err,
             "req": self.req,
             "res": self.res,
             "subSteps": self.sub_steps,
@@ -161,6 +165,8 @@ class StepResult:
         res = StepResult(obj["name"], obj["ctx"], description=obj["description"])
         res.is_skip = obj["isSkip"]
         res.is_pass = obj["isPass"]
+        res.is_err = obj["isErr"]
+        res.err = obj["Err"]
         res.req = obj["req"]
         res.res = obj["res"]
         res.sub_steps = [SubStepResult.from_json(i) for i in obj["subSteps"]]
@@ -181,6 +187,8 @@ class StepResult:
         self.assertion_pass = 0
         self.assertion_fail = 0
         self.elapse = timedelta(seconds=0)
+        self.is_err = False
+        self.err = ""
 
     def add_sub_step_result(self, result: SubStepResult):
         self.req = result.req
@@ -189,6 +197,12 @@ class StepResult:
         self.assertion_pass += result.assertion_pass
         self.assertion_fail += result.assertion_fail
         self.is_pass = self.assertion_fail == 0
+
+    def set_error(self, message):
+        self.is_pass = False
+        self.is_err = True
+        self.err = message
+        self.assertion_fail += 1
 
 
 @dataclass

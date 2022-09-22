@@ -178,4 +178,6 @@ class TextReporter(Reporter):
                     for i in format_step_assert(
                     sub_step, pass_open=Fore.GREEN, pass_close=Fore.RESET, fail_open=Fore.RED, fail_close=Fore.RESET,
                 ).split("\n")])
+        if step.is_err:
+            lines.extend((self.i18n.stepHeader.err + ": " + step.err).split("\n"))
         return lines

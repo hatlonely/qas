@@ -668,7 +668,10 @@ class Framework:
 
         # use json transform tuple to list
         local_namespace = json.loads(json.dumps(local), object_hook=lambda x: SimpleNamespace(**x))
-        step_info["req"] = render(json.loads(json.dumps(step_info["req"])), case=case, var=rctx.var, local=local_namespace, x=rctx.x, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, pshell=customize.keyPrefix.shell)
+        try:
+            step_info["req"] = render(json.loads(json.dumps(step_info["req"])), case=case, var=rctx.var, local=local_namespace, x=rctx.x, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, pshell=customize.keyPrefix.shell)
+        except Exception as e:
+            step.set_error("Exception: Render Step.Req failed. {}".format(traceback.format_exc()))
 
         mode = ""
         if customize.keyPrefix.eval + "res" in step_info:
@@ -697,9 +700,13 @@ class Framework:
                 for result in results:
                     step.add_sub_step_result(result)
 
-        assign = render(step_info["assign"], var=rctx.var, x=rctx.x, case=case, step=step, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, pshell=customize.keyPrefix.shell)
-        for key in assign:
-            local[key] = assign[key]
+        if step.is_pass:
+            try:
+                assign = render(step_info["assign"], var=rctx.var, x=rctx.x, case=case, step=step, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, pshell=customize.keyPrefix.shell)
+                for key in assign:
+                    local[key] = assign[key]
+            except Exception as e:
+                step.set_error("Exception: Do Assign failed. {}".format(traceback.format_exc()))
 
         # auto name step
         if not step.name and step.req:

@@ -508,6 +508,12 @@ _step_tpl = """
             </li>
             {% endfor %}
         </ul>
+
+        {# Err #}
+        {% if step.is_err %}
+        <div class="card-header"><span class="fw-bolder">{{ i18n.stepHeader.err }}</span></div>
+        <div class="card-body"><pre>{{ step.err }}</pre></div>
+        {% endif %}
     </div>
 </div>
 """
