@@ -29,7 +29,7 @@ def _render_recurisve(root, req, peval="#", pexec="%", pshell="$", **kwargs):
             except RenderError as e:
                 raise e
             except Exception as e:
-                raise RenderError("Redner failed. key [{}]".format("{}.{}".format(root, key).lstrip(".")))
+                raise RenderError("render failed. key [{}], err [{}]".format("{}.{}".format(root, key).lstrip("."), e))
         return res
     if isinstance(req, list):
         res = []
