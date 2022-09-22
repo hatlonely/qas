@@ -127,6 +127,9 @@ class TextReporter(Reporter):
         for step in res.after_case_steps:
             lines.extend([self.padding_to_add + i for i in self.format_step(step, "afterCaseStep")])
 
+        if res.is_err:
+            lines.extend("{fore.RED}{i18n.caseHeader.err}{fore.RESET}: {err}".format(fore=Fore, i18n=self.i18n, err=res.err).split("\n"))
+
         return lines
 
     def format_step(self, step, step_type: str) -> list[str]:
@@ -179,5 +182,5 @@ class TextReporter(Reporter):
                     sub_step, pass_open=Fore.GREEN, pass_close=Fore.RESET, fail_open=Fore.RED, fail_close=Fore.RESET,
                 ).split("\n")])
         if step.is_err:
-            lines.extend((self.i18n.stepHeader.err + ": " + step.err).split("\n"))
+            lines.extend("{fore.RED}{i18n.caseHeader.err}{fore.RESET}: {err}".format(fore=Fore, i18n=self.i18n, err=step.err).split("\n"))
         return lines

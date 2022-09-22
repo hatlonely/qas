@@ -47,6 +47,7 @@ i18n = {
             "step": "Step",
             "postStep": "PostStep",
             "afterCaseStep": "AfterCaseStep",
+            "err": "Err",
         },
         "stepHeader": {
             "description": "Description",
@@ -98,6 +99,7 @@ i18n = {
             "step": "步骤",
             "postStep": "后置步骤",
             "afterCaseStep": "测试结束后",
+            "err": "错误",
         },
         "stepHeader": {
             "description": "描述",
