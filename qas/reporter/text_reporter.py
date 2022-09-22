@@ -81,7 +81,7 @@ class TextReporter(Reporter):
             )
         return lines
 
-    def format_case(self, res: CaseResult, case_type: str) -> list[str]:
+    def format_case(self, case: CaseResult, case_type: str) -> list[str]:
         case_type_map = {
             "setUp": self.i18n.testHeader.setUp,
             "tearDown": self.i18n.testHeader.tearDown,
@@ -89,19 +89,19 @@ class TextReporter(Reporter):
         }
 
         lines = []
-        if res.is_skip:
+        if case.is_skip:
             return ["{fore.YELLOW}{header} {res.name} {i18n.status.skip}{fore.RESET}".format(
-                fore=Fore, res=res, i18n=self.i18n, header=case_type_map[case_type]
+                fore=Fore, res=case, i18n=self.i18n, header=case_type_map[case_type]
             )]
 
-        if res.is_pass:
+        if case.is_pass:
             lines.append(
                 "{fore.GREEN}{header} {res.name} {i18n.status.succ}{fore.RESET}，"
                 "{i18n.summary.stepPass}: {fore.GREEN}{res.step_pass}{fore.RESET}，"
                 "{i18n.summary.stepSkip}: {res.step_skip}，"
                 "{i18n.summary.assertionPass}: {fore.GREEN}{res.assertion_pass}{fore.RESET}，"
                 "{i18n.summary.elapse}: {elapse}".format(
-                    header=case_type_map[case_type], elapse=durationpy.to_str(res.elapse), fore=Fore, i18n=self.i18n, res=res,
+                    header=case_type_map[case_type], elapse=durationpy.to_str(case.elapse), fore=Fore, i18n=self.i18n, res=case,
                 ),
             )
         else:
@@ -113,22 +113,22 @@ class TextReporter(Reporter):
                 "{i18n.summary.assertionPass}: {fore.GREEN}{res.assertion_pass}{fore.RESET}，"
                 "{i18n.summary.assertionFail}: {fore.RED}{res.assertion_fail}{fore.RESET}，"
                 "{i18n.summary.elapse}: {elapse}".format(
-                    header=case_type_map[case_type], elapse=durationpy.to_str(res.elapse), fore=Fore, i18n=self.i18n, res=res,
+                    header=case_type_map[case_type], elapse=durationpy.to_str(case.elapse), fore=Fore, i18n=self.i18n, res=case,
                 ))
 
-        for step in res.before_case_steps:
+        for step in case.before_case_steps:
             lines.extend([self.padding_to_add + i for i in self.format_step(step, "beforeCaseStep")])
-        for step in res.pre_steps:
+        for step in case.pre_steps:
             lines.extend([self.padding_to_add + i for i in self.format_step(step, "preStep")])
-        for step in res.steps:
+        for step in case.steps:
             lines.extend([self.padding_to_add + i for i in self.format_step(step, "step")])
-        for step in res.post_steps:
+        for step in case.post_steps:
             lines.extend([self.padding_to_add + i for i in self.format_step(step, "postStep")])
-        for step in res.after_case_steps:
+        for step in case.after_case_steps:
             lines.extend([self.padding_to_add + i for i in self.format_step(step, "afterCaseStep")])
 
-        if res.is_err:
-            lines.extend("{fore.RED}{i18n.caseHeader.err}{fore.RESET}: {err}".format(fore=Fore, i18n=self.i18n, err=res.err).split("\n"))
+        if case.is_err:
+            lines.extend("{fore.RED}{i18n.caseHeader.err}{fore.RESET}: {err}".format(fore=Fore, i18n=self.i18n, err=case.err).split("\n"))
 
         return lines
 
