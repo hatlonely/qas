@@ -30,6 +30,7 @@ _report_tpl = """<!DOCTYPE html>
         }
         pre, code {
             font-family: {{ customize.font.code }};
+            white-space: pre-wrap;
         }
     </style>
     <script>
@@ -432,6 +433,7 @@ _case_tpl = """
         {% endif %}
         
         {# Step #}
+        {% if case.steps %}
         <div class="card-header"><span class="fw-bolder">{{ i18n.caseHeader.step }}</span></div>
         <ul class="list-group list-group-flush">
             {% for step in case.steps %}
@@ -440,6 +442,7 @@ _case_tpl = """
             </li>
             {% endfor %}
         </ul>
+        {% endif %}
         
         {# PostStep #}
         {% if case.pre_steps %}
@@ -463,6 +466,12 @@ _case_tpl = """
             </li>
             {% endfor %}
         </ul>
+        {% endif %}
+
+        {# Err #}
+        {% if case.is_err %}
+        <div class="card-header"><span class="fw-bolder">{{ i18n.caseHeader.err }}</span></div>
+        <div class="card-body"><pre>{{ case.err }}</pre></div>
         {% endif %}
     </div>
 </div>
