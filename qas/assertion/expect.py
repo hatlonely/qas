@@ -17,11 +17,11 @@ def expect(vals, rules, peval="#", pexec="%", mode="", **kwargs):
         return []
 
     results = []
-    _expect_recursive("", results, vals, rules, peval=peval, pexec=pexec, **kwargs)
+    __expect_recursive("", results, vals, rules, peval=peval, pexec=pexec, **kwargs)
     return results
 
 
-def _expect_recursive(root: str, results: list[ExpectResult], vals, rules, peval="#", pexec="%", **kwargs):
+def __expect_recursive(root: str, results: list[ExpectResult], vals, rules, peval="#", pexec="%", **kwargs):
     if isinstance(rules, dict):
         for key, rule in rules.items():
             root_dot_key = "{}.{}".format(root, key.lstrip(peval).lstrip(pexec)).lstrip(".")
@@ -41,7 +41,7 @@ def _expect_recursive(root: str, results: list[ExpectResult], vals, rules, peval
                 if not isinstance(vals[key], type(rule)):
                     results.append(ExpectResult(is_pass=False, message="TypeDiff", node=root_dot_key, val=vals[key], expect=rule))
                 else:
-                    _expect_recursive(root_dot_key, results, vals[key], rule, peval=peval, pexec=pexec, **kwargs)
+                    __expect_recursive(root_dot_key, results, vals[key], rule, peval=peval, pexec=pexec, **kwargs)
             else:
                 results.append(run_expect(root_dot_key, rule, "equal", val=vals[key], **kwargs))
     elif isinstance(rules, list):
@@ -53,7 +53,7 @@ def _expect_recursive(root: str, results: list[ExpectResult], vals, rules, peval
                 if not isinstance(vals[idx], type(rule)):
                     results.append(ExpectResult(is_pass=False, message="TypeDiff", node=root_dot_key, val=vals[idx], expect=rule))
                 else:
-                    _expect_recursive(root_dot_key, results, vals[idx], rule, peval=peval, pexec=pexec, **kwargs)
+                    __expect_recursive(root_dot_key, results, vals[idx], rule, peval=peval, pexec=pexec, **kwargs)
             else:
                 results.append(run_expect(root_dot_key, rule, "equal", val=vals[idx], **kwargs))
     else:
