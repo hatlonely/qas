@@ -713,7 +713,7 @@ class Framework:
 
         if step.is_pass:
             try:
-                assign = render(step_info["assign"], var=rctx.var, x=rctx.x, case=case, step=step, res=step.res, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, pshell=customize.keyPrefix.shell)
+                assign = render(step_info["assign"], var=rctx.var, x=rctx.x, case=case, step=step, req=step.req, res=step.res, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, pshell=customize.keyPrefix.shell)
                 for key in assign:
                     local[key] = assign[key]
             except RenderError as e:

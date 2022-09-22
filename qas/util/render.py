@@ -9,31 +9,31 @@ class RenderError(Exception):
     pass
 
 
-def render(req, peval="#", pexec="%", pshell="$", **kwargs):
-    return _render_recurisve("", req, **kwargs)
+def render(__req, peval="#", pexec="%", pshell="$", **kwargs):
+    return __render_recurisve("", __req, **kwargs)
 
 
-def _render_recurisve(root, req, peval="#", pexec="%", pshell="$", **kwargs):
-    if isinstance(req, dict):
-        res = {}
-        for key, val in req.items():
+def __render_recurisve(root, __req, peval="#", pexec="%", pshell="$", **kwargs):
+    if isinstance(__req, dict):
+        __res = {}
+        for key, val in __req.items():
             try:
                 if key.startswith(peval):
-                    res[key[len(peval):]] = py_eval(val, **kwargs)
+                    __res[key[len(peval):]] = py_eval(val, **kwargs)
                 elif key.startswith(pexec):
-                    res[key[len(pexec):]] = py_exec(val, **kwargs)
+                    __res[key[len(pexec):]] = py_exec(val, **kwargs)
                 elif key.startswith(pshell):
-                    res[key[len(pshell):]] = sh_exec(val)
+                    __res[key[len(pshell):]] = sh_exec(val)
                 else:
-                    res[key] = _render_recurisve("{}.{}".format(root, key).lstrip("."), req[key], **kwargs)
+                    __res[key] = __render_recurisve("{}.{}".format(root, key).lstrip("."), __req[key], **kwargs)
             except RenderError as e:
                 raise e
             except Exception as e:
                 raise RenderError("render failed. key [{}], err [{}]".format("{}.{}".format(root, key).lstrip("."), e))
-        return res
-    if isinstance(req, list):
-        res = []
-        for idx, val in enumerate(req):
-            res.append(_render_recurisve("{}[{}]".format(root, idx).lstrip("."), val, **kwargs))
-        return res
-    return req
+        return __res
+    if isinstance(__req, list):
+        __res = []
+        for idx, val in enumerate(__req):
+            __res.append(__render_recurisve("{}[{}]".format(root, idx).lstrip("."), val, **kwargs))
+        return __res
+    return __req

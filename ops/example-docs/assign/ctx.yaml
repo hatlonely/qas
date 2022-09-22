@@ -14,7 +14,7 @@ case:
           exitCode: 0
           stdout: hello world
         assign:
-          "#output": step.res["stdout"]
+          "#output": res["stdout"]
       - ctx: shell
         req:
           command: echo -n $OUTPUT
