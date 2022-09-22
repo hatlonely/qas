@@ -350,7 +350,6 @@ class CaseResult:
         self.is_pass = False
         self.is_err = True
         self.err = message
-        self.assertion_fail += 1
 
 
 @dataclass

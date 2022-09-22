@@ -250,7 +250,12 @@ class Framework:
         info = Framework.load_ctx(os.path.basename(directory), "{}/{}".format(directory, customize.loadingFiles.ctx))
         description = info["description"] + Framework.load_description("{}/{}".format(directory, customize.loadingFiles.description))
         var_info = copy.deepcopy(parent_rctx.var_info) | info["var"] | Framework.load_var("{}/{}".format(directory, customize.loadingFiles.var))
-        var_info = render(var_info, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, pshell=customize.keyPrefix.shell)
+        try:
+            var_info = render(var_info, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, pshell=customize.keyPrefix.shell)
+        except RenderError as e:
+            return TestResult(constant.test_id, directory, directory, "", "Exception: render [var] failed. {}".format(e))
+        except Exception as e:
+            return TestResult(constant.test_id, directory, directory, "", "Exception: render [var] failed. {}".format(traceback.format_exc()))
         var = json.loads(json.dumps(var_info), object_hook=lambda x: SimpleNamespace(**x))
         common_step_info = copy.deepcopy(parent_rctx.common_step_info) | info["commonStep"] | Framework.load_common_step("{}/{}".format(directory, customize.loadingFiles.commonStep))
         before_case_info = copy.deepcopy(parent_rctx.before_case_info) + info["beforeCase"] + list(Framework.load_step("{}/{}".format(directory, customize.loadingFiles.beforeCase)))
@@ -274,7 +279,12 @@ class Framework:
                     },
                 },
             })
-            val = render(val, var=var, x=parent_rctx.x, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, pshell=customize.keyPrefix.shell)
+            try:
+                val = render(val, var=var, x=parent_rctx.x, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, pshell=customize.keyPrefix.shell)
+            except RenderError as e:
+                return TestResult(constant.test_id, directory, directory, "", "Exception: render [ctx.{}] failed. {}".format(key, e))
+            except Exception as e:
+                return TestResult(constant.test_id, directory, directory, "", "Exception: render [ctx.{}] failed. {}".format(key, traceback.format_exc()))
             ctx[key] = parent_rctx.driver_map[val["type"]](val["args"])
             dft[key] = val["dft"]
 
@@ -769,6 +779,8 @@ class Framework:
             sub_step_result.set_error("RetryError [{}]".format(retry))
         except UntilError as e:
             sub_step_result.set_error("UntilError [{}], ".format(until))
+        except RenderError as e:
+            sub_step_result.set_error("render [ctx.dft.req] failed. {}".format(e))
         except Exception as e:
             sub_step_result.set_error("Exception {}".format(traceback.format_exc()))
         # ensure req can json serialize
