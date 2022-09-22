@@ -26,7 +26,7 @@ from ..driver import driver_map, Driver
 from ..reporter import reporter_map
 from ..hook import hook_map, Hook
 from ..assertion import expect, check, assert_
-from ..util import render, merge, REQUIRED
+from ..util import render, RenderError, merge, REQUIRED
 from ..result import TestResult, CaseResult, StepResult, SubStepResult
 from .retry_until import Retry, Until, RetryError, UntilError
 from .generate import generate_req, generate_res, calculate_num, grouper
@@ -670,8 +670,10 @@ class Framework:
         local_namespace = json.loads(json.dumps(local), object_hook=lambda x: SimpleNamespace(**x))
         try:
             step_info["req"] = render(json.loads(json.dumps(step_info["req"])), case=case, var=rctx.var, local=local_namespace, x=rctx.x, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, pshell=customize.keyPrefix.shell)
+        except RenderError as e:
+            step.set_error("Exception: render [step.req] failed. {}".format(e))
         except Exception as e:
-            step.set_error("Exception: Render Step.Req failed. {}".format(traceback.format_exc()))
+            step.set_error("Exception: render [step.req] failed. {}".format(traceback.format_exc()))
 
         mode = ""
         if customize.keyPrefix.eval + "res" in step_info:
@@ -705,8 +707,10 @@ class Framework:
                 assign = render(step_info["assign"], var=rctx.var, x=rctx.x, case=case, step=step, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, pshell=customize.keyPrefix.shell)
                 for key in assign:
                     local[key] = assign[key]
+            except RenderError as e:
+                step.set_error("Exception: render [step.assign] failed. {}".format(e))
             except Exception as e:
-                step.set_error("Exception: Do Assign failed. {}".format(traceback.format_exc()))
+                step.set_error("Exception: render [step.assign] failed. {}".format(traceback.format_exc()))
 
         # auto name step
         if not step.name and step.req:
