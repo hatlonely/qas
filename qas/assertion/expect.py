@@ -95,6 +95,8 @@ def expect_exec(__rule, val=None, **kwargs):
 
 
 def check(__rule, val=None, **kwargs):
+    if isinstance(__rule, list):
+        return all([check(__x) for __x in __rule])
     ok, __res = expect_eval(__rule, val=val, **kwargs)
     return ok
 
