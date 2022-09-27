@@ -616,7 +616,7 @@ class Framework:
 
         case = CaseResult(directory=directory, id_=case_id, name=case_info["name"], description=case_info["description"], command=command)
         try:
-            local = render(case_info["local"], var=rctx.var, x=rctx.x, steps=case.steps, pre_steps=case.pre_steps, post_steps=case.post_steps, before_case_steps=case.before_case_steps, after_case_steps= case.after_case_steps, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, pshell=customize.keyPrefix.shell)
+            local = render(case_info["local"], var=rctx.var, x=rctx.x, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, pshell=customize.keyPrefix.shell)
         except RenderError as e:
             case.set_error("Exception: render [case.local] failed. {}".format(e))
         except Exception as e:
