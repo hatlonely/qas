@@ -760,12 +760,12 @@ class Framework:
                 for j in range(retry.attempts):
                     step_res = rctx.ctx[step_info["ctx"]].do(req)
                     sub_step_result.res = step_res
-                    if retry.condition == "" or not check(retry.condition, case=case, step=sub_step_result, var=rctx.var, x=rctx.x):
+                    if retry.condition == "" or not check(retry.condition, case=case, step=sub_step_result, req=req, res=res, var=rctx.var, x=rctx.x):
                         break
                     time.sleep(retry.delay.total_seconds())
                 else:
                     raise RetryError()
-                if until.condition == "" or check(until.condition, case=case, step=sub_step_result, var=rctx.var, x=rctx.x):
+                if until.condition == "" or check(until.condition, case=case, step=sub_step_result, req=req, res=res, var=rctx.var, x=rctx.x):
                     break
                 time.sleep(until.delay.total_seconds())
             else:

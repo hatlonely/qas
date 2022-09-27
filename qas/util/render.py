@@ -13,27 +13,27 @@ def render(__req, peval="#", pexec="%", pshell="$", **kwargs):
     return __render_recurisve("", __req, **kwargs)
 
 
-def __render_recurisve(root, __req, peval="#", pexec="%", pshell="$", **kwargs):
+def __render_recurisve(__root, __req, peval="#", pexec="%", pshell="$", **kwargs):
     if isinstance(__req, dict):
         __res = {}
-        for key, val in __req.items():
+        for __key, __val in __req.items():
             try:
-                if key.startswith(peval):
-                    __res[key[len(peval):]] = py_eval(val, **kwargs)
-                elif key.startswith(pexec):
-                    __res[key[len(pexec):]] = py_exec(val, **kwargs)
-                elif key.startswith(pshell):
-                    __res[key[len(pshell):]] = sh_exec(val)
+                if __key.startswith(peval):
+                    __res[__key[len(peval):]] = py_eval(__val, **kwargs)
+                elif __key.startswith(pexec):
+                    __res[__key[len(pexec):]] = py_exec(__val, **kwargs)
+                elif __key.startswith(pshell):
+                    __res[__key[len(pshell):]] = sh_exec(__val)
                 else:
-                    __res[key] = __render_recurisve("{}.{}".format(root, key).lstrip("."), __req[key], **kwargs)
+                    __res[__key] = __render_recurisve("{}.{}".format(__root, __key).lstrip("."), __req[__key], **kwargs)
             except RenderError as e:
                 raise e
             except Exception as e:
-                raise RenderError("render failed. key [{}], err [{}]".format("{}.{}".format(root, key).lstrip("."), e))
+                raise RenderError("render failed. __key [{}], err [{}]".format("{}.{}".format(__root, __key).lstrip("."), e))
         return __res
     if isinstance(__req, list):
         __res = []
-        for idx, val in enumerate(__req):
-            __res.append(__render_recurisve("{}[{}]".format(root, idx).lstrip("."), val, **kwargs))
+        for idx, __val in enumerate(__req):
+            __res.append(__render_recurisve("{}[{}]".format(__root, idx).lstrip("."), __val, **kwargs))
         return __res
     return __req

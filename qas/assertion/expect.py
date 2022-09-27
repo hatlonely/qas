@@ -7,104 +7,104 @@ from ..util import py_exec, py_eval
 import traceback
 
 
-def expect(vals, rules, peval="#", pexec="%", mode="", **kwargs):
+def expect(__vals, __rules, peval="#", pexec="%", mode="", **kwargs):
     if mode == peval:
-        return [run_expect("", rules, "eval", val=vals, **kwargs)]
+        return [run_expect("", __rules, "eval", val=__vals, **kwargs)]
     if mode == pexec:
-        return [run_expect("", rules, "exec", val=vals, **kwargs)]
+        return [run_expect("", __rules, "exec", val=__vals, **kwargs)]
 
-    if not rules:
+    if not __rules:
         return []
 
-    results = []
-    __expect_recursive("", results, vals, rules, peval=peval, pexec=pexec, **kwargs)
-    return results
+    __results = []
+    __expect_recursive("", __results, __vals, __rules, peval=peval, pexec=pexec, **kwargs)
+    return __results
 
 
-def __expect_recursive(root: str, results: list[ExpectResult], vals, rules, peval="#", pexec="%", **kwargs):
-    if isinstance(rules, dict):
-        for key, rule in rules.items():
-            root_dot_key = "{}.{}".format(root, key.lstrip(peval).lstrip(pexec)).lstrip(".")
-            if key.startswith(pexec):
-                if key[len(pexec):] not in vals:
-                    results.append(ExpectResult(is_pass=False, message="NoSuchKey", node=root_dot_key, val=None, expect=rule))
+def __expect_recursive(__root: str, __results: list[ExpectResult], __vals, __rules, peval="#", pexec="%", **kwargs):
+    if isinstance(__rules, dict):
+        for __key, __rule in __rules.items():
+            __root_dot_key = "{}.{}".format(__root, __key.lstrip(peval).lstrip(pexec)).lstrip(".")
+            if __key.startswith(pexec):
+                if __key[len(pexec):] not in __vals:
+                    __results.append(ExpectResult(is_pass=False, message="NoSuchKey", node=__root_dot_key, val=None, expect=__rule))
                 else:
-                    results.append(run_expect(root_dot_key, rule, "exec", val=vals[key[len(pexec):]], **kwargs))
-            elif key.startswith(peval):
-                if key[len(peval):] not in vals:
-                    results.append(ExpectResult(is_pass=False, message="NoSuchKey", node=root_dot_key, val=None, expect=rule))
+                    __results.append(run_expect(__root_dot_key, __rule, "exec", val=__vals[__key[len(pexec):]], **kwargs))
+            elif __key.startswith(peval):
+                if __key[len(peval):] not in __vals:
+                    __results.append(ExpectResult(is_pass=False, message="NoSuchKey", node=__root_dot_key, val=None, expect=__rule))
                 else:
-                    results.append(run_expect(root_dot_key, rule, "eval", val=vals[key[len(peval):]], **kwargs))
-            elif key not in vals:
-                results.append(ExpectResult(is_pass=False, message="NoSuchKey", node=root_dot_key, val=None, expect=rule))
-            elif isinstance(rule, dict) or isinstance(rule, list):
-                if not isinstance(vals[key], type(rule)):
-                    results.append(ExpectResult(is_pass=False, message="TypeDiff", node=root_dot_key, val=vals[key], expect=rule))
+                    __results.append(run_expect(__root_dot_key, __rule, "eval", val=__vals[__key[len(peval):]], **kwargs))
+            elif __key not in __vals:
+                __results.append(ExpectResult(is_pass=False, message="NoSuchKey", node=__root_dot_key, val=None, expect=__rule))
+            elif isinstance(__rule, dict) or isinstance(__rule, list):
+                if not isinstance(__vals[__key], type(__rule)):
+                    __results.append(ExpectResult(is_pass=False, message="TypeDiff", node=__root_dot_key, val=__vals[__key], expect=__rule))
                 else:
-                    __expect_recursive(root_dot_key, results, vals[key], rule, peval=peval, pexec=pexec, **kwargs)
+                    __expect_recursive(__root_dot_key, __results, __vals[__key], __rule, peval=peval, pexec=pexec, **kwargs)
             else:
-                results.append(run_expect(root_dot_key, rule, "equal", val=vals[key], **kwargs))
-    elif isinstance(rules, list):
-        for idx, rule in enumerate(rules):
-            root_dot_key = "{}.{}".format(root, idx).lstrip(".")
-            if idx >= len(vals):
-                results.append(ExpectResult(is_pass=False, message="NoSuchKey", node=root_dot_key, val=None, expect=rule))
-            elif isinstance(rule, dict) or isinstance(rule, list):
-                if not isinstance(vals[idx], type(rule)):
-                    results.append(ExpectResult(is_pass=False, message="TypeDiff", node=root_dot_key, val=vals[idx], expect=rule))
+                __results.append(run_expect(__root_dot_key, __rule, "equal", val=__vals[__key], **kwargs))
+    elif isinstance(__rules, list):
+        for __idx, __rule in enumerate(__rules):
+            __root_dot_key = "{}.{}".format(__root, __idx).lstrip(".")
+            if __idx >= len(__vals):
+                __results.append(ExpectResult(is_pass=False, message="NoSuchKey", node=__root_dot_key, val=None, expect=__rule))
+            elif isinstance(__rule, dict) or isinstance(__rule, list):
+                if not isinstance(__vals[__idx], type(__rule)):
+                    __results.append(ExpectResult(is_pass=False, message="TypeDiff", node=__root_dot_key, val=__vals[__idx], expect=__rule))
                 else:
-                    __expect_recursive(root_dot_key, results, vals[idx], rule, peval=peval, pexec=pexec, **kwargs)
+                    __expect_recursive(__root_dot_key, __results, __vals[__idx], __rule, peval=peval, pexec=pexec, **kwargs)
             else:
-                results.append(run_expect(root_dot_key, rule, "equal", val=vals[idx], **kwargs))
+                __results.append(run_expect(__root_dot_key, __rule, "equal", val=__vals[__idx], **kwargs))
     else:
-        if vals == rules:
-            results.append(ExpectResult(is_pass=True, message="OK", node=root, val=vals, expect=rules))
+        if __vals == __rules:
+            __results.append(ExpectResult(is_pass=True, message="OK", node=__root, val=__vals, expect=__rules))
         else:
-            results.append(ExpectResult(is_pass=False, message="NotEqual", node=root, val=vals, expect=rules))
+            __results.append(ExpectResult(is_pass=False, message="NotEqual", node=__root, val=__vals, expect=__rules))
 
 
-def run_expect(root, rule, func, val=None, **kwargs):
+def run_expect(__root, __rule, func, val=None, **kwargs):
     if func == "eval":
-        ok, res = expect_eval(rule, val=val, **kwargs)
+        ok, __res = expect_eval(__rule, val=val, **kwargs)
         if not ok:
-            return ExpectResult(is_pass=False, message="EvalFail", node=root, val=val, expect="{} = {}".format(res, rule))
-        return ExpectResult(is_pass=True, message="OK", node=root, val=val, expect=rule)
+            return ExpectResult(is_pass=False, message="EvalFail", node=__root, val=val, expect="{} = {}".format(__res, __rule))
+        return ExpectResult(is_pass=True, message="OK", node=__root, val=val, expect=__rule)
     elif func == "exec":
-        ok, res = expect_exec(rule, val=val, **kwargs)
+        ok, __res = expect_exec(__rule, val=val, **kwargs)
         if not ok:
-            return ExpectResult(is_pass=False, message="ExecFail", node=root, val=val, expect="{} = {}".format(res, rule))
-        return ExpectResult(is_pass=True, message="OK", node=root, val=val, expect=rule)
+            return ExpectResult(is_pass=False, message="ExecFail", node=__root, val=val, expect="{} = {}".format(__res, __rule))
+        return ExpectResult(is_pass=True, message="OK", node=__root, val=val, expect=__rule)
     else:
-        if val != rule:
-            return ExpectResult(is_pass=False, message="NotEqual", node=root, val=val, expect=rule)
-        return ExpectResult(is_pass=True, message="OK", node=root, val=val, expect=rule)
+        if val != __rule:
+            return ExpectResult(is_pass=False, message="NotEqual", node=__root, val=val, expect=__rule)
+        return ExpectResult(is_pass=True, message="OK", node=__root, val=val, expect=__rule)
 
 
-def expect_eval(rule, val=None, **kwargs):
-    res = py_eval(rule, val=val, **kwargs)
-    if not isinstance(res, bool):
-        return res == val, res
-    return res, res
+def expect_eval(__rule, val=None, **kwargs):
+    __res = py_eval(__rule, val=val, **kwargs)
+    if not isinstance(__res, bool):
+        return __res == val, __res
+    return __res, __res
 
 
-def expect_exec(rule, val=None, **kwargs):
-    res = py_exec(rule, val=val, **kwargs)
-    if not isinstance(res, bool):
-        return res == val, res
-    return res, res
+def expect_exec(__rule, val=None, **kwargs):
+    __res = py_exec(__rule, val=val, **kwargs)
+    if not isinstance(__res, bool):
+        return __res == val, __res
+    return __res, __res
 
 
-def check(rule, val=None, **kwargs):
-    ok, res = expect_eval(rule, val=val, **kwargs)
+def check(__rule, val=None, **kwargs):
+    ok, __res = expect_eval(__rule, val=val, **kwargs)
     return ok
 
 
-def assert_(rules, **kwargs):
-    results = list[AssertResult]()
-    for rule in rules:
+def assert_(__rules, **kwargs):
+    __results = list[AssertResult]()
+    for __rule in __rules:
         try:
-            ok = check(rule, **kwargs)
-            results.append(AssertResult(is_pass=ok, rule=rule, message=""))
+            ok = check(__rule, **kwargs)
+            __results.append(AssertResult(is_pass=ok, rule=__rule, message=""))
         except Exception as e:
-            results.append(AssertResult(is_pass=False, rule=rule, message="Exception: {}".format(e)))
-    return results
+            __results.append(AssertResult(is_pass=False, rule=__rule, message="Exception: {}".format(e)))
+    return __results
