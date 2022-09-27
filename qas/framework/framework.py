@@ -677,16 +677,24 @@ class Framework:
 
     @staticmethod
     def run_step(customize, constant, rctx, local, step_info, case):
+        # use json transform tuple to list
+        local_namespace = json.loads(json.dumps(local), object_hook=lambda x: SimpleNamespace(**x))
+
         # 条件步骤
-        if step_info["cond"] and not check(step_info["cond"], case=case, steps=case.steps, pre_steps=case.pre_steps, post_steps=case.post_steps, before_case_steps=case.before_case_steps, after_case_steps= case.after_case_steps, var=rctx.var, x=rctx.x):
+        if step_info["cond"] and not check(
+                step_info["cond"], local=local_namespace, var=rctx.var, x=rctx.x,
+                case=case, steps=case.steps, pre_steps=case.pre_steps, post_steps=case.post_steps,
+                before_case_steps=case.before_case_steps, after_case_steps=case.after_case_steps):
             return StepResult(step_info["name"], step_info["ctx"], is_skip=True)
         step = StepResult(step_info["name"], step_info["ctx"], step_info["description"])
         now = datetime.now()
 
-        # use json transform tuple to list
-        local_namespace = json.loads(json.dumps(local), object_hook=lambda x: SimpleNamespace(**x))
         try:
-            step_info["req"] = render(json.loads(json.dumps(step_info["req"])), case=case, steps=case.steps, pre_steps=case.pre_steps, post_steps=case.post_steps, before_case_steps=case.before_case_steps, after_case_steps= case.after_case_steps, var=rctx.var, local=local_namespace, x=rctx.x, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, pshell=customize.keyPrefix.shell)
+            step_info["req"] = render(
+                json.loads(json.dumps(step_info["req"])), local=local_namespace, var=rctx.var, x=rctx.x,
+                case=case, steps=case.steps, pre_steps=case.pre_steps, post_steps=case.post_steps,
+                before_case_steps=case.before_case_steps, after_case_steps=case.after_case_steps,
+                peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, pshell=customize.keyPrefix.shell)
         except RenderError as e:
             step.set_error("Exception: render [step.req] failed. {}".format(e))
         except Exception as e:
@@ -723,7 +731,12 @@ class Framework:
 
         if step.is_pass:
             try:
-                assign = render(step_info["assign"], var=rctx.var, x=rctx.x, case=case, steps=case.steps, pre_steps=case.pre_steps, post_steps=case.post_steps, before_case_steps=case.before_case_steps, after_case_steps= case.after_case_steps, step=step, req=step.req, res=step.res, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, pshell=customize.keyPrefix.shell)
+                assign = render(
+                    step_info["assign"], local=local_namespace, var=rctx.var, x=rctx.x,
+                    case=case, steps=case.steps, pre_steps=case.pre_steps, post_steps=case.post_steps,
+                    before_case_steps=case.before_case_steps, after_case_steps= case.after_case_steps,
+                    step=step, req=step.req, res=step.res,
+                    peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, pshell=customize.keyPrefix.shell)
                 for key in assign:
                     local[key] = assign[key]
             except RenderError as e:
@@ -745,12 +758,10 @@ class Framework:
         sub_step_start = datetime.now()
         try:
             req = merge(json.loads(json.dumps(req)), render(
-                rctx.dft[step_info["ctx"]]["req"],
-                case=case, steps=case.steps, pre_steps=case.pre_steps, post_steps=case.post_steps, before_case_steps=case.before_case_steps, after_case_steps= case.after_case_steps,
-                var=rctx.var, x=rctx.x, local=local_namespace,
-                peval=customize.keyPrefix.eval,
-                pexec=customize.keyPrefix.exec,
-                pshell=customize.keyPrefix.shell,
+                rctx.dft[step_info["ctx"]]["req"], local=local_namespace, var=rctx.var, x=rctx.x,
+                case=case, steps=case.steps, pre_steps=case.pre_steps, post_steps=case.post_steps,
+                before_case_steps=case.before_case_steps, after_case_steps=case.after_case_steps,
+                peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, pshell=customize.keyPrefix.shell,
             ))
             sub_step_result.req = req
 
@@ -761,20 +772,39 @@ class Framework:
                 for j in range(retry.attempts):
                     step_res = rctx.ctx[step_info["ctx"]].do(req)
                     sub_step_result.res = step_res
-                    if retry.condition == "" or not check(retry.condition, case=case, steps=case.steps, pre_steps=case.pre_steps, post_steps=case.post_steps, before_case_steps=case.before_case_steps, after_case_steps= case.after_case_steps, step=sub_step_result, req=req, res=res, var=rctx.var, x=rctx.x):
+                    if not retry.condition or not check(
+                            retry.condition, local=local_namespace, var=rctx.var, x=rctx.x,
+                            case=case, steps=case.steps, pre_steps=case.pre_steps, post_steps=case.post_steps,
+                            before_case_steps=case.before_case_steps, after_case_steps=case.after_case_steps,
+                            step=sub_step_result, req=req, res=step_res):
                         break
                     time.sleep(retry.delay.total_seconds())
                 else:
                     raise RetryError()
-                if until.condition == "" or check(until.condition, case=case, steps=case.steps, pre_steps=case.pre_steps, post_steps=case.post_steps, before_case_steps=case.before_case_steps, after_case_steps= case.after_case_steps, step=sub_step_result, req=req, res=res, var=rctx.var, x=rctx.x):
+                if not until.condition or check(
+                        until.condition, local=local_namespace, var=rctx.var, x=rctx.x,
+                        case=case, steps=case.steps, pre_steps=case.pre_steps, post_steps=case.post_steps,
+                        before_case_steps=case.before_case_steps, after_case_steps=case.after_case_steps,
+                        step=sub_step_result, req=req, res=step_res):
                     break
                 time.sleep(until.delay.total_seconds())
             else:
                 raise UntilError()
 
-            expects = expect(json.loads(json.dumps(step_res)), json.loads(json.dumps(res)), case=case, steps=case.steps, pre_steps=case.pre_steps, post_steps=case.post_steps, before_case_steps=case.before_case_steps, after_case_steps= case.after_case_steps, step=sub_step_result, req=req, res=res, var=rctx.var, x=rctx.x, local=local_namespace, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, mode=mode)
+            expects = expect(
+                json.loads(json.dumps(step_res)), json.loads(json.dumps(res)),
+                local=local_namespace, var=rctx.var, x=rctx.x,
+                case=case, steps=case.steps, pre_steps=case.pre_steps, post_steps=case.post_steps,
+                before_case_steps=case.before_case_steps, after_case_steps=case.after_case_steps,
+                step=sub_step_result, req=req, res=res,
+                peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, mode=mode)
             sub_step_result.add_expect_result(expects)
-            asserts = assert_(step_info["assert"], case=case, step=sub_step_result, var=rctx.var, x=rctx.x, local=local_namespace, req=req, res=res)
+            asserts = assert_(
+                step_info["assert"],
+                local=local_namespace, var=rctx.var, x=rctx.x,
+                case=case, steps=case.steps, pre_steps=case.pre_steps, post_steps=case.post_steps,
+                before_case_steps=case.before_case_steps, after_case_steps=case.after_case_steps,
+                step=sub_step_result, req=req, res=res)
             sub_step_result.add_assert_result(asserts)
         except RetryError as e:
             sub_step_result.set_error("RetryError [{}]".format(retry))
