@@ -678,7 +678,7 @@ class Framework:
     @staticmethod
     def run_step(customize, constant, rctx, local, step_info, case):
         # 条件步骤
-        if step_info["cond"] and not check(step_info["cond"], case=case, var=rctx.var, x=rctx.x):
+        if step_info["cond"] and not check(step_info["cond"], case=case, steps=case.steps, pre_steps=case.pre_steps, post_steps=case.post_steps, before_case_steps=case.before_case_steps, after_case_steps= case.after_case_steps, var=rctx.var, x=rctx.x):
             return StepResult(step_info["name"], step_info["ctx"], is_skip=True)
         step = StepResult(step_info["name"], step_info["ctx"], step_info["description"])
         now = datetime.now()
@@ -761,18 +761,18 @@ class Framework:
                 for j in range(retry.attempts):
                     step_res = rctx.ctx[step_info["ctx"]].do(req)
                     sub_step_result.res = step_res
-                    if retry.condition == "" or not check(retry.condition, case=case, step=sub_step_result, req=req, res=res, var=rctx.var, x=rctx.x):
+                    if retry.condition == "" or not check(retry.condition, case=case, steps=case.steps, pre_steps=case.pre_steps, post_steps=case.post_steps, before_case_steps=case.before_case_steps, after_case_steps= case.after_case_steps, step=sub_step_result, req=req, res=res, var=rctx.var, x=rctx.x):
                         break
                     time.sleep(retry.delay.total_seconds())
                 else:
                     raise RetryError()
-                if until.condition == "" or check(until.condition, case=case, step=sub_step_result, req=req, res=res, var=rctx.var, x=rctx.x):
+                if until.condition == "" or check(until.condition, case=case, steps=case.steps, pre_steps=case.pre_steps, post_steps=case.post_steps, before_case_steps=case.before_case_steps, after_case_steps= case.after_case_steps, step=sub_step_result, req=req, res=res, var=rctx.var, x=rctx.x):
                     break
                 time.sleep(until.delay.total_seconds())
             else:
                 raise UntilError()
 
-            expects = expect(json.loads(json.dumps(step_res)), json.loads(json.dumps(res)), case=case, step=sub_step_result, req=req, res=res, var=rctx.var, x=rctx.x, local=local_namespace, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, mode=mode)
+            expects = expect(json.loads(json.dumps(step_res)), json.loads(json.dumps(res)), case=case, steps=case.steps, pre_steps=case.pre_steps, post_steps=case.post_steps, before_case_steps=case.before_case_steps, after_case_steps= case.after_case_steps, step=sub_step_result, req=req, res=res, var=rctx.var, x=rctx.x, local=local_namespace, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, mode=mode)
             sub_step_result.add_expect_result(expects)
             asserts = assert_(step_info["assert"], case=case, step=sub_step_result, var=rctx.var, x=rctx.x, local=local_namespace, req=req, res=res)
             sub_step_result.add_assert_result(asserts)
