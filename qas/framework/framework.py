@@ -616,7 +616,7 @@ class Framework:
 
         case = CaseResult(directory=directory, id_=case_id, name=case_info["name"], description=case_info["description"], command=command)
         try:
-            local = render(case_info["local"], var=rctx.var, x=rctx.x, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, pshell=customize.keyPrefix.shell)
+            local = render(case_info["local"], var=rctx.var, x=rctx.x, steps=case.steps, pre_steps=case.pre_steps, post_steps=case.post_steps, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, pshell=customize.keyPrefix.shell)
         except RenderError as e:
             case.set_error("Exception: render [case.local] failed. {}".format(e))
         except Exception as e:
@@ -686,7 +686,7 @@ class Framework:
         # use json transform tuple to list
         local_namespace = json.loads(json.dumps(local), object_hook=lambda x: SimpleNamespace(**x))
         try:
-            step_info["req"] = render(json.loads(json.dumps(step_info["req"])), case=case, var=rctx.var, local=local_namespace, x=rctx.x, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, pshell=customize.keyPrefix.shell)
+            step_info["req"] = render(json.loads(json.dumps(step_info["req"])), case=case, steps=case.steps, pre_steps=case.pre_steps, post_steps=case.post_steps, var=rctx.var, local=local_namespace, x=rctx.x, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, pshell=customize.keyPrefix.shell)
         except RenderError as e:
             step.set_error("Exception: render [step.req] failed. {}".format(e))
         except Exception as e:
@@ -723,7 +723,7 @@ class Framework:
 
         if step.is_pass:
             try:
-                assign = render(step_info["assign"], var=rctx.var, x=rctx.x, case=case, step=step, req=step.req, res=step.res, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, pshell=customize.keyPrefix.shell)
+                assign = render(step_info["assign"], var=rctx.var, x=rctx.x, case=case, steps=case.steps, pre_steps=case.pre_steps, post_steps=case.post_steps, step=step, req=step.req, res=step.res, peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, pshell=customize.keyPrefix.shell)
                 for key in assign:
                     local[key] = assign[key]
             except RenderError as e:
@@ -746,7 +746,8 @@ class Framework:
         try:
             req = merge(json.loads(json.dumps(req)), render(
                 rctx.dft[step_info["ctx"]]["req"],
-                case=case, var=rctx.var, x=rctx.x, local=local_namespace,
+                case=case, steps=case.steps, pre_steps=case.pre_steps, post_steps=case.post_steps,
+                var=rctx.var, x=rctx.x, local=local_namespace,
                 peval=customize.keyPrefix.eval,
                 pexec=customize.keyPrefix.exec,
                 pshell=customize.keyPrefix.shell,
