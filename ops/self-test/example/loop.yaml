@@ -281,7 +281,6 @@ step:
                 },
                 "res": {
                   "exitCode": 0,
-                  "stdout": "[\"val1\", \"val2\"]",
                   "stderr": "",
                   "json": [
                     "val1",
@@ -303,7 +302,6 @@ step:
                     },
                     "res": {
                       "exitCode": 0,
-                      "stdout": "[\"val1\", \"val2\"]",
                       "stderr": "",
                       "json": [
                         "val1",

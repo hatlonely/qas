@@ -63,7 +63,6 @@ step:
                 },
                 "res": {
                   "exitCode": 0,
-                  "stdout": "{\n  \"key1\": \"val1\",\n  \"key2\": 123,\n  \"key3\": {\n    \"key4\": \"val4\",\n    \"key5\": [{\n      \"key6\": \"val6\",\n      \"key7\": [\n        456,\n        \"val7\"\n      ],\n      \"key8\": 333\n    }]\n  }\n}\n",
                   "stderr": "",
                   "json": {
                     "key1": "val1",
@@ -98,7 +97,6 @@ step:
                     },
                     "res": {
                       "exitCode": 0,
-                      "stdout": "{\n  \"key1\": \"val1\",\n  \"key2\": 123,\n  \"key3\": {\n    \"key4\": \"val4\",\n    \"key5\": [{\n      \"key6\": \"val6\",\n      \"key7\": [\n        456,\n        \"val7\"\n      ],\n      \"key8\": 333\n    }]\n  }\n}\n",
                       "stderr": "",
                       "json": {
                         "key1": "val1",

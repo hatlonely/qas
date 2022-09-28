@@ -66,8 +66,10 @@ class ShellDriver(Driver):
         try:
             if req["decoder"] == "json":
                 res["json"] = json.loads(res["stdout"])
+                del res["stdout"]
             if req["decoder"] == "yaml":
                 res["json"] = yaml.safe_load(res["stdout"])
+                del res["stdout"]
         except Exception as e:
             res["err"] = traceback.format_exc()
 
