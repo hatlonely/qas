@@ -1,0 +1,19 @@
+name: repeat-example
+
+ctx:
+  shell:
+    type: shell
+
+case:
+  - name: RepeatExample
+    step:
+      - ctx: shell
+        repeat: 3
+        req:
+          command: echo -n $IDX $ELE
+          envs:
+            "#IDX": str(idx)
+            "#ELE": str(ele)
+        res:
+          exitCode: 0
+          "#stdout": "'{} {}'.format(idx, ele)"
