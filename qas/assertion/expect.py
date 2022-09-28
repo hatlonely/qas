@@ -64,20 +64,23 @@ def __expect_recursive(__root: str, __results: list[ExpectResult], __vals, __rul
 
 
 def run_expect(__root, __rule, func, val=None, **kwargs):
-    if func == "eval":
-        ok, __res = expect_eval(__rule, val=val, **kwargs)
-        if not ok:
-            return ExpectResult(is_pass=False, message="EvalFail", node=__root, val=val, expect="{} = {}".format(__res, __rule))
-        return ExpectResult(is_pass=True, message="OK", node=__root, val=val, expect=__rule)
-    elif func == "exec":
-        ok, __res = expect_exec(__rule, val=val, **kwargs)
-        if not ok:
-            return ExpectResult(is_pass=False, message="ExecFail", node=__root, val=val, expect="{} = {}".format(__res, __rule))
-        return ExpectResult(is_pass=True, message="OK", node=__root, val=val, expect=__rule)
-    else:
-        if val != __rule:
-            return ExpectResult(is_pass=False, message="NotEqual", node=__root, val=val, expect=__rule)
-        return ExpectResult(is_pass=True, message="OK", node=__root, val=val, expect=__rule)
+    try:
+        if func == "eval":
+            ok, __res = expect_eval(__rule, val=val, **kwargs)
+            if not ok:
+                return ExpectResult(is_pass=False, message="EvalFail", node=__root, val=val, expect="{} = {}".format(__res, __rule))
+            return ExpectResult(is_pass=True, message="OK", node=__root, val=val, expect=__rule)
+        elif func == "exec":
+            ok, __res = expect_exec(__rule, val=val, **kwargs)
+            if not ok:
+                return ExpectResult(is_pass=False, message="ExecFail", node=__root, val=val, expect="{} = {}".format(__res, __rule))
+            return ExpectResult(is_pass=True, message="OK", node=__root, val=val, expect=__rule)
+        else:
+            if val != __rule:
+                return ExpectResult(is_pass=False, message="NotEqual", node=__root, val=val, expect=__rule)
+            return ExpectResult(is_pass=True, message="OK", node=__root, val=val, expect=__rule)
+    except Exception as e:
+        return ExpectResult(is_pass=False, message="Exception", node=__root, val=val, expect=__rule + ' | Exception: {}'.format(e))
 
 
 def expect_eval(__rule, val=None, **kwargs):

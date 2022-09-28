@@ -15,7 +15,7 @@ step:
         "isPass": true,
         "isErr": false,
         "err": "",
-        "#elapse": "len(val) > 0",
+        "#elapse": "val > 0",
         "casePass": 2,
         "caseFail": 0,
         "caseSkip": 0,
@@ -42,7 +42,7 @@ step:
             "description": "",
             "command": "qas -t \"ops/example-docs/loop\" -c \"\" --case-id \"ctx\"",
             "status": "pass",
-            "#elapse": "len(val) > 0",
+            "#elapse": "val > 0",
             "isPass": true,
             "isSkip": false,
             "isErr": false,
@@ -112,7 +112,7 @@ step:
                     "asserts": [],
                     "assertionPass": 2,
                     "assertionFail": 0,
-                    "#elapse": "len(val) > 0"
+                    "#elapse": "val > 0"
                   },
                   {
                     "isPass": true,
@@ -153,7 +153,7 @@ step:
                     "asserts": [],
                     "assertionPass": 2,
                     "assertionFail": 0,
-                    "#elapse": "len(val) > 0"
+                    "#elapse": "val > 0"
                   },
                   {
                     "isPass": true,
@@ -194,7 +194,7 @@ step:
                     "asserts": [],
                     "assertionPass": 2,
                     "assertionFail": 0,
-                    "#elapse": "len(val) > 0"
+                    "#elapse": "val > 0"
                   },
                   {
                     "isPass": true,
@@ -235,12 +235,12 @@ step:
                     "asserts": [],
                     "assertionPass": 2,
                     "assertionFail": 0,
-                    "#elapse": "len(val) > 0"
+                    "#elapse": "val > 0"
                   }
                 ],
                 "assertionPass": 8,
                 "assertionFail": 0,
-                "#elapse": "len(val) > 0"
+                "#elapse": "val > 0"
               }
             ],
             "beforeCaseSteps": [],
@@ -257,7 +257,7 @@ step:
             "description": "",
             "command": "qas -t \"ops/example-docs/loop\" -c \"\" --case-id \"ctx-1\"",
             "status": "pass",
-            "#elapse": "len(val) > 0",
+            "#elapse": "val > 0",
             "isPass": true,
             "isSkip": false,
             "isErr": false,
@@ -314,12 +314,12 @@ step:
                     "asserts": [],
                     "assertionPass": 0,
                     "assertionFail": 0,
-                    "#elapse": "len(val) > 0"
+                    "#elapse": "val > 0"
                   }
                 ],
                 "assertionPass": 0,
                 "assertionFail": 0,
-                "#elapse": "len(val) > 0"
+                "#elapse": "val > 0"
               },
               {
                 "name": "echo",
@@ -376,7 +376,7 @@ step:
                     "asserts": [],
                     "assertionPass": 1,
                     "assertionFail": 0,
-                    "#elapse": "len(val) > 0"
+                    "#elapse": "val > 0"
                   },
                   {
                     "isPass": true,
@@ -409,12 +409,12 @@ step:
                     "asserts": [],
                     "assertionPass": 1,
                     "assertionFail": 0,
-                    "#elapse": "len(val) > 0"
+                    "#elapse": "val > 0"
                   }
                 ],
                 "assertionPass": 2,
                 "assertionFail": 0,
-                "#elapse": "len(val) > 0"
+                "#elapse": "val > 0"
               }
             ],
             "beforeCaseSteps": [],
