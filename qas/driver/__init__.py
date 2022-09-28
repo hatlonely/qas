@@ -15,6 +15,7 @@ from .ots_driver import OTSDriver
 from .mns_driver import MNSDriver
 from .oss_driver import OSSDriver
 from .sls_driver import SLSDriver
+from .qcs import *
 
 
 driver_map = {
@@ -31,6 +32,7 @@ driver_map = {
     "mns": MNSDriver,
     "oss": OSSDriver,
     "sls": SLSDriver,
+    "qcs.cos": COSDriver,
 }
 
 
