@@ -4,6 +4,10 @@
 REQUIRED = "__DEFAULT__REQUIRED__"
 
 
+class MergeError(Exception):
+    pass
+
+
 def merge(req, dft):
     if req == None:
         return _merge_recursive("", {}, dft)
@@ -20,7 +24,7 @@ def _merge_recursive(root: str, req, dft):
                 req[key] = _merge_recursive(root_dot_key, req[key] if key in req and req[key] is not None else [], val)
             else:
                 if val == REQUIRED and key not in req:
-                    raise Exception("missing required key [{}]".format(root_dot_key))
+                    raise MergeError("missing required key [{}]".format(root_dot_key))
                 elif key not in req:
                     req[key] = val
     if isinstance(dft, list):
@@ -36,7 +40,7 @@ def _merge_recursive(root: str, req, dft):
                 req[idx] = _merge_recursive(root_dot_key, req[idx], val)
             else:
                 if val == REQUIRED and idx >= len(req):
-                    raise Exception("missing required key [{}]".format(root_dot_key))
+                    raise MergeError("missing required key [{}]".format(root_dot_key))
                 elif idx >= len(req):
                     req.append(val)
     return req

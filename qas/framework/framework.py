@@ -26,7 +26,7 @@ from ..driver import driver_map, Driver
 from ..reporter import reporter_map
 from ..hook import hook_map, Hook
 from ..assertion import expect, check, assert_
-from ..util import render, RenderError, merge, REQUIRED
+from ..util import render, RenderError, merge, MergeError, REQUIRED
 from ..result import TestResult, CaseResult, StepResult, SubStepResult
 from .retry_until import Retry, Until, RetryError, UntilError
 from .generate import generate_req, generate_res, calculate_num, grouper
@@ -656,17 +656,21 @@ class Framework:
 
     @staticmethod
     def must_run_step(customize, constant: RuntimeConstant, rctx: RuntimeContext, local, step_info, case):
-        step_info = merge(step_info, {
-            "name": "",
-            "description": "",
-            "parallel": 0,
-            "res": {},
-            "retry": {},
-            "until": {},
-            "cond": "",
-            "assign": {},
-            "assert": [],
-        })
+        try:
+            step_info = merge(step_info, {
+                "name": "",
+                "description": "",
+                "parallel": 0,
+                "req": REQUIRED,
+                "res": {},
+                "retry": {},
+                "until": {},
+                "cond": "",
+                "assign": {},
+                "assert": [],
+            })
+        except MergeError as e:
+            return StepResult(step_info["name"], step_info["ctx"], step_info["description"], err_message="Exception: {}".format(e))
 
         for hook in rctx.hooks:
             hook.on_step_start(step_info)

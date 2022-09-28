@@ -175,7 +175,7 @@ class StepResult:
         res.elapse = timedelta(microseconds=obj["elapse"])
         return res
 
-    def __init__(self, name, ctx, description="", is_skip=False):
+    def __init__(self, name, ctx, description="", is_skip=False, err_message=""):
         self.name = name
         self.ctx = ctx
         self.description = description
@@ -189,6 +189,10 @@ class StepResult:
         self.elapse = timedelta(seconds=0)
         self.is_err = False
         self.err = ""
+        if err_message:
+            self.err = err_message
+            self.is_err = True
+            self.is_pass = False
 
     def add_sub_step_result(self, result: SubStepResult):
         self.req = result.req
