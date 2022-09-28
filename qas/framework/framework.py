@@ -662,6 +662,7 @@ class Framework:
                 "description": "",
                 "parallel": 0,
                 "req": REQUIRED,
+                "repeat": 1,
                 "res": {},
                 "retry": {},
                 "until": {},
@@ -669,6 +670,8 @@ class Framework:
                 "assign": {},
                 "assert": [],
             })
+            if isinstance(step_info["repeat"], int):
+                step_info["repeat"] = list(range(step_info["repeat"]))
         except MergeError as e:
             return StepResult(step_info["name"], step_info["ctx"], step_info["description"], err_message="Exception: {}".format(e))
 
@@ -693,45 +696,46 @@ class Framework:
         step = StepResult(step_info["name"], step_info["ctx"], step_info["description"])
         now = datetime.now()
 
-        try:
-            step_info["req"] = render(
-                json.loads(json.dumps(step_info["req"])), local=local_namespace, var=rctx.var, x=rctx.x,
-                case=case, steps=case.steps, pre_steps=case.pre_steps, post_steps=case.post_steps,
-                before_case_steps=case.before_case_steps, after_case_steps=case.after_case_steps,
-                peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, pshell=customize.keyPrefix.shell)
-        except RenderError as e:
-            step.set_error("Exception: render [step.req] failed. {}".format(e))
-        except Exception as e:
-            step.set_error("Exception: render [step.req] failed. {}".format(traceback.format_exc()))
-        if step.is_err:
-            return step
+        for idx, ele in enumerate(step_info["repeat"]):
+            try:
+                step_info_req = render(
+                    json.loads(json.dumps(step_info["req"])), local=local_namespace, var=rctx.var, x=rctx.x, idx=idx, ele=ele,
+                    case=case, steps=case.steps, pre_steps=case.pre_steps, post_steps=case.post_steps,
+                    before_case_steps=case.before_case_steps, after_case_steps=case.after_case_steps,
+                    peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, pshell=customize.keyPrefix.shell)
+            except RenderError as e:
+                step.set_error("Exception: render [step.req] failed. {}".format(e))
+            except Exception as e:
+                step.set_error("Exception: render [step.req] failed. {}".format(traceback.format_exc()))
+            if step.is_err:
+                return step
 
-        mode = ""
-        if customize.keyPrefix.eval + "res" in step_info:
-            step_info["res"] = step_info[customize.keyPrefix.eval + "res"]
-            mode = customize.keyPrefix.eval
-        elif customize.keyPrefix.exec + "res" in step_info:
-            step_info["res"] = step_info[customize.keyPrefix.exec + "res"]
-            mode = customize.keyPrefix.exec
-        if not constant.parallel:
-            for req, res in zip(
-                generate_req(step_info["req"], p=customize.keyPrefix.loop),
-                generate_res(step_info["res"], calculate_num(step_info["req"], p=customize.keyPrefix.loop), p=customize.keyPrefix.loop)
-            ):
-                result = Framework.run_sub_step(customize, rctx, local_namespace, case, req, res, step_info, mode=mode)
-                step.add_sub_step_result(result)
-        else:
-            # 并发执行，每次执行 case.step 中 parallel 定义的个数
-            for reqs, ress in zip(
-                    grouper(generate_req(step_info["req"], p=customize.keyPrefix.loop), step_info["parallel"]),
-                    grouper(generate_res(step_info["res"], calculate_num(step_info["req"], p=customize.keyPrefix.loop), p=customize.keyPrefix.loop), step_info["parallel"])
-            ):
-                results = rctx.step_pool.map(
-                    Framework.run_sub_step,
-                    repeat(customize), repeat(rctx), repeat(local_namespace), repeat(case), reqs, ress, repeat(step_info), repeat(mode)
-                )
-                for result in results:
+            mode = ""
+            if customize.keyPrefix.eval + "res" in step_info:
+                step_info["res"] = step_info[customize.keyPrefix.eval + "res"]
+                mode = customize.keyPrefix.eval
+            elif customize.keyPrefix.exec + "res" in step_info:
+                step_info["res"] = step_info[customize.keyPrefix.exec + "res"]
+                mode = customize.keyPrefix.exec
+            if not constant.parallel:
+                for req, res in zip(
+                    generate_req(step_info_req, p=customize.keyPrefix.loop),
+                    generate_res(step_info["res"], calculate_num(step_info_req, p=customize.keyPrefix.loop), p=customize.keyPrefix.loop)
+                ):
+                    result = Framework.run_sub_step(customize, rctx, local_namespace, case, req, res, step_info, idx, ele, mode=mode)
                     step.add_sub_step_result(result)
+            else:
+                # 并发执行，每次执行 case.step 中 parallel 定义的个数
+                for reqs, ress in zip(
+                        grouper(generate_req(step_info_req, p=customize.keyPrefix.loop), step_info["parallel"]),
+                        grouper(generate_res(step_info["res"], calculate_num(step_info_req, p=customize.keyPrefix.loop), p=customize.keyPrefix.loop), step_info["parallel"])
+                ):
+                    results = rctx.step_pool.map(
+                        Framework.run_sub_step,
+                        repeat(customize), repeat(rctx), repeat(local_namespace), repeat(case), reqs, ress, repeat(step_info), repeat(idx), repeat(ele), repeat(mode)
+                    )
+                    for result in results:
+                        step.add_sub_step_result(result)
 
         if step.is_pass:
             try:
@@ -757,7 +761,7 @@ class Framework:
         return step
 
     @staticmethod
-    def run_sub_step(customize, rctx: RuntimeContext, local_namespace, case, req, res, step_info, mode=""):
+    def run_sub_step(customize, rctx: RuntimeContext, local_namespace, case, req, res, step_info, idx, ele, mode=""):
         sub_step_result = SubStepResult()
         sub_step_start = datetime.now()
         try:
@@ -777,7 +781,7 @@ class Framework:
                     step_res = rctx.ctx[step_info["ctx"]].do(req)
                     sub_step_result.res = step_res
                     if not retry.condition or not check(
-                            retry.condition, local=local_namespace, var=rctx.var, x=rctx.x,
+                            retry.condition, local=local_namespace, var=rctx.var, x=rctx.x, idx=idx, ele=ele,
                             case=case, steps=case.steps, pre_steps=case.pre_steps, post_steps=case.post_steps,
                             before_case_steps=case.before_case_steps, after_case_steps=case.after_case_steps,
                             step=sub_step_result, req=req, res=step_res):
@@ -786,7 +790,7 @@ class Framework:
                 else:
                     raise RetryError()
                 if not until.condition or check(
-                        until.condition, local=local_namespace, var=rctx.var, x=rctx.x,
+                        until.condition, local=local_namespace, var=rctx.var, x=rctx.x, idx=idx, ele=ele,
                         case=case, steps=case.steps, pre_steps=case.pre_steps, post_steps=case.post_steps,
                         before_case_steps=case.before_case_steps, after_case_steps=case.after_case_steps,
                         step=sub_step_result, req=req, res=step_res):
@@ -797,7 +801,7 @@ class Framework:
 
             expects = expect(
                 json.loads(json.dumps(step_res)), json.loads(json.dumps(res)),
-                local=local_namespace, var=rctx.var, x=rctx.x,
+                local=local_namespace, var=rctx.var, x=rctx.x, idx=idx, ele=ele,
                 case=case, steps=case.steps, pre_steps=case.pre_steps, post_steps=case.post_steps,
                 before_case_steps=case.before_case_steps, after_case_steps=case.after_case_steps,
                 step=sub_step_result, req=req, res=res,
@@ -805,7 +809,7 @@ class Framework:
             sub_step_result.add_expect_result(expects)
             asserts = assert_(
                 step_info["assert"],
-                local=local_namespace, var=rctx.var, x=rctx.x,
+                local=local_namespace, var=rctx.var, x=rctx.x, idx=idx, ele=ele,
                 case=case, steps=case.steps, pre_steps=case.pre_steps, post_steps=case.post_steps,
                 before_case_steps=case.before_case_steps, after_case_steps=case.after_case_steps,
                 step=sub_step_result, req=req, res=res)
