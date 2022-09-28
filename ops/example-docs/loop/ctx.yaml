@@ -20,3 +20,20 @@ case:
             - "hello 456"
             - "world 123"
             - "world 456"
+  - name: LoopExample2
+    step:
+      - ctx: shell
+        req:
+          command: echo -n '["val1", "val2"]'
+          decoder: json
+        assign:
+          "#vals": res["json"]
+      - ctx: shell
+        req:
+          command: echo -n "$VAL"
+          envs:
+            "#!VAL": "local.vals"
+        res:
+          "!stdout":
+            - "val1"
+            - "val2"

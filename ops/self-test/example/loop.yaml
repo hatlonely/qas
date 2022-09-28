@@ -7,35 +7,65 @@ step:
     res:
       exitCode: 0
       json: {
+        "directory": "ops/example-docs/loop",
         "name": "loop-example",
+        "status": "pass",
+        "description": "",
+        "isSkip": false,
         "isPass": true,
-        "#elapse": "val > 0",
-        "casePass": 1,
+        "isErr": false,
+        "err": "",
+        "#elapse": "len(val) > 0",
+        "casePass": 2,
         "caseFail": 0,
         "caseSkip": 0,
-        "stepPass": 1,
+        "setUpPass": 0,
+        "setUpFail": 0,
+        "tearDownPass": 0,
+        "tearDownFail": 0,
+        "currCasePass": 2,
+        "currCaseFail": 0,
+        "currCaseSkip": 0,
+        "stepPass": 3,
         "stepFail": 0,
-        "assertionPass": 8,
+        "stepSkip": 0,
+        "assertionPass": 10,
         "assertionFail": 0,
+        "subTestPass": 0,
+        "subTestSkip": 0,
+        "subTestFail": 0,
         "cases": [
           {
+            "id": "ctx",
             "name": "LoopExample",
-            "#elapse": "val > 0",
+            "directory": "ops/example-docs/loop",
+            "description": "",
+            "command": "qas -t \"ops/example-docs/loop\" -c \"\" --case-id \"ctx\"",
+            "status": "pass",
+            "#elapse": "len(val) > 0",
             "isPass": true,
             "isSkip": false,
+            "isErr": false,
+            "err": "",
             "steps": [
               {
                 "name": "echo",
+                "description": "",
                 "ctx": "shell",
                 "isSkip": false,
                 "isPass": true,
+                "isErr": false,
+                "err": "",
                 "req": {
                   "command": "echo -n \"${KEY1} ${KEY2}\"",
                   "envs": {
                     "KEY1": "world",
                     "KEY2": "456"
                   },
-                  "decoder": "text"
+                  "decoder": "text",
+                  "files": {},
+                  "tmp": "/tmp",
+                  "clean": true
                 },
                 "res": {
                   "exitCode": 0,
@@ -53,7 +83,10 @@ step:
                         "KEY1": "hello",
                         "KEY2": "123"
                       },
-                      "decoder": "text"
+                      "decoder": "text",
+                      "files": {},
+                      "tmp": "/tmp",
+                      "clean": true
                     },
                     "res": {
                       "exitCode": 0,
@@ -76,9 +109,10 @@ step:
                         "expect": 0
                       }
                     ],
+                    "asserts": [],
                     "assertionPass": 2,
                     "assertionFail": 0,
-                    "#elapse": "val > 0"
+                    "#elapse": "len(val) > 0"
                   },
                   {
                     "isPass": true,
@@ -90,7 +124,10 @@ step:
                         "KEY1": "hello",
                         "KEY2": "456"
                       },
-                      "decoder": "text"
+                      "decoder": "text",
+                      "files": {},
+                      "tmp": "/tmp",
+                      "clean": true
                     },
                     "res": {
                       "exitCode": 0,
@@ -113,9 +150,10 @@ step:
                         "expect": 0
                       }
                     ],
+                    "asserts": [],
                     "assertionPass": 2,
                     "assertionFail": 0,
-                    "#elapse": "val > 0"
+                    "#elapse": "len(val) > 0"
                   },
                   {
                     "isPass": true,
@@ -127,7 +165,10 @@ step:
                         "KEY1": "world",
                         "KEY2": "123"
                       },
-                      "decoder": "text"
+                      "decoder": "text",
+                      "files": {},
+                      "tmp": "/tmp",
+                      "clean": true
                     },
                     "res": {
                       "exitCode": 0,
@@ -150,9 +191,10 @@ step:
                         "expect": 0
                       }
                     ],
+                    "asserts": [],
                     "assertionPass": 2,
                     "assertionFail": 0,
-                    "#elapse": "val > 0"
+                    "#elapse": "len(val) > 0"
                   },
                   {
                     "isPass": true,
@@ -164,7 +206,10 @@ step:
                         "KEY1": "world",
                         "KEY2": "456"
                       },
-                      "decoder": "text"
+                      "decoder": "text",
+                      "files": {},
+                      "tmp": "/tmp",
+                      "clean": true
                     },
                     "res": {
                       "exitCode": 0,
@@ -187,14 +232,15 @@ step:
                         "expect": 0
                       }
                     ],
+                    "asserts": [],
                     "assertionPass": 2,
                     "assertionFail": 0,
-                    "#elapse": "val > 0"
+                    "#elapse": "len(val) > 0"
                   }
                 ],
                 "assertionPass": 8,
                 "assertionFail": 0,
-                "#elapse": "val > 0"
+                "#elapse": "len(val) > 0"
               }
             ],
             "beforeCaseSteps": [],
@@ -202,6 +248,180 @@ step:
             "stepPass": 1,
             "stepFail": 0,
             "assertionPass": 8,
+            "assertionFail": 0
+          },
+          {
+            "id": "ctx-1",
+            "name": "LoopExample2",
+            "directory": "ops/example-docs/loop",
+            "description": "",
+            "command": "qas -t \"ops/example-docs/loop\" -c \"\" --case-id \"ctx-1\"",
+            "status": "pass",
+            "#elapse": "len(val) > 0",
+            "isPass": true,
+            "isSkip": false,
+            "isErr": false,
+            "err": "",
+            "steps": [
+              {
+                "name": "echo",
+                "description": "",
+                "ctx": "shell",
+                "isSkip": false,
+                "isPass": true,
+                "isErr": false,
+                "err": "",
+                "req": {
+                  "command": "echo -n '[\"val1\", \"val2\"]'",
+                  "decoder": "json",
+                  "envs": {},
+                  "files": {},
+                  "tmp": "/tmp",
+                  "clean": true
+                },
+                "res": {
+                  "exitCode": 0,
+                  "stdout": "[\"val1\", \"val2\"]",
+                  "stderr": "",
+                  "json": [
+                    "val1",
+                    "val2"
+                  ]
+                },
+                "subSteps": [
+                  {
+                    "isPass": true,
+                    "isErr": false,
+                    "err": "",
+                    "req": {
+                      "command": "echo -n '[\"val1\", \"val2\"]'",
+                      "decoder": "json",
+                      "envs": {},
+                      "files": {},
+                      "tmp": "/tmp",
+                      "clean": true
+                    },
+                    "res": {
+                      "exitCode": 0,
+                      "stdout": "[\"val1\", \"val2\"]",
+                      "stderr": "",
+                      "json": [
+                        "val1",
+                        "val2"
+                      ]
+                    },
+                    "expects": [],
+                    "asserts": [],
+                    "assertionPass": 0,
+                    "assertionFail": 0,
+                    "#elapse": "len(val) > 0"
+                  }
+                ],
+                "assertionPass": 0,
+                "assertionFail": 0,
+                "#elapse": "len(val) > 0"
+              },
+              {
+                "name": "echo",
+                "description": "",
+                "ctx": "shell",
+                "isSkip": false,
+                "isPass": true,
+                "isErr": false,
+                "err": "",
+                "req": {
+                  "command": "echo -n \"$VAL\"",
+                  "envs": {
+                    "VAL": "val2"
+                  },
+                  "decoder": "text",
+                  "files": {},
+                  "tmp": "/tmp",
+                  "clean": true
+                },
+                "res": {
+                  "exitCode": 0,
+                  "stdout": "val2",
+                  "stderr": ""
+                },
+                "subSteps": [
+                  {
+                    "isPass": true,
+                    "isErr": false,
+                    "err": "",
+                    "req": {
+                      "command": "echo -n \"$VAL\"",
+                      "envs": {
+                        "VAL": "val1"
+                      },
+                      "decoder": "text",
+                      "files": {},
+                      "tmp": "/tmp",
+                      "clean": true
+                    },
+                    "res": {
+                      "exitCode": 0,
+                      "stdout": "val1",
+                      "stderr": ""
+                    },
+                    "expects": [
+                      {
+                        "isPass": true,
+                        "message": "OK",
+                        "node": "stdout",
+                        "val": "val1",
+                        "expect": "val1"
+                      }
+                    ],
+                    "asserts": [],
+                    "assertionPass": 1,
+                    "assertionFail": 0,
+                    "#elapse": "len(val) > 0"
+                  },
+                  {
+                    "isPass": true,
+                    "isErr": false,
+                    "err": "",
+                    "req": {
+                      "command": "echo -n \"$VAL\"",
+                      "envs": {
+                        "VAL": "val2"
+                      },
+                      "decoder": "text",
+                      "files": {},
+                      "tmp": "/tmp",
+                      "clean": true
+                    },
+                    "res": {
+                      "exitCode": 0,
+                      "stdout": "val2",
+                      "stderr": ""
+                    },
+                    "expects": [
+                      {
+                        "isPass": true,
+                        "message": "OK",
+                        "node": "stdout",
+                        "val": "val2",
+                        "expect": "val2"
+                      }
+                    ],
+                    "asserts": [],
+                    "assertionPass": 1,
+                    "assertionFail": 0,
+                    "#elapse": "len(val) > 0"
+                  }
+                ],
+                "assertionPass": 2,
+                "assertionFail": 0,
+                "#elapse": "len(val) > 0"
+              }
+            ],
+            "beforeCaseSteps": [],
+            "afterCaseSteps": [],
+            "stepPass": 2,
+            "stepFail": 0,
+            "assertionPass": 2,
             "assertionFail": 0
           }
         ],
