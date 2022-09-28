@@ -26,7 +26,7 @@ from ..driver import driver_map, Driver
 from ..reporter import reporter_map
 from ..hook import hook_map, Hook
 from ..assertion import expect, check, assert_
-from ..util import render, RenderError, merge, MergeError, REQUIRED
+from ..util import render, RenderError, merge, MergeError, REQUIRED, py_eval
 from ..result import TestResult, CaseResult, StepResult, SubStepResult
 from .retry_until import Retry, Until, RetryError, UntilError
 from .generate import generate_req, generate_res, calculate_num, grouper
@@ -670,8 +670,6 @@ class Framework:
                 "assign": {},
                 "assert": [],
             })
-            if isinstance(step_info["repeat"], int):
-                step_info["repeat"] = list(range(step_info["repeat"]))
         except MergeError as e:
             return StepResult(step_info["name"], step_info["ctx"], step_info["description"], err_message="Exception: {}".format(e))
 
@@ -685,7 +683,15 @@ class Framework:
     @staticmethod
     def run_step(customize, constant, rctx, local, step_info, case):
         # use json transform tuple to list
-        local_namespace = json.loads(json.dumps(local), object_hook=lambda x: SimpleNamespace(**x))
+        local_namespace = SimpleNamespace(**local)
+
+        if isinstance(step_info["repeat"], str):
+            step_info["repeat"] = py_eval(
+                step_info["repeat"], local=local_namespace, var=rctx.var, x=rctx.x,
+                case=case, steps=case.steps, pre_steps=case.pre_steps, post_steps=case.post_steps,
+                before_case_steps=case.before_case_steps, after_case_steps=case.after_case_steps)
+        if isinstance(step_info["repeat"], int):
+            step_info["repeat"] = list(range(step_info["repeat"]))
 
         # 条件步骤
         if step_info["cond"] and not check(
@@ -696,7 +702,10 @@ class Framework:
         step = StepResult(step_info["name"], step_info["ctx"], step_info["description"])
         now = datetime.now()
 
-        for idx, ele in enumerate(step_info["repeat"]):
+        iterator = enumerate(step_info["repeat"])
+        if isinstance(step_info["repeat"], dict):
+            iterator = step_info["repeat"].items()
+        for idx, ele in iterator:
             try:
                 step_info_req = render(
                     json.loads(json.dumps(step_info["req"])), local=local_namespace, var=rctx.var, x=rctx.x, idx=idx, ele=ele,

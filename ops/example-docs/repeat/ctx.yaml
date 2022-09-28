@@ -5,10 +5,29 @@ ctx:
     type: shell
 
 case:
-  - name: RepeatExample
+  - name: RepeatExample1
     step:
       - ctx: shell
         repeat: 3
+        req:
+          command: echo -n $IDX $ELE
+          envs:
+            "#IDX": str(idx)
+            "#ELE": str(ele)
+        res:
+          exitCode: 0
+          "#stdout": "'{} {}'.format(idx, ele)"
+  - name: RepeatExample2
+    step:
+      - ctx: shell
+        req:
+          command: |
+            echo '{"key1": "val1", "key2": "val2"}'
+          decoder: json
+        assign:
+          "#kvs": res["json"]
+      - ctx: shell
+        repeat: local.kvs
         req:
           command: echo -n $IDX $ELE
           envs:
