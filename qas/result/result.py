@@ -158,6 +158,7 @@ class StepResult:
             "assertionPass": self.assertion_pass,
             "assertionFail": self.assertion_fail,
             "elapse": int(self.elapse.total_seconds() * 1000000),
+            "assign": self.assign,
         }
 
     @staticmethod
@@ -173,6 +174,7 @@ class StepResult:
         res.assertion_pass = obj["assertionPass"]
         res.assertion_fail = obj["assertionFail"]
         res.elapse = timedelta(microseconds=obj["elapse"])
+        res.assign = obj["assign"]
         return res
 
     def __init__(self, name, ctx, description="", is_skip=False, err_message=""):
@@ -189,6 +191,7 @@ class StepResult:
         self.elapse = timedelta(seconds=0)
         self.is_err = False
         self.err = ""
+        self.assign = None
         if err_message:
             self.err = err_message
             self.is_err = True
@@ -207,6 +210,9 @@ class StepResult:
         self.is_err = True
         self.err = message
         self.assertion_fail += 1
+
+    def set_assign(self, assign):
+        self.assign = assign
 
 
 @dataclass

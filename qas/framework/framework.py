@@ -754,6 +754,7 @@ class Framework:
                     before_case_steps=case.before_case_steps, after_case_steps= case.after_case_steps,
                     step=step, req=step.req, res=step.res,
                     peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, pshell=customize.keyPrefix.shell)
+                step.set_assign(assign)
                 for key in assign:
                     local[key] = assign[key]
             except RenderError as e:

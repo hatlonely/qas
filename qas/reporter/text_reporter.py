@@ -182,5 +182,7 @@ class TextReporter(Reporter):
                     sub_step, pass_open=Fore.GREEN, pass_close=Fore.RESET, fail_open=Fore.RED, fail_close=Fore.RESET,
                 ).split("\n")])
         if step.is_err:
-            lines.extend("{fore.RED}{i18n.caseHeader.err}{fore.RESET}: {err}".format(fore=Fore, i18n=self.i18n, err=step.err).split("\n"))
+            lines.extend("{fore.RED}{i18n.stepHeader.err}{fore.RESET}: {err}".format(fore=Fore, i18n=self.i18n, err=step.err).split("\n"))
+        if step.assign:
+            lines.extend("{i18n.stepHeader.assign}: {assign}".format(fore=Fore, i18n=self.i18n, assign=json.dumps(step.assign, indent=2)).split("\n"))
         return lines
