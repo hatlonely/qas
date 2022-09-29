@@ -5,7 +5,7 @@ ctx:
     type: shell
 
 case:
-  - name: RepeatExample1
+  - name: RepeatExample
     step:
       - ctx: shell
         repeat: 3
@@ -17,7 +17,26 @@ case:
         res:
           exitCode: 0
           "#stdout": "'{} {}'.format(idx, ele)"
-  - name: RepeatExample2
+  - name: RepeatListExample
+    step:
+      - ctx: shell
+        req:
+          command: |
+            echo '["val1", "val2"]'
+          decoder: json
+        assign:
+          "#vs": res["json"]
+      - ctx: shell
+        repeat: local.vs
+        req:
+          command: echo -n $IDX $ELE
+          envs:
+            "#IDX": str(idx)
+            "#ELE": str(ele)
+        res:
+          exitCode: 0
+          "#stdout": "'{} {}'.format(idx, ele)"
+  - name: RepeatMapExample
     step:
       - ctx: shell
         req:

@@ -79,8 +79,8 @@ def run_expect(__root, __rule, func, val=None, **kwargs):
             if val != __rule:
                 return ExpectResult(is_pass=False, message="NotEqual", node=__root, val=val, expect=__rule)
             return ExpectResult(is_pass=True, message="OK", node=__root, val=val, expect=__rule)
-    except Exception as e:
-        return ExpectResult(is_pass=False, message="Exception", node=__root, val=val, expect=__rule + ' | Exception: {}'.format(e))
+    except Exception as __e:
+        return ExpectResult(is_pass=False, message="Exception", node=__root, val=val, expect=__rule + ' | Exception: {}'.format(__e))
 
 
 def expect_eval(__rule, val=None, **kwargs):
@@ -113,6 +113,6 @@ def assert_(__rules, **kwargs):
         try:
             ok = check(__rule, **kwargs)
             __results.append(AssertResult(is_pass=ok, rule=__rule, message=""))
-        except Exception as e:
-            __results.append(AssertResult(is_pass=False, rule=__rule, message="Exception: {}".format(e)))
+        except Exception as __e:
+            __results.append(AssertResult(is_pass=False, rule=__rule, message="Exception: {}".format(__e)))
     return __results

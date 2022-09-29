@@ -10,7 +10,7 @@ class RenderError(Exception):
 
 
 def render(__req, peval="#", pexec="%", pshell="$", **kwargs):
-    return __render_recurisve("", __req, **kwargs)
+    return __render_recurisve("", __req, peval, pexec, pshell, **kwargs)
 
 
 def __render_recurisve(__root, __req, peval="#", pexec="%", pshell="$", **kwargs):
@@ -26,10 +26,10 @@ def __render_recurisve(__root, __req, peval="#", pexec="%", pshell="$", **kwargs
                     __res[__key[len(pshell):]] = sh_exec(__val)
                 else:
                     __res[__key] = __render_recurisve("{}.{}".format(__root, __key).lstrip("."), __req[__key], **kwargs)
-            except RenderError as e:
-                raise e
-            except Exception as e:
-                raise RenderError("render failed. __key [{}], err [{}]".format("{}.{}".format(__root, __key).lstrip("."), e))
+            except RenderError as __e:
+                raise __e
+            except Exception as __e:
+                raise RenderError("render failed. key [{}], err [{}]".format("{}.{}".format(__root, __key).lstrip("."), __e))
         return __res
     if isinstance(__req, list):
         __res = []
