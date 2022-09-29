@@ -23,13 +23,19 @@ _report_tpl = """<!DOCTYPE html>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
     <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
+    {% if customize.font.style %}
     {{ customize.font.style }}
+    {% endif %}
     <style>
         body {
+            {% if customize.font.body %}
             font-family: {{ customize.font.body }};
+            {% endif %}
         }
         pre, code {
+            {% if customize.font.code %}
             font-family: {{ customize.font.code }};
+            {% endif %}
             white-space: pre-wrap;
         }
     </style>
@@ -638,13 +644,9 @@ class HtmlReporter(Reporter):
         args = merge(args, {
             "stepSeparator": "#",
             "font": {
-                "style": """
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
-""",
-                "body": "'Roboto Condensed', sans-serif !important",
-                "code": "'JetBrains Mono', monospace !important",
+                "style": "",
+                "body": "",
+                "code": "",
             },
             "extra": {
                 "head": "",
