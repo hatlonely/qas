@@ -746,7 +746,7 @@ class Framework:
                     for result in results:
                         step.add_sub_step_result(result)
 
-        if step.is_pass:
+        if step.is_pass and step_info["assign"]:
             try:
                 assign = render(
                     step_info["assign"], local=local_namespace, var=rctx.var, x=rctx.x,
@@ -754,7 +754,8 @@ class Framework:
                     before_case_steps=case.before_case_steps, after_case_steps= case.after_case_steps,
                     step=step, req=step.req, res=step.res,
                     peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, pshell=customize.keyPrefix.shell)
-                step.set_assign(assign)
+                if assign:
+                    step.set_assign(assign)
                 for key in assign:
                     local[key] = assign[key]
             except RenderError as e:
