@@ -7,6 +7,7 @@ import json
 
 from qcloud_cos import CosConfig
 from qcloud_cos import CosS3Client
+import qcloud_cos.cos_exception
 
 from ..driver import Driver
 from ...util import merge, REQUIRED
@@ -51,8 +52,19 @@ class COSDriver(Driver):
             "Bucket": self.bucket
         })
 
-        args = copy.deepcopy(req)
-        del args["Action"]
-        res = getattr(self.client, pascal_to_snake(req["Action"]))(**args)
-        res = json.loads(json.dumps(res, default=lambda x: dict((snake_to_pascal(k), v) for k, v in x.__dict__.items())))
-        return res
+        try:
+            args = copy.deepcopy(req)
+            del args["Action"]
+            res = getattr(self.client, pascal_to_snake(req["Action"]))(**args)
+            res = json.loads(json.dumps(res, default=lambda x: dict((snake_to_pascal(k), v) for k, v in x.__dict__.items())))
+            return res
+        except qcloud_cos.cos_exception.CosServiceError as e:
+            return {
+                "Status": e.get_status_code(),
+                "RequestId": e.get_request_id(),
+                "Code": e.get_error_code(),
+                "Message": e.get_error_msg(),
+                "OriginMessage": e.get_origin_msg(),
+            }
+        except Exception as e:
+            raise e
