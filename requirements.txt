@@ -23,3 +23,4 @@ elasticsearch~=7.16.0
 aliyun-log-python-sdk~=0.7.5
 google-api-python-client~=2.39.0
 gcloud~=0.18.3
+cos-python-sdk-v5~=1.9.20
