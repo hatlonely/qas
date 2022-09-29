@@ -518,6 +518,12 @@ _step_tpl = """
             {% endfor %}
         </ul>
 
+        {# Assign #}
+        {% if step.assign %}
+        <div class="card-header"><span class="fw-bolder">{{ i18n.stepHeader.assign }}</span></div>
+        <div class="card-body"><pre>{{ json.dumps(step.assign, indent=2) }}</pre></div>
+        {% endif %}
+
         {# Err #}
         {% if step.is_err %}
         <div class="card-header"><span class="fw-bolder">{{ i18n.stepHeader.err }}</span></div>
