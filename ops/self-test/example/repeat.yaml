@@ -16,20 +16,20 @@ step:
         "isErr": false,
         "err": "",
         "#elapse": "val > 0",
-        "casePass": 2,
+        "casePass": 3,
         "caseFail": 0,
         "caseSkip": 0,
         "setUpPass": 0,
         "setUpFail": 0,
         "tearDownPass": 0,
         "tearDownFail": 0,
-        "currCasePass": 2,
+        "currCasePass": 3,
         "currCaseFail": 0,
         "currCaseSkip": 0,
-        "stepPass": 3,
+        "stepPass": 5,
         "stepFail": 0,
         "stepSkip": 0,
-        "assertionPass": 10,
+        "assertionPass": 14,
         "assertionFail": 0,
         "subTestPass": 0,
         "subTestSkip": 0,
@@ -37,7 +37,7 @@ step:
         "cases": [
           {
             "id": "ctx",
-            "name": "RepeatExample1",
+            "name": "RepeatExample",
             "directory": "ops/example-docs/repeat",
             "description": "",
             "command": "qas -t \"ops/example-docs/repeat\" -c \"\" --case-id \"ctx\"",
@@ -211,10 +211,199 @@ step:
           },
           {
             "id": "ctx-1",
-            "name": "RepeatExample2",
+            "name": "RepeatListExample",
             "directory": "ops/example-docs/repeat",
             "description": "",
             "command": "qas -t \"ops/example-docs/repeat\" -c \"\" --case-id \"ctx-1\"",
+            "status": "pass",
+            "#elapse": "val > 0",
+            "isPass": true,
+            "isSkip": false,
+            "isErr": false,
+            "err": "",
+            "steps": [
+              {
+                "name": "echo",
+                "description": "",
+                "ctx": "shell",
+                "isSkip": false,
+                "isPass": true,
+                "isErr": false,
+                "err": "",
+                "req": {
+                  "command": "echo '[\"val1\", \"val2\"]'\n",
+                  "decoder": "json",
+                  "envs": {},
+                  "files": {},
+                  "tmp": "/tmp",
+                  "clean": true
+                },
+                "res": {
+                  "exitCode": 0,
+                  "stderr": "",
+                  "json": [
+                    "val1",
+                    "val2"
+                  ]
+                },
+                "subSteps": [
+                  {
+                    "isPass": true,
+                    "isErr": false,
+                    "err": "",
+                    "req": {
+                      "command": "echo '[\"val1\", \"val2\"]'\n",
+                      "decoder": "json",
+                      "envs": {},
+                      "files": {},
+                      "tmp": "/tmp",
+                      "clean": true
+                    },
+                    "res": {
+                      "exitCode": 0,
+                      "stderr": "",
+                      "json": [
+                        "val1",
+                        "val2"
+                      ]
+                    },
+                    "expects": [],
+                    "asserts": [],
+                    "assertionPass": 0,
+                    "assertionFail": 0,
+                    "#elapse": "val > 0"
+                  }
+                ],
+                "assertionPass": 0,
+                "assertionFail": 0,
+                "#elapse": "val > 0"
+              },
+              {
+                "name": "echo",
+                "description": "",
+                "ctx": "shell",
+                "isSkip": false,
+                "isPass": true,
+                "isErr": false,
+                "err": "",
+                "req": {
+                  "command": "echo -n $IDX $ELE",
+                  "envs": {
+                    "ELE": "val2",
+                    "IDX": "1"
+                  },
+                  "decoder": "text",
+                  "files": {},
+                  "tmp": "/tmp",
+                  "clean": true
+                },
+                "res": {
+                  "exitCode": 0,
+                  "stdout": "1 val2",
+                  "stderr": ""
+                },
+                "subSteps": [
+                  {
+                    "isPass": true,
+                    "isErr": false,
+                    "err": "",
+                    "req": {
+                      "command": "echo -n $IDX $ELE",
+                      "envs": {
+                        "ELE": "val1",
+                        "IDX": "0"
+                      },
+                      "decoder": "text",
+                      "files": {},
+                      "tmp": "/tmp",
+                      "clean": true
+                    },
+                    "res": {
+                      "exitCode": 0,
+                      "stdout": "0 val1",
+                      "stderr": ""
+                    },
+                    "expects": [
+                      {
+                        "isPass": true,
+                        "message": "OK",
+                        "node": "stdout",
+                        "val": "0 val1",
+                        "expect": "'{} {}'.format(idx, ele)"
+                      },
+                      {
+                        "isPass": true,
+                        "message": "OK",
+                        "node": "exitCode",
+                        "val": 0,
+                        "expect": 0
+                      }
+                    ],
+                    "asserts": [],
+                    "assertionPass": 2,
+                    "assertionFail": 0,
+                    "#elapse": "val > 0"
+                  },
+                  {
+                    "isPass": true,
+                    "isErr": false,
+                    "err": "",
+                    "req": {
+                      "command": "echo -n $IDX $ELE",
+                      "envs": {
+                        "ELE": "val2",
+                        "IDX": "1"
+                      },
+                      "decoder": "text",
+                      "files": {},
+                      "tmp": "/tmp",
+                      "clean": true
+                    },
+                    "res": {
+                      "exitCode": 0,
+                      "stdout": "1 val2",
+                      "stderr": ""
+                    },
+                    "expects": [
+                      {
+                        "isPass": true,
+                        "message": "OK",
+                        "node": "stdout",
+                        "val": "1 val2",
+                        "expect": "'{} {}'.format(idx, ele)"
+                      },
+                      {
+                        "isPass": true,
+                        "message": "OK",
+                        "node": "exitCode",
+                        "val": 0,
+                        "expect": 0
+                      }
+                    ],
+                    "asserts": [],
+                    "assertionPass": 2,
+                    "assertionFail": 0,
+                    "#elapse": "val > 0"
+                  }
+                ],
+                "assertionPass": 4,
+                "assertionFail": 0,
+                "#elapse": "val > 0"
+              }
+            ],
+            "beforeCaseSteps": [],
+            "afterCaseSteps": [],
+            "stepPass": 2,
+            "stepFail": 0,
+            "assertionPass": 4,
+            "assertionFail": 0
+          },
+          {
+            "id": "ctx-2",
+            "name": "RepeatMapExample",
+            "directory": "ops/example-docs/repeat",
+            "description": "",
+            "command": "qas -t \"ops/example-docs/repeat\" -c \"\" --case-id \"ctx-2\"",
             "status": "pass",
             "#elapse": "val > 0",
             "isPass": true,
