@@ -815,7 +815,7 @@ class Framework:
                 local=local_namespace, var=rctx.var, x=rctx.x, idx=idx, ele=ele,
                 case=case, steps=case.steps, pre_steps=case.pre_steps, post_steps=case.post_steps,
                 before_case_steps=case.before_case_steps, after_case_steps=case.after_case_steps,
-                step=sub_step_result, req=req, res=res,
+                step=sub_step_result, req=req, res=step_res,
                 peval=customize.keyPrefix.eval, pexec=customize.keyPrefix.exec, mode=mode)
             sub_step_result.add_expect_result(expects)
             asserts = assert_(
@@ -823,7 +823,7 @@ class Framework:
                 local=local_namespace, var=rctx.var, x=rctx.x, idx=idx, ele=ele,
                 case=case, steps=case.steps, pre_steps=case.pre_steps, post_steps=case.post_steps,
                 before_case_steps=case.before_case_steps, after_case_steps=case.after_case_steps,
-                step=sub_step_result, req=req, res=res)
+                step=sub_step_result, req=req, res=step_res)
             sub_step_result.add_assert_result(asserts)
         except RetryError as e:
             sub_step_result.set_error("RetryError [{}]".format(retry))
