@@ -702,6 +702,7 @@ class HtmlReporter(Reporter):
             sub_step, separator=self.step_separator,
             pass_open="<span class='text-success'>", pass_close="</span>",
             fail_open="<span class='text-danger'>", fail_close="</span>",
+            html_escape=True,
         )
 
     def format_sub_step_assert(self, sub_step: SubStepResult) -> str:
