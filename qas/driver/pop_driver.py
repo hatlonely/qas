@@ -5,6 +5,8 @@ import json
 import traceback
 import aliyunsdkcore.acs_exception.exceptions
 from aliyunsdkcore.client import AcsClient
+from aliyunsdkcore.auth.credentials import StsTokenCredential
+from aliyunsdkcore.auth.credentials import AccessKeyCredential
 from aliyunsdkcore.request import CommonRequest
 
 from ..util import merge, REQUIRED
@@ -43,7 +45,12 @@ class POPDriver(Driver):
         })
 
         self.endpoint = args["Endpoint"].rstrip("/")
-        self.client = AcsClient(args["AccessKeyId"], args["AccessKeySecret"], args["RegionId"], verify=not args["DisableVerify"])
+        self.disableVerify = args["DisableVerify"]
+        self.client = AcsClient(
+            region_id=args["RegionId"],
+            verify=not args["DisableVerify"],
+            credential=AccessKeyCredential(args["AccessKeyId"], args["AccessKeySecret"]),
+        )
         self.region_id = args["RegionId"]
 
     def name(self, req):
@@ -81,8 +88,16 @@ class POPDriver(Driver):
                 continue
             creq.add_query_param(key, req[key])
 
+        client = self.client
+        if "AccessKeyId" in req:
+            if "SecurityToken" in req:
+                credential = StsTokenCredential(req["AccessKeyId"], req["AccessKeySecret"], req["SecurityToken"])
+            else:
+                credential = AccessKeyCredential(req["AccessKeyId"], req["AccessKeySecret"])
+            client = AcsClient(region_id=req["RegionId"], verify=self.disableVerify, credential=credential)
+
         try:
-            res = self.client.do_action_with_exception(creq)
+            res = client.do_action_with_exception(creq)
             return json.loads(str(res, encoding='utf-8'))
         except aliyunsdkcore.acs_exception.exceptions.ClientException as e:
             return {
