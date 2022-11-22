@@ -11,6 +11,7 @@ from .grpc_driver import GRPCDriver
 from .thrift_driver import ThriftDriver
 from .elasticsearch_driver import ElasticSearchDriver
 from .pop_driver import POPDriver
+from .pop_v2_driver import POPV2Driver
 from .ots_driver import OTSDriver
 from .mns_driver import MNSDriver
 from .oss_driver import OSSDriver
@@ -28,6 +29,7 @@ driver_map = {
     "mongo": MongoDriver,
     "elasticsearch": ElasticSearchDriver,
     "pop": POPDriver,
+    "popv2": POPV2Driver,
     "ots": OTSDriver,
     "mns": MNSDriver,
     "oss": OSSDriver,
