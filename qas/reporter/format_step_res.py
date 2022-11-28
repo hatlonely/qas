@@ -23,10 +23,13 @@ def format_step_res(sub_step: SubStepResult, separator="#", pass_open="", pass_c
     if html_escape:
         res = escape_html(res)
     for expect_result in sub_step.expects:
+        expect = expect_result.expect
+        if html_escape:
+            expect = escape_html(expect)
         if expect_result.is_pass:
-            append_val_to_key(res, expect_result.node, "<__MARK_GREEN__>{}<__MARK_END__>".format(expect_result.expect))
+            append_val_to_key(res, expect_result.node, "<__MARK_GREEN__>{}<__MARK_END__>".format(expect))
         else:
-            append_val_to_key(res, expect_result.node, "<__MARK_RED__>{}<__MARK_END__>".format(expect_result.expect))
+            append_val_to_key(res, expect_result.node, "<__MARK_RED__>{}<__MARK_END__>".format(expect))
 
     res_lines = json.dumps(res, indent=2).split("\n")
     lines = []
