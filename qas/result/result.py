@@ -167,7 +167,7 @@ class StepResult:
         res.is_skip = obj["isSkip"]
         res.is_pass = obj["isPass"]
         res.is_err = obj["isErr"]
-        res.err = obj["Err"]
+        res.err = obj["err"]
         res.req = obj["req"]
         res.res = obj["res"]
         res.sub_steps = [SubStepResult.from_json(i) for i in obj["subSteps"]]
