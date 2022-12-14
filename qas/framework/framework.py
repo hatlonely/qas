@@ -451,6 +451,7 @@ class Framework:
                 customize.loadingFiles.beforeCase,
                 customize.loadingFiles.afterCase,
                 customize.loadingFiles.commonStep,
+                customize.loadingFiles.skip,
             ]
             and os.path.isfile(os.path.join(directory, i))
         ]:
